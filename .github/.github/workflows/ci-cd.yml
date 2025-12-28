@@ -1,0 +1,56 @@
+name: CupExChange CI/CD (Angular SSR)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Angular 20 recommends Node 18/20/22; adjust if needed
+          cache: 'npm'  # Or 'yarn'/'pnpm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint  # Optional
+
+      - name: Run tests
+        run: npm run test -- --watch=false --browsers=ChromeHeadless  # Adjust flags as needed
+
+      - name: Build production (SSR)
+        run: npm run build -- --configuration production
+        # This runs `ng build` which builds both browser and server bundles for SSR
+
+  deploy:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production (SSR)
+        run: npm run build -- --configuration production
+
+      - name: Trigger Deploy on Render
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
