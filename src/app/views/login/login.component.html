@@ -1,0 +1,57 @@
+<div class="login-wrapper">
+
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title class="login-title">🔑 Iniciar sesión</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form #myForm="ngForm">
+
+        @if (loginError()) {
+        <div class="alert-danger">{{ loginError() }}</div>
+        }
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuario</mat-label>
+          <input matInput
+                 required
+                 [(ngModel)]="credentials.username"
+                 [ngModelOptions]="{standalone: true}"
+                 placeholder="Enter your user">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput
+                 [type]="hide ? 'password' : 'text'"
+                 required
+                 [(ngModel)]="credentials.password"
+                 [ngModelOptions]="{standalone: true}"
+                 placeholder="Enter your password">
+          <button mat-icon-button
+                  matSuffix
+                  (click)="hide = !hide"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <button mat-raised-button
+                color="primary"
+                type="button"
+                (click)="onLogin()"
+                class="login-button full-width">
+          Login
+        </button>
+
+        <div class="divider">Or Sign In With</div>
+
+        <div id="google-signin-button" class="google-button-container"></div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

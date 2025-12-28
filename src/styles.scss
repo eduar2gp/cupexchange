@@ -1,1 +1,158 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// Apply base theme to <html > (supports system preference via 'light dark')
+html {
+  color-scheme: light dark;
+
+  @include mat.theme(( color: ( primary: mat.$violet-palette, // Modern primary (close to indigo)
+  tertiary: mat.$magenta-palette, // Modern accent (close to pink)
+  ), typography: Roboto, density: 0 ));
+}
+
+// Optional: Force explicit dark overrides if needed (but color-scheme handles most)
+.dark-theme {
+  color-scheme: dark;
+}
+
+// === Your Custom CSS Variables ===
+:root {
+  // Light defaults --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-elevated: #ffffff;
+  --color-text: #161b22; // GitHub's actual primary text (very dark gray)
+  --color-text-secondary: #161b22; // Keep this for secondary/hints
+  --color-primary: #161b22;
+  --color-primary-hover: #1f7ceb;
+  --color-danger: #cf222e;
+  --color-success: #1a7f37;
+  --color-border: #d0d7de;
+  --color-accent: #8250df;
+}
+
+.dark-theme {
+  // Your exact GitHub dark colors --color-background: #0d1117;
+  --color-surface: #161b22;
+  --color-surface-elevated: #21262d;
+  --color-text: #8250df;
+  --color-text-secondary: #8b949e;
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79c0ff;
+  --color-danger: #f85149;
+  --color-success: #238636;
+  --color-border: #30363d;
+  --color-accent: #bc8cff;
+}
+
+// === Global Styles ===
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background: linear-gradient( 135deg, var(--color-background) 0%, color-mix(in srgb, var(--color-background) 92%, black) 50%, var(--color-background) 100% );
+  position: relative;
+  overflow-x: hidden;
+}
+
+// Animated radial glow
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 20%, rgba(9, 105, 218, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+  animation: float 30s ease-in-out infinite;
+}
+
+.dark-theme body::before {
+  background: radial-gradient(circle at 30% 20%, rgba(88, 166, 255, 0.15) 0%, transparent 50%);
+  animation: float 25s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(30px, 20px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+// Sidenav
+//.sidenav-container {
+//  height: 100vh;
+//  background-color: var(--color-surface);
+//  border: 1px solid var(--color-border);
+//  transition: background-color 0.3s ease, border-color 0.3s ease;
+//}
+
+
+.success-snackbar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.warning-snackbar {
+  background-color: #ff9800;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
+
+// Make sidenav-content a vertical flex column filling the viewport
+.sidenav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // Full viewport height
+  overflow: hidden; // Prevent container itself from scrolling
+}
+
+// Fixed top toolbar
+.app-toolbar.fixed-top {
+  flex: 0 0 auto; // Don't grow/shrink
+  z-index: 10; // Above content
+}
+
+// Scrollable main content (grows to fill available space)
+.main-content {
+  flex: 1 1 auto;
+  overflow-y: auto; // Only this scrolls
+  padding: 16px; // Optional: add some breathing room
+}
+
+// Fixed bottom navigation
+.bottom-nav.fixed-bottom {
+  flex: 0 0 auto; // Don't grow/shrink
+  z-index: 10; // Above content
+}
+
+// Optional: adjust toolbar heights for mobile (Material toolbars auto-adjust, but you can force if needed)
+mat-toolbar {
+  min-height: 56px; // Mobile-friendly height
+}
+
+// Ensure fullscreen works properly
+mat-sidenav-container[fullscreen] {
+  height: 100vh;
+  width: 100vw;
+}
