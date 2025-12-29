@@ -72,4 +72,12 @@ export class OrdersListComponent {
   refresh(): void {
     this.loadOrders();
   }
+
+  cancelOrder(order: any) {
+    // Implement your cancel logic here, e.g.:
+    // this.orderService.cancelOrder(order.id).subscribe(...);
+    console.log('Cancel order:', order);
+    // Optionally show confirmation dialog
+  }
+
 }

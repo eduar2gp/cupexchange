@@ -48,7 +48,10 @@
                     (ngModelChange)="onPairSelect($event)"
                     [ngModelOptions]="{standalone: true}">
           @for (pair of availablePairs; track pair) {
-          <mat-option [value]="pair">{{ pair.value }}</mat-option>
+          <mat-option [value]="pair" class="pair-option">
+            <img [src]="pair.imageUrl" alt="{{ pair.value }} logo" class="pair-logo">
+            <span class="pair-text">{{ pair.value }}</span>
+          </mat-option>
           }
         </mat-select>
         <mat-icon matPrefix>paid</mat-icon>

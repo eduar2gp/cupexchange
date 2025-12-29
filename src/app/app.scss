@@ -79,20 +79,20 @@ mat-sidenav {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .pair-selector {
-    width: 180px;
-    margin-left: 12px;
+  //.pair-selector {
+  //  width: 180px;
+  //  margin-left: 12px;
 
-    mat-icon {
-      color: var(--color-success);
-    }
-  }
+  //  mat-icon {
+  //    color: var(--color-success);
+  //  }
+  //}
 
   .toolbar-title {
     font-size: 1.2rem;
     font-weight: 500;
     margin-left: 16px;
-    color: var(--color-text);
+    color: var(--color-primary);
   }
 
   .spacer {
@@ -256,5 +256,103 @@ mat-sidenav {
   /* Active state highlight (optional) */
   .bottom-nav .nav-item.active {
     color: var(--mat-sys-primary); /* Or your accent color */
+  }
+}
+
+
+.pair-selector {
+  width: 200px; // Slightly wider for better usability on modern screens
+  margin-left: 16px; // A bit more breathing room
+  align-self: center;
+  margin-top: 25px;
+  // Make it denser and better fit in the toolbar (reduces vertical padding/height)
+  .mat-mdc-form-field-infix {
+    padding: 0.5em 0 0.75em 0; // Tighter vertical spacing
+  }
+
+  .mat-mdc-text-field-wrapper {
+    padding-bottom: 0;
+  }
+  // Modern outline: thinner, rounded, subtle focus glow
+  &.mat-mdc-outlined-field {
+    --mat-mdc-outlined-field-outline-width: 1.5px;
+    border-radius: 12px; // Softer, modern rounded corners
+
+    &.mat-focused {
+      .mat-mdc-form-field-outline {
+        box-shadow: 0 0 0 4px rgba(var(--mat-primary-rgb, 33, 150, 243), 0.15); // Subtle modern glow on focus
+      }
+    }
+  }
+  // Fresh icon styling (prefix: 'paid')
+  mat-icon[matPrefix] {
+    color: var(--color-success, #00d1b2); // Vibrant teal-green if var not defined; modern alternative to plain success
+    font-size: 20px;
+    opacity: 0.9;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  // Hover/focus interaction for premium feel
+  &:hover {
+    mat-icon[matPrefix] {
+      transform: scale(1.05);
+    }
+  }
+
+  &.mat-focused {
+    mat-icon[matPrefix] {
+      color: var(--mat-primary, #2196f3); // Accent on focus for dynamism
+    }
+  }
+  // Panel (dropdown) styling for consistency
+  .mat-mdc-select-panel {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); // Elevated, modern drop shadow
+    margin-top: 8px;
+  }
+  // Option hover for better feedback
+  .mat-mdc-option:hover {
+    background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.08);
+  }
+  // Style each option for a premium trading app feel
+  .pair-option {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px; // More spacious
+    height: 48px; // Consistent height for better touch/click
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04); // Subtle hover (light mode)
+    }
+    // Dark mode support (adjust if your app has dark theme)
+    .mat-mdc-theme-dark & {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+    }
+    // Selected state
+    &.mat-mdc-option-active {
+      background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.12);
+    }
+  }
+  // Coin logo styling
+  .pair-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%; // Circular logos look premium for crypto
+    object-fit: cover;
+    margin-right: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); // Subtle elevation
+    flex-shrink: 0;
+  }
+  // Text styling
+  .pair-text {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--mat-option-label-text-color, inherit);
+  }
+  // Optional: Increase overall dropdown width for images
+  .mat-mdc-select-panel {
+    min-width: calc(100% + 40px) !important; // Wider panel to fit images nicely
   }
 }

@@ -26,33 +26,50 @@
 @if (!loading() && !error() && displayedOrders().length > 0) {
   <mat-list class="orders-list">
     @for (order of displayedOrders(); track order) {
-      <mat-list-item class="order-item">
-        <!-- Header Row -->
-        <div class="order-header" matLine>
-          <!-- Left: Base Currency -->
-          <strong class="base-currency">{{ order.pair.baseCurrency }}</strong>
-          <!-- Center: BUY/SELL Badge (always centered) -->
-          <span class="side-wrapper">
-            <span class="side" [class.buy]="order.side === 'BUY'" [class.sell]="order.side === 'SELL'">
-              {{ order.side }}
-            </span>
+    <mat-list-item class="order-item">
+      <!-- Header Row -->
+      <div class="order-header" matLine>
+        <!-- Left: Base Currency -->
+        <strong class="base-currency">{{ order.pair.baseCurrency }}</strong>
+
+        <!-- Center: BUY/SELL Badge -->
+        <span class="side-wrapper">
+          <span class="side" [class.buy]="order.side === 'BUY'" [class.sell]="order.side === 'SELL'">
+            {{ order.side }}
           </span>
-          <!-- Right: Status -->
+        </span>
+
+        <!-- Right: Status + Cancel Button -->
+        <div class="status-actions">
           <span class="status">{{ order.status }}</span>
-        </div>
-        <!-- Details Row -->
-        <div matLine class="order-details">
-          <span>Price: {{ order.price | number:'1.4-8' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
-          <span>| Volume: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
-        </div>
-        <!-- Date Row -->
-        <div matLine class="order-date">
-          <span>{{ order.createdAt | date:'medium' }}</span>
-          @if (order.fullyFilled) {
-            <mat-icon class="filled-icon">check_circle</mat-icon>
+
+          <!-- Cancel button: shown only for ACTIVE or PARTLY_FILLED -->
+          @if (order.status === 'ACTIVE' || order.status === 'PARTLY_FILLED') {
+          <button mat-icon-button
+                  color="warn"
+                  (click)="cancelOrder(order)"
+                  matTooltip="Cancel Order"
+                  class="cancel-button">
+            <mat-icon>close</mat-icon>
+          </button>
           }
         </div>
-      </mat-list-item>
+      </div>
+
+      <!-- Details Row -->
+      <div matLine class="order-details">
+        <span>Price: {{ order.price | number:'1.4-8' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
+        <span>| Volume: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
+      </div>
+
+      <!-- Date Row -->
+      <div matLine class="order-date">
+        <span>{{ order.createdAt | date:'medium' }}</span>
+        @if (order.fullyFilled) {
+        <mat-icon class="filled-icon">check_circle</mat-icon>
+        }
+      </div>
+    </mat-list-item>
     }
   </mat-list>
 }

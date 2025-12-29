@@ -25,7 +25,7 @@ export interface OrderPlaced {
   volumeFilled: number;
 
   /** Current status of the order */
-  status: 'ACTIVE' | 'FILLED' | 'CANCELLED' | 'PARTIALLY_FILLED' | 'REJECTED' | 'EXPIRED';
+  status: 'ACTIVE' | 'FILLED' | 'CANCELLED' | 'PARTLY_FILLED' | 'REJECTED' | 'EXPIRED';
 
   /** Timestamp when the order was created (ISO 8601) */
   createdAt: string; // or Date if you convert it
