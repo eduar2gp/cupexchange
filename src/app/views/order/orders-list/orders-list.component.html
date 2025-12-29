@@ -1,0 +1,58 @@
+<!-- Loading state -->
+@if (loading()) {
+  <div class="container">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <p>Loading your orders...</p>
+  </div>
+}
+
+<!-- Error state -->
+@if (error()) {
+  <div class="container error">
+    <p>{{ error() }}</p>
+    <button mat-raised-button color="primary" (click)="refresh()">Retry</button>
+  </div>
+}
+
+<!-- Empty state -->
+@if (!loading() && !error() && displayedOrders().length === 0) {
+  <div class="container empty">
+    <mat-icon>inventory_2</mat-icon>
+    <p>No orders found.</p>
+  </div>
+}
+
+<!-- Orders list -->
+@if (!loading() && !error() && displayedOrders().length > 0) {
+  <mat-list class="orders-list">
+    @for (order of displayedOrders(); track order) {
+      <mat-list-item class="order-item">
+        <!-- Header Row -->
+        <div class="order-header" matLine>
+          <!-- Left: Base Currency -->
+          <strong class="base-currency">{{ order.pair.baseCurrency }}</strong>
+          <!-- Center: BUY/SELL Badge (always centered) -->
+          <span class="side-wrapper">
+            <span class="side" [class.buy]="order.side === 'BUY'" [class.sell]="order.side === 'SELL'">
+              {{ order.side }}
+            </span>
+          </span>
+          <!-- Right: Status -->
+          <span class="status">{{ order.status }}</span>
+        </div>
+        <!-- Details Row -->
+        <div matLine class="order-details">
+          <span>Price: {{ order.price | number:'1.4-8' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
+          <span>| Volume: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
+        </div>
+        <!-- Date Row -->
+        <div matLine class="order-date">
+          <span>{{ order.createdAt | date:'medium' }}</span>
+          @if (order.fullyFilled) {
+            <mat-icon class="filled-icon">check_circle</mat-icon>
+          }
+        </div>
+      </mat-list-item>
+    }
+  </mat-list>
+}

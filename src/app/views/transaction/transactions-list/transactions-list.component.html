@@ -1,0 +1,59 @@
+<div class="container">
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="center">
+      <mat-progress-spinner mode="indeterminate" diameter="50" color="primary"></mat-progress-spinner>
+      <p class="loading-text">Loading transactions...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="center error">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p class="error-message">{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="refresh()" class="retry-btn">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading() && !error() && transactions().length === 0) {
+    <div class="center empty">
+      <mat-icon class="empty-icon">receipt_long</mat-icon>
+      <p class="empty-text">No transactions found</p>
+      <p class="empty-subtext">Your transactions will appear here</p>
+    </div>
+  }
+
+  <!-- List -->
+  @if (!loading() && !error() && transactions().length > 0) {
+    <div class="transactions-container">
+      <h2 class="transactions-title">Transactions</h2>
+      <div class="transactions-list">
+        @for (tx of transactions(); track tx) {
+          <div class="transaction-item" [class.positive-border]="tx.amount >= 0" [class.negative-border]="tx.amount < 0">
+            <div class="transaction-main">
+              <div class="transaction-left">
+                <div class="type-icon">
+                  <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
+                </div>
+                <div class="transaction-info">
+                  <div class="type">{{ tx.type.replace('_', ' ') | titlecase }}</div>
+                  <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
+                </div>
+              </div>
+              <div class="amount" [class.positive]="tx.amount >= 0" [class.negative]="tx.amount < 0">
+                {{ (tx.amount >= 0 ? '+' : '') + tx.amount | number:'1.2-8' }} {{ tx.currency }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,94 @@
+.container {
+  text-align: center;
+  padding: 5x 5px; /* Increased top/bottom padding for more breathing room */
+}
+
+.orders-list {
+/*  max-width: 800px;*/
+/*margin-left: 2px;
+margin-right: 2px;*/
+ 
+}
+
+.order-item {
+  margin-bottom: 10px;
+  padding: 5px 5px; /* Consistent padding */
+  min-height: 120px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  position: relative;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.base-currency {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #333;
+}
+
+.side-wrapper {
+  margin-top: 10px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+}
+
+.side {
+/*  padding: 15px 10px;*/
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1em;
+  min-width: 70px;
+  text-align: center;
+  display: inline-block;
+}
+
+.buy {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.sell {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 0.95em;
+  color: #666;
+  padding: 6px 8px;
+  background-color: #f0f0f0;
+  border-radius: 16px;
+}
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #555;
+  font-size: 1em;
+}
+
+.order-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+}
+
+.filled-icon {
+  color: #4caf50;
+  font-size: 22px;
+}
