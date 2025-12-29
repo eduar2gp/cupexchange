@@ -1,0 +1,64 @@
+<div class="recent-trades-container">
+  <table class="trades-table">
+    <thead>
+      <tr>
+        <th>Time</th>        
+        <th>Side</th>
+        <th>Type</th>
+        <th >Price</th>
+        <th >Total</th>
+        <th >Filled</th>
+        <th >Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (order of orders; track order) {
+        <tr class="hover:bg-gray-800/40 transition-colors duration-150">
+          <td >
+            <div class="text-sm text-gray-300">{{ formatTime(order.timestamp) }}</div>
+          </td>         
+          <td>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+              [class]="getSideClass(order.side)">
+              {{ order.side }}
+            </span>
+          </td>
+          <td >
+            <div class="text-sm text-gray-400">{{ order.type }}</div>
+          </td>
+          <td >
+            <div class="text-sm text-white text-right font-mono font-medium">
+              {{ order.type === 'MARKET' ? 'Market' : order.price }}
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-white text-right font-mono">{{ order.volumeTotal }}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm text-white text-right font-mono">{{ order.volumeFilled }}</div>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold"
+              [class]="getStatusBadgeClass(order.status)">
+              {{ order.status.replace('_', ' ') }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (orders.length === 0) {
+    <div class="text-center py-12">
+      <div class="max-w-md mx-auto">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+          <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-white mb-2">No Recent Orders</h3>
+        <p class="text-gray-400">No trading activity for {{ currentPair }} yet</p>
+      </div>
+    </div>
+  }
+</div>
