@@ -4,25 +4,26 @@
 .transactions-page {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+  width: 100%;
+/*  padding: 1rem;*/
 }
 
 /* =========================================================
    Shared state containers
    ========================================================= */
 .state-container {
-  min-height: 280px;
+/*  min-height: 280px;*/
   width: 100%;
-  max-width: 720px;
-  padding: 2.5rem 2rem;
-  border-radius: 1.25rem;
+/*  max-width: 720px;*/
+/*  padding: 2.5rem 2rem;*/
+/*  border-radius: 1.25rem;*/
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+/*  gap: 0.75rem;*/
   text-align: center;
   color: var(--color-text-secondary);
 }
@@ -75,18 +76,18 @@ mat-progress-spinner {
    ========================================================= */
 .transactions-card {
   width: 100%;
-  max-width: 900px;
-  padding: 2rem;
-  border-radius: 1.5rem;
+/*  max-width: 900px;*/
+/*  padding: 2rem;*/
+/*  border-radius: 1.5rem;*/
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
 }
 
 /* Header */
 .transactions-title {
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
+/*  margin-bottom: 1.5rem;*/
+/*  font-size: 1.5rem;*/
+/*  font-weight: 700;*/
   color: var(--color-text);
 }
 
@@ -96,14 +97,14 @@ mat-progress-spinner {
 .transactions-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+/*  gap: 0.75rem;*/
 }
 
 /* =========================================================
    Transaction item
    ========================================================= */
 .transaction-item {
-  padding: 1rem 1.25rem;
+/*  padding: 1rem 1.25rem;*/
   border-radius: 1rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -130,7 +131,7 @@ mat-progress-spinner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+/*  gap: 1rem;*/
 }
 
 /* Left side */

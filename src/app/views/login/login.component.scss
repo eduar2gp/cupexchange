@@ -14,7 +14,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient( circle at 30% 20%, color-mix(in srgb, var(--color-primary) 12%, transparent) 0%, transparent 60% );
+  background: radial-gradient( circle at 30% 20%, color-mix(in srgb, var(--color-surface-elevated) 12%, transparent) 0%, transparent 60% );
   pointer-events: none;
   animation: float 20s ease-in-out infinite;
   z-index: 0;
@@ -163,6 +163,8 @@ form {
 &:active {
   transform: translateY(0);
 }
+
+
 
 }
 

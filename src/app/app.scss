@@ -1,6 +1,12 @@
+/*
+ * CORE LAYOUT STYLES
+ * Implements a fixed header, fixed footer, and scrollable content using flexbox.
+ */
+
 // Fullscreen sidenav container
 mat-sidenav-container[fullscreen] {
-  height: 100vh;
+  /* FIX 2: Use Dynamic Viewport Height for correct mobile behavior (iOS dynamic toolbar issue) */
+  height: 100dvh;
   width: 100vw;
 }
 
@@ -8,8 +14,9 @@ mat-sidenav-container[fullscreen] {
 mat-sidenav-container[fullscreen] mat-sidenav-content {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  /* FIX 2: Use Dynamic Viewport Height */
+  height: 100dvh;
+  overflow: hidden; /* Prevents container from scrolling itself */
 }
 
 // Left Sidenav (overlay on mobile)
@@ -68,25 +75,47 @@ mat-sidenav {
 
 // Top Toolbar (fixed via flex, always visible when authenticated)
 .app-toolbar {
-  flex: 0 0 auto; // Important: pins it to top
+  flex: 0 0 auto; /* Pins it to top */
   z-index: 10;
   background-color: var(--color-surface-elevated);
   border-bottom: 1px solid var(--color-border);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* FIX 1: Ensure flex properties are set for vertical centering of items */
+  display: flex;
+  align-items: center; /* Vertically centers the items inside the toolbar */
 
   .dark-theme & {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  //.pair-selector {
-  //  width: 180px;
-  //  margin-left: 12px;
+  .pair-selector {
+    width: 180px;
+    //max-height: 20px;
+    //min-height: 30px;
+    margin-left: 12px;
+    margin-top: 25px;
+    /* === CRITICAL FINAL FIX: Push the element up for visual centering === */
+    //margin-top: 30px; /* Adjust this value (e.g., -2px, -3px, -4px) */
+    //margin-bottom: 0; /* Ensure no bottom margin pushes it up unnecessarily */
+    /* CRITICAL FIX 1: Tighten the inner content padding */
+    .mat-mdc-form-field-infix {
+      //padding: 0.5em 0 0.5em 0;
+    }
+    /* CRITICAL FIX 2: Remove default top/bottom padding from the Outline Wrapper */
+    .mat-mdc-text-field-wrapper {
+      //padding-top: 0;
+      //padding-bottom: 0;
+      //height: 100%;
+    }
+    /* CRITICAL FIX 3: Clear native mat-form-field margins (redundant but safe) */
+    /* margin-top: 0; // Already handled by -3px fix */
+    /* margin-bottom: 0; */
 
-  //  mat-icon {
-  //    color: var(--color-success);
-  //  }
-  //}
+    mat-icon {
+      color: var(--color-success);
+    }
+  }
 
   .toolbar-title {
     font-size: 1.2rem;
@@ -105,7 +134,6 @@ mat-sidenav {
   // Badge styling
   .mat-badge-content {
     background-color: var(--color-accent);
-    //color: white;
     font-size: 12px;
     font-weight: 600;
   }
@@ -113,191 +141,103 @@ mat-sidenav {
 
 // Main scrollable content area
 .main-content {
-  flex: 1 1 auto; // Takes all available space
-  overflow-y: auto;
+  flex: 1 1 auto; /* Takes all available space */
+  overflow-y: auto; /* Allows content scrolling */
   padding: 20px;
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
-  // Optional subtle depth
-  // box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.03);
 
   .dark-theme & {
-    // box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2); */
   }
   // Extra bottom padding on mobile to avoid overlap with bottom nav on iOS/Android
   padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
-// Bottom Navigation Bar (fixed via flex, mobile-first)
+/*
+ * BOTTOM NAVIGATION BAR STYLES
+ * Uses position: fixed for robust mobile display.
+ */
 .bottom-nav {
-  flex: 0 0 auto; // Important: pins it to bottom
-  z-index: 10;
+  /* Using position fixed is generally more robust than flex: 0 0 auto for mobile headers/footers */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px; /* Explicit height */
+  z-index: 1000;
   background-color: var(--color-surface-elevated);
   border-top: 1px solid var(--color-border);
-  min-height: 64px;
-  
-  padding: 4px 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   backdrop-filter: blur(8px);
-  // Respect iPhone notch / Android bottom inset
+  /* CRITICAL: Respect iPhone notch / Android bottom inset */
   padding-bottom: max(4px, env(safe-area-inset-bottom));
-  /*mat-nav-list {
-    display: flex;
-    justify-content: space-around;
-    padding: 0;
 
-    a[mat-list-item] {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 64px;
-      height: 56px;
-      border-radius: 12px;
-      padding: 6px 8px;
-      margin: 0 4px;
-
-      mat-icon {
-        margin-right: 0;
-        margin-bottom: 4px;
-        font-size: 22px;
-        height: 22px;
-        width: 22px;
-      }
-
-      span[matListItemTitle] {
-        font-size: 0.75rem;
-        line-height: 1;
-      }
-
-      &.active {
-        background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
-        color: var(--color-primary);
-
-        mat-icon,
-        span {
-          color: var(--color-primary);
-        }
-      }
-
-      &:hover:not(.active) {
-        background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
-      }
-    }
-  }
-}*/
-  // Responsive adjustments
-  @media (max-width: 599px) {
-    .app-toolbar {
-      .toolbar-title {
-        display: none; // Hide title on small screens
-      }
-
-      .pair-selector {
-        width: 140px;
-        margin-left: 8px;
-      }
-    }
-
-    .main-content {
-      padding: 16px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
-    }
-  }
-
-  @media (min-width: 600px) {
-    .main-content {
-      padding: 32px;
-      padding-bottom: calc(32px + env(safe-area-inset-bottom));
-    }
-
-    .app-toolbar {
-      .pair-selector {
-        width: 220px;
-      }
-
-      .toolbar-title {
-        display: block; // Ensure title visible on larger screens
-      }
-    }
-  }
-
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70px; /* Adjust as needed for taller labels */
-    padding: 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .bottom-nav .nav-item {
+  .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-width: 90px;
     padding: 4px 0;
-    text-transform: none; /* Optional: remove uppercase */
-  }
-
-  .nav-item {
-    //color: var(--color-text-secondary);
+    text-transform: none;
     text-decoration-color: #dd2424;
   }
 
-  .bottom-nav .nav-item mat-icon {
+  .nav-item mat-icon {
     margin-bottom: 4px;
-    font-size: 28px; /* Larger icons */
+    font-size: 28px;
     height: 28px;
     width: 28px;
   }
 
-  .bottom-nav .nav-label {
+  .nav-label {
     font-size: 12px;
     line-height: 1;
   }
   /* Active state highlight (optional) */
-  .bottom-nav .nav-item.active {
-    //color: var(--mat-sys-primary); /* Or your accent color */
+  .nav-item.active {
+    /* Add active color styling here */
   }
 }
 
 
+/*
+ * PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
+ */
 .pair-selector {
-  width: 200px; // Slightly wider for better usability on modern screens
-  margin-left: 16px; // A bit more breathing room
-  align-self: center;
-  margin-top: 25px;
-  // Make it denser and better fit in the toolbar (reduces vertical padding/height)
+  width: 200px;
+  margin-left: 16px;
+  /* FIX 1: Tighter vertical spacing to fit better in the toolbar */
   .mat-mdc-form-field-infix {
-    padding: 0.5em 0 0.75em 0; // Tighter vertical spacing
+    padding: 0.5em 0 0.5em 0;
   }
 
   .mat-mdc-text-field-wrapper {
     padding-bottom: 0;
   }
-  // Modern outline: thinner, rounded, subtle focus glow
+  // Modern outline
   &.mat-mdc-outlined-field {
     --mat-mdc-outlined-field-outline-width: 1.5px;
-    border-radius: 12px; // Softer, modern rounded corners
+    border-radius: 12px;
 
     &.mat-focused {
       .mat-mdc-form-field-outline {
-        box-shadow: 0 0 0 4px rgba(var(--mat-primary-rgb, 33, 150, 243), 0.15); // Subtle modern glow on focus
+        box-shadow: 0 0 0 4px rgba(var(--mat-primary-rgb, 33, 150, 243), 0.15);
       }
     }
   }
-  // Fresh icon styling (prefix: 'paid')
+
   mat-icon[matPrefix] {
-    color: var(--color-success, #00d1b2); // Vibrant teal-green if var not defined; modern alternative to plain success
+    color: var(--color-success, #00d1b2);
     font-size: 20px;
     opacity: 0.9;
     transition: color 0.2s ease, transform 0.2s ease;
   }
-  // Hover/focus interaction for premium feel
+
   &:hover {
     mat-icon[matPrefix] {
       transform: scale(1.05);
@@ -306,59 +246,97 @@ mat-sidenav {
 
   &.mat-focused {
     mat-icon[matPrefix] {
-      color: var(--mat-primary, #2196f3); // Accent on focus for dynamism
+      color: var(--mat-primary, #2196f3);
     }
   }
-  // Panel (dropdown) styling for consistency
+  // Panel (dropdown) styling
   .mat-mdc-select-panel {
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); // Elevated, modern drop shadow
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     margin-top: 8px;
   }
-  // Option hover for better feedback
+
   .mat-mdc-option:hover {
     background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.08);
   }
-  // Style each option for a premium trading app feel
+
   .pair-option {
     display: flex;
     align-items: center;
-    padding: 8px 16px; // More spacious
-    height: 48px; // Consistent height for better touch/click
+    padding: 8px 16px;
+    height: 48px;
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.04); // Subtle hover (light mode)
+      background-color: rgba(0, 0, 0, 0.04);
     }
-    // Dark mode support (adjust if your app has dark theme)
+
     .mat-mdc-theme-dark & {
       &:hover {
         background-color: rgba(255, 255, 255, 0.08);
       }
     }
-    // Selected state
+
     &.mat-mdc-option-active {
       background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.12);
     }
   }
-  // Coin logo styling
+
   .pair-logo {
     width: 38px;
     height: 38px;
-    border-radius: 50%; // Circular logos look premium for crypto
+    border-radius: 50%;
     object-fit: cover;
     margin-right: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); // Subtle elevation
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
   }
-  // Text styling
+
   .pair-text {
     font-weight: 500;
     font-size: 14px;
     color: var(--mat-option-label-text-color, inherit);
   }
-  // Optional: Increase overall dropdown width for images
+
   .mat-mdc-select-panel {
-    min-width: calc(100% + 40px) !important; // Wider panel to fit images nicely
+    min-width: calc(100% + 40px) !important;
+  }
+}
+
+/*
+ * RESPONSIVE ADJUSTMENTS
+ */
+@media (max-width: 599px) {
+  .app-toolbar {
+    .toolbar-title {
+      display: none; // Hide title on small screens
+    }
+
+    .pair-selector {
+      width: 200px;
+      margin-left: 8px;
+    }
+  }
+
+  .main-content {
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 600px) {
+  .main-content {
+    padding: 32px;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  }
+
+  .app-toolbar {
+    .pair-selector {
+      width: 220px;
+    }
+
+    .toolbar-title {
+      display: block; // Ensure title visible on larger screens
+    }
   }
 }

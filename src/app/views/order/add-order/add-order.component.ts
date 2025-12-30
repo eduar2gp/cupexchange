@@ -163,7 +163,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
               this.dialog.open(DialogMessageComponent, {
                 width: '400px',
                 data: {
-                  title: 'Success',
+                  title: 'Confirmación!',
                   message: successMessage
                 }
               });

@@ -16,14 +16,14 @@ html {
 
 :root {
   /* === Light Theme === */
-  --color-background: #ffffff;
-  --color-surface: #f6f8fa;
-  --color-surface-elevated: #ffffff;
+  --color-background: #a6acb6;
+  --color-surface: #acb1b7;
+  --color-surface-elevated: #8d9193;
   --color-text: #24292f; /* Primary text */
   --color-text-secondary: #31363c; /* Labels, hints */
   --color-text-muted: #6e7781; /* Metadata */
 
-  --color-primary: #0969da;
+  --color-primary: #022957;
   --color-primary-hover: #0550ae;
   --color-success: #1a7f37;
   --color-danger: #cf222e;
@@ -31,6 +31,9 @@ html {
   --color-border: #d0d7de;
   --color-divider: #eaeef2;
   --color-accent: #8250df;
+
+  --color-mydefined-color: #1a7f37;
+  
 }
 
 .dark-theme {
@@ -38,7 +41,7 @@ html {
   --color-background: #0d1117;
   --color-surface: #161b22;
   --color-surface-elevated: #21262d;
-  --color-text: #e6edf3; /* High contrast */
+  --color-text: #d7d6d0; /* High contrast */
   --color-text-secondary: #0d1117; /* Labels */
   --color-text-muted: #8b949e;
   --color-primary: #58a6ff;
@@ -49,6 +52,8 @@ html {
   --color-border: #30363d;
   --color-divider: #21262d;
   --color-accent: #bc8cff;
+
+  --color-mydefined-color: #cf222e;
 }
 
 

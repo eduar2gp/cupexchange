@@ -24,12 +24,12 @@ h2[mat-dialog-title] {
 mat-dialog-content {
   padding-top: 0.25rem;
   padding-bottom: 1.75rem;
+  color: var(--color-text);
 }
 
   mat-dialog-content p {
     font-size: 0.95rem;
     line-height: 1.55;
-    color: var(--color-text-secondary);
   }
 
 /* =========================================================

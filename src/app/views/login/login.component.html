@@ -12,7 +12,7 @@
         <div class="alert-danger">{{ loginError() }}</div>
         }
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline">
           <mat-label>Usuario</mat-label>
           <input matInput
                  required
@@ -22,7 +22,7 @@
           <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline">
           <mat-label>Contraseña</mat-label>
           <input matInput
                  [type]="hide ? 'password' : 'text'"
@@ -43,8 +43,13 @@
                 color="primary"
                 type="button"
                 (click)="onLogin()"
+                [disabled]="loading()"
                 class="login-button full-width">
-          Login
+          <span *ngIf="!loading(); else loadingTemplate">Login</span>
+          <ng-template #loadingTemplate>
+            <mat-spinner diameter="20"></mat-spinner>
+            Cargando...
+          </ng-template>
         </button>
 
         <div class="divider">Or Sign In With</div>

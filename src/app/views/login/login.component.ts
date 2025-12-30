@@ -12,13 +12,26 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common';              // ← Add this
+import { MatButtonModule } from '@angular/material/button';
 declare const google: any;
 
 @Component({
   selector: 'app-login',
   standalone: true,  
-  imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, MatIconModule, MatCardModule, RouterModule],
+  imports: [
+    MatInputModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatCardModule,
+    RouterModule,
+    MatProgressSpinnerModule,
+    CommonModule,
+    MatButtonModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -33,6 +46,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public credentials = { username: '', password: '' };
   public googleJWT = { idToken: ''}
   public loginError = signal<string | null>(null);
+  loading = signal(false);
 
   hide: boolean = true;
   
@@ -81,6 +95,7 @@ private loadGoogleScript(): Promise<void> {
 
   onLogin(): void {
     this.loginError.set(null); // Clear previous errors
+    this.loading.set(true);
     this.authService.login(this.credentials).subscribe({
       next: () => {
         // Successful login, redirect to ...
@@ -90,6 +105,7 @@ private loadGoogleScript(): Promise<void> {
         // Handle login failure (e.g., show an error message)
         console.error('Login Failed', err);
         this.loginError.set('Invalid username or password. Please try again.');
+        this.loading.set(false);
       }
     });
   }
