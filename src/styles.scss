@@ -14,34 +14,43 @@ html {
   color-scheme: dark;
 }
 
-// === Your Custom CSS Variables ===
 :root {
-  // Light defaults --color-background: #ffffff;
-  --color-surface: #f8f9fa;
+  /* === Light Theme === */
+  --color-background: #ffffff;
+  --color-surface: #f6f8fa;
   --color-surface-elevated: #ffffff;
-  --color-text: #161b22; // GitHub's actual primary text (very dark gray)
-  --color-text-secondary: #161b22; // Keep this for secondary/hints
-  --color-primary: #161b22;
-  --color-primary-hover: #1f7ceb;
-  --color-danger: #cf222e;
+  --color-text: #24292f; /* Primary text */
+  --color-text-secondary: #31363c; /* Labels, hints */
+  --color-text-muted: #6e7781; /* Metadata */
+
+  --color-primary: #0969da;
+  --color-primary-hover: #0550ae;
   --color-success: #1a7f37;
+  --color-danger: #cf222e;
+  --color-warning: #9a6700;
   --color-border: #d0d7de;
+  --color-divider: #eaeef2;
   --color-accent: #8250df;
 }
 
 .dark-theme {
-  // Your exact GitHub dark colors --color-background: #0d1117;
+  /* === Dark Theme === */
+  --color-background: #0d1117;
   --color-surface: #161b22;
   --color-surface-elevated: #21262d;
-  --color-text: #8250df;
-  --color-text-secondary: #8b949e;
+  --color-text: #e6edf3; /* High contrast */
+  --color-text-secondary: #0d1117; /* Labels */
+  --color-text-muted: #8b949e;
   --color-primary: #58a6ff;
   --color-primary-hover: #79c0ff;
+  --color-success: #3fb950;
   --color-danger: #f85149;
-  --color-success: #238636;
+  --color-warning: #d29922;
   --color-border: #30363d;
+  --color-divider: #21262d;
   --color-accent: #bc8cff;
 }
+
 
 // === Global Styles ===
 html, body {
@@ -155,4 +164,9 @@ mat-toolbar {
 mat-sidenav-container[fullscreen] {
   height: 100vh;
   width: 100vw;
+}
+
+mat-form-field {
+  color: var(--color-text);
+  caret-color: var(--color-primary);
 }

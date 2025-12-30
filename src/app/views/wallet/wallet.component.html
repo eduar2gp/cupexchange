@@ -1,18 +1,18 @@
 <div class="wallets-container">
   <header class="wallets-header">
-    <h2>Wallets</h2>
-    <p>Manage your cryptocurrency balances</p>
+    <h2>Billeteras</h2>
+    <p>Balances</p>
   </header>
 
   @if (wallets().length === 0) {
   <!-- Empty State -->
   <div class="empty-state">
     <mat-icon class="empty-icon">account_balance_wallet</mat-icon>
-    <h3>No wallets found</h3>
+    <h3>No se encontraron billeteras</h3>
     <p>Get started by creating your first wallet</p>
     <button mat-raised-button color="primary">
       <mat-icon>add</mat-icon>
-      Create Wallet
+      Crear Billetera
     </button>
   </div>
   } @else {
@@ -38,7 +38,7 @@
         <!-- Total Balance -->
         <div class="balance-item">
           <div class="balance-label">
-            <span>💰 Total Balance</span>
+            <span>💰 Balance total</span>
           </div>
           <div class="balance-value">
             {{ wallet.balance | number:'1.2-8' }} {{ wallet.currencyCode }}
@@ -52,14 +52,14 @@
         <div class="balance-details">
           <div class="balance-row">
             <span class="type-icon">✓</span>
-            <span>Available</span>
+            <span>Disponible</span>
             <strong class="available">
               {{ wallet.availableBalance | number:'1.2-8' }} {{ wallet.currencyCode }}
             </strong>
           </div>
           <div class="balance-row">
             <span class="type-icon">🔒</span>
-            <span>Locked</span>
+            <span>Reservado</span>
             <strong class="locked">
               {{ wallet.lockedBalance | number:'1.2-8' }} {{ wallet.currencyCode }}
             </strong>
@@ -71,13 +71,13 @@
       <div class="wallet-footer">
         <button mat-stroked-button class="action-btn">
           <mat-icon>arrow_downward</mat-icon>
-          Deposit
+          Depositar
         </button>
         <button mat-stroked-button
                 class="action-btn"
                 [disabled]="wallet.availableBalance <= 0">
           <mat-icon>arrow_upward</mat-icon>
-          Withdraw
+          Extraer
         </button>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
@@ -88,11 +88,11 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
           <mat-icon>receipt</mat-icon>
-          Transactions
+          Transacciones
         </button>
         <button mat-menu-item>
           <mat-icon>info</mat-icon>
-          Details
+          Detalles
         </button>
       </mat-menu>
     </div>

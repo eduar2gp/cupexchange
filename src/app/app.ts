@@ -50,7 +50,7 @@ import { environment } from '../environments/environment'
 export class App implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  protected readonly title = signal('ExChange');
+  protected readonly title = signal('');
 
  //  Services
   public authService = inject(AuthService);
@@ -189,6 +189,11 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+  formatPairDisplay(pair: string | undefined): string {
+    if (pair)
+      return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
+    return '';
   }
 }
 

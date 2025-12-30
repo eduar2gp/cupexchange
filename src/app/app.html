@@ -43,14 +43,14 @@
       </button>
 
       <mat-form-field appearance="outline" class="pair-selector">
-        <mat-label>Trade Pair</mat-label>
+        <mat-label>Comerciar</mat-label>
         <mat-select [ngModel]="selectedPair"
                     (ngModelChange)="onPairSelect($event)"
                     [ngModelOptions]="{standalone: true}">
           @for (pair of availablePairs; track pair) {
           <mat-option [value]="pair" class="pair-option">
-            <img [src]="pair.imageUrl" alt="{{ pair.value }} logo" class="pair-logo">
-            <span class="pair-text">{{ pair.value }}</span>
+            <img [src]="pair.imageUrl" alt="{{ formatPairDisplay(pair.value) }} logo" class="pair-logo">
+            <span class="pair-text">{{ formatPairDisplay(pair.value) }}</span>
           </mat-option>
           }
         </mat-select>
@@ -60,9 +60,9 @@
       <span class="toolbar-title">{{ title() }}</span>
       <span class="spacer"></span>
 
-      <button mat-icon-button>
+      <!--<button mat-icon-button>
         <mat-icon [matBadge]="orderCount$ | async" badgeColor="accent">shopping_cart</mat-icon>
-      </button>
+      </button>-->
     </mat-toolbar>
     }
     <!-- Page content -->
@@ -71,22 +71,22 @@
     </main>
     <!-- Bottom navigation (only when authenticated) -->
     @if (authService.isAuthenticated()) {
-    <mat-toolbar color="primary" class="bottom-nav fixed-bottom">
-      <a mat-button routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+    <mat-toolbar class="bottom-nav">
+      <a mat-button routerLink="/dashboard" routerLinkActive="active">
         <mat-icon>show_chart</mat-icon>
-        <div class="nav-label">Principal</div>
+        <span matListItemTitle>Inicio</span>
       </a>
-      <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/wallet" routerLinkActive="active">
         <mat-icon>wallet</mat-icon>
-        <div class="nav-label">Billetera</div>
+        <span matListItemTitle>Billetera</span>
       </a>
-      <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/orders" routerLinkActive="active">
         <mat-icon>poll</mat-icon>
-        <div class="nav-label">Ordenes</div>
+        <span matListItemTitle>Ordenes</span>
       </a>
-      <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/transactions" routerLinkActive="active">
         <mat-icon>compare_arrows</mat-icon>
-        <div class="nav-label">Transacciones</div>
+        <span matListItemTitle>Transacciones</span>
       </a>
     </mat-toolbar>
     }

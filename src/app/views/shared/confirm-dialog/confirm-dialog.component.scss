@@ -5,15 +5,15 @@
   border-radius: 1.25rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
 }
 
 /* =========================================================
    Title
    ========================================================= */
 h2[mat-dialog-title] {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text);
 }
@@ -23,56 +23,55 @@ h2[mat-dialog-title] {
    ========================================================= */
 mat-dialog-content {
   padding-top: 0.25rem;
-  padding-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
 }
 
-  mat-dialog-content p {
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: var(--color-text-secondary);
-  }
+mat-dialog-content p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
 
 /* =========================================================
    Actions
    ========================================================= */
 mat-dialog-actions {
-  padding-top: 0.75rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--color-divider);
+  gap: 0.75rem;
 }
 
-  /* OK button */
-  mat-dialog-actions button[mat-raised-button] {
-    min-width: 96px;
-    border-radius: 0.75rem;
-    font-weight: 600;
-  }
+/* Cancel button */
+mat-dialog-actions button[mat-button] {
+  color: var(--color-text-secondary);
+}
 
-  /* Subtle hover */
-  mat-dialog-actions button:hover {
-    transform: translateY(-1px);
-    transition: transform 120ms ease;
-  }
+/* Confirm button */
+mat-dialog-actions button[mat-raised-button] {
+  min-width: 100px;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+/* Hover polish */
+mat-dialog-actions button:hover {
+  transform: translateY(-1px);
+  transition: transform 120ms ease;
+}
 
 /* =========================================================
-   Focus accessibility
+   Focus / accessibility
    ========================================================= */
 button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-:host ::ng-deep .mat-mdc-dialog-container {
-  animation: dialogFadeIn 160ms ease-out;
+:host ::ng-deep .dialog-danger h2[mat-dialog-title] {
+  color: var(--color-danger);
 }
 
-@keyframes dialogFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
+:host ::ng-deep .dialog-danger
+button[mat-raised-button] {
+  background: var(--color-danger);
 }

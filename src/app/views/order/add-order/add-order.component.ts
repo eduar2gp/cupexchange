@@ -56,6 +56,8 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   private pairSelectionService = inject(PairSelectionService);
   private themeService = inject(ThemeService)
 
+  volumeInput = '';
+
   constructor(private dialog: MatDialog, private sanitizer: DomSanitizer) {
   }
 
@@ -86,6 +88,10 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   minVolume = 0.01;
 
   ngOnInit(): void {
+    if (this.newOrder.volume !== undefined) {
+      this.volumeInput = this.newOrder.volume.toFixed(4);
+    }
+
     this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
       if (pair) {
         this.currentPair = pair;
@@ -212,8 +218,12 @@ export class AddOrderComponent implements OnInit, OnDestroy {
       return this.sanitizer.bypassSecurityTrustHtml('N/A'); // Sanitize plain text fallback
     }
 
-    // 1. Format to a string with a fixed number of decimals (4 in this case)
-    const priceString = price.toFixed(4);
+    let priceString
+    if(this.currentPair?.viewValue === 'CUP')
+      priceString = price.toFixed(4);
+    else
+      priceString = price.toFixed(0);
+
 
     const parts = priceString.split('.');
 
@@ -234,6 +244,28 @@ export class AddOrderComponent implements OnInit, OnDestroy {
 
     // 4. Bypass security checks for this specific HTML string
     return this.sanitizer.bypassSecurityTrustHtml(htmlString);
+  }
+
+  formatPairDisplay(pair: string | undefined): string {
+    if (pair)
+      return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
+    return '';
+  }
+
+  // Called on every input change
+  onVolumeInput(value: string) {
+    this.volumeInput = value; // keep exactly what user typed
+    const parsed = Number(value.replace(/,/g, ''));
+    if (!isNaN(parsed)) {
+      this.newOrder.volume = parsed; // numeric model
+    }
+  }
+
+  // Called on blur to format the display
+  formatVolumeOnBlur() {
+    if (this.newOrder.volume !== null && this.newOrder.volume !== undefined) {
+      this.volumeInput = this.newOrder.volume.toFixed(4); // format as string
+    }
   }
 
   getThemeClass(): string {

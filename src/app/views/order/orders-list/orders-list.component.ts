@@ -9,6 +9,12 @@ import { OnInit, Inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { WritableSignal } from '@angular/core';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component'
+import { throwError } from 'rxjs';
+import { DataService } from '../../../../app/core/services/data.service'
+import { filter, take, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-orders-list',
@@ -26,7 +32,9 @@ export class OrdersListComponent {
   private ordersService = inject(OrdersService);
 
   constructor(    
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private dialog: MatDialog,
+    private dataService: DataService
   ) {}
 
   // Reactive state using signals
@@ -73,11 +81,81 @@ export class OrdersListComponent {
     this.loadOrders();
   }
 
-  cancelOrder(order: any) {
-    // Implement your cancel logic here, e.g.:
-    // this.orderService.cancelOrder(order.id).subscribe(...);
-    console.log('Cancel order:', order);
-    // Optionally show confirmation dialog
+  
+  openConfirmDialog(order: any): void {
+    const dialogData: ConfirmDialogData = {
+      title: 'Confirmar',
+      message: 'Esta acción es irreversible!'
+    };
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: dialogData,
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {     
+      if (result) {        
+        this.cancelOrder(order);
+      } 
+    });
   }
 
+
+  cancelOrder(order: OrderPlaced): void {
+    this.dataService.currentUser
+  .pipe(
+    // 1. Ensure a user object is emitted (not null)
+    filter(user => user !== null),
+    // 2. Take only the first emitted user value
+    take(1),
+    // 3. Switch to the Observable returned by the service call
+    switchMap(user => {
+      // Check if user is valid and has the required data (e.g., userName)
+      if (user && user.userName && order && order.id) {
+        
+        // Pass the Order object (which holds the ID) and the userName
+        // The service method will use this data to construct the URL.
+        return this.ordersService.cancelOrder(order, user.userName);
+      
+      }
+      
+      // If user or order data is missing, return an observable of an error
+      // or simply 'EMPTY' if you want to silently skip the operation.
+      // For cancellation, an error is more appropriate. We use throwError from RxJS.
+      // NOTE: You must import 'throwError' and 'EMPTY' from 'rxjs'.
+      return throwError(() => new Error('Cannot cancel order: Missing user or order details.'));
+    })
+  )
+  .subscribe({
+    next: (response) => {
+      // Since cancelOrder returns Observable<string>, 'response' will be the string.
+      console.log('Order cancelled successfully:', response);
+      this.loadOrders();
+
+      // Determine success message (simplified since the service returns a string)
+      let successMessage = response || 'Order cancelada exitosamente!';
+
+      // Open success dialog
+      this.dialog.open(DialogMessageComponent, {
+        width: '400px',
+        data: {
+          title: 'Success',
+          message: successMessage
+        }
+      });
+      // OPTIONAL: Close the current dialog/modal if this logic is within one.
+      // this.dialogRef.close(true); 
+    },
+    error: (err) => {
+      // Handle errors from the HTTP call OR the throwError from switchMap
+      console.error('Order cancellation failed:', err);
+      
+      this.dialog.open(DialogMessageComponent, {
+        width: '400px',
+        data: {
+          title: 'Cancellation Failed',
+          message: err.message || 'An unexpected error occurred during cancellation.'
+        }
+      });
+    }
+  });
+  }
 }

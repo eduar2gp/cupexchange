@@ -1,150 +1,175 @@
+/* =========================================================
+   Shared container states (loading / error / empty)
+   ========================================================= */
 .container {
+  min-height: 260px;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
   text-align: center;
-  padding: 5x 5px; /* Increased top/bottom padding for more breathing room */
+  color: var(--color-text-secondary);
 }
 
+  .container p {
+    font-size: 0.95rem;
+  }
+
+  /* Error state */
+  .container.error {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+
+  /* Empty state */
+  .container.empty mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+/* Loading spinner */
+mat-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--color-primary);
+}
+
+/* =========================================================
+   Orders list
+   ========================================================= */
 .orders-list {
-/*  max-width: 800px;*/
-/*margin-left: 2px;
-margin-right: 2px;*/
- 
+  background: transparent;
+  padding: 0;
 }
 
+/* =========================================================
+   Order item
+   ========================================================= */
 .order-item {
-  margin-bottom: 10px;
-  padding: 5px 5px; /* Consistent padding */
-  min-height: 120px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  background-color: #fff;
-  position: relative;
+  margin-bottom: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: background 150ms ease, transform 150ms ease;
 }
 
+  .order-item:hover {
+    background: var(--color-surface-elevated);
+  }
+
+/* =========================================================
+   Header row
+   ========================================================= */
 .order-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  position: relative;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
 }
 
+/* Base currency */
 .base-currency {
-  font-size: 1.3em;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
+/* BUY / SELL badge */
 .side-wrapper {
-  margin-top: 10px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
 
 .side {
-/*  padding: 15px 10px;*/
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 1em;
-  min-width: 70px;
-  text-align: center;
-  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
-.buy {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
+  .side.buy {
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  }
 
-.sell {
-  background-color: #ffebee;
-  color: #c62828;
-}
+  .side.sell {
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+  }
 
-.status {
-  margin-top: 15px;
-  font-size: 0.95em;
-  color: #666;
-  padding: 6px 8px;
-  background-color: #f0f0f0;
-  border-radius: 16px;
-}
-
-.order-details {
+/* Status + actions */
+.status-actions {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  color: #555;
-  font-size: 1em;
-}
-
-.order-date {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  color: #888;
-  font-size: 0.9em;
-  margin-bottom: 10px;
+  gap: 0.5rem;
 }
 
+/* Order status */
+.status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+/* Cancel button */
+.cancel-button {
+  opacity: 0.7;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+  .cancel-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+/* =========================================================
+   Details row
+   ========================================================= */
+.order-details {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* =========================================================
+   Date row
+   ========================================================= */
+.order-date {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filled icon */
 .filled-icon {
-  color: #4caf50;
-  font-size: 22px;
+  font-size: 18px;
+  color: var(--color-success);
 }
 
-
-
-
-.order-item {
-  position: relative;
-  height: unset !important;
-  padding: 12px 16px;
+/* =========================================================
+   Material overrides (safe)
+   ========================================================= */
+.mat-mdc-list-item {
+  height: auto !important;
 }
 
-  .order-item .order-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+  .mat-mdc-list-item .mdc-list-item__content {
+    padding: 0 !important;
   }
-
-  .order-item .side-wrapper {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .order-item .status-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: auto;
-  }
-
-  .order-item .cancel-button {
-    width: 42px;
-    height: 42px;
-    line-height: 42px;
-    transition: background-color 0.2s ease;
-  }
-
-    .order-item .cancel-button mat-icon {
-      font-size: 20px;
-    }
-
-    .order-item .cancel-button:hover {
-      background-color: rgba(244, 67, 54, 0.08);
-    }
-
-  .order-item .order-details,
-  .order-item .order-date {
-    font-size: 0.875rem;
-    color: rgba(0, 0, 0, 0.7);
-  }
-
-/* Dark theme support (if your app uses .mat-mdc-theme-dark or similar class on body/html) */
-.mat-mdc-theme-dark .order-item .order-details,
-.mat-mdc-theme-dark .order-item .order-date {
-  color: rgba(255, 255, 255, 0.7);
-}

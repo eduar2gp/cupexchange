@@ -1,313 +1,151 @@
-/* Base button styles */
-button {
-  width: 100%;
-  padding: 12px 20px; /* Increased padding to match the py-3 px-4 look */
-  background-color: #4f46e5; /* A primary indigo color */
-  color: white;
-  border: none;
-  border-radius: 8px; /* Rounded corners */
-  font-weight: 600; /* Fontsemibold */
-  cursor: pointer;
-  transition: background-color 0.15s ease-in-out; /* Add transition for smooth effect */
-}
-
-/* Style on hover (when mouse is over) */
-button:hover {
-  background-color: #4338ca; /* Darker indigo on hover */
-}
-
-  /* Style on click/active (when pressed down) */
-  button:active {
-    background-color: #3730a3; /* Even darker indigo when clicked */
-    /* You can also add a slight transformation for a "pushed" look */
-    transform: translateY(1px);
-  }
-
-  /* Style when disabled */
-  button:disabled {
-    background-color: #9ca3af; /* Gray background for disabled */
-    cursor: not-allowed;
-  }
-
-/* 1. Styling the container DIV */
-form{
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px; /* Constrain the form width */
-  margin: 20px auto; /* Center the form */
-  background-color: #f7f7f7;
-}
-
-/* 2. Targeting the MAT-FORM-FIELD (the actual component selector) */
-mat-form-field {
-  width: 100%; /* Make the form field take the full width of the container */
-  margin-bottom: 0px; /* Add spacing between form fields */
-  margin-top: 0px;
-  /* Overriding default material colors/styles can be tricky here. 
-       Use the official Material Theming approach if possible. */
-}
-
-/* 3. Targeting elements INSIDE mat-form-field */
-/* The actual input/select element is often nested deep within generated elements.
-   This example targets the text input area (which also affects mat-select's display). */
-.form-container .mat-form-field-wrapper .mat-form-field-flex {
-  /* Example: Tighter padding around the input/select */
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
-
-/* Targeting the specific MAT-SELECT component (the dropdown container) */
-mat-select {
-  font-size: 16px;
-  color: #333;
-}
-
-
-/* * NOTE: If your styles are in the component's CSS file, you may need to use 
- * a technique to pierce view encapsulation, like placing this in a global 
- * stylesheet or using the deprecated ::ng-deep.
- */
-
-/* 1. Style the container for layout */
-.custom-radio-group {
-  /* Example: Arrange the buttons horizontally */
+.trade-page {
+/*  min-height: 100vh;*/
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  /*align-items: center;*/ /* vertical */
+  justify-content: center;   
+/*  background: var(--color-background);*/
+  padding: 1rem;
+}
+/* Card */
+.trade-card {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.08));
+/*  max-width: 550px;*/
+  min-width: 450px;
+
 }
 
-/* 2. Target the entire radio button label/host */
-.custom-radio-item {
-  /* Make the whole button area clickable/look like a block */
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: background-color 0.2s, border-color 0.2s;
-  cursor: pointer;
-  background-color: #f9f9f9;
-}
-
-  /* 3. Style the radio content (the inner flex container) */
-  .custom-radio-item .radio-content {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between image and text */
-  }
-
-/* 4. Style the image icon */
-.radio-icon {
-  width: 24px; /* Set size for your icon */
-  height: 24px;
-  object-fit: contain;
-}
-
-/* 5. Highlight the selected radio button (Host Element) */
-.custom-radio-item.mat-mdc-radio-checked {
-  /* Change background/border when selected */
-  background-color: #e0f7fa; /* Light blue background */
-  border-color: #00bcd4; /* Cyan border */
-}
-
-/* 6. Hiding the native radio circle (Optional but common for visual cards) */
-
-/* Target the container elements of the native radio circle */
-.custom-radio-item.mat-mdc-radio-button .mat-mdc-radio-touch-target,
-.custom-radio-item.mat-mdc-radio-button .mat-mdc-radio-persistent-ripple,
-.custom-radio-item.mat-mdc-radio-button .mat-mdc-radio-outer-circle,
-.custom-radio-item.mat-mdc-radio-button .mat-mdc-radio-inner-circle {
-  /* Set to zero dimensions to hide the default radio button */
-  height: 0 !important;
-  width: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: none !important;
-}
-
-/* Ensure the custom content takes the space */
-.custom-radio-item.mat-mdc-radio-button .mat-mdc-radio-label-content {
-  padding-left: 0 !important;
-}
-
-
-/* 4. Style the image icon (Make it bigger!) */
-.radio-icon {
-  width: 100px; /* INCREASED SIZE: Set a larger width */
-  height: 108px; /* INCREASED SIZE: Set a larger height to maintain aspect ratio */
-  object-fit: contain;
-}
-
-/* * Optional: Adjust the gap and vertical alignment to look better with a large image.
- * This ensures the text remains centered next to the new, larger icon.
- */
-.custom-radio-item .radio-content {
+/* Header */
+.trade-header {
   display: flex;
-  align-items: center; /* Ensures the text is vertically centered with the image */
-  gap: 12px; /* Slightly increased space between image and text */
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-divider);
 }
 
-/* * Optional: You may also want to slightly increase the padding on the entire 
- * radio item if the image is much bigger than before, 
- * to keep the box border around the image/text at a comfortable distance.
- */
-.custom-radio-item {
-  /*padding: 16px 20px;*/ /* Increased padding */
-  /* ... rest of the styles ... */
+.trade-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  
 }
 
-  /* 2. Hover Appearance (Good practice for user feedback) */
-  .custom-radio-item:hover {
-    border-color: #bbb; /* Slightly darker border on hover */
-    background-color: #eee;
-  }
-
-  /* 3. SELECTED Appearance (The key change) */
-  .custom-radio-item.mat-mdc-radio-checked {
-    /* Style when the radio button is selected */
-    border-color: #007bff; /* Primary/Accent color border when checked */
-    background-color: #e6f7ff; /* Very light background for checked state */
-    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); /* Stronger shadow to indicate selection */
-    transform: translateY(-2px); /* Subtle lift effect */
-  }
-
-::ng-deep .custom-tabs .mat-mdc-tab-header {
-  border-bottom: 1px solid #e5e7eb;
+.trade-pair {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-::ng-deep .custom-tabs .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
-  color: #4f46e5 !important;
-  font-weight: 600;
+.pair-icon {
+  width: 10rem;
+  height: 5rem;
+  border-radius: 9px;
+/*  min-width: 150px;*/
 }
 
-.trading-pair-radio {
+.header-accent {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  opacity: 0.12;
+}
+
+/* Tabs */
+.trade-tabs {
+  --mdc-tab-indicator-active-indicator-color: var(--color-primary);
+}
+
+/* Content */
+.tab-content {
+  margin-top: 2rem;
+}
+
+.trade-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-  background-color: transparent;
-  margin: 0;
-  cursor: pointer;
+  gap: 2rem;
 }
 
-  .trading-pair-radio:hover:not(.selected) {
-    border-color: #c7d2fe;
-    background-color: #eef2ff;
-  }
-
-  .trading-pair-radio.selected {
-    border-color: #6366f1;
-    background-color: #eef2ff;
-    color: #4f46e5;
-  }
-
-    .trading-pair-radio.selected .pair-label {
-      color: #4f46e5;
-      font-weight: 600;
-    }
-
-.pair-icon {  
-  margin-bottom: 0.5rem;
-  object-fit: contain;
-  border-radius: 0px;
-  background-color: #f9fafb;
-  padding: 0.25rem;
+/* Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
 }
 
-.pair-label {
-  font-size: 0.75rem;
+@media (min-width: 1024px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .trade-card{
+      min-width: 600px;
+  }
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Price slider */
+.price-slider {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #1f2937;
-  text-align: center;
-  line-height: 1.2;
-  transition: color 0.2s ease;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
 }
 
-.trading-pair-radio.sell:hover:not(.selected) {
-  border-color: #fca5a5;
-  background-color: #fee2e2;
+.price-display {
+  margin-top: 0.25rem;
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
 }
 
-.trading-pair-radio.sell.selected {
-  border-color: #ef4444;
-  background-color: #fee2e2;
-  color: #dc2626;
+/* Buttons */
+.submit-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 150ms ease, opacity 150ms ease;
 }
 
-  .trading-pair-radio.sell.selected .pair-label {
-    color: #dc2626;
-    font-weight: 600;
+  .submit-btn:hover {
+    transform: scale(1.02);
   }
 
-.trading-pair-radio.sell:hover:not(.selected) {
-  border-color: #fca5a5;
-  background-color: #fee2e2;
-}
-
-.trading-pair-radio.sell.selected {
-  border-color: #ef4444;
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-  .trading-pair-radio.sell.selected .pair-label {
-    color: #dc2626;
-    font-weight: 600;
+  .submit-btn:active {
+    transform: scale(0.98);
   }
 
-img{
-    max-width: 100px;
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+/* Buy / Sell variants */
+.submit-buy {
+  background: linear-gradient( to right, var(--color-success), color-mix(in srgb, var(--color-success) 80%, #000) );
 }
 
-
-/* Ensure the slider occupies the width of the parent */
-.slider-price-container {
-  /* Use w-full in the template, this class is for clarity */
-  width: 100%;
-}
-
-/* ------------------------------------------- */
-/* Styling the Slider to occupy parent width */
-/* ------------------------------------------- */
-/* mat-slider already has w-full in the template, 
-   but this ensures the internal track also fills the space */
-.mat-slider {
-  width: 100%;
-}
-
-
-/* ------------------------------------------- */
-/* Styling for Small Decimal Numbers (0.0001) */
-/* ------------------------------------------- */
-.price-display-wrapper .small-decimals {
-  font-size: 0.8em; /* Make the small decimals slightly smaller */
-  color: #a0a0a0; /* Use a muted color for smaller visual weight */
-  margin-left: 1px;
-}
-
-
-/* ------------------------------------------- */
-/* Dynamic Theming (Change colors based on theme) */
-/* ------------------------------------------- */
-
-/* -- LIGHT THEME STYLES (Default/Example) -- */
-.mat-theme-light .mat-slider-track-fill {
-  background-color: #10b981; /* Tailwind green-500 */
-}
-
-.mat-theme-light .mat-slider-thumb {
-  background-color: #059669; /* Tailwind emerald-600 */
-}
-
-/* -- DARK THEME STYLES (Example) -- */
-.mat-theme-dark .mat-slider-track-fill {
-  background-color: #34d399; /* Tailwind emerald-400 */
-}
-
-.mat-theme-dark .mat-slider-thumb {
-  background-color: #10b981; /* Tailwind green-500 */
+.submit-sell {
+  background: linear-gradient( to right, var(--color-danger), color-mix(in srgb, var(--color-danger) 80%, #000) );
 }

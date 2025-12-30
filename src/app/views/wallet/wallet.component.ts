@@ -41,7 +41,8 @@ export class WalletComponent implements OnInit, OnDestroy {
   private updateSubscription!: Subscription;
     constructor(private dataService: DataService) {}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
+    console.log('WalletComponent: ngOnInit');
      this.fetchWallets();
      // 2. Subscribe to the update stream
      this.updateSubscription = this.walletService.update$.subscribe(() => {

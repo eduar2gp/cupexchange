@@ -47,7 +47,7 @@
           @if (order.status === 'ACTIVE' || order.status === 'PARTLY_FILLED') {
           <button mat-icon-button
                   color="warn"
-                  (click)="cancelOrder(order)"
+                  (click)="openConfirmDialog(order)"
                   matTooltip="Cancel Order"
                   class="cancel-button">
             <mat-icon>close</mat-icon>
@@ -58,7 +58,7 @@
 
       <!-- Details Row -->
       <div matLine class="order-details">
-        <span>Price: {{ order.price | number:'1.4-8' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
+        <span>Price: {{ order.price | number:'1.2-4' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
         <span>| Volume: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
       </div>
 
