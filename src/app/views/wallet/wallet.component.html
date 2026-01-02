@@ -41,7 +41,7 @@
             <span>💰 Balance total</span>
           </div>
           <div class="balance-value">
-            {{ wallet.balance | number:'1.2-8' }} {{ wallet.currencyCode }}
+            {{ wallet.balance | number:'1.2-2' }} {{ wallet.currencyCode }}
           </div>
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="calculateProgress(wallet)"></div>
@@ -54,14 +54,14 @@
             <span class="type-icon">✓</span>
             <span>Disponible</span>
             <strong class="available">
-              {{ wallet.availableBalance | number:'1.2-8' }} {{ wallet.currencyCode }}
+              {{ wallet.availableBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
             </strong>
           </div>
           <div class="balance-row">
             <span class="type-icon">🔒</span>
             <span>Reservado</span>
             <strong class="locked">
-              {{ wallet.lockedBalance | number:'1.2-8' }} {{ wallet.currencyCode }}
+              {{ wallet.lockedBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
             </strong>
           </div>
         </div>

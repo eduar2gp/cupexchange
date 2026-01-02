@@ -32,10 +32,10 @@
             </div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-white text-right font-mono">{{ order.volumeTotal }}</div>
+            <div class="text-sm text-white text-right font-mono">{{ order.volumeTotal | number:'1.2-2' }}</div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-white text-right font-mono">{{ order.volumeFilled }}</div>
+            <div class="text-sm text-white text-right font-mono">{{ order.volumeFilled | number:'1.2-2' }}</div>
           </td>
           <td class="px-6 py-4 text-center">
             <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold"

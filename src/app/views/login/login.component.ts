@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';              // ← Add this
 import { MatButtonModule } from '@angular/material/button';
 declare const google: any;
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ declare const google: any;
     RouterModule,
     MatProgressSpinnerModule,
     CommonModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -125,6 +127,10 @@ private loadGoogleScript(): Promise<void> {
 
     // Optional: Display the One Tap prompt
      //google.accounts.id.prompt(); 
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']); // adjust route path as needed
   }
 
   handleCredentialResponse(response: any) {    

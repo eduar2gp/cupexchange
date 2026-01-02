@@ -1,0 +1,17 @@
+<div class="settings-panel">
+  <mat-form-field appearance="outline" class="language-field">
+    <mat-label>{{ 'LANGUAGE' | translate }}</mat-label>
+    <mat-select [value]="currentLang"
+                (selectionChange)="changeLanguage($event.value)">
+      <mat-option value="en">English</mat-option>
+      <mat-option value="es">Español</mat-option>
+      <mat-option value="ru">Русский</mat-option>     
+    </mat-select>
+  </mat-form-field>
+
+  <mat-slide-toggle class="theme-toggle"
+                    [checked]="isDark"
+                    (change)="toggleTheme()">
+    {{ 'DARK_MODE' | translate }}
+  </mat-slide-toggle>
+</div>

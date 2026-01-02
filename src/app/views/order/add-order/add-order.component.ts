@@ -26,7 +26,7 @@ import { DialogMessageComponent } from '../../shared/dialog-message/dialog-messa
 import { MatDialog } from '@angular/material/dialog';
 import { ThemeService } from '../../../../app/core/services/theme-service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
+import { TranslateModule } from '@ngx-translate/core';
 interface Type {
   value: string;
   viewValue: string;
@@ -44,6 +44,7 @@ interface Type {
     MatInputModule,
     MatSelectModule,
     MatDialogModule,
+    TranslateModule
   ],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.css',
@@ -248,7 +249,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
 
   formatPairDisplay(pair: string | undefined): string {
     if (pair)
-      return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
+      return pair?.substring(0, 3) + " - " + pair?.substring(3, pair.length);
     return '';
   }
 
@@ -264,7 +265,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   // Called on blur to format the display
   formatVolumeOnBlur() {
     if (this.newOrder.volume !== null && this.newOrder.volume !== undefined) {
-      this.volumeInput = this.newOrder.volume.toFixed(4); // format as string
+      this.volumeInput = this.newOrder.volume.toFixed(2); // format as string
     }
   }
 

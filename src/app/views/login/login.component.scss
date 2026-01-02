@@ -301,3 +301,49 @@ img {
     height: 50px;
   }
 }
+
+
+/*new*/
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.divider {
+  text-align: center;
+  margin: 24px 0 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.google-button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.register-option {
+  margin-top: 24px;
+}
+
+.register-text {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.95rem;
+}
+
+.register-button {
+  text-transform: uppercase;
+}

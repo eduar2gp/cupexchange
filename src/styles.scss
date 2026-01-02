@@ -15,46 +15,54 @@ html {
 }
 
 :root {
-  /* === Light Theme === */
-  --color-background: #a6acb6;
-  --color-surface: #acb1b7;
-  --color-surface-elevated: #8d9193;
-  --color-text: #24292f; /* Primary text */
-  --color-text-secondary: #31363c; /* Labels, hints */
-  --color-text-muted: #6e7781; /* Metadata */
-
-  --color-primary: #022957;
-  --color-primary-hover: #0550ae;
-  --color-success: #1a7f37;
+  /* ===========================
+     Light Theme (Modern Soft)
+     =========================== */
+  /* Surfaces */
+  --color-background: #f6f8fa; /* App background */
+  --color-surface: #ffffff; /* Cards, panels */
+  --color-surface-elevated: #f0f3f6; /* Raised elements */
+  /* Text */
+  --color-text: #1f2328; /* Primary text */
+  --color-text-secondary: #4b5563; /* Labels, descriptions */
+  --color-text-muted: #6e7781; /* Metadata, hints */
+  /* Brand & Actions */
+  --color-primary: #0b4aa6;
+  --color-primary-hover: #093a82;
+  --color-success: #1f883d;
   --color-danger: #cf222e;
   --color-warning: #9a6700;
-  --color-border: #d0d7de;
-  --color-divider: #eaeef2;
   --color-accent: #8250df;
-
-  --color-mydefined-color: #1a7f37;
-  
+  /* Lines */
+  --color-border: #d8dee4;
+  --color-divider: #eaeef2;
 }
 
+
 .dark-theme {
-  /* === Dark Theme === */
-  --color-background: #0d1117;
-  --color-surface: #161b22;
-  --color-surface-elevated: #21262d;
-  --color-text: #d7d6d0; /* High contrast */
-  --color-text-secondary: #0d1117; /* Labels */
-  --color-text-muted: #8b949e;
+  /* ===========================
+     Dark Theme (Elegant Contrast)
+     =========================== */
+  /* Surfaces */
+  --color-background: #0d1117; /* App background */
+  --color-surface: #161b22; /* Cards */
+  --color-surface-elevated: #1f242c; /* Raised elements */
+  /* Text */
+  --color-text: #e6edf3; /* Primary text */
+  --color-text-secondary: #b1bac4; /* Labels */
+  --color-text-muted: #8b949e; /* Metadata */
+  /* Brand & Actions */
   --color-primary: #58a6ff;
   --color-primary-hover: #79c0ff;
   --color-success: #3fb950;
   --color-danger: #f85149;
   --color-warning: #d29922;
+  --color-accent: #bc8cff;
+  /* Lines */
   --color-border: #30363d;
   --color-divider: #21262d;
-  --color-accent: #bc8cff;
-
-  --color-mydefined-color: #cf222e;
 }
+
 
 
 // === Global Styles ===
@@ -174,4 +182,27 @@ mat-sidenav-container[fullscreen] {
 mat-form-field {
   color: var(--color-text);
   caret-color: var(--color-primary);
+}
+
+/* mat-option: flex row, align items */
+.mat-mdc-option {
+  display: flex !important;
+  align-items: center;
+  padding-right: 12px; /* space for checkbox */
+  box-sizing: border-box;
+}
+
+/* Wrap your content (icons + text) and make it take remaining space */
+.mat-mdc-option .pair-option-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto; /* take remaining space */
+  min-width: 0; /* allow truncation instead of overflow */
+}
+
+/* Pseudo-checkbox naturally at the right now */
+.mat-mdc-option .mat-mdc-option-pseudo-checkbox {
+  flex-shrink: 0; /* prevent shrinking */
+  margin-left: 8px; /* small gap from content */
 }

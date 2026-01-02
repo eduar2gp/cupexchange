@@ -175,7 +175,7 @@
 .balance-value {
   font-size: 2em;
   font-weight: 700;
-  color: #333;
+  color: var(--color-text);
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -207,7 +207,7 @@
 
 /* Balance Details */
 .balance-details {
-  background: #f8f9ff;
+  background: var(--color-background);
   border-radius: 12px;
   padding: 16px;
 }
@@ -265,7 +265,7 @@ span {
   }*/
 
 .available {
-  color: var(--color-surface);
+  color: var(--color-text);
 }
 
 /*.balance-amount.locked {

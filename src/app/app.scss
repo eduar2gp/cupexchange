@@ -209,7 +209,7 @@ mat-sidenav {
  * PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
  */
 .pair-selector {
-  width: 200px;
+  min-width: 210px;
   margin-left: 16px;
   /* FIX 1: Tighter vertical spacing to fit better in the toolbar */
   .mat-mdc-form-field-infix {
@@ -261,10 +261,13 @@ mat-sidenav {
   }
 
   .pair-option {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    width: 100%;
     align-items: center;
-    padding: 8px 16px;
-    height: 48px;
+    //padding: 8px 16px;
+    height: 60px;
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -283,13 +286,7 @@ mat-sidenav {
   }
 
   .pair-logo {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
+      width: 55px;
   }
 
   .pair-text {
@@ -334,9 +331,21 @@ mat-sidenav {
     .pair-selector {
       width: 220px;
     }
-
     .toolbar-title {
       display: block; // Ensure title visible on larger screens
     }
   }
+}
+
+
+span{
+    color: var(--color-text);
+}
+
+
+/* icons */
+.pair-logo {
+  width: 40px;
+  height: 20px;
+  object-fit: contain;
 }

@@ -6,6 +6,8 @@ import { OrdersListComponent } from './views/order/orders-list/orders-list.compo
 import { roleGuard } from '../app/core/guards/role.guard';
 import { WalletComponent } from '../app/views/wallet/wallet.component'
 import { TransactionsListComponent } from '../app/views/transaction/transactions-list/transactions-list.component'
+import { SettingsComponent } from '../app/views/settings/settings.component'
+import { RegisterComponent } from '../app/views/register/register.component'
 
 export const routes: Routes = [
    {
@@ -15,6 +17,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
   },
    {
     path: 'dashboard',
@@ -41,4 +47,9 @@ export const routes: Routes = [
     component: TransactionsListComponent,
     canActivate: [roleGuard],
   },
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [roleGuard],
+  }
 ];

@@ -51,7 +51,7 @@ Chart.register(
   imports: [BaseChartDirective],
   template: `
   <div class="chart-container">
-    <h3 class="chart-title">Gráfico de precios en tiempo real ({{ currentPair.value }})</h3>
+    <h2 class="chart-title">Gráfico de precios en tiempo real ({{ currentPair.value }})</h2>
     <div style="height: 400px; width: 100%;">
       @if (isBrowser) {
         <canvas baseChart

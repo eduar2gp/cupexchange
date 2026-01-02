@@ -1,0 +1,110 @@
+<div class="register-container">
+  <h2>{{ 'REGISTER.TITLE' | translate }}</h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate
+        *ngIf="verificationSuccess !== true">
+
+    <div class="form-group">
+      <label for="username">{{ 'REGISTER.USERNAME_LABEL' | translate }}</label>
+      <input type="text"
+                    id="username"
+                    formControlName="username"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['username'].errors" />
+      <div class="invalid-feedback" *ngIf="submitted && f['username'].errors">
+        <div *ngIf="f['username'].errors['required']">
+          {{ 'REGISTER.USERNAME_REQUIRED' | translate }}
+        </div>
+        <div *ngIf="f['username'].errors['minlength']">
+          {{ 'REGISTER.USERNAME_MINLENGTH' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">{{ 'REGISTER.EMAIL_LABEL' | translate }}</label>
+      <input type="email"
+                    id="email"
+                    formControlName="email"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['email'].errors" />
+      <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+        <div *ngIf="f['email'].errors['required']">
+          {{ 'REGISTER.EMAIL_REQUIRED' | translate }}
+        </div>
+        <div *ngIf="f['email'].errors['email']">
+          {{ 'REGISTER.EMAIL_INVALID' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">{{ 'REGISTER.PASSWORD_LABEL' | translate }}</label>
+      <input type="password"
+                    id="password"
+                    formControlName="password"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['password'].errors" />
+      <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
+        <div *ngIf="f['password'].errors['required']">
+          {{ 'REGISTER.PASSWORD_REQUIRED' | translate }}
+        </div>
+        <div *ngIf="f['password'].errors['minlength']">
+          {{ 'REGISTER.PASSWORD_MINLENGTH' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      {{ (loading ? 'REGISTER.SUBMITTING' : 'REGISTER.SUBMIT') | translate }}
+    </button>
+  </form>
+
+  <div class="alert alert-success mt-3" *ngIf="success">
+    {{ success | translate }}
+  </div>
+
+  <div class="alert alert-danger mt-3" *ngIf="error">
+    {{ error | translate }}
+  </div>
+
+  <div class="verification-section" *ngIf="showVerificationInput && verificationSuccess !== true">
+    <h3>{{ 'VERIFY.TITLE' | translate }}</h3>
+    <p>{{ 'VERIFY.INSTRUCTIONS' | translate }}</p>
+
+    <form [formGroup]="verifyForm" (ngSubmit)="onVerifySubmit()">
+      <div class="form-group">
+        <label>{{ 'VERIFY.CODE_LABEL' | translate }}</label>
+        <input type="text" formControlName="code" class="form-control"
+                       placeholder="{{ 'VERIFY.CODE_PLACEHOLDER' | translate }}"
+                       [class.is-invalid]="vf['code'].errors" />
+        <div class="invalid-feedback" *ngIf="vf['code'].errors?.['required']">
+          {{ 'VERIFY.CODE_REQUIRED' | translate }}
+        </div>
+      </div>
+
+      <button type="submit"
+                     class="submit-button"
+                     [disabled]="verifying || verifyForm.invalid">
+        <span *ngIf="!verifying">
+          {{ 'VERIFY.SUBMIT' | translate }}
+        </span>
+        <span *ngIf="verifying">
+          <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+          {{ 'VERIFY.VERIFYING' | translate }}
+        </span>
+      </button>
+    </form>
+
+    <div class="alert alert-danger mt-3" *ngIf="verificationSuccess === false && verificationError">
+      {{ verificationError }}
+    </div>
+  </div>
+
+  <div class="alert alert-success text-center" *ngIf="verificationSuccess === true">
+    <strong>{{ 'VERIFY.SUCCESS_TITLE' | translate }}</strong>
+    <p>{{ verificationSuccessMessage || ('VERIFY.SUCCESS_MESSAGE' | translate) }}</p>
+    <p class="text-muted mt-3">{{ 'VERIFY.REDIRECTING' | translate }}</p>
+  </div>
+
+</div>

@@ -25,6 +25,8 @@ import { Order } from './model/order.model';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../environments/environment'
+import { LanguageService } from '../app/core/services/language.service'
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -43,6 +45,7 @@ import { environment } from '../environments/environment'
     MatFormFieldModule,
     FormsModule,
     MatSlideToggleModule,
+    TranslateModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -78,6 +81,11 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   ];
 
   orderCount$!: Observable<number>;
+
+
+  constructor(private languageService: LanguageService) {
+
+  }
 
   ngOnInit(): void {
     this.themeService.initTheme();
@@ -192,8 +200,25 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   }
   formatPairDisplay(pair: string | undefined): string {
     if (pair)
-      return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
+      return pair?.substring(0, 3) + " - " + pair?.substring(3, pair.length);
     return '';
+  }
+ 
+  getBaseCurrencyImage(pair: string | undefined): string {
+    if (!pair || pair.length < 6) {
+      return 'assets/currencies/default.png';
+    }
+    const baseCurrency = pair.substring(0, 3).toLowerCase();
+    return `assets/currencies/${baseCurrency}.png`;
+  }
+
+
+  getQuoteCurrencyImage(pair: string | undefined): string {
+    if (!pair || pair.length < 6) {
+      return 'assets/currencies/default.png';
+    }
+    const quoteCurrency = pair.substring(3, pair.length).toLowerCase();
+    return `assets/currencies/${quoteCurrency}.png`;
   }
 }
 

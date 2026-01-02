@@ -13,6 +13,11 @@ import { environment } from '../environments/environment';
 //import { provideServiceWorker } from '@angular/service-worker';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { authBlockInterceptor } from './core/interceptors/auth-block.interceptor'
+import { importProvidersFrom } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 
 
 export const appConfig: ApplicationConfig = {
@@ -27,6 +32,22 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       withInterceptors([AuthInterceptor, authBlockInterceptor])
-    ), provideCharts(withDefaultRegisterables()),
+    ),
+    provideCharts(withDefaultRegisterables()),
+    {
+      provide: TRANSLATE_HTTP_LOADER_CONFIG,
+      useValue: {
+        prefix: './assets/i18n/',
+        suffix: '.json'
+      }
+    },
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useClass: TranslateHttpLoader
+        }
+      })
+    )
   ]
 };

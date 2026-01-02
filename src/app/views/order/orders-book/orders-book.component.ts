@@ -5,12 +5,12 @@ import { OrdersService } from '../../../core/services/orders.service';
 import { Subscription } from 'rxjs';
 import { TradingPair } from '../../../model/trading_pair';
 import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-order-book',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './orders-book.component.html',
   styleUrl: './orders-book.component.css',
 })
@@ -106,7 +106,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: false,
+      hour12: true,
     });
   }
 
