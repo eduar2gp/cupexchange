@@ -8,6 +8,7 @@ import { WalletComponent } from '../app/views/wallet/wallet.component'
 import { TransactionsListComponent } from '../app/views/transaction/transactions-list/transactions-list.component'
 import { SettingsComponent } from '../app/views/settings/settings.component'
 import { RegisterComponent } from '../app/views/register/register.component'
+import { CurrenciesComponent } from '../app/views/wallet/add-wallet/currencies.component'
 
 export const routes: Routes = [
    {
@@ -26,6 +27,11 @@ export const routes: Routes = [
     path: 'dashboard',
      component: DashboardComponent,
      canActivate: [roleGuard],     
+  },
+  {
+    path: 'add-wallet',
+    component: CurrenciesComponent,
+    canActivate: [roleGuard],
   },
   {
     path: 'add-order',

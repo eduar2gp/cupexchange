@@ -1,0 +1,42 @@
+.currency-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  height: 72px;
+}
+
+.currency-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.currency-icon {
+  width: 60px;
+  height: 30px;
+  margin-right: 16px;
+  //border-radius: 90%;
+}
+
+.currency-label {
+  font-weight: 500;
+  flex: 1;
+}
+
+.currency-value {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.disabled-item {
+  opacity: 0.5;
+  pointer-events: none; /* Makes it non-clickable */
+}
+
+.grayscale {
+  filter: grayscale(100%);
+}
+
+::ng-deep .disabled-item .mat-list-item-content {
+  cursor: not-allowed;
+}

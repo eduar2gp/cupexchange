@@ -164,8 +164,6 @@ form {
   transform: translateY(0);
 }
 
-
-
 }
 
 /* 5. Divider */
@@ -173,7 +171,8 @@ form {
   margin: 30px 0 20px;
   text-align: center;
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
+  //background-color: var(--color-text);
   position: relative;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -326,7 +325,7 @@ img {
 .divider {
   text-align: center;
   margin: 24px 0 16px;
-  color: rgba(0, 0, 0, 0.6);
+  //color: rgba(0, 0, 0, 0.6);
 }
 
 .google-button-container {
@@ -340,7 +339,7 @@ img {
 }
 
 .register-text {
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--color-text);
   font-size: 0.95rem;
 }
 

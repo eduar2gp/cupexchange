@@ -19,14 +19,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription, filter } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { TradingPair } from './model/trading_pair';
-import { Order } from './model/order.model';
-import { Inject, PLATFORM_ID } from '@angular/core';
-import { map } from 'rxjs/operators';
+
+import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../environments/environment'
-import { LanguageService } from '../app/core/services/language.service'
 import { TranslateModule } from '@ngx-translate/core';
+import { WalletService } from '../app/core/services/wallet.service'
+import { LanguageService } from '../app/core/services/language.service'
 
 @Component({
   selector: 'app-root',
@@ -60,6 +60,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private router = inject(Router);
   private pairSelectionService = inject(PairSelectionService);
   public themeService = inject(ThemeService);
+  private walletService = inject(WalletService);
  // private ordersService = inject(OrdersService);
  // private fcmService = inject(Fcm);
   private http = inject(HttpClient);
@@ -80,17 +81,11 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     { value: 'USDCUP', viewValue: 'USD-CUP (Dólar)', imageUrl: 'assets/currencies/usd.png', min: 4, max: 1000, step: 4, minVolume: 0.01 }
   ];
 
-  orderCount$!: Observable<number>;
-
-
-  constructor(private languageService: LanguageService) {
-
-  }
+  //orderCount$!: Observable<number>;
+  constructor(private languageService: LanguageService) {}
 
   ngOnInit(): void {
     this.themeService.initTheme();
-
-
 
     // 2. CRITICAL FIX: Only run browser-specific setup on the client
     if (isPlatformBrowser(this.platformId)) {
@@ -129,17 +124,18 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadTradingPairs(): void {
-    this.http.get<TradingPair[]>(`${environment.baseApiUrl}/api/v1/trade/currencies/pairs`).subscribe({
-      next: (pairsFromApi) => {
+    this.walletService.getCurrenciesPairs().subscribe({
+      next: (pairsFromApi: TradingPair[]) => {
         if (pairsFromApi && pairsFromApi.length > 0) {
           this.availablePairs = pairsFromApi;
+          localStorage.setItem('CURRENCIES_PAIRS', JSON.stringify(pairsFromApi));
         } else {
           this.availablePairs = this.DEFAULT_PAIRS;
         }
         this.initializeSelectedPair();
       },
       error: (err) => {
-        console.warn('Failed to load pairs from API, using defaults:', err);
+        console.warn('Failed to load pairs from wallet service, using defaults:', err);
         this.availablePairs = this.DEFAULT_PAIRS;
         this.initializeSelectedPair();
       }

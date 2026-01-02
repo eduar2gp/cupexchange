@@ -61,7 +61,7 @@ mat-sidenav {
         color: var(--color-primary);
 
         mat-icon {
-          color: var(--color-primary);
+          //color: var(--color-primary);
         }
       }
     }
@@ -113,7 +113,7 @@ mat-sidenav {
     /* margin-bottom: 0; */
 
     mat-icon {
-      color: var(--color-success);
+      //color: var(--color-success);
     }
   }
 
@@ -133,7 +133,7 @@ mat-sidenav {
   }
   // Badge styling
   .mat-badge-content {
-    background-color: var(--color-accent);
+    //background-color: var(--color-accent);
     font-size: 12px;
     font-weight: 600;
   }
@@ -177,21 +177,22 @@ mat-sidenav {
   padding-bottom: max(4px, env(safe-area-inset-bottom));
 
   .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 90px;
-    padding: 4px 0;
+    //display: flex;
+    //flex-direction: column;
+    //align-items: center;
+    //justify-content: center;
+    //min-width: 90px;
+    //padding: 4px 0;
     text-transform: none;
-    text-decoration-color: #dd2424;
+    //text-decoration-color: #dd2424;
   }
 
   .nav-item mat-icon {
-    margin-bottom: 4px;
-    font-size: 28px;
-    height: 28px;
-    width: 28px;
+    //margin-bottom: 4px;
+    //font-size: 28px;
+    //height: 28px;
+    //width: 28px;
+    color: var(--color-primary);
   }
 
   .nav-label {
@@ -201,6 +202,7 @@ mat-sidenav {
   /* Active state highlight (optional) */
   .nav-item.active {
     /* Add active color styling here */
+    background-color: var(--color-primary);
   }
 }
 
@@ -211,6 +213,7 @@ mat-sidenav {
 .pair-selector {
   min-width: 210px;
   margin-left: 16px;
+  color: var(--color-text);
   /* FIX 1: Tighter vertical spacing to fit better in the toolbar */
   .mat-mdc-form-field-infix {
     padding: 0.5em 0 0.5em 0;
@@ -232,7 +235,7 @@ mat-sidenav {
   }
 
   mat-icon[matPrefix] {
-    color: var(--color-success, #00d1b2);
+    //color: var(--color-success, #00d1b2);
     font-size: 20px;
     opacity: 0.9;
     transition: color 0.2s ease, transform 0.2s ease;
@@ -246,7 +249,7 @@ mat-sidenav {
 
   &.mat-focused {
     mat-icon[matPrefix] {
-      color: var(--mat-primary, #2196f3);
+      //color: var(--mat-primary, #2196f3);
     }
   }
   // Panel (dropdown) styling
@@ -269,30 +272,31 @@ mat-sidenav {
     //padding: 8px 16px;
     height: 60px;
     transition: background-color 0.2s ease;
+    background-color: var(--color-surface-elevated);
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.04);
+      //background-color: rgba(0, 0, 0, 0.04);
     }
 
     .mat-mdc-theme-dark & {
       &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
+        //background-color: rgba(255, 255, 255, 0.08);
       }
     }
 
     &.mat-mdc-option-active {
-      background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.12);
+      background-color: var(--color-surface);
     }
   }
 
   .pair-logo {
-      width: 55px;
+    width: 55px;
   }
 
   .pair-text {
     font-weight: 500;
     font-size: 14px;
-    color: var(--mat-option-label-text-color, inherit);
+    //color: var(--mat-option-label-text-color, inherit);
   }
 
   .mat-mdc-select-panel {
@@ -340,6 +344,15 @@ mat-sidenav {
 
 span{
     color: var(--color-text);
+}
+
+mat-select{
+    color: var(--color-text);
+}
+
+mat-option{
+    color: var(--color-text);
+    background-color: var(--color-text);
 }
 
 

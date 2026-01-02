@@ -79,19 +79,19 @@
     <!-- Bottom navigation (only when authenticated) -->
     @if (authService.isAuthenticated()) {
     <mat-toolbar class="bottom-nav">
-      <a mat-button routerLink="/dashboard" routerLinkActive="active">
+      <a mat-button routerLink="/dashboard" routerLinkActive="active" class="nav-item">
         <mat-icon>show_chart</mat-icon>
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
-      <a mat-button routerLink="/wallet" routerLinkActive="active">
+      <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item">
         <mat-icon>wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
-      <a mat-button routerLink="/orders" routerLinkActive="active">
+      <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item">
         <mat-icon>poll</mat-icon>
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
-      <a mat-button routerLink="/transactions" routerLinkActive="active">
+      <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item">
         <mat-icon>compare_arrows</mat-icon>
         <span matListItemTitle>{{ 'TRANSACTIONS' | translate }}</span>
       </a>

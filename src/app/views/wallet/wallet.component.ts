@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { CRYPTO_SYMBOLS } from '../../configs/currency.constants';
+import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
@@ -17,9 +19,11 @@ import { CRYPTO_SYMBOLS } from '../../configs/currency.constants';
   imports: [CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule],
+    MatMenuModule,
+    RouterModule,
+    TranslateModule],
   templateUrl: './wallet.component.html',
-  styleUrl: './wallet.component.css',
+  styleUrl: './wallet.component.scss',
 })
 export class WalletComponent implements OnInit, OnDestroy {
 
@@ -38,6 +42,7 @@ export class WalletComponent implements OnInit, OnDestroy {
 
   private walletService = inject(WalletService);   
   wallets = signal<Wallet[]>([]);
+  private router = inject(Router);
   private updateSubscription!: Subscription;
     constructor(private dataService: DataService) {}
 
@@ -63,7 +68,7 @@ export class WalletComponent implements OnInit, OnDestroy {
       switchMap(user => {
         // 'user' here is the actual User object, not the Observable
         if (user!.userId) {
-          return this.walletService.getWallets(user!.userId);
+          return this.walletService.getWallets();
         }
         // If no userId, return an empty Observable stream to avoid errors
         return of([]);
@@ -102,4 +107,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     return (wallet.availableBalance / wallet.balance) * 100;
   }
 
+  navigateToNewWallet() {
+    this.router.navigate(['/add-wallet']);
+  }
 }

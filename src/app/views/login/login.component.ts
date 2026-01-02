@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal, PLATFORM_ID, NgZone, AfterViewInit} from '@angular/core';
 import { Router, RouterModule} from '@angular/router';
 
-
 import { FormsModule } from '@angular/forms'; 
 import { AuthService } from '../../core/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -10,13 +9,16 @@ import { environment } from '../../../environments/environment'
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';              // ← Add this
 import { MatButtonModule } from '@angular/material/button';
 declare const google: any;
 import { TranslateModule } from '@ngx-translate/core';
+import { WalletService } from '../../core/services/wallet.service'
+import { Wallet } from '../../model/wallet.model'
+
 
 @Component({
   selector: 'app-login',
@@ -52,7 +54,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   hide: boolean = true;
   
-  constructor(private ngZone: NgZone) {
+  constructor(
+    private ngZone: NgZone,
+    private walletService: WalletService
+  ) {
   }
 
   ngAfterViewInit(): void {
@@ -92,7 +97,6 @@ private loadGoogleScript(): Promise<void> {
     if (isPlatformBrowser(this.platformId) && this.authService.getToken()) {
       this.router.navigate(['/dashboard']);
     }
-    
   }
 
   onLogin(): void {
@@ -100,8 +104,7 @@ private loadGoogleScript(): Promise<void> {
     this.loading.set(true);
     this.authService.login(this.credentials).subscribe({
       next: () => {
-        // Successful login, redirect to ...
-        this.router.navigate(['/dashboard']);
+        this.fetchWallets();
       },
       error: (err) => {
         // Handle login failure (e.g., show an error message)
@@ -147,5 +150,17 @@ private loadGoogleScript(): Promise<void> {
         this.loginError.set('Invalid username or password. Please try again.');
       }
     });    
+  }
+
+  fetchWallets(): void {
+    this.walletService.getWallets().subscribe({
+      next: (wallets: Wallet[]) => {
+        localStorage.setItem('WALLETS', JSON.stringify(wallets));
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('Error loading wallets!.', err);
+      }
+    });
   }
 }

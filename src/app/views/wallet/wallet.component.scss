@@ -409,3 +409,12 @@ span {
   .wallet-card:nth-child(4) {
     animation-delay: 0.4s;
   }
+
+.wallets-header{
+    h2{
+          color: var(--color-text);
+      }
+      p{
+          color: var(--color-text);
+      }
+}

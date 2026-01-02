@@ -1,0 +1,30 @@
+<mat-list role="list">
+  <mat-list-item *ngFor="let pair of availableCurrencies"
+                 class="currency-item"
+                 [class.disabled]="false"
+                 (click)="onCurrencySelect(pair)"
+                 style="cursor: pointer;">
+
+    <div class="currency-content">
+      <img [src]="pair.imageUrl" alt="{{ pair.viewValue }}" class="currency-icon" />
+      <span class="currency-label">{{ pair.viewValue }}</span>
+      <span class="currency-value">({{ pair.value }})</span>
+    </div>
+  </mat-list-item>
+
+  <!-- Optional: Show disabled (already in wallet) currencies for reference -->
+  <ng-container *ngIf="allCurrencies.length > availableCurrencies.length">
+    <mat-divider></mat-divider>
+    <h3 matSubheader>Already in your wallets (disabled)</h3>
+    <mat-list-item *ngFor="let pair of allCurrencies"
+                   [class.disabled]="true"
+                   class="currency-item disabled-item">
+
+      <div class="currency-content">
+        <img [src]="pair.imageUrl" alt="{{ pair.viewValue }}" class="currency-icon grayscale" />
+        <span class="currency-label">{{ pair.viewValue }}</span>
+        <span class="currency-value">({{ pair.value }})</span>
+      </div>
+    </mat-list-item>
+  </ng-container>
+</mat-list>

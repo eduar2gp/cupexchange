@@ -178,7 +178,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
                 volume: this.minVolume,
               });
 
-              this.walletService.triggerUpdate();
+              //this.walletService.triggerUpdate();
             } else {
               this.dialog.open(DialogMessageComponent, {
                 width: '400px',

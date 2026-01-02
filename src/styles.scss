@@ -170,7 +170,7 @@ body::before {
 
 // Optional: adjust toolbar heights for mobile (Material toolbars auto-adjust, but you can force if needed)
 mat-toolbar {
-  min-height: 56px; // Mobile-friendly height
+  min-height: 65px; // Mobile-friendly height
 }
 
 // Ensure fullscreen works properly
@@ -181,7 +181,7 @@ mat-sidenav-container[fullscreen] {
 
 mat-form-field {
   color: var(--color-text);
-  caret-color: var(--color-primary);
+  //caret-color: var(--color-primary);
 }
 
 /* mat-option: flex row, align items */

@@ -1,18 +1,21 @@
 <div class="wallets-container">
   <header class="wallets-header">
-    <h2>Billeteras</h2>
-    <p>Balances</p>
+    <h2>{{ 'WALLETS' | translate }}</h2>
+    <p>{{ 'BALANCE' | translate }}</p>
+    <button mat-raised-button color="primary" (click)="navigateToNewWallet()">
+      <mat-icon>add</mat-icon>
+      {{ 'CREATE_WALLET' | translate }}
+    </button>
   </header>
-
   @if (wallets().length === 0) {
   <!-- Empty State -->
   <div class="empty-state">
     <mat-icon class="empty-icon">account_balance_wallet</mat-icon>
     <h3>No se encontraron billeteras</h3>
     <p>Get started by creating your first wallet</p>
-    <button mat-raised-button color="primary">
+    <button mat-raised-button color="primary" (click)="navigateToNewWallet()">
       <mat-icon>add</mat-icon>
-      Crear Billetera
+      {{ 'CREATE_WALLET' | translate }}
     </button>
   </div>
   } @else {
@@ -38,7 +41,7 @@
         <!-- Total Balance -->
         <div class="balance-item">
           <div class="balance-label">
-            <span>💰 Balance total</span>
+            <span>💰 {{ 'BALANCE' | translate }}</span>
           </div>
           <div class="balance-value">
             {{ wallet.balance | number:'1.2-2' }} {{ wallet.currencyCode }}
