@@ -23,10 +23,10 @@ import { Subscription, filter } from 'rxjs';
 import { TradingPair } from './model/trading_pair';
 
 import { PLATFORM_ID } from '@angular/core';
-import { environment } from '../environments/environment'
 import { TranslateModule } from '@ngx-translate/core';
 import { WalletService } from '../app/core/services/wallet.service'
 import { LanguageService } from '../app/core/services/language.service'
+import { NavigationDecisionService } from '../app/core/services/navigation-decision.service'
 
 @Component({
   selector: 'app-root',
@@ -61,6 +61,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private pairSelectionService = inject(PairSelectionService);
   public themeService = inject(ThemeService);
   private walletService = inject(WalletService);
+  private navigationDecisionService = inject(NavigationDecisionService);
  // private ordersService = inject(OrdersService);
  // private fcmService = inject(Fcm);
   private http = inject(HttpClient);
@@ -154,7 +155,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       pairToSelect = this.availablePairs.find(p => p.value === savedCode);
     }
 
-   //  If no saved or not found, use first available
     if (!pairToSelect) {
       pairToSelect = this.availablePairs[0];
     }
@@ -170,15 +170,11 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-    console.log('pair selection ' + selected)
-
     if (!selected || selected.value === this.selectedPair?.value) {
       return;
     }
-
     this.selectedPair = selected;
     localStorage.setItem(this.STORAGE_KEY, selected.value);
-    console.log('setting selection ' + selected)
     this.pairSelectionService.setSelectedPair(selected);
   }
 
@@ -187,16 +183,9 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/']);
   }
 
-  get isDark(): boolean {
-    return this.themeService.isDark();
-  }
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
   formatPairDisplay(pair: string | undefined): string {
     if (pair)
-      return pair?.substring(0, 3) + " - " + pair?.substring(3, pair.length);
+      return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
     return '';
   }
  
@@ -216,6 +205,15 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     const quoteCurrency = pair.substring(3, pair.length).toLowerCase();
     return `assets/currencies/${quoteCurrency}.png`;
   }
+
+  checkWalletsAndNavigate() {
+    this.sidenav.close(); 
+    const walletsExist = this.navigationDecisionService
+      .verifyWallets(this.pairSelectionService.getCurrentPair()?.value);
+    if (walletsExist) {
+      this.router.navigate(['/add-order']);
+    } else {
+      this.router.navigate(['/add-wallet']); 
+    }
+  }
 }
-
-

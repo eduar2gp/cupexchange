@@ -19,6 +19,7 @@ import { WalletService } from '../../../core/services/wallet.service';
 })
 export class CurrenciesComponent implements OnInit {
   availableCurrencies: TradingPair[] = [];
+  existingCurrencies: TradingPair[] = [];
   allCurrencies: TradingPair[] = [];
   wallets: Wallet[] = [];
 
@@ -35,19 +36,42 @@ export class CurrenciesComponent implements OnInit {
   }
 
   private loadDataFromStorage(): void {
-    // Load wallets
+    // --- 1. Load Data from Local Storage ---
     const walletsJson = localStorage.getItem('WALLETS');
     this.wallets = walletsJson ? JSON.parse(walletsJson) as Wallet[] : [];
 
-    // Load currency pairs
     const pairsJson = localStorage.getItem('CURRENCIES_PAIRS');
     this.allCurrencies = pairsJson ? JSON.parse(pairsJson) as TradingPair[] : [];
 
-    // Filter available currencies
+    // --- 2. Create Set of Existing Wallet Currency Codes for efficient lookup ---
+    // This Set contains unique currency codes from the user's wallets (e.g., {'CUP', 'USD'})
     const walletCurrencyCodes = new Set(this.wallets.map(w => w.currencyCode));
-    this.availableCurrencies = this.allCurrencies.filter(
-      pair => !walletCurrencyCodes.has(pair.viewValue)
-    );
+
+    // --- 3. Filter and Separate Trading Pairs using a Map for uniqueness ---
+
+    // A Map is used to store existing currencies temporarily, keyed by the unique currency code (viewValue).
+    // This guarantees no duplicate entries in the list of existing currencies.
+    const uniqueExistingCurrenciesMap = new Map<string, TradingPair>();
+    this.availableCurrencies = [];
+
+    // Iterate through all possible currency options
+    for (const pair of this.allCurrencies) {
+      const currencyCode = pair.viewValue;
+
+      if (walletCurrencyCodes.has(currencyCode)) {
+        // Currency already has an existing wallet.
+        // Check the map before adding. If the key already exists, do nothing (i.e., prevent duplicate).
+        if (!uniqueExistingCurrenciesMap.has(currencyCode)) {
+          uniqueExistingCurrenciesMap.set(currencyCode, pair);
+        }
+      } else {
+        // Currency does not yet have an existing wallet.
+        this.availableCurrencies.push(pair);
+      }
+    }
+
+    // --- 4. Convert the unique Map entries back to the final array ---
+    this.existingCurrencies = Array.from(uniqueExistingCurrenciesMap.values());
   }
 
   onCurrencySelect(pair: TradingPair): void {
@@ -95,11 +119,9 @@ export class CurrenciesComponent implements OnInit {
           },
           error: (err: Error) => {
             let errorMsg = err.message || 'Error al crear la billetera';
-
             if (errorMsg.includes('already exists') || errorMsg.includes('ya existe')) {
               errorMsg = `Ya tienes una billetera para ${pair.viewValue}`;
             }
-
             this.snackBar.open(errorMsg, 'OK', {
               duration: 6000,
               panelClass: ['error-snackbar']

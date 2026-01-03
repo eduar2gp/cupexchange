@@ -4,14 +4,15 @@
     <div class="trade-header">
       <h3 class="trade-title">
         <span class="trade-pair">
-          <img [src]="currentPair?.imageUrl"
+          <img [src]="getBaseCurrencyImage(currentPair?.value)"
                [alt]="currentPair?.viewValue"
                class="pair-icon" />
           {{ formatPairDisplay(currentPair?.value) }}
+          <img [src]="getQuoteCurrencyImage(currentPair?.value)"
+               [alt]="currentPair?.viewValue"
+               class="pair-icon" />
         </span>
       </h3>
-
-      <div class="header-accent"></div>
     </div>
 
     <!-- Tabs -->

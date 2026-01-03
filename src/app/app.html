@@ -6,7 +6,7 @@
     </div>
     <mat-nav-list>
       @if (authService.isAuthenticated()) {
-      <a mat-list-item routerLink="/add-order" (click)="sidenav.close()">
+      <a mat-list-item routerLink="/add-order" (click)="checkWalletsAndNavigate()">
         <mat-icon matListItemIcon>add_circle</mat-icon>
         <span matListItemTitle>{{ 'NEW_ORDER' | translate }}</span>
       </a>
@@ -51,7 +51,7 @@
                    class="pair-logo"
                    alt="">
               <span class="pair-text">
-                {{ pair.value }}
+                {{ formatPairDisplay(pair.value) }}
               </span>
               <img [src]="getQuoteCurrencyImage(pair.value)"
                    class="pair-logo"

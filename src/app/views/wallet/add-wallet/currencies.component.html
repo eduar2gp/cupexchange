@@ -13,17 +13,18 @@
   </mat-list-item>
 
   <!-- Optional: Show disabled (already in wallet) currencies for reference -->
-  <ng-container *ngIf="allCurrencies.length > availableCurrencies.length">
+  <ng-container *ngIf="existingCurrencies && existingCurrencies.length > 0">
     <mat-divider></mat-divider>
-    <h3 matSubheader>Already in your wallets (disabled)</h3>
-    <mat-list-item *ngFor="let pair of allCurrencies"
+    <h3 matSubheader>Already in your wallets (Read-Only)</h3>
+
+    <mat-list-item *ngFor="let pair of existingCurrencies"
                    [class.disabled]="true"
                    class="currency-item disabled-item">
 
       <div class="currency-content">
         <img [src]="pair.imageUrl" alt="{{ pair.viewValue }}" class="currency-icon grayscale" />
         <span class="currency-label">{{ pair.viewValue }}</span>
-        <span class="currency-value">({{ pair.value }})</span>
+        <span class="currency-value">({{ pair.viewValue }})</span>
       </div>
     </mat-list-item>
   </ng-container>

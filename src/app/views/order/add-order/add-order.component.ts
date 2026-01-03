@@ -278,4 +278,21 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     }    
     return `mat-theme-${themeName}`;
   }
+
+  getBaseCurrencyImage(pair: string | undefined): string {
+    if (!pair || pair.length < 6) {
+      return 'assets/currencies/default.png';
+    }
+    const baseCurrency = pair.substring(0, 3).toLowerCase();
+    return `assets/currencies/${baseCurrency}.png`;
+  }
+
+
+  getQuoteCurrencyImage(pair: string | undefined): string {
+    if (!pair || pair.length < 6) {
+      return 'assets/currencies/default.png';
+    }
+    const quoteCurrency = pair.substring(3, pair.length).toLowerCase();
+    return `assets/currencies/${quoteCurrency}.png`;
+  }
 }
