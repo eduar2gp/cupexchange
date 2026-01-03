@@ -13,6 +13,7 @@
   "LOGIN_GOOGLE_MESSAGE": "Or Sign In With",
   "WALLETS": "Wallet",
   "CREATE_WALLET": "New Wallet",
+  "AVAILABLE_WALLET": "Available Wallets",
   "ORDERS": "Orders",
   "NEW_ORDER": "New Order",
   "DARK_MODE": "Dark Mode",
@@ -21,7 +22,8 @@
   "SELL": "Sell",
   "AMOUNT": "Amount",
   "ORDER_TYPE": "Order type",
-  "MINIMUN": "Minimum",
+  "MINIMUM": "Minimum",
+  "MAXIMUM": "Maximum",
   "MARKET": "Market",
   "LIMIT": "Limit",
   "PRICE": "Price",
@@ -57,5 +59,7 @@
     "REDIRECTING": "Redirecting to login...",
     "ERROR_INVALID_CODE": "Invalid or expired verification code."
   },
-  "TRANSACTIONS": "Transactions"
+  "TRANSACTIONS": "Transactions",
+  "CONFIRM": "Confirm",
+  "CANCEL":  "Cancel"
 }

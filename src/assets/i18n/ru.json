@@ -12,6 +12,8 @@
   "LOGIN": "Войти",
   "LOGIN_GOOGLE_MESSAGE": "Или войти через",
   "WALLETS": "Кошелек",
+  "CREATE_WALLET": "Создать кошелек",
+  "AVAILABLE_WALLET": "Доступные кошельки",
   "ORDERS": "Ордеры",
   "NEW_ORDER": "Новый ордер",
   "DARK_MODE": "Темная тема",
@@ -20,7 +22,8 @@
   "SELL": "Продать",
   "AMOUNT": "Количество",
   "ORDER_TYPE": "Тип ордера",
-  "MINIMUN": "Минимум",
+  "MINIMUM": "Минимум",
+  "MAXIMUM": "Максимум",
   "MARKET": "Рынок",
   "LIMIT": "Лимит",
   "PRICE": "Цена",
@@ -56,5 +59,7 @@
     "REDIRECTING": "Перенаправление на страницу входа...",
     "ERROR_INVALID_CODE": "Недействительный или просроченный код подтверждения."
   },
-  "TRANSACTIONS": "Транзакции"
+  "TRANSACTIONS": "Транзакции",
+  "CONFIRM": "Подтверждать",
+  "CANCEL": "Отмена"
 }

@@ -29,6 +29,7 @@ import { filter, take, switchMap } from 'rxjs/operators';
   styleUrls: ['./orders-list.component.css']
 })
 export class OrdersListComponent {
+
   private ordersService = inject(OrdersService);
 
   constructor(    
@@ -129,7 +130,7 @@ export class OrdersListComponent {
       // Since cancelOrder returns Observable<string>, 'response' will be the string.
       console.log('Order cancelled successfully:', response);
       this.loadOrders();
-
+      this.dataService.triggerWalletUpdate();
       // Determine success message (simplified since the service returns a string)
       let successMessage = response || 'Order cancelada exitosamente!';
 
@@ -147,7 +148,6 @@ export class OrdersListComponent {
     error: (err) => {
       // Handle errors from the HTTP call OR the throwError from switchMap
       console.error('Order cancellation failed:', err);
-      
       this.dialog.open(DialogMessageComponent, {
         width: '400px',
         data: {

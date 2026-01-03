@@ -64,21 +64,7 @@ Chart.register(
       }
       </div>
   </div>`,
-  styles: [`
-  .buy { color: green; font-weight: bold; }
-  .sell { color: red; font-weight: bold; }
-  
-  .chart-container {
-    max-height: 500px;
-    width: 100%;
-    position: relative;
-  }
-  
-  .chart-container canvas {
-    height: 100% !important;
-    width: 100% !important;
-  }
-`]
+  styleUrl: './price-chart.component.css'
 })
 export class PriceChartComponent implements OnInit, OnDestroy {
 

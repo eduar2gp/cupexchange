@@ -13,6 +13,7 @@
   "LOGIN_GOOGLE_MESSAGE": "O iniciar sesión con",
   "WALLETS": "Billetera",
   "CREATE_WALLET": "Crear Billetera",
+  "AVAILABLE_WALLET": "Billeteras Disponibles",
   "ORDERS": "Órdenes",
   "NEW_ORDER": "Nueva Orden",
   "DARK_MODE": "Modo Oscuro",
@@ -21,7 +22,8 @@
   "SELL": "Vender",
   "AMOUNT": "Cantidad",
   "ORDER_TYPE": "Tipo de orden",
-  "MINIMUN": "Mínimo",
+  "MINIMUM": "Mínimo",
+  "MAXIMUM": "Máximo",
   "MARKET": "Mercado",
   "LIMIT": "Límite",
   "PRICE": "Precio",
@@ -57,5 +59,7 @@
     "REDIRECTING": "Redirigiendo al inicio de sesión...",
     "ERROR_INVALID_CODE": "Código de verificación inválido o expirado."
   },
-  "TRANSACTIONS": "Transacciones"
+  "TRANSACTIONS": "Transacciones",
+  "CONFIRM": "Confirmar",
+  "CANCEL": "Cancelar"
 }

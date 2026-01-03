@@ -1,12 +1,12 @@
 /* =========================================================
    Dialog container
    ========================================================= */
-:host ::ng-deep .mat-mdc-dialog-container {
-  border-radius: 1.25rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
-}
+//:host ::ng-deep .mat-mdc-dialog-container {
+//  border-radius: 1.25rem;
+//  background: var(--color-surface);
+//  border: 1px solid var(--color-border);
+//  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+//}
 
 /* =========================================================
    Title
@@ -18,19 +18,26 @@ h2[mat-dialog-title] {
   color: var(--color-text);
 }
 
+.container{
+    background-color: var(--color-surface);
+}
+
+p{
+    color: var(--color-text);
+}
 /* =========================================================
    Content
    ========================================================= */
 mat-dialog-content {
   padding-top: 0.25rem;
   padding-bottom: 1.5rem;
-  //color: var(--color-text);
+  background-color: var(--color-surface);
 }
 
-mat-dialog-content p {
+mat-dialog-content {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--color-text);
+  color: var(--color-surface);
 }
 
 /* =========================================================

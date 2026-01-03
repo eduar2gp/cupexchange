@@ -32,17 +32,43 @@
   
 }
 
+/* --- Base Styles (Mobile First: Default to smaller sizes) --- */
 .trade-pair {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  /* Use a smaller gap for mobile/base layout */
+  gap: 0.5rem;
+  /* Set base font size smaller */
+  font-size: 1.2rem;
 }
 
+  .trade-pair label {
+    /* Ensure the text is readable */
+    font-size: 1em; /* Inherit from parent .trade-pair */
+    font-weight: bold;
+  }
+
 .pair-icon {
-  width: 6rem;
-  height: 3rem;
+  /* Smaller, proportional image size for mobile */
+  width: 4rem;
+  height: 2rem;
   border-radius: 1px;
-/*  min-width: 150px;*/
+}
+
+/* --- Desktop Layout (Min-width 768px: Apply larger sizes) --- */
+@media (min-width: 768px) {
+  .trade-pair {
+    /* Increase gap for larger screens */
+    gap: 1rem;
+    /* Increase base font size for better visibility on desktop */
+    font-size: 2rem;
+  }
+
+  .pair-icon {
+    /* Larger image size for desktop */
+    width: 6rem;
+    height: 3rem; /* Adjusted to 4rem for proportional scaling (based on your original 'width: 4rem' but often icons are square) */
+  }
 }
 
 .header-accent {

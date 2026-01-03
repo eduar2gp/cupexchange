@@ -18,6 +18,7 @@ declare const google: any;
 import { TranslateModule } from '@ngx-translate/core';
 import { WalletService } from '../../core/services/wallet.service'
 import { Wallet } from '../../model/wallet.model'
+import { DataService } from '../../../app/core/services/data.service'
 
 
 @Component({
@@ -56,7 +57,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   
   constructor(
     private ngZone: NgZone,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private dataService: DataService
   ) {
   }
 
@@ -156,6 +158,7 @@ private loadGoogleScript(): Promise<void> {
     this.walletService.getWallets().subscribe({
       next: (wallets: Wallet[]) => {
         localStorage.setItem('WALLETS', JSON.stringify(wallets));
+        this.dataService.walletUpdateCompleted()
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

@@ -47,14 +47,29 @@ export class WalletComponent implements OnInit, OnDestroy {
     constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
-    console.log('WalletComponent: ngOnInit');
-     this.fetchWallets();
-     // 2. Subscribe to the update stream
-     this.updateSubscription = this.walletService.update$.subscribe(() => {
-       console.log('WalletComponent: Reloading wallets triggered by service.');
-       this.fetchWallets(); // Reload the data
-     });
-   }  
+    this.loadWalletsOnInit();
+  }
+
+  loadWalletsOnInit(): void {
+    if (this.dataService.isUpdateRequired()) {
+      console.log('Update required flag is TRUE. Loading FRESH data from WalletService.');
+      this.fetchWallets()
+    } else {
+      console.log('Update required flag is FALSE. Loading cached data from localStorage.');
+      this.loadWalletsFromLocalStorage();
+    }
+  }
+
+  private loadWalletsFromLocalStorage(): void {
+    const walletsJson = localStorage.getItem('WALLETS');
+    let loadedWallets: Wallet[];
+    if (walletsJson) {
+      loadedWallets = JSON.parse(walletsJson) as Wallet[];
+    } else {
+      loadedWallets = [];
+    }
+    this.wallets.set(loadedWallets);
+  }
 
   fetchWallets(): void {
     // 1. Get the Observable stream of the current user
@@ -76,6 +91,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (data: Wallet[]) => {
         // 'data' contains the Wallet[] returned by getWallets
+        this.dataService.walletUpdateCompleted()
         this.wallets.set(data);
       },
       error: (err) => {

@@ -52,18 +52,21 @@ mat-sidenav {
       margin: 4px 10px;
       transition: background-color 0.2s ease;
 
+      mat-icon {
+        color: var(--color-text);
+      }
+
       &:hover {
         background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
       }
 
-      &.active {
-        background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
-        color: var(--color-primary);
-
-        mat-icon {
-          //color: var(--color-primary);
-        }
-      }
+      //&.active {
+      //  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+      //  color: var(--color-text);
+        //mat-icon {
+        //  color: var(--color-text);
+        //}
+      //}
     }
 
     mat-slide-toggle {
@@ -113,7 +116,7 @@ mat-sidenav {
     /* margin-bottom: 0; */
 
     mat-icon {
-      //color: var(--color-success);
+      color: var(--color-success);
     }
   }
 
@@ -126,6 +129,25 @@ mat-sidenav {
 
   .spacer {
     flex: 1 1 auto;
+  }
+
+  button {
+    color: var(--color-text);
+  }
+
+  matListItemTitle {
+    color: var(--color-text);
+    background-color: var(--color-text);
+
+    mat-icon {
+      color: var(--color-text);
+      background-color: var(--color-text);
+    }
+  }
+
+  matListItemIcon {
+    color: var(--color-text);
+    background-color: var(--color-text);
   }
 
   button[mat-icon-button]:last-child {
@@ -192,7 +214,7 @@ mat-sidenav {
     //font-size: 28px;
     //height: 28px;
     //width: 28px;
-    color: var(--color-primary);
+    color: var(--color-text);
   }
 
   .nav-label {

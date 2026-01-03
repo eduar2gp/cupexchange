@@ -9,11 +9,12 @@ import { Wallet } from '../../../model/wallet.model';
 import { TradingPair } from '../../../model/trading_pair';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { WalletService } from '../../../core/services/wallet.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-wallet', 
   standalone: true,
-  imports: [CommonModule, MatListModule],
+  imports: [CommonModule, MatListModule, TranslateModule],
   templateUrl: './currencies.component.html',
   styleUrls: ['./currencies.component.scss']
 })
@@ -28,7 +29,7 @@ export class CurrenciesComponent implements OnInit {
     private walletService: WalletService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private cdr: ChangeDetectorRef // Optional: for extra safety
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
