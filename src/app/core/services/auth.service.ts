@@ -13,14 +13,6 @@ interface LoginCredentials {
   password: string;
 }
 
-interface AuthResponse {
-  jwtToken: string;
-  userId: string;
-  userName: string;
-  providerId?: string | null;
-  roles: Role[];
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -48,16 +40,16 @@ export class AuthService {
   }
 
   /** Standard username/password login */
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
+  login(credentials: LoginCredentials): Observable<User> {
     return this.http
-      .post<AuthResponse>(`${environment.baseApiUrl}${this.LOGIN_ENDPOINT}`, credentials)
+      .post<User>(`${environment.baseApiUrl}${this.LOGIN_ENDPOINT}`, credentials)
       .pipe(tap(response => this.handleSuccessfulLogin(response)));
   }
 
   /** Google OAuth login */
-  googleLogin(googleToken: { idToken: string }): Observable<AuthResponse> {
+  googleLogin(googleToken: { idToken: string }): Observable<User> {
     return this.http
-      .post<AuthResponse>(`${environment.baseApiUrl}${this.GOOGLE_LOGIN_ENDPOINT}`, googleToken)
+      .post<User>(`${environment.baseApiUrl}${this.GOOGLE_LOGIN_ENDPOINT}`, googleToken)
       .pipe(tap(response => this.handleSuccessfulLogin(response)));
   }
 
@@ -97,25 +89,14 @@ export class AuthService {
     return requiredRoles.some(role => user.roles.includes(role));
   }
 
-  /** Get current user synchronously (for guards, resolvers, etc.) */
   getCurrentUser(): User | null {
     return this.currentUser();
   }
 
-  // ==================== Private Helpers ====================
-
-  private handleSuccessfulLogin(response: AuthResponse): void {
-    const user: User = {
-      userId: response.userId,
-      userName: response.userName,
-      providerId: response.providerId ?? null,
-      jwtToken: response.jwtToken,
-      roles: response.roles
-    };
-
+  private handleSuccessfulLogin(response: User): void {
     this.storeToken(response.jwtToken, response.userId);
-    this.currentUser.set(user);
-    this.dataService.updateUser(user);
+    this.currentUser.set(response);
+    this.dataService.updateUser(response);
   }
 
   private storeToken(token: string, userId: string): void {

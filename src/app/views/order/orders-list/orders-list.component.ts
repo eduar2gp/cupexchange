@@ -110,11 +110,11 @@ export class OrdersListComponent {
     // 3. Switch to the Observable returned by the service call
     switchMap(user => {
       // Check if user is valid and has the required data (e.g., userName)
-      if (user && user.userName && order && order.id) {
+      if (user && user.username && order && order.id) {
         
         // Pass the Order object (which holds the ID) and the userName
         // The service method will use this data to construct the URL.
-        return this.ordersService.cancelOrder(order, user.userName);
+        return this.ordersService.cancelOrder(order, user.username);
       
       }
       

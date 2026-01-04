@@ -186,7 +186,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
           take(1),
           switchMap(user => {
             if (user && user.userId) {
-              this.newOrder.username = user.userName;
+              this.newOrder.username = user.username;
               this.loading.set(true);
               return this.orderTradeService.saveOrder(this.newOrder);
             }

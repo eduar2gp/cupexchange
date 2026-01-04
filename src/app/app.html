@@ -22,11 +22,15 @@
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>{{ 'SETTINGS' | translate }}</span>
       </a>
+      <a mat-list-item routerLink="/profile">
+        <mat-icon matListItemIcon>account_box</mat-icon>
+        <span matListItemTitle>{{ 'PROFILE' | translate }}</span>
+      </a>
       <a mat-list-item (click)="handleLogout()">
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>
       </a>
-     }     
+      }
     </mat-nav-list>
   </mat-sidenav>
   <!-- Main content -->

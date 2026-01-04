@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegisterService, UserRegister } from '../../../app/core/services/register.service';
+import { UserService, UserRegister } from '../../../app/core/services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private registerService: RegisterService,
+    private registerService: UserService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,

@@ -1,0 +1,83 @@
+<div class="profile-container">
+  <h2>My Profile</h2>
+
+  <div class="user-info-section">
+    <h3>Account Details</h3>
+    <p><strong>Username:</strong> {{ loggedInUser?.username }}</p>
+    <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
+  </div>
+
+  <form [formGroup]="profileForm">
+    <h3>Personal Information</h3>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label for="firstName">First Name *</label>
+        <input id="firstName" type="text" formControlName="firstName">
+        <div *ngIf="controls['firstName'].invalid && controls['firstName'].touched" class="error-message">
+          First Name is required.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="middleName">Middle Name</label>
+        <input id="middleName" type="text" formControlName="middleName">
+      </div>
+
+      <div class="form-field">
+        <label for="lastName">Last Name *</label>
+        <input id="lastName" type="text" formControlName="lastName">
+        <div *ngIf="controls['lastName'].invalid && controls['lastName'].touched" class="error-message">
+          Last Name is required.
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Phone *</label>
+        <input id="phone" type="tel" formControlName="phone">
+        <div *ngIf="controls['phone'].invalid && controls['phone'].touched" class="error-message">
+          Phone number is required.
+        </div>
+      </div>
+
+      <div class="form-field full-width">
+        <label for="address">Address *</label>
+        <input id="address" type="text" formControlName="address">
+      </div>
+
+      <div class="form-field">
+        <label for="municipality">Municipality *</label>
+        <input id="municipality" type="text" formControlName="municipality">
+      </div>
+
+      <div class="form-field">
+        <label for="province">Province *</label>
+        <input id="province" type="text" formControlName="province">
+      </div>
+
+    </div>
+  </form>
+
+  <div class="button-container">
+    <button *ngIf="!isEditing"
+            (click)="toggleEdit()"
+            class="edit-button">
+      Edit Profile
+    </button>
+
+    <button *ngIf="isEditing"
+            (click)="saveProfile()"
+            [disabled]="profileForm.invalid"
+            class="save-button">
+      Save Changes
+    </button>
+
+    <button *ngIf="isEditing"
+            (click)="toggleEdit()"
+            class="cancel-button">
+      Cancel
+    </button>
+  </div>
+</div>
+

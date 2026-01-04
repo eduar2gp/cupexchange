@@ -36,4 +36,8 @@ export class NavigationDecisionService {
     );
     return hasBaseWallet && hasQuoteWallet;
   }
+
+  verifyProfile() {
+
+  }
 }

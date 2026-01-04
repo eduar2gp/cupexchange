@@ -61,5 +61,6 @@
   },
   "TRANSACTIONS": "Transactions",
   "CONFIRM": "Confirm",
-  "CANCEL":  "Cancel"
+  "CANCEL": "Cancel",
+  "PROFILE":  "Profile"
 }

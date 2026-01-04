@@ -19,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WalletService } from '../../core/services/wallet.service'
 import { Wallet } from '../../model/wallet.model'
 import { DataService } from '../../../app/core/services/data.service'
+import { User } from '../../../app/model/user.model'
 
 
 @Component({
@@ -105,7 +106,8 @@ private loadGoogleScript(): Promise<void> {
     this.loginError.set(null); // Clear previous errors
     this.loading.set(true);
     this.authService.login(this.credentials).subscribe({
-      next: () => {
+      next: (user: User) => {
+        localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(user));
         this.fetchWallets();
       },
       error: (err) => {
