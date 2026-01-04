@@ -1,0 +1,108 @@
+.transaction-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px; // Base padding for mobile
+  min-height: 100vh;
+  background-color: var(--color-background);
+  // Tablet and Desktop View
+  @media (min-width: 768px) {
+    padding: 32px;
+  }
+}
+
+// ==========================================================
+// 3. Angular Material Overrides & Custom Styles
+// ==========================================================
+
+// Styling the main card container
+mat-card {
+  width: 100%;
+  max-width: 480px; // Max width for desktop readability
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  .mat-mdc-card-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-divider);
+    margin-bottom: 16px;
+
+    .mat-mdc-card-title {
+      font-size: 1.5rem;
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    .mat-mdc-card-subtitle {
+      color: var(--color-text-secondary);
+    }
+  }
+  // Error/Warning Box
+  .error-box {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    background-color: rgba(var(--color-danger), 0.1); // Light red background
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    font-size: 0.95rem;
+
+    mat-icon {
+      margin-right: 8px;
+      color: var(--color-danger);
+      font-size: 20px;
+    }
+  }
+}
+
+// Full-width form fields
+.full-width-input {
+  width: 100%;
+}
+
+// Styling the submit button area
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+// Primary button styling
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--color-primary);
+  color: var(--color-surface); // White text on primary button
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  &:disabled {
+    background-color: var(--color-surface-elevated) !important;
+    color: var(--color-text-muted) !important;
+  }
+}
+
+// ==========================================================
+// 4. Global Snackbar/Toast Styling (Place in global styles.scss)
+// ==========================================================
+
+/* These styles must be placed in a global stylesheet (e.g., styles.scss) 
+   to override Angular Material's snackbar styles */
+
+.snackbar-success {
+  .mat-mdc-snack-bar-container {
+    background-color: var(--color-success) !important;
+    color: white !important;
+  }
+}
+
+.snackbar-error {
+  .mat-mdc-snack-bar-container {
+    background-color: var(--color-danger) !important;
+    color: white !important;
+  }
+}

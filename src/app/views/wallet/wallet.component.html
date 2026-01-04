@@ -1,7 +1,6 @@
 <div class="wallets-container">
   <header class="wallets-header">
     <h2>{{ 'WALLETS' | translate }}</h2>
-    <p>{{ 'BALANCE' | translate }}</p>
     <button mat-raised-button color="primary" (click)="navigateToNewWallet()">
       <mat-icon>add</mat-icon>
       {{ 'CREATE_WALLET' | translate }}
@@ -55,14 +54,14 @@
         <div class="balance-details">
           <div class="balance-row">
             <span class="type-icon">✓</span>
-            <span>Disponible</span>
+            <span>{{ 'AVAILABLE' | translate }}</span>
             <strong class="available">
               {{ wallet.availableBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
             </strong>
           </div>
           <div class="balance-row">
             <span class="type-icon">🔒</span>
-            <span>Reservado</span>
+            <span>{{ 'RESERVED' | translate }}</span>
             <strong class="locked">
               {{ wallet.lockedBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
             </strong>
@@ -72,30 +71,57 @@
 
       <!-- Actions -->
       <div class="wallet-footer">
-        <button mat-stroked-button class="action-btn">
-          <mat-icon>arrow_downward</mat-icon>
-          Depositar
-        </button>
         <button mat-stroked-button
                 class="action-btn"
-                [disabled]="wallet.availableBalance <= 0">
+                [matMenuTriggerFor]="menuDepositMethods">
           <mat-icon>arrow_upward</mat-icon>
-          Extraer
+          {{ 'DEPOSIT' | translate }}
         </button>
+
+        <button mat-stroked-button
+                [matMenuTriggerFor]="menuWithdrawMethods"
+                class="action-btn"
+                [disabled]="wallet.availableBalance <= 0">
+          <mat-icon>arrow_downward</mat-icon>
+          {{ 'WITHDRAW' | translate }}
+        </button>
+
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
       </div>
 
+      <mat-menu #menuDepositMethods="matMenu">
+        <button mat-menu-item (click)="processTransaction(wallet, 'DEPOSIT', 'CASH')">
+          <mat-icon>money</mat-icon>
+          {{ 'CASH' | translate }}
+        </button>
+        <button mat-menu-item (click)="processTransaction(wallet, 'DEPOSIT', 'CARD')">
+          <mat-icon>credit_card</mat-icon>
+          {{ 'CARD' | translate }}
+        </button>
+      </mat-menu>
+
+      <mat-menu #menuWithdrawMethods="matMenu">
+        <button mat-menu-item (click)="processTransaction(wallet, 'WITHDRAWAL', 'CASH')">
+          <mat-icon>money</mat-icon>
+          {{ 'CASH' | translate }}
+        </button>
+        <button mat-menu-item (click)="processTransaction(wallet, 'WITHDRAWAL', 'CARD')">
+          <mat-icon>credit_card</mat-icon>
+          {{ 'CARD' | translate }}
+        </button>
+      </mat-menu>
+
       <!-- More Menu -->
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
           <mat-icon>receipt</mat-icon>
-          Transacciones
+          {{ 'TRANSACTIONS' | translate }}
         </button>
         <button mat-menu-item>
           <mat-icon>info</mat-icon>
-          Detalles
+          {{ 'DETAILS' | translate }}
         </button>
       </mat-menu>
     </div>

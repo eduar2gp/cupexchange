@@ -1,0 +1,63 @@
+<div class="transaction-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        {{ transactionRequest?.type | uppercase }} Confirmation
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ transactionRequest?.paymentMethod | titlecase }} using {{ transactionRequest?.currencyCode }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (errorMessage) {
+      <div class="error-box">
+        <mat-icon color="warn">error_outline</mat-icon>
+        {{ errorMessage }}
+      </div>
+      }
+
+      @if (transactionRequest) {
+      <form #transactionForm="ngForm" (ngSubmit)="submitTransaction()">
+
+        <mat-form-field appearance="fill" class="full-width-input">
+          <mat-label>Transaction Amount ({{ transactionRequest.currencyCode }})</mat-label>
+          <input matInput
+                 type="number"
+                 name="amount"
+                 required
+                 min="0.01"
+                 [(ngModel)]="transactionAmount"
+                 #amountControl="ngModel">
+
+          @if (amountControl.invalid && amountControl.touched) {
+          <mat-error>Amount is required and must be greater than zero.</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="isLoading || transactionForm.invalid">
+
+            @if (isLoading) {
+            <ng-container>
+              <mat-icon>hourglass_empty</mat-icon>
+              Processing...
+            </ng-container>
+            } @else {
+            <ng-container>
+              <mat-icon>{{ transactionRequest.type === 'DEPOSIT' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              Confirm {{ transactionRequest.type }}
+            </ng-container>
+            }
+          </button>
+        </div>
+      </form>
+      } @else {
+      <p>Loading transaction details...</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

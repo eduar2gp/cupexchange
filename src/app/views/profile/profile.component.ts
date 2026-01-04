@@ -4,11 +4,14 @@ import { CommonModule } from '@angular/common';
 import { User } from '../../model/user.model';
 import { UserProfileData } from '../../model/user-profile-data.model';
 import { UserService } from '../../core/services/user.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile-component',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,
+    MatSnackBarModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -24,7 +27,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private fb: FormBuilder // Inject FormBuilder for easier form creation
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {
     // Initialize the form here or in ngOnInit
     this.setupForm();
@@ -111,17 +115,14 @@ export class ProfileComponent implements OnInit {
         next: (user: User) => {
           // Update the loggedInUser with the new data
           this.loggedInUser = user;
-          // Re-save the updated user object to localStorage
           localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(user));
-
-          console.log('Profile updated successfully!', user);
-
+          this.showToast('Profile updated successfully!');
           // Exit editing mode
           this.toggleEdit();
         },
         error: (err) => {
           console.error('Profile update failed:', err);
-          // Handle error (e.g., show a user notification)
+          this.showToast(err.error)
         }
       });
     }
@@ -130,5 +131,14 @@ export class ProfileComponent implements OnInit {
   // Helper method for easier template access to form controls
   get controls() {
     return this.profileForm.controls;
+  }
+
+  showToast(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000, // Duration in milliseconds (3 seconds)
+      panelClass: ['snackbar-success'], // Custom CSS class for styling (see below)
+      horizontalPosition: 'center', // 'start' | 'center' | 'end' | 'left' | 'right'
+      verticalPosition: 'bottom', // 'top' | 'bottom'
+    });
   }
 }

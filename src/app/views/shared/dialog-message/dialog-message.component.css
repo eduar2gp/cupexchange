@@ -30,6 +30,7 @@ mat-dialog-content {
   mat-dialog-content p {
     font-size: 0.95rem;
     line-height: 1.55;
+    color: var(--color-text);
   }
 
 /* =========================================================
@@ -75,4 +76,8 @@ button:focus-visible {
     opacity: 1;
     transform: none;
   }
+}
+
+.container {
+  background-color: var(--color-surface);
 }

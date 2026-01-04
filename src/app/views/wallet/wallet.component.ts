@@ -12,6 +12,9 @@ import { CommonModule } from '@angular/common';
 import { CRYPTO_SYMBOLS } from '../../configs/currency.constants';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { NavigationDecisionService } from '../../../app/core/services/navigation-decision.service'
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../app/views/shared/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   standalone: true,
@@ -44,18 +47,20 @@ export class WalletComponent implements OnInit, OnDestroy {
   wallets = signal<Wallet[]>([]);
   private router = inject(Router);
   private updateSubscription!: Subscription;
-    constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private navigationDecisionService: NavigationDecisionService,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit(): void {
     this.loadWalletsOnInit();
   }
 
   loadWalletsOnInit(): void {
-    if (this.dataService.isUpdateRequired()) {
-      console.log('Update required flag is TRUE. Loading FRESH data from WalletService.');
+    if (this.dataService.isUpdateRequired()) {     
       this.fetchWallets()
-    } else {
-      console.log('Update required flag is FALSE. Loading cached data from localStorage.');
+    } else {     
       this.loadWalletsFromLocalStorage();
     }
   }
@@ -102,7 +107,6 @@ export class WalletComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // CRITICAL: Unsubscribe to prevent memory leaks
     if (this.updateSubscription) {
       this.updateSubscription.unsubscribe();
     }
@@ -125,5 +129,42 @@ export class WalletComponent implements OnInit, OnDestroy {
 
   navigateToNewWallet() {
     this.router.navigate(['/add-wallet']);
+  }
+
+  processTransaction(wallet: Wallet, transactionType: string, paymentMethod: string) {
+    this.navigationDecisionService.verifyProfile().subscribe(isComplete => {
+      if (isComplete) {
+
+        // 1. Send all required information to the DataService
+        this.dataService.updateTransactionRequest({
+          "currencyCode": wallet.currencyCode,
+          "type": transactionType, // 'DEPOSIT' or 'WITHDRAWAL'
+          "paymentMethod": paymentMethod // 'CASH' or 'CARD'
+        });
+
+        
+        this.router.navigate(['/add-transaction']);
+
+      } else {
+        console.log('Profile is incomplete. Redirecting to profile page.');
+        this.openConfirmDialog();
+      }
+    });
+  }
+
+  openConfirmDialog(): void {
+    const dialogData: ConfirmDialogData = {
+      title: 'Perfil incompleto',
+      message: 'Por favor complete su perfil!'
+    };
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: dialogData,
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.router.navigate(['/profile']);
+      }
+    });
   }
 }

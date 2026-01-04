@@ -62,5 +62,12 @@
   "TRANSACTIONS": "Transactions",
   "CONFIRM": "Confirm",
   "CANCEL": "Cancel",
-  "PROFILE":  "Profile"
+  "PROFILE": "Profile",
+  "DEPOSIT": "Deposit",
+  "WITHDRAW": "Withdraw",
+  "AVAILABLE": "Available",
+  "RESERVED": "Reserved",
+  "DETAILS": "Details",
+  "CASH": "Cash",
+  "CARD": "Card"
 }

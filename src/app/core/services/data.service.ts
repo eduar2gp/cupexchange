@@ -3,15 +3,19 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Provider } from '../../model/provider.model'
 import { Product } from '../../model/product.model'
 import { User } from '../../model/user.model'
+import { TransactionRequest } from '../../model/transaction-request.model'
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private providerSource = new BehaviorSubject<Provider | null>(null);  
+  private transactionRequestSource = new BehaviorSubject<TransactionRequest | null>(null);
+  currentTransactionRequest: Observable<TransactionRequest | null> = this.transactionRequestSource.asObservable();
+
+  private providerSource = new BehaviorSubject<Provider | null>(null);
   currentProvider: Observable<Provider | null> = this.providerSource.asObservable();
 
-  private productSource = new BehaviorSubject<Product | null>(null);  
+  private productSource = new BehaviorSubject<Product | null>(null);
   currentProduct: Observable<Product | null> = this.productSource.asObservable();
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -19,7 +23,6 @@ export class DataService {
 
   // The subject to hold and update the value
   private updateWalletRequiredSubject = new BehaviorSubject<boolean>(false);
-
   // The observable for components to subscribe to
   public updateWalletRequired$ = this.updateWalletRequiredSubject.asObservable();
 
@@ -46,7 +49,6 @@ export class DataService {
   updateProduct(product: Product) {
     this.productSource.next(product)
   }
- 
 
   updateUser(user: User | null): void {
     this.currentUserSubject.next(user); // ← Use .next(), not .set()
@@ -57,4 +59,11 @@ export class DataService {
     return this.currentUserSubject.value;
   }
 
+  updateTransactionRequest(transactionRequest: TransactionRequest) {
+    this.transactionRequestSource.next(transactionRequest);
+  }
+
+  getCurrentTransactionRequest(): TransactionRequest | null {
+    return this.transactionRequestSource.value;
+  }
 }

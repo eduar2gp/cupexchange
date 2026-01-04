@@ -10,6 +10,7 @@ import { SettingsComponent } from '../app/views/settings/settings.component'
 import { RegisterComponent } from '../app/views/register/register.component'
 import { CurrenciesComponent } from '../app/views/wallet/add-wallet/currencies.component'
 import { ProfileComponent } from '../app/views/profile/profile.component'
+import { AddTransactionComponent } from './views/transaction/add-transaction/add-transaction.component';
 
 export const routes: Routes = [
    {
@@ -37,6 +38,11 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
+    canActivate: [roleGuard],
+  },
+  {
+    path: 'add-transaction',
+    component: AddTransactionComponent,
     canActivate: [roleGuard],
   },
   {
