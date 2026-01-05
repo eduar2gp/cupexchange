@@ -32,6 +32,9 @@ import {
 } from 'chart.js';
 import { TradeService } from '../../../core/services/trade.service';
 import { TradingPair } from '../../../model/trading_pair';
+import { TradeVolumeDTO } from '../../../model/trade-volume.model'
+import { catchError, of } from 'rxjs';
+import { CommonModule, DecimalPipe } from '@angular/common';
 
 // Explicitly register the necessary chart components (Fix for missing chart elements)
 Chart.register(
@@ -48,22 +51,8 @@ Chart.register(
 @Component({
   selector: 'app-price-chart',
   standalone: true,
-  imports: [BaseChartDirective],
-  template: `
-  <div class="chart-container">
-    <h2 class="chart-title">Gráfico de precios en tiempo real ({{ currentPair.value }})</h2>
-    <div style="height: 400px; width: 100%;">
-      @if (isBrowser) {
-        <canvas baseChart
-          [data]="chartData"
-          [options]="chartOptions"
-          [type]="'line'">
-        </canvas>
-      } @else {
-        <p>Initializing chart...</p>
-      }
-      </div>
-  </div>`,
+  imports: [BaseChartDirective, CommonModule, DecimalPipe],
+  templateUrl: './price-chart.component.html',
   styleUrl: './price-chart.component.css'
 })
 export class PriceChartComponent implements OnInit, OnDestroy {
@@ -80,6 +69,7 @@ export class PriceChartComponent implements OnInit, OnDestroy {
 
   trades: PublicTradeDto[] = [];
   currentPage = 0;
+  public tradeVolumeData: TradeVolumeDTO | null = null;
 
   // Initial Chart Data Structure - Minimal default to avoid errors
   chartData: ChartConfiguration<'line'>['data'] = {
@@ -117,7 +107,6 @@ export class PriceChartComponent implements OnInit, OnDestroy {
     }
   };
 
-
   constructor(
     private wsService: WebSocketService,
     private pairSelectionService: PairSelectionService,
@@ -141,6 +130,7 @@ export class PriceChartComponent implements OnInit, OnDestroy {
           if (this.isBrowser) {
             this.wsService.subscribeToPublicTrades(pair.value);
             this.loadRecentTrades();
+            this.loadTradeVolume();
           }
         }
       })
@@ -199,6 +189,22 @@ export class PriceChartComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  loadTradeVolume(): void {
+    const pairCode = this.currentPair.value;
+    this.tradeService.getTradeVolume(pairCode)
+      .pipe(
+        catchError(error => {          
+          this.tradeVolumeData = null;   
+          return of(null);
+        })
+      )
+      .subscribe(tradeVolume => {
+        if (tradeVolume) 
+          this.tradeVolumeData = tradeVolume;  
+        });
+  }
+
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();

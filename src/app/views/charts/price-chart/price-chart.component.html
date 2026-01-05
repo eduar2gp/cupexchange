@@ -1,1 +1,32 @@
-<p>price-chart.component works!</p>
+<div class="chart-container">
+  <h2 class="chart-title">Gráfico de precios en tiempo real ({{ currentPair.value }})</h2>
+
+  @if (tradeVolumeData) {
+  <div class="trade-volume-info">
+
+    <p>
+      <span class="info-label">Volumen Total Abierto:</span>
+      <span class="info-value">{{ tradeVolumeData.totalOpenVolume | number:'1.2-2' }}</span>
+      <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
+    </p>
+
+    <p>
+      <span class="info-label">Volumen Negociado (24h):</span>
+      <span class="info-value highlight">{{ tradeVolumeData.tradedVolume24H | number:'1.2-2' }}</span>
+      <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
+    </p>
+
+  </div>
+  } 
+  <div style="height: 400px; width: 100%;">
+    @if (isBrowser) {
+    <canvas baseChart
+            [data]="chartData"
+            [options]="chartOptions"
+            [type]="'line'">
+    </canvas>
+    } @else {
+    <p>Initializing chart...</p>
+    }
+  </div>
+</div>

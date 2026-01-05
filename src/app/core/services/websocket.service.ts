@@ -4,6 +4,7 @@ import SockJS from 'sockjs-client';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { environment } from '../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { PublicOrderDTO } from '../../model/public_order_dto'
 
 export interface PublicTradeDto {
   pair: string;
@@ -11,19 +12,6 @@ export interface PublicTradeDto {
   volume: string;
   timestamp: string;
   side: 'BUY' | 'SELL';
-}
-
-export interface PublicOrderDTO {
-  orderId: number;
-  pair: string;
-  side: 'BUY' | 'SELL';
-  type: 'LIMIT' | 'MARKET';
-  price: string | null;
-  volumeTotal: string;
-  volumeFilled: string;
-  volumeRemaining: string;
-  status: 'ACTIVE' | 'PARTLY_FILLED' | 'FILLED' | 'CANCELED';
-  timestamp: number;
 }
 
 export interface PrivateTrade {

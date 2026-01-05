@@ -3,7 +3,7 @@ export interface PublicOrderDTO {
   pair: string;
   side: 'BUY' | 'SELL';
   type: 'LIMIT' | 'MARKET';
-  price: string | null;
+  price: string | number | null;
   volumeTotal: string;
   volumeFilled: string;
   volumeRemaining: string;

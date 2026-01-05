@@ -3,32 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'
 import { Page } from '../../model/page.model'; // Assuming you create a standard Page model
-
-// Define the structure of a single trade DTO
-export interface PublicTradeDto {
-  pair: string;
-  price: string;
-  volume: string;
-  timestamp: string;
-  side: 'BUY' | 'SELL';
-}
-
-// Interface for the full paginated response (from Spring's Page<T>)
-// This structure is often called 'Page' or 'PaginatedResponse'
-export interface PaginatedTrades {
-  content: PublicTradeDto[];
-  pageable: any;          // Pagination request details
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  size: number;
-  number: number;         // Current page number (0-indexed)
-  sort: any;
-  numberOfElements: number;
-  first: boolean;
-  empty: boolean;
-}
-
+import { PaginatedTrades } from '../../model/paginated-trades.model'
+import { TradeVolumeDTO } from '../../model/trade-volume.model'
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +13,8 @@ export class TradeService {
 
   private http = inject(HttpClient);
 
-  // NOTE: It's better practice to allow the component to pass the pairCode dynamically.
-  // We'll update the method signature to accept the parameters.
-
   private BASE_ENDPOINT = '/api/v1/trade/market/trades';
+  private TRADE_VOLUME_ENDPOINT = '/api/v1/trade/{currencyPairCode}/volume';
 
   constructor() {
   }
@@ -71,6 +45,24 @@ export class TradeService {
     // 3. Make the HTTP GET request
     // We specify the expected return type is PaginatedTrades
     return this.http.get<PaginatedTrades>(url, { params });
+  }
+
+  /**
+ * Fetches the trade volume for a specific currency pair.
+ * * @param currencyPair The code for the currency pair (e.g., 'BTC-USD').
+ * @returns An Observable of TradeVolumeDTO.
+ */
+  getTradeVolume(currencyPair: string): Observable<TradeVolumeDTO> {
+
+    // 1. Construct the path by replacing the placeholder
+    //    Use 'replace()' or string interpolation after constructing the base URL
+    const path = this.TRADE_VOLUME_ENDPOINT.replace('{currencyPairCode}', currencyPair);
+
+    // 2. Combine the environment base URL with the constructed path
+    const url = `${environment.baseApiUrl}${path}`;
+
+    // 3. Make the HTTP GET request
+    return this.http.get<TradeVolumeDTO>(url);
   }
 
 }

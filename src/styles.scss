@@ -36,6 +36,12 @@ html {
   /* Lines */
   --color-border: #d8dee4;
   --color-divider: #eaeef2;
+  --color-buy-base: var(--color-success, #1f883d);
+  --color-sell-base: var(--color-danger, #cf222e);
+  --color-buy-surface-light: color-mix(in srgb, var(--color-buy-base) 8%, var(--color-surface, #ffffff));
+  --color-sell-surface-light: color-mix(in srgb, var(--color-sell-base) 8%, var(--color-surface, #ffffff));
+  --color-buy-text-accent: var(--color-buy-base);
+  --color-sell-text-accent: var(--color-sell-base);
 }
 
 
@@ -61,6 +67,12 @@ html {
   /* Lines */
   --color-border: #30363d;
   --color-divider: #21262d;
+  --color-buy-base: var(--color-success, #1f883d);
+  --color-sell-base: var(--color-danger, #cf222e);
+  --color-buy-surface-light: color-mix(in srgb, var(--color-buy-base) 8%, var(--color-surface, #ffffff));
+  --color-sell-surface-light: color-mix(in srgb, var(--color-sell-base) 8%, var(--color-surface, #ffffff));
+  --color-buy-text-accent: var(--color-buy-base);
+  --color-sell-text-accent: var(--color-sell-base);
 }
 
 
