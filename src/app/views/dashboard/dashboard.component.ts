@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderBookComponent } from '../../views/order/orders-book/orders-book.component'
 //import { RecentTradesComponent } from '../../views/trades/recent-trades/recent-trades.component'
-import { PriceChartComponent } from '../../views/charts/price-chart/price-chart.component'
+import { CandlePriceChartComponent } from '../../views/charts/candle-chart/candle-price-chart.component'
 
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [PriceChartComponent, OrderBookComponent],
+  imports: [OrderBookComponent, CandlePriceChartComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

@@ -1,18 +1,14 @@
 import { Injectable, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { environment } from '../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
-import { PublicOrderDTO } from '../../model/public_order_dto'
 
-export interface PublicTradeDto {
-  pair: string;
-  price: string;
-  volume: string;
-  timestamp: string;
-  side: 'BUY' | 'SELL';
-}
+// 🎯 ASSUMED IMPORTS: Please verify these paths in your project
+import { PublicOrderDTO } from '../../model/public_order_dto';
+import { PublicTradeDto } from '../../model/public-trade-dto.model';
+import { Candlestick } from '../../model/candle-stick-data.model';
 
 export interface PrivateTrade {
   tradeId: number;
@@ -26,41 +22,53 @@ export interface PrivateTrade {
   providedIn: 'root'
 })
 export class WebSocketService implements OnDestroy {
-  private client!: Client; 
+  private client!: Client;
 
-  // Public trades (all recent trades for current pair)
+  // =========================================================
+  // LEGACY OBSERVABLES
+  // =========================================================
+
   private publicTradesSubject = new BehaviorSubject<PublicTradeDto[]>([]);
-  public publicTrades$ = this.publicTradesSubject.asObservable();
+  public publicTrades$: Observable<PublicTradeDto[]> = this.publicTradesSubject.asObservable();
 
-  // Latest single trade
   private latestTradeSubject = new BehaviorSubject<PublicTradeDto | null>(null);
-  public latestTrade$ = this.latestTradeSubject.asObservable();
+  public latestTrade$: Observable<PublicTradeDto | null> = this.latestTradeSubject.asObservable();
 
-  // Private (user-specific) trades
   private privateTradesSubject = new BehaviorSubject<PrivateTrade[]>([]);
-  public privateTrades$ = this.privateTradesSubject.asObservable();
+  public privateTrades$: Observable<PrivateTrade[]> = this.privateTradesSubject.asObservable();
 
-  // Recent orders (public order updates)
   private recentOrdersSubject = new Subject<PublicOrderDTO>();
-  public recentOrders$ = this.recentOrdersSubject.asObservable();
+  public recentOrders$: Observable<PublicOrderDTO> = this.recentOrdersSubject.asObservable();
 
-  // Subscription tracking
+  // =========================================================
+  // 🎯 NEW CANDLESTICK OBSERVABLE
+  // =========================================================
+
+  private candleSubject = new Subject<Candlestick>();
+  public candleUpdates$: Observable<Candlestick> = this.candleSubject.asObservable();
+
+  // =========================================================
+  // SUBSCRIPTION TRACKING
+  // =========================================================
+
   private publicTradesSubscription: StompSubscription | null = null;
   private recentOrdersSubscription: StompSubscription | null = null;
   private privateTradesSubscription: StompSubscription | null = null;
+  private candleSubscription: StompSubscription | null = null; // 🎯 New tracker
 
   private currentPair = '';
+  private currentInterval = ''; // 🎯 New state tracker for the candle interval
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object ) {
-    if(isPlatformBrowser(this.platformId)){
-       this.client = this.createClient();
-       this.client.activate();
-    }   
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.client = this.createClient();
+      this.client.activate();
+    }
   }
 
   private createClient(): Client {
     const socketUrl = environment.baseApiUrl + '/ws/stomp';
-    const client = new Client({      
+    const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
@@ -74,6 +82,11 @@ export class WebSocketService implements OnDestroy {
       if (this.currentPair) {
         this.subscribeToPublicTrades(this.currentPair);
         this.subscribeToRecentOrders(this.currentPair);
+
+        // 🎯 NEW: Resubscribe to candles on reconnect
+        if (this.currentInterval) {
+          this.subscribeToCandles(this.currentPair, this.currentInterval);
+        }
       }
       // Private trades (user-specific) can be subscribed separately if needed
     };
@@ -89,17 +102,66 @@ export class WebSocketService implements OnDestroy {
     return client;
   }
 
+  // =========================================================
+  // 🎯 NEW CANDLESTICK SUBSCRIPTION
+  // =========================================================
+
+  /**
+   * Subscribes to real-time candlestick updates for a specific pair and interval.
+   * Topic: /topic/candles/{pair}/{interval}
+   */
+  public subscribeToCandles(pair: string, interval: string): void {
+    const normalizedPair = this.normalizePair(pair);
+    const normalizedInterval = interval.toLowerCase();
+
+    // Prevent redundant subscription if pair and interval haven't changed
+    if (normalizedPair === this.currentPair && normalizedInterval === this.currentInterval && this.client.connected) {
+      return;
+    }
+
+    // Clean up previous subscription
+    this.unsubscribeFromCandles();
+
+    this.currentPair = normalizedPair;
+    this.currentInterval = normalizedInterval;
+
+    if (!this.client.connected) {
+      // Subscription will be handled in onConnect
+      return;
+    }
+
+    const topic = `/topic/candles/${normalizedPair}/${normalizedInterval}`;
+
+    this.candleSubscription = this.client.subscribe(
+      topic,
+      (message: IMessage) => this.handleCandleUpdate(message)
+    );
+
+    console.log(`Subscribed to candlestick updates: ${topic}`);
+  }
+
+  /** Unsubscribe from candlestick updates */
+  public unsubscribeFromCandles(): void {
+    if (this.candleSubscription) {
+      this.candleSubscription.unsubscribe();
+      this.candleSubscription = null;
+    }
+    this.currentInterval = ''; // Clear interval state
+  }
+
+  // =========================================================
+  // LEGACY SUBSCRIPTION METHODS
+  // =========================================================
+
   /** Subscribe to public trades for a specific pair */
   public subscribeToPublicTrades(pair: string): void {
     const normalizedPair = this.normalizePair(pair);
-    if (normalizedPair === this.currentPair) return;
+    if (normalizedPair === this.currentPair && this.publicTradesSubscription) return; // Prevent redundant subscription
 
-    // Clean up previous subscription
     this.unsubscribeFromPublicTrades();
     this.currentPair = normalizedPair;
 
     if (!this.client.connected) {
-      // Will be handled in onConnect
       return;
     }
 
@@ -149,7 +211,10 @@ export class WebSocketService implements OnDestroy {
     );
   }
 
-  // Unsubscribe methods
+  // =========================================================
+  // UNSUBSCRIBE METHODS
+  // =========================================================
+
   public unsubscribeFromPublicTrades(): void {
     if (this.publicTradesSubscription) {
       this.publicTradesSubscription.unsubscribe();
@@ -171,12 +236,25 @@ export class WebSocketService implements OnDestroy {
     }
   }
 
-  // Message handlers
+  // =========================================================
+  // MESSAGE HANDLERS
+  // =========================================================
+
+  /** 🎯 NEW: Handles incoming IMessage and emits a Candlestick object */
+  private handleCandleUpdate(message: IMessage): void {
+    try {
+      const candle: Candlestick = JSON.parse(message.body);
+      this.candleSubject.next(candle);
+    } catch (error) {
+      console.error('Failed to parse candlestick update:', error);
+    }
+  }
+
   private handlePublicTrade(message: IMessage): void {
     try {
       const trade: PublicTradeDto = JSON.parse(message.body);
       const current = this.publicTradesSubject.value;
-      const updated = [trade, ...current].slice(0, 100); // Keep last 100
+      const updated = [trade, ...current].slice(0, 100);
       this.publicTradesSubject.next(updated);
       this.latestTradeSubject.next(trade);
     } catch (error) {

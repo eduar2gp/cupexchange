@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import {
   WebSocketService,
-  PublicTradeDto,
 } from '../../../core/services/websocket.service';
 import { PairSelectionService } from '../../../core/services/pair-selection.service';
 import {
@@ -35,6 +34,7 @@ import { TradingPair } from '../../../model/trading_pair';
 import { TradeVolumeDTO } from '../../../model/trade-volume.model'
 import { catchError, of } from 'rxjs';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { PublicTradeDto } from '../../../model/public-trade-dto.model'
 
 // Explicitly register the necessary chart components (Fix for missing chart elements)
 Chart.register(
