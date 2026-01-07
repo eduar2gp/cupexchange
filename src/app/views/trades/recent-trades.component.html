@@ -1,0 +1,34 @@
+<div class="recent-trades-container">
+  <table class="trades-table">
+    <thead>
+      <tr>
+        <th>Price</th>
+        <th>Volume</th>
+        <th>Time</th>
+       
+      </tr>
+    </thead>
+    <tbody>
+      @for (trade of trades; track trade) {
+        <tr [class.buy]="trade.side === 'BUY'" [class.sell]="trade.side === 'SELL'">
+          <td class="price">
+            {{ trade.price }}
+          </td>
+          <td class="volume">
+            {{ trade.volume }}
+          </td>
+          <td class="time">
+            {{ formatTime(trade.timestamp) }}
+          </td>
+          
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (trades.length === 0) {
+    <div class="no-trades">
+      Waiting for trades...
+    </div>
+  }
+</div>

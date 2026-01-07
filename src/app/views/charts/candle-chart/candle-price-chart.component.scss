@@ -1,22 +1,87 @@
+/* =========================
+   Chart Container
+   ========================= */
 .chart-container {
-  /* Set explicit size for the container */
   width: 100%;
-  max-width: 1200px; /* Optional: cap the width */
-  height: 500px;
-  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Mobile first height */
+  height: 260px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px;
+  /* Ensure canvas fills container */
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
 }
 
-.interval-selection-bar button {
-  background: #eee;
-  border: 1px solid #ccc;
-  padding: 4px 8px;
-  margin-right: 5px;
-  cursor: pointer;
-  border-radius: 4px;
+/* Small tablets */
+@media (min-width: 480px) {
+  .chart-container {
+    height: 320px;
+  }
 }
 
-.interval-selection-bar button.active {
-  background: #007bff; /* Primary color */
-  color: white;
-  border-color: #007bff;
+/* Tablets */
+@media (min-width: 768px) {
+  .chart-container {
+    height: 420px;
+    padding: 12px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .chart-container {
+    height: 500px;
+    padding: 16px;
+  }
+}
+
+/* =========================
+   Interval Selection Bar
+   ========================= */
+.interval-selection-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+
+  button {
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background: var(--color-surface);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 1px;
+    }
+
+    &.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+  }
+}
+
+/* Slightly larger buttons on bigger screens */
+@media (min-width: 768px) {
+  .interval-selection-bar button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
 }
