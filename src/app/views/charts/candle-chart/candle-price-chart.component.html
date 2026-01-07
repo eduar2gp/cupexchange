@@ -1,1 +1,15 @@
-<p>candle-price-chart.component works!</p>
+<div class="interval-selection-bar">
+  <button *ngFor="let interval of availableIntervals"
+          [class.active]="interval === currentInterval"
+          (click)="selectInterval(interval)">
+    {{ interval }}
+  </button>
+</div>
+
+<div class="chart-container">
+  <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="'candlestick'">
+  </canvas>
+</div>

@@ -27,32 +27,24 @@ Chart.register(
     CommonModule,
     BaseChartDirective
   ],
-  template: `
-    <div class="chart-container">
-      <canvas baseChart
-        [data]="chartData"
-        [options]="chartOptions"
-        [type]="'candlestick'">
-      </canvas>
-    </div>
-  `,
+  templateUrl: './candle-price-chart.component.html',
+  styleUrl: './candle-price-chart.component.scss'
 })
 export class CandlePriceChartComponent implements OnInit, OnDestroy {
 
-  // 🎯 Inject Services
   private tradeService = inject(TradeService);
   private pairSelectionService = inject(PairSelectionService);
-  private webSocketService = inject(WebSocketService); // 🎯 Inject WebSocket Service
+  private webSocketService = inject(WebSocketService);
 
-  // 🎯 Subscription Trackers
   private pairSubscription!: Subscription;
-  private candleSubscription!: Subscription; // 🎯 New subscription for real-time updates
+  private candleSubscription!: Subscription;
 
-  // 🎯 Local State
+  // 🎯 New: List of supported intervals
+  public availableIntervals: string[] = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
+
   public currentPairCode: string = 'USDCUP';
-  private currentInterval: string = '5m';
+  public currentInterval: string = '5m'; // State variable is now public for the template
 
-  // 3. Define Chart Data 
   public chartData: ChartData<'candlestick'> = {
     datasets: [{
       label: 'Trading Pair Data',
@@ -61,12 +53,12 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     }]
   };
 
-  // 4. Define Chart Options (omitted for brevity)
   public chartOptions: ChartOptions<'candlestick'> = {
     scales: {
       x: {
         type: 'time',
-        time: { unit: 'minute', parser: 'YYYY-MM-DD', tooltipFormat: 'll HH:mm', displayFormats: { day: 'MMM D' } },
+        // 🎯 Note: We use 'minute' as a flexible base unit for time-based scales
+        time: { unit: 'minute', parser: 'YYYY-MM-DD', tooltipFormat: 'll HH:mm', displayFormats: { minute: 'HH:mm' } },
         adapters: { date: { locale: 'en' } },
         ticks: { source: 'data' }
       },
@@ -79,50 +71,66 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit(): void {
-    // 🎯 Pair Selection Subscription (Triggers historical fetch and live feed connection)
+
+    // Start the real-time subscription listener once
+    this.subscribeToCandleUpdates();
+
+    // Pair Selection Subscription
     this.pairSubscription = this.pairSelectionService.selectedPair$.subscribe((pair: TradingPair | null) => {
 
-      if (!pair) {
-        console.warn('Pair selection service emitted a null value.');
-        return;
-      }
+      if (!pair) return;
 
       const newPairCode = pair.value;
+      const initialLoadOrPairChange = (newPairCode && newPairCode !== this.currentPairCode) || this.chartData.datasets[0].data.length === 0;
 
-      if (newPairCode && (newPairCode !== this.currentPairCode || this.chartData.datasets[0].data.length === 0)) {
+      if (initialLoadOrPairChange) {
         this.currentPairCode = newPairCode;
-
-        // 1. Fetch historical data for the new pair
-        this.fetchHistoricalData();
-
-        // 2. Connect to the new live feed topic
-        this.connectToLiveFeed();
+        this.updateChartDataFlow(); // Combined logic for initial/pair change
       }
     });
-
-    // 🎯 Start the real-time subscription listener once
-    this.subscribeToCandleUpdates();
   }
 
   ngOnDestroy(): void {
     if (this.pairSubscription) {
       this.pairSubscription.unsubscribe();
     }
-    // 🎯 Clean up the real-time subscription
     if (this.candleSubscription) {
       this.candleSubscription.unsubscribe();
     }
-    // 🎯 Unsubscribe from the WebSocket topic when the component is destroyed
     this.webSocketService.unsubscribeFromCandles();
+  }
+
+  // =========================================================
+  // 🎯 NEW: Interval Selection Handler
+  // =========================================================
+
+  /**
+   * Called when an interval button is clicked.
+   * @param interval The new interval code (e.g., '1h').
+   */
+  selectInterval(interval: string): void {
+    if (interval === this.currentInterval) {
+      return;
+    }
+    this.currentInterval = interval;
+    this.updateChartDataFlow();
+  }
+
+  /**
+   * Helper function to centralize fetching and subscribing logic.
+   */
+  private updateChartDataFlow(): void {
+    // 1. Fetch historical data for the new pair/interval
+    this.fetchHistoricalData();
+
+    // 2. Connect to the new live feed topic
+    this.connectToLiveFeed();
   }
 
   // =========================================================
   // Data Fetching and Chart Loading
   // =========================================================
 
-  /**
-   * Fetches historical candles and loads them into the chart.
-   */
   fetchHistoricalData(): void {
     console.log(`Fetching historical data for: ${this.currentPairCode} (${this.currentInterval})`);
 
@@ -138,9 +146,6 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Loads the formatted ChartDataPoint array into the chart's data structure.
-   */
   loadChartData(formattedData: ChartDataPoint[]): void {
     this.chartData.datasets[0].data = formattedData as any;
     this.chartData = { ...this.chartData };
@@ -148,28 +153,16 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   }
 
   // =========================================================
-  // 🎯 REAL-TIME WEBSOCKET INTEGRATION
+  // Real-Time WebSocket Integration
   // =========================================================
 
-  /**
-   * Subscribes to the WebSocket topic for the currently selected pair/interval.
-   */
   connectToLiveFeed(): void {
-    // 1. Unsubscribe from the old topic if necessary (handled internally by service, but good practice)
-    this.webSocketService.unsubscribeFromCandles();
-
-    // 2. Subscribe to the new topic
     this.webSocketService.subscribeToCandles(this.currentPairCode, this.currentInterval);
   }
 
-  /**
-   * Subscribes to the service's Observable that emits real-time candle updates.
-   */
   subscribeToCandleUpdates(): void {
-    // Subscribe to the shared Observable stream and filter it if needed (though the backend should ensure context)
     this.candleSubscription = this.webSocketService.candleUpdates$
       .pipe(
-        // Ensure we only process updates for the currently viewed pair and interval
         filter(candle =>
           candle.pair === this.currentPairCode &&
           candle.interval === this.currentInterval
@@ -185,32 +178,22 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Updates the chart data array with the latest live candle (either updates the last candle 
-   * or adds a new one if the period has closed).
-   * @param candle The real-time Candlestick update.
-   */
   updateChartWithLiveCandle(candle: Candlestick): void {
     const data = this.chartData.datasets[0].data as ChartDataPoint[];
-    const newCandlePoint = this.tradeService.mapToChartDataPoints([candle])[0]; // Map the single DTO
+    if (data.length === 0) return;
 
-    if (data.length === 0) {
-      // Should not happen, but a safeguard: add the candle if the chart is empty.
+    const newCandlePoint = this.tradeService.mapToChartDataPoints([candle])[0];
+
+    const lastCandle = data[data.length - 1];
+
+    if (lastCandle.x === newCandlePoint.x) {
+      // UPDATE: Candle is in progress
+      data[data.length - 1] = newCandlePoint;
+    } else if (newCandlePoint.x > lastCandle.x) {
+      // ADD: New candle period started
       data.push(newCandlePoint);
-    } else {
-      const lastCandle = data[data.length - 1];
-
-      // Check if the timestamp matches (candle is still in progress)
-      if (lastCandle.x === newCandlePoint.x) {
-        // 1. UPDATE: Replace the last candle with the new, updated data point
-        data[data.length - 1] = newCandlePoint;
-      } else if (newCandlePoint.x > lastCandle.x) {
-        // 2. ADD: The new candle update is for a new time period (the previous one closed)
-        data.push(newCandlePoint);
-      }
     }
 
-    // 3. Trigger chart redraw
     this.chartData = { ...this.chartData };
   }
 }

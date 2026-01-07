@@ -5,3 +5,18 @@
   height: 500px;
   display: block;
 }
+
+.interval-selection-bar button {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.interval-selection-bar button.active {
+  background: #007bff; /* Primary color */
+  color: white;
+  border-color: #007bff;
+}
