@@ -1,11 +1,12 @@
 <app-trade-chart></app-trade-chart>
 
-<mat-tab-group mat-stretch-tabs
-                         class="trade-tabs"
-                         animationDuration="300ms">
+<mat-tab-group
+               mat-stretch-tabs
+               class="trade-tabs"
+               animationDuration="300ms">
   <mat-tab label="Orders">
     <div class="tab-content">
-      <app-order-book></app-order-book>
+      <app-order-book [layoutMode]="'side-by-side'"></app-order-book>
     </div>
   </mat-tab>
   <mat-tab label="Trades">

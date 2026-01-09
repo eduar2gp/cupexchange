@@ -1,10 +1,22 @@
 .orders-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  //display: grid;
+  //grid-template-columns: 1fr 1fr;
+  gap: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  min-height: 400px;
   background-color: var(--color---color-background);
 
+  .orders-grid.stacked {
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+    gap: 0px; /* Space between the cards */
+  }
+
   .side-panel {
+    padding: 15px;
+    min-width: 0;
+    box-sizing: border-box;
     border: 1px solid var(--color-border, #d8dee4);
     box-shadow: none;
     background-color: var(--color-surface);
@@ -115,6 +127,25 @@
     text-align: center;
     color: var(--color-text-secondary);
   }
+}
+
+/* ---------------------------------------------------- */
+/* 3- Layout: One to the left, one to the right (Side-by-Side) */
+/* ---------------------------------------------------- */
+.orders-grid.side-by-side {
+  display: flex;
+  flex-direction: row; /* Places children horizontally */
+  gap: 2px; /* Space between the cards */
+}
+
+.orders-grid.stacked .side-panel {
+  flex: 1 1 auto;
+}
+
+.orders-grid.side-by-side .side-panel {
+  /* Crucial: Takes up 50% of the available space (flex-basis: 50%) 
+       and allows shrinking/growing equally (flex-grow: 1, flex-shrink: 1) */
+  flex: 1 1 50%;
 }
 
 .empty-state {

@@ -28,6 +28,7 @@ import { DialogMessageComponent } from '../../shared/dialog-message/dialog-messa
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { OrderBookComponent } from '../orders-book/orders-book.component'
 
 interface Type {
   value: string;
@@ -38,6 +39,7 @@ interface Type {
   selector: 'app-add-order',
   standalone: true,
   imports: [
+    OrderBookComponent,
     CommonModule,
     FormsModule,
     MatTabsModule,
@@ -47,7 +49,7 @@ interface Type {
     MatSelectModule,
     MatDialogModule,
     TranslateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.css',

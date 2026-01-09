@@ -1,3 +1,20 @@
+@if (tradeVolumeData) {
+<div class="trade-volume-info">
+
+  <p>
+    <span class="info-label">Volume:</span>
+    <span class="info-value">{{ tradeVolumeData.totalOpenVolume | number:'1.2-2' }}</span>
+    <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
+  </p>
+
+  <p>
+    <span class="info-label">Traded (24h):</span>
+    <span class="info-value highlight">{{ tradeVolumeData.tradedVolume24H | number:'1.2-2' }}</span>
+    <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
+  </p>
+
+</div>
+}
 <div class="interval-selection-bar">
   <button *ngFor="let interval of availableIntervals"
           [class.active]="interval === currentInterval"

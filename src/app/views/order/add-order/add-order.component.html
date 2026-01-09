@@ -13,12 +13,10 @@
         </span>
       </h3>
     </div>
-
     <mat-tab-group mat-stretch-tabs
                              class="trade-tabs"
                              animationDuration="300ms"
                              (selectedTabChange)="onTabChange($event)">
-
       <mat-tab label="{{ 'BUY' | translate }}">
         <div class="tab-content">
           <form #buyForm="ngForm" (ngSubmit)="saveOrder(buyForm)" class="trade-form">
@@ -101,7 +99,7 @@
                 {{ 'VERIFYING' | translate }}
               </ng-container>
               <ng-container *ngIf="!loading()">
-                {{ 'BUY' | translate }} {{ currentPair?.viewValue }}
+                {{ 'BUY' | translate }} {{ currentPair?.viewValue }}              
               </ng-container>
             </button>
           </form>
@@ -195,5 +193,8 @@
         </div>
       </mat-tab>
     </mat-tab-group>
+  </div>
+  <div class="side-div">
+    <app-order-book layoutMode="stacked"></app-order-book>
   </div>
 </div>

@@ -85,3 +85,33 @@
     padding: 6px 12px;
   }
 }
+
+
+.trade-volume-info {
+  display: flex; /* Use flexbox for horizontal layout */
+  justify-content: space-around; /* Distribute space evenly */
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  /*background-color: #f9f9f9;*/ /* Light background */
+  background-color: var(--color-surface);
+  font-size: 0.95em;
+}
+
+.trade-volume-info p {
+  margin: 0;
+  padding: 0 15px; /* Spacing between data points */
+  color: var(--color-text);
+}
+.info-label {
+  font-weight: 500;
+  color: #666;
+  margin-right: 5px;
+}
+
+.info-value {
+  font-weight: bold;
+  /*  color: #333;*/
+}

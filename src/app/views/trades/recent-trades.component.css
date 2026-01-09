@@ -1,7 +1,7 @@
 /* recent-trades.component.css */
 
 .recent-trades-container {
-  background: #1e222d;
+  background-color: var(--color---color-background);
   border-radius: 8px;
   padding: 16px;
   max-height: 400px;
@@ -73,7 +73,7 @@
 
   /* Buy row styling */
   .trades-table tr.buy {
-    background-color: rgba(0, 150, 136, 0.15);
+    background-color: var(--color-buy-surface-light);
   }
 
     .trades-table tr.buy .price,
@@ -83,7 +83,7 @@
 
   /* Sell row styling */
   .trades-table tr.sell {
-    background-color: rgba(244, 67, 54, 0.15);
+    background-color: var(--color-sell-surface-light);
   }
 
     .trades-table tr.sell .price,

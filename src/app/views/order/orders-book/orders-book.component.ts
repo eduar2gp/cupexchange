@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal, Input } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { WebSocketService } from '../../../core/services/websocket.service';
@@ -10,6 +10,8 @@ import { TradingPair } from '../../../model/trading_pair';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PublicOrderDTO } from '../../../model/public_order_dto'
+
+export type LayoutMode = 'stacked' | 'side-by-side' | 'mixed';
 
 @Component({
   selector: 'app-order-book',
@@ -26,6 +28,8 @@ import { PublicOrderDTO } from '../../../model/public_order_dto'
 export class OrderBookComponent implements OnInit, OnDestroy {
   // 1. STATE MANAGEMENT: Use a WritableSignal for the source data
   private ordersSignal: WritableSignal<PublicOrderDTO[]> = signal([]);
+
+  @Input() layoutMode: LayoutMode = 'side-by-side';
 
   // 2. COMPUTED STATE: Create reactive, filtered lists (sorted by timestamp)
   public buyOrders: Signal<PublicOrderDTO[]> = computed(() =>
@@ -161,5 +165,13 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
     });
+  }
+
+  get layoutClasses() {
+    return {
+      'stacked': this.layoutMode === 'stacked',
+      'side-by-side': this.layoutMode === 'side-by-side',
+      // You can add more complex conditions here if needed
+    };
   }
 }

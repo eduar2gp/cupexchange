@@ -8,7 +8,7 @@ import { TradingPair } from '../../model/trading_pair';
 export class PairSelectionService {
 
   // Private BehaviorSubject holding the current TradingPair (or null if none selected)
-  private selectedPairSubject = new BehaviorSubject<TradingPair | null>({ value: 'USDCUP', viewValue: 'USD - CUP', imageUrl: 'assets/currencies/usd.png' });
+  private selectedPairSubject = new BehaviorSubject<TradingPair | null>({ value: 'USDCUP', viewValue: 'USD', imageUrl: 'assets/currencies/usd.png' });
 
   // Public observable that components can subscribe to
   selectedPair$ = this.selectedPairSubject.asObservable();

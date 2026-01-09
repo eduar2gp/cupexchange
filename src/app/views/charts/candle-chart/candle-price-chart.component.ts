@@ -7,6 +7,8 @@ import { WebSocketService } from '../../../core/services/websocket.service';
 import { TradingPair } from '../../../model/trading_pair';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators'; // 🎯 Import filter operator
+import { TradeVolumeDTO } from '../../../model/trade-volume.model'
+import { catchError, of } from 'rxjs';
 
 // Charting Imports
 import { Chart, ChartData, ChartOptions, TimeScale, LinearScale, Tooltip, Legend } from 'chart.js';
@@ -44,6 +46,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
 
   public currentPairCode: string = 'USDCUP';
   public currentInterval: string = '5m'; // State variable is now public for the template
+  public tradeVolumeData: TradeVolumeDTO | null = null;
 
   public chartData: ChartData<'candlestick'> = {
     datasets: [{
@@ -63,7 +66,8 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
         ticks: { source: 'data' }
       },
       y: {
-        title: { display: true, text: 'Price' }
+        title: { display: true, text: 'Price' },
+        position: 'right'
       }
     }
   };
@@ -125,6 +129,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
 
     // 2. Connect to the new live feed topic
     this.connectToLiveFeed();
+    this.loadTradeVolume();
   }
 
   // =========================================================
@@ -152,6 +157,20 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     console.log(`Loaded ${formattedData.length} historical candles for ${this.currentPairCode}.`);
   }
 
+  loadTradeVolume(): void {
+    const pairCode = this.currentPairCode;
+    this.tradeService.getTradeVolume(pairCode)
+      .pipe(
+        catchError(error => {
+          this.tradeVolumeData = null;
+          return of(null);
+        })
+      )
+      .subscribe(tradeVolume => {
+        if (tradeVolume)
+          this.tradeVolumeData = tradeVolume;
+      });
+  }
   // =========================================================
   // Real-Time WebSocket Integration
   // =========================================================

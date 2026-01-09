@@ -10,22 +10,19 @@
         <mat-icon matListItemIcon>add_circle</mat-icon>
         <span matListItemTitle>{{ 'NEW_ORDER' | translate }}</span>
       </a>
-      <a mat-list-item routerLink="/wallet">
-        <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
-        <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
-      </a>
-      <a mat-list-item routerLink="/orders">
-        <mat-icon matListItemIcon>list_alt</mat-icon>
-        <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
-      </a>
-      <a mat-list-item routerLink="/settings">
-        <mat-icon matListItemIcon>settings</mat-icon>
-        <span matListItemTitle>{{ 'SETTINGS' | translate }}</span>
-      </a>
       <a mat-list-item routerLink="/profile">
         <mat-icon matListItemIcon>account_box</mat-icon>
         <span matListItemTitle>{{ 'PROFILE' | translate }}</span>
       </a>
+      <a mat-list-item routerLink="/wallet">
+        <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
+        <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
+      </a>     
+      <a mat-list-item routerLink="/settings">
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS' | translate }}</span>
+      </a>
+
       <a mat-list-item (click)="handleLogout()">
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>
@@ -37,18 +34,19 @@
   <mat-sidenav-content class="sidenav-content">
     @if (authService.isAuthenticated()) {
     <!-- Top toolbar -->
-    <mat-toolbar class="app-toolbar fixed-top">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-
+    <mat-toolbar class="app-toolbar">
+      <div class="toolbar-left-controls">
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
       <mat-form-field appearance="outline" class="pair-selector">
         <mat-label>{{ 'TRADE' | translate }}</mat-label>
         <mat-select [ngModel]="selectedPair"
                     (ngModelChange)="onPairSelect($event)"
                     [ngModelOptions]="{standalone: true}">
           @for (pair of availablePairs; track pair) {
-         
+
           <mat-option [value]="pair" class="pair-option">
             <span class="pair-option-content">
               <img [src]="getBaseCurrencyImage(pair.value)"
@@ -62,18 +60,13 @@
                    alt="">
             </span>
           </mat-option>
-
           }
         </mat-select>
         <mat-icon matPrefix>paid</mat-icon>
       </mat-form-field>
-
-      <span class="toolbar-title">{{ title() }}</span>
-      <span class="spacer"></span>
-
-      <!--<button mat-icon-button>
-        <mat-icon [matBadge]="orderCount$ | async" badgeColor="accent">shopping_cart</mat-icon>
-      </button>-->
+      <div class="toolbar-right-controls">
+        <span class="toolbar-title">{{ title() }}</span>
+      </div>
     </mat-toolbar>
     }
     <!-- Page content -->
@@ -88,7 +81,7 @@
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
       <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item">
-        <mat-icon>wallet</mat-icon>
+        <mat-icon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
       <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item">

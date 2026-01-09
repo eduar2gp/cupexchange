@@ -1,9 +1,10 @@
 /*
- * CORE LAYOUT STYLES
- * Implements a fixed header, fixed footer, and scrollable content using flexbox.
- */
+==================================================
+  GLOBAL AND SIDENAV STYLES
+==================================================
+*/
 
-// Fullscreen sidenav container
+/* Fullscreen sidenav container */
 mat-sidenav-container[fullscreen] {
   /* FIX 2: Use Dynamic Viewport Height for correct mobile behavior (iOS dynamic toolbar issue) */
   height: 100dvh;
@@ -59,129 +60,73 @@ mat-sidenav {
       &:hover {
         background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
       }
-
-      //&.active {
-      //  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
-      //  color: var(--color-text);
-        //mat-icon {
-        //  color: var(--color-text);
-        //}
-      //}
     }
 
-    mat-slide-toggle {
-      margin: 16px 24px 8px;
-      width: calc(100% - 48px);
+     a.no-highlight-active.mat-list-item-active,
+     a.no-highlight-active.router-link-active {
+      background-color: transparent !important; /* Forces the background off */
+      color: var(--color-text) !important; /* Resets text color to default */
     }
   }
 }
 
-// Top Toolbar (fixed via flex, always visible when authenticated)
+/*
+==================================================
+  APP TOOLBAR (HEADER) STYLES
+==================================================
+*/
 .app-toolbar {
-  flex: 0 0 auto; /* Pins it to top */
+  flex: 0 0 auto;
   z-index: 10;
+  /* FIX 1: Set reduced height for toolbar */
+  height: 46px;
   background-color: var(--color-surface-elevated);
   border-bottom: 1px solid var(--color-border);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  /* FIX 1: Ensure flex properties are set for vertical centering of items */
   display: flex;
   align-items: center; /* Vertically centers the items inside the toolbar */
 
   .dark-theme & {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
-
-  .pair-selector {
-    width: 180px;
-    //max-height: 20px;
-    //min-height: 30px;
-    margin-left: 12px;
-    margin-top: 25px;
-    /* === CRITICAL FINAL FIX: Push the element up for visual centering === */
-    //margin-top: 30px; /* Adjust this value (e.g., -2px, -3px, -4px) */
-    //margin-bottom: 0; /* Ensure no bottom margin pushes it up unnecessarily */
-    /* CRITICAL FIX 1: Tighten the inner content padding */
-    .mat-mdc-form-field-infix {
-      //padding: 0.5em 0 0.5em 0;
-    }
-    /* CRITICAL FIX 2: Remove default top/bottom padding from the Outline Wrapper */
-    .mat-mdc-text-field-wrapper {
-      //padding-top: 0;
-      //padding-bottom: 0;
-      //height: 100%;
-    }
-    /* CRITICAL FIX 3: Clear native mat-form-field margins (redundant but safe) */
-    /* margin-top: 0; // Already handled by -3px fix */
-    /* margin-bottom: 0; */
-
-    mat-icon {
-      color: var(--color-success);
-    }
-  }
-
-  .toolbar-title {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-left: 16px;
-    color: var(--color-primary);
-  }
-
-  .spacer {
-    flex: 1 1 auto;
-  }
-
-  button {
-    color: var(--color-text);
-  }
-
-  matListItemTitle {
-    color: var(--color-text);
-    background-color: var(--color-text);
-
-    mat-icon {
-      color: var(--color-text);
-      background-color: var(--color-text);
-    }
-  }
-
-  matListItemIcon {
-    color: var(--color-text);
-    background-color: var(--color-text);
-  }
-
-  button[mat-icon-button]:last-child {
-    margin-right: 8px;
-  }
-  // Badge styling
-  .mat-badge-content {
-    //background-color: var(--color-accent);
-    font-size: 12px;
-    font-weight: 600;
-  }
 }
 
-// Main scrollable content area
+/* FIX: FLEX SPACERS FOR PERFECT CENTERING */
+.toolbar-left-controls,
+.toolbar-right-controls {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Ensure content on the right is pinned to the right edge */
+.toolbar-right-controls {
+  justify-content: flex-end;
+}
+
+/*
+==================================================
+  MAIN CONTENT AREA
+==================================================
+*/
 .main-content {
   flex: 1 1 auto; /* Takes all available space */
   overflow-y: auto; /* Allows content scrolling */
   padding: 20px;
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
-
-  .dark-theme & {
-    /* box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2); */
-  }
   // Extra bottom padding on mobile to avoid overlap with bottom nav on iOS/Android
   padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
 /*
- * BOTTOM NAVIGATION BAR STYLES
- * Uses position: fixed for robust mobile display.
- */
+==================================================
+  BOTTOM NAVIGATION BAR STYLES
+==================================================
+*/
 .bottom-nav {
-  /* Using position fixed is generally more robust than flex: 0 0 auto for mobile headers/footers */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -199,21 +144,10 @@ mat-sidenav {
   padding-bottom: max(4px, env(safe-area-inset-bottom));
 
   .nav-item {
-    //display: flex;
-    //flex-direction: column;
-    //align-items: center;
-    //justify-content: center;
-    //min-width: 90px;
-    //padding: 4px 0;
     text-transform: none;
-    //text-decoration-color: #dd2424;
   }
 
   .nav-item mat-icon {
-    //margin-bottom: 4px;
-    //font-size: 28px;
-    //height: 28px;
-    //width: 28px;
     color: var(--color-text);
   }
 
@@ -221,123 +155,223 @@ mat-sidenav {
     font-size: 12px;
     line-height: 1;
   }
-  /* Active state highlight (optional) */
-  .nav-item.active {
-    /* Add active color styling here */
-    background-color: var(--color-primary);
-  }
 }
 
-
 /*
- * PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
- */
+==================================================
+  PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
+==================================================
+*/
 .pair-selector {
   min-width: 210px;
-  margin-left: 16px;
+  width: 220px;
   color: var(--color-text);
-  /* FIX 1: Tighter vertical spacing to fit better in the toolbar */
-  .mat-mdc-form-field-infix {
-    padding: 0.5em 0 0.5em 0;
-  }
-
+  margin: 0; /* Ensures proper Flexbox centering with fixed toolbar height */
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin-top: 25px;
+  /* --- FIX 2: REMOVE WHITE BORDER LINE COMPLETELY --- */
+  /* 1. Remove the background and padding/border from the main wrapper */
   .mat-mdc-text-field-wrapper {
-    padding-bottom: 0;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
-  // Modern outline
-  &.mat-mdc-outlined-field {
-    --mat-mdc-outlined-field-outline-width: 1.5px;
-    border-radius: 12px;
 
+  &.mat-mdc-outlined-field {
+    /* Critical: Set the CSS variable width to zero */
+    --mat-mdc-outlined-field-outline-width: 0 !important;
+    border-radius: 12px;
+    /* 2. Aggressively hide the outline element itself and all its pieces */
+    .mat-mdc-form-field-outline {
+      border: none !important;
+      border-width: 0 !important;
+      background-color: transparent !important;
+
+      .mat-mdc-form-field-outline-leading,
+      .mat-mdc-form-field-outline-trailing,
+      .mat-mdc-form-field-outline-gap {
+        border: none !important;
+        border-width: 0 !important;
+        background-color: transparent !important;
+      }
+    }
+    /* 3. Ensure focus state also shows no outline/shadow */
     &.mat-focused {
       .mat-mdc-form-field-outline {
-        box-shadow: 0 0 0 4px rgba(var(--mat-primary-rgb, 33, 150, 243), 0.15);
+        border: none !important;
+        box-shadow: none !important;
       }
     }
   }
+  /* Tighter vertical spacing for better fit */
+  .mat-mdc-form-field-infix {
+    /* Symmetrical padding for vertical centering of text/select trigger */
+    padding: 0.5em 0.5em 0.5em 0.5em !important;
+  }
+  /* Control the inner select trigger height */
+  .mat-mdc-select-trigger {
+    height: 36px;
+    line-height: 36px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   mat-icon[matPrefix] {
-    //color: var(--color-success, #00d1b2);
     font-size: 20px;
     opacity: 0.9;
     transition: color 0.2s ease, transform 0.2s ease;
   }
-
-  &:hover {
-    mat-icon[matPrefix] {
-      transform: scale(1.05);
-    }
-  }
-
-  &.mat-focused {
-    mat-icon[matPrefix] {
-      //color: var(--mat-primary, #2196f3);
-    }
-  }
-  // Panel (dropdown) styling
+  /* Dropdown panel styling */
   .mat-mdc-select-panel {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     margin-top: 8px;
-  }
-
-  .mat-mdc-option:hover {
-    background-color: rgba(var(--mat-primary-rgb, 33, 150, 243), 0.08);
+    min-width: calc(100% + 40px) !important; /* Panel wider than field */
   }
 
   .pair-option {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    //padding: 8px 16px;
     height: 60px;
-    transition: background-color 0.2s ease;
+    padding: 0 16px;
     background-color: var(--color-surface-elevated);
 
-    &:hover {
-      //background-color: rgba(0, 0, 0, 0.04);
-    }
-
-    .mat-mdc-theme-dark & {
-      &:hover {
-        //background-color: rgba(255, 255, 255, 0.08);
-      }
-    }
-
-    &.mat-mdc-option-active {
-      background-color: var(--color-surface);
+    .pair-option-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
   }
 
   .pair-logo {
-    width: 55px;
+    width: 40px;
+    height: 20px;
+    object-fit: contain;
   }
 
   .pair-text {
     font-weight: 500;
     font-size: 14px;
-    //color: var(--mat-option-label-text-color, inherit);
-  }
-
-  .mat-mdc-select-panel {
-    min-width: calc(100% + 40px) !important;
   }
 }
 
 /*
- * RESPONSIVE ADJUSTMENTS
- */
+==================================================
+  TRADE PAGE LAYOUT (75%/25% Split)
+==================================================
+*/
+.trade-page {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  min-height: 50vh;
+  background: var(--color-background);
+  /* Optimized page margin */
+  padding: 0.75rem;
+}
+
+/* TRADE CARD (60% Width) */
+.trade-card {
+  /* FIX: Use calc() for precise 60% of remaining space after gap */
+  flex-basis: calc(60% - 8px);
+  flex-grow: 1;
+  flex-shrink: 1;
+  /* Reduced internal padding */
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.08));
+}
+
+/* SIDE DIV (40% Width) */
+.side-div {
+  /* FIX: Use calc() for precise 40% of remaining space after gap */
+  flex-basis: calc(40% - 8px);
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+/* TRADE CARD INTERNAL STYLES */
+.trade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.trade-form {
+  display: flex;
+  flex-direction: column;
+  /* Reduced gap between form elements */
+  gap: 0.75rem;
+}
+
+.price-slider {
+  display: flex;
+  flex-direction: column;
+  /* FIX: Replaced % margin with consistent vertical padding */
+  padding: 1.5rem 0;
+}
+
+/* Buttons */
+.submit-btn {
+  /* Margin is 1% to absorb transform: scale(1.02) */
+  margin: 1%;
+  width: 95%;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+
+
+.submit-btn:hover {
+  transform: scale(1.02);
+}
+
+//.submit-btn:active {
+//  transform: scale(0.98);
+//}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Buy / Sell variants */
+.submit-buy {
+  background: linear-gradient( to right, var(--color-success), color-mix(in srgb, var(--color-success) 80%, #000) );
+}
+
+.submit-sell {
+  background: linear-gradient( to right, var(--color-danger), color-mix(in srgb, var(--color-danger) 80%, #000) );
+}
+
+/*
+==================================================
+  RESPONSIVE ADJUSTMENTS
+==================================================
+*/
+
 @media (max-width: 599px) {
   .app-toolbar {
     .toolbar-title {
-      display: none; // Hide title on small screens
+      display: none; /* Hide title on small screens */
     }
 
     .pair-selector {
-      width: 200px;
-      margin-left: 8px;
+      width: 200px; /* Adjust width slightly for smaller screens */
     }
   }
 
@@ -352,39 +386,13 @@ mat-sidenav {
     padding: 32px;
     padding-bottom: calc(32px + env(safe-area-inset-bottom));
   }
-
-  .app-toolbar {
-    .pair-selector {
-      width: 220px;
-    }
-    .toolbar-title {
-      display: block; // Ensure title visible on larger screens
-    }
-  }
 }
 
-
-span{
-    color: var(--color-text);
+/* General Text/Color Overrides */
+span, mat-select, mat-label {
+  color: var(--color-text);
 }
 
-mat-select{
-    color: var(--color-text);
-}
-
-mat-option{
-    color: var(--color-text);
-    background-color: var(--color-text);
-}
-
-
-/* icons */
-.pair-logo {
-  width: 40px;
-  height: 20px;
-  object-fit: contain;
-}
-
-mat-label{
-    color: var(--color-text);
+mat-option {
+  color: var(--color-text);
 }

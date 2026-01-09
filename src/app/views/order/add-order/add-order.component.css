@@ -1,29 +1,44 @@
 .trade-page {
-  min-height: 50vh;
   display: flex;
-  align-items: center; 
-  justify-content: center;   
+  width: 100%;
+/*  gap: 16px;*/
+  min-height: 50vh;
   background: var(--color-background);
-  padding: 1rem;
+  /* Reduced page margin for better space usage */
+  padding: 0.75rem;
 }
-/* Card */
+
+
+/* --- 2. TRADE CARD (60% Width) --- */
 .trade-card {
-  padding: 2rem;
+  /* 🛠️ FIX: Use calc() for precise 60% of remaining space after gap */
+  flex-basis: calc(60% - 8px);
+  flex-grow: 1; /* Allow it to grow */
+  flex-shrink: 1; /* Allow it to shrink */
+  /* Reduced internal padding for better content usage */
+  padding: 1.5rem;
   border-radius: 1.5rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.08));
 }
 
-/* Header */
 .trade-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
+  /* Reduced vertical space below header */
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--color-divider);
 }
+
+.trade-form {
+  display: flex;
+  flex-direction: column;
+  /* Reduced gap between form elements */
+  gap: 0.75rem;
+}
+
 
 .trade-title {
   font-size: 1.75rem;
@@ -44,7 +59,7 @@
 
   .trade-pair label {
     /* Ensure the text is readable */
-    font-size: 1em; /* Inherit from parent .trade-pair */
+    /*font-size: 1em;*/ /* Inherit from parent .trade-pair */
     font-weight: bold;
   }
 
@@ -89,17 +104,13 @@
   margin-top: 2rem;
 }
 
-.trade-form {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+
 
 /* Grid */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+/*  gap: 2rem;*/
 }
 
 @media (min-width: 1024px) {
@@ -114,13 +125,16 @@
 .form-column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+/*  gap: 1.5rem;*/
 }
 
-/* Price slider */
 .price-slider {
   display: flex;
   flex-direction: column;
+  /* 🛠️ FIX: Replaced margin: 8% with consistent vertical padding */
+/*  padding: 1.5rem 0;*/
+  /* Removed margin: 8%; */
+  margin: 8%;
 }
 
 .price-label {
@@ -139,7 +153,7 @@
 
 /* Buttons */
 .submit-btn {
-  width: 100%;
+  width: 95%;
   padding: 1rem 1.5rem;
   border-radius: 1rem;
   font-size: 1.125rem;
@@ -148,6 +162,7 @@
   border: none;
   cursor: pointer;
   transition: transform 150ms ease, opacity 150ms ease;
+  margin: 1%;
 }
 
   .submit-btn:hover {
@@ -171,4 +186,14 @@
 
 .submit-sell {
   background: linear-gradient( to right, var(--color-danger), color-mix(in srgb, var(--color-danger) 80%, #000) );
+}
+
+
+.side-div {
+  /* 🛠️ FIX: Use calc() for precise 40% of remaining space after gap */
+  flex-basis: calc(40% - 8px);
+  flex-grow: 1; /* Allow it to grow */
+  flex-shrink: 1; /* Allow it to shrink */
+  /* If the content of side-div needs padding, add it here, e.g., padding: 1rem; */
+  margin: 0%;
 }
