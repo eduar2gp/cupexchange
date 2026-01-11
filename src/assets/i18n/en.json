@@ -71,5 +71,6 @@
   "CASH": "Cash",
   "CARD": "Card",
   "PROVIDERS": "Providers",
-  "MY_STORE":  "My Store"
+  "MY_STORE": "My Store",
+  "NOTIFICATIONS": "Notifications"
 }

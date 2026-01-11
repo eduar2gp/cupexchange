@@ -19,6 +19,7 @@ export class UserService {
   private REGISTER_ENDPOINT = '/api/v1/auth/register';
   private VERIFY_ENDPOINT = '/api/v1/auth/verify';
   private UPDATE_PROFILE_ENDPOINT = '/api/v1/auth/update/profile';
+  private UPDATE_FCMTOKEN_ENDPOINT = '/api/v1/auth/update/fcm-token';
 
   private fullUrl = `${environment.baseApiUrl}${this.REGISTER_ENDPOINT}`;
 
@@ -45,5 +46,11 @@ export class UserService {
   updateUserProfile(user: UserProfileData): Observable<User> {
     const updateUrl = `${environment.baseApiUrl}${this.UPDATE_PROFILE_ENDPOINT}`
     return this.http.post<User>(updateUrl, user);
+  }
+
+  updateUserFCMToken(token: string | null): Observable<void> {
+    const updateFcmUrl = `${environment.baseApiUrl}${this.UPDATE_FCMTOKEN_ENDPOINT}`
+    const payload = { deviceToken: token }    
+    return this.http.post<void>(updateFcmUrl, payload);
   }
 }

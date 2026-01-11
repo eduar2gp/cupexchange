@@ -71,5 +71,6 @@
   "CASH": "Efectivo",
   "CARD": "Tarjeta",
   "PROVIDERS": "Proveedores",
-  "MY_STORE": "Mi Tienda"
+  "MY_STORE": "Mi Tienda",
+  "NOTIFICATIONS": "Notificaciones"
 }

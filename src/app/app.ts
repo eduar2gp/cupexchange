@@ -3,7 +3,7 @@ import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router
 import { AuthService } from '../app/core/services/auth.service';
 import { PairSelectionService } from '../app/core/services/pair-selection.service';
 import { ThemeService } from '../app/core/services/theme-service';
-//import { Fcm } from '../app/core/services/fcm.service';
+
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +17,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 
-import { HttpClient } from '@angular/common/http';
 import { Subscription, filter } from 'rxjs';
 import { TradingPair } from './model/trading_pair';
 
@@ -28,6 +27,7 @@ import { LanguageService } from '../app/core/services/language.service'
 import { NavigationDecisionService } from '../app/core/services/navigation-decision.service'
 import { Role } from '../app/model/roles.enum'
 import { HasRoleDirective } from '../app/core/directives/has-roles.directive'
+import { FCMService } from '../app/core/services/fcm.service';
 
 @Component({
   selector: 'app-root',
@@ -65,8 +65,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public themeService = inject(ThemeService);
   private walletService = inject(WalletService);
   private navigationDecisionService = inject(NavigationDecisionService);
- // private fcmService = inject(Fcm);
-  private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
 
    //Subscriptions
@@ -85,30 +83,23 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   ];
 
   //orderCount$!: Observable<number>;
-  constructor(private languageService: LanguageService) {}
+  constructor(
+    private languageService: LanguageService,
+    private fcmService: FCMService
+  ) { }
 
   ngOnInit(): void {
     this.themeService.initTheme();
-
     // 2. CRITICAL FIX: Only run browser-specific setup on the client
     if (isPlatformBrowser(this.platformId)) {
-
-     //  1. Load pairs from backend (The HTTP request that must complete)
-     this.loadTradingPairs();
-
-    //   FCM token request setup (Promise execution must be client-side)
-   //   this.fcmService.requestPermissionAndGetToken().then(token => {
-      //  if (token) {
-        //  console.log('FCM Token obtained:', token);
-      //  }
-    //  });
-
-     //  CRITICAL: Non-terminating stream subscription must be client-side
-      //this.fcmSubscription = this.fcmService.receiveMessages().subscribe(payload => {
-      //  console.log('Foreground message received:', payload);
-     // });
+      //  1. Load pairs from backend (The HTTP request that must complete)
+      this.loadTradingPairs();
+      if (localStorage.getItem('NOTIFICATIONS_ENABLED') === 'true') {
+        this.fcmSubscription = this.fcmService.receiveMessages().subscribe(payload => {
+          console.log('Foreground message handled by component:', payload);
+        });
+      }
     }
-
     // Order count badge (Uncomment and ensure OrdersService is SSR-safe)
     //this.orderCount$ = this.ordersService.getCurrentUserOrders().pipe(
      // map(orders => orders.length)
@@ -122,8 +113,10 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.routerSubscription?.unsubscribe();
-    //this.fcmSubscription?.unsubscribe();  //Dispose of the client-side FCM subscription
+    this.routerSubscription?.unsubscribe();   
+    if (this.fcmSubscription) {
+      this.fcmSubscription.unsubscribe(); // Still critical to unsubscribe from the Subject
+    }
   }
 
   private loadTradingPairs(): void {
