@@ -6,6 +6,14 @@
     </div>
     <mat-nav-list>
       @if (authService.isAuthenticated()) {
+      <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/providers-list">
+        <mat-icon matListItemIcon>store</mat-icon>
+        <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
+      </a>
+      <a *appHasRole="[Role.Provider]" mat-list-item routerLink="/provider-dashboard">
+        <mat-icon matListItemIcon>store</mat-icon>
+        <span matListItemTitle>{{ 'MY_STORE' | translate }}</span>
+      </a>
       <a mat-list-item routerLink="/add-order" (click)="checkWalletsAndNavigate()">
         <mat-icon matListItemIcon>add_circle</mat-icon>
         <span matListItemTitle>{{ 'NEW_ORDER' | translate }}</span>
@@ -17,12 +25,11 @@
       <a mat-list-item routerLink="/wallet">
         <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
-      </a>     
+      </a>
       <a mat-list-item routerLink="/settings">
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>{{ 'SETTINGS' | translate }}</span>
       </a>
-
       <a mat-list-item (click)="handleLogout()">
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>

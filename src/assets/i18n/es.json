@@ -69,5 +69,7 @@
   "RESERVED": "Reservado",
   "DETAILS": "Detalles",
   "CASH": "Efectivo",
-  "CARD": "Tarjeta"
+  "CARD": "Tarjeta",
+  "PROVIDERS": "Proveedores",
+  "MY_STORE": "Mi Tienda"
 }

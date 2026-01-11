@@ -69,5 +69,7 @@
   "RESERVED": "Reserved",
   "DETAILS": "Details",
   "CASH": "Cash",
-  "CARD": "Card"
+  "CARD": "Card",
+  "PROVIDERS": "Providers",
+  "MY_STORE":  "My Store"
 }

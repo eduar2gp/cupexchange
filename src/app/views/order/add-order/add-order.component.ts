@@ -52,7 +52,7 @@ interface Type {
     MatProgressSpinnerModule,
   ],
   templateUrl: './add-order.component.html',
-  styleUrl: './add-order.component.css',
+  styleUrl: './add-order.component.scss',
 })
 export class AddOrderComponent implements OnInit, OnDestroy {
   // Services

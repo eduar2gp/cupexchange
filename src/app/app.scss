@@ -17,7 +17,10 @@ mat-sidenav-container[fullscreen] mat-sidenav-content {
   flex-direction: column;
   /* FIX 2: Use Dynamic Viewport Height */
   height: 100dvh;
-  overflow: hidden; /* Prevents container from scrolling itself */
+  /* FIX: Only keep the rule that enables scrolling */
+  overflow-y: auto;
+  /* You can still hide horizontal scrolling if you need it */
+  overflow-x: hidden;
 }
 
 // Left Sidenav (overlay on mobile)
@@ -89,6 +92,9 @@ mat-sidenav {
 
   .dark-theme & {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  mat-icon{
+      color: var(--color-text);
   }
 }
 
@@ -165,51 +171,11 @@ mat-sidenav {
 .pair-selector {
   min-width: 210px;
   width: 220px;
-  color: var(--color-text);
+  //color: var(--color-text);
   margin: 0; /* Ensures proper Flexbox centering with fixed toolbar height */
   flex-shrink: 0;
   flex-grow: 0;
   margin-top: 25px;
-  /* --- FIX 2: REMOVE WHITE BORDER LINE COMPLETELY --- */
-  /* 1. Remove the background and padding/border from the main wrapper */
-  .mat-mdc-text-field-wrapper {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-
-  &.mat-mdc-outlined-field {
-    /* Critical: Set the CSS variable width to zero */
-    --mat-mdc-outlined-field-outline-width: 0 !important;
-    border-radius: 12px;
-    /* 2. Aggressively hide the outline element itself and all its pieces */
-    .mat-mdc-form-field-outline {
-      border: none !important;
-      border-width: 0 !important;
-      background-color: transparent !important;
-
-      .mat-mdc-form-field-outline-leading,
-      .mat-mdc-form-field-outline-trailing,
-      .mat-mdc-form-field-outline-gap {
-        border: none !important;
-        border-width: 0 !important;
-        background-color: transparent !important;
-      }
-    }
-    /* 3. Ensure focus state also shows no outline/shadow */
-    &.mat-focused {
-      .mat-mdc-form-field-outline {
-        border: none !important;
-        box-shadow: none !important;
-      }
-    }
-  }
-  /* Tighter vertical spacing for better fit */
-  .mat-mdc-form-field-infix {
-    /* Symmetrical padding for vertical centering of text/select trigger */
-    padding: 0.5em 0.5em 0.5em 0.5em !important;
-  }
   /* Control the inner select trigger height */
   .mat-mdc-select-trigger {
     height: 36px;
@@ -255,6 +221,64 @@ mat-sidenav {
   .pair-text {
     font-weight: 500;
     font-size: 14px;
+  }
+  /* The main selector for outlined appearance */
+  &.mat-mdc-outlined-field {
+    /* *** CRITICAL FIXES FOR OUTLINE *** */
+    --mat-mdc-outlined-field-outline-width: 0 !important;
+    --mat-mdc-outlined-field-outline-thick-width: 0 !important;
+    border-radius: 12px;
+    /* Hide the entire outline wrapper */
+    .mat-mdc-form-field-outline {
+      display: none !important;
+      border: none !important;
+    }
+    /* Aggressively ensure no shadow or outline on focus */
+    &.mat-focused {
+      .mat-mdc-form-field-outline {
+        box-shadow: none !important;
+      }
+    }
+  }
+  /* 1. Remove background/shadow from the main wrapper */
+  .mat-mdc-text-field-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  /* 2. Tighter vertical spacing for better fit */
+  .mat-mdc-form-field-infix {
+    padding: 0.5em 0.5em 0.5em 0.5em !important;
+    margin-top: 0 !important; /* Ensure no margin is left by the label */
+  }
+  /* 1. Remove background/shadow from the main wrapper (already present) */
+  .mat-mdc-text-field-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  /* NEW: Target the actual container holding the select trigger */
+  .mat-mdc-form-field-flex {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  /* NEW: Target the container when it is focused */
+  &.mat-focused .mat-mdc-form-field-flex {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  /* NEW: Target the content padding area itself */
+  .mat-mdc-form-field-infix {
+    /* (Your existing padding rules) */
+    padding: 0.5em 0.5em 0.5em 0.5em !important;
+    margin-top: 0 !important;
+    /* Ensure no internal border/shadow */
+    border: none !important;
+    box-shadow: none !important;
   }
 }
 

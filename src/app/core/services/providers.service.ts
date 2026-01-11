@@ -42,5 +42,9 @@ export class ProvidersService {
     const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}`;
     return this.http.post<Provider>(fullUrl, provider);
   }
-  
+
+  getProviderById(providerId: string): Observable<Provider>{
+    const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}/${providerId}`;
+    return this.http.get<Provider>(fullUrl);
+  }  
 }

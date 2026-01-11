@@ -78,7 +78,8 @@ html {
 
 
 // === Global Styles ===
-html, body {
+html, body {  
+  overflow: hidden; /* CRITICAL: Hides the browser scrollbar */
   margin: 0;
   padding: 0;
   height: 100%;
@@ -86,7 +87,7 @@ html, body {
   overflow-x: hidden;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: var(--color-background);
-  color: var(--color-text);
+  //color: var(--color-text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -129,14 +130,6 @@ body::before {
   }
 }
 
-// Sidenav
-//.sidenav-container {
-//  height: 100vh;
-//  background-color: var(--color-surface);
-//  border: 1px solid var(--color-border);
-//  transition: background-color 0.3s ease, border-color 0.3s ease;
-//}
-
 
 .success-snackbar {
   background-color: #4caf50;
@@ -153,13 +146,6 @@ body::before {
   color: white;
 }
 
-// Make sidenav-content a vertical flex column filling the viewport
-.sidenav-content {
-  display: flex;
-  flex-direction: column;
-  height: 100vh; // Full viewport height
-  overflow: hidden; // Prevent container itself from scrolling
-}
 
 // Fixed top toolbar
 .app-toolbar.fixed-top {
@@ -193,7 +179,8 @@ mat-sidenav-container[fullscreen] {
 
 mat-form-field {
   color: var(--color-text);
-  //caret-color: var(--color-primary);
+  border: none;
+  box-shadow: none;
 }
 
 /* mat-option: flex row, align items */
@@ -201,7 +188,7 @@ mat-form-field {
   display: flex !important;
   align-items: center;
   padding-right: 12px; /* space for checkbox */
-  box-sizing: border-box;
+  //box-sizing: border-box;
 }
 
 /* Wrap your content (icons + text) and make it take remaining space */

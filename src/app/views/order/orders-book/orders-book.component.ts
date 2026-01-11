@@ -30,6 +30,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   private ordersSignal: WritableSignal<PublicOrderDTO[]> = signal([]);
 
   @Input() layoutMode: LayoutMode = 'side-by-side';
+  @Input() MAX_ORDERS_ITEMS: number = 100;
 
   // 2. COMPUTED STATE: Create reactive, filtered lists (sorted by timestamp)
   public buyOrders: Signal<PublicOrderDTO[]> = computed(() =>
@@ -117,7 +118,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   }
 
   private loadInitialOrders(pair: string): void {
-    this.orderService.findTopNByPairCode(pair, 100).subscribe({
+    this.orderService.findTopNByPairCode(pair, this.MAX_ORDERS_ITEMS).subscribe({
       next: (initialOrders: PublicOrderDTO[]) => {
         this.ngZone.run(() => {
           // Use set() to replace the entire array and trigger signal update

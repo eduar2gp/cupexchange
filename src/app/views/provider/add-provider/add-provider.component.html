@@ -1,0 +1,50 @@
+<h3>Add New Provider</h3>
+<form [formGroup]="phoneForm" (ngSubmit)="saveProvider()">
+
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput
+           formControlName="name"
+           type="text" required
+           [(ngModel)]="newProvider.name">
+    @if (nameControl.hasError('required') && nameControl.touched) {
+    <mat-error>Name is required.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput
+           type="email"
+           email
+           required
+           formControlName="email" [(ngModel)]="newProvider.email">
+
+    @if (emailControl.touched && emailControl.errors?.['required']) {
+    <mat-error>Email is required.</mat-error>
+    }
+    @if (emailControl.touched && emailControl.errors?.['pattern']) {
+    <mat-error>Please enter a valid email address.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Phone Number</mat-label>
+    <input matInput formControlName="phoneNumber" type="number" placeholder="e.g. (555) 555-1234" [(ngModel)]="newProvider.phone">
+
+    @if (phoneControl.hasError('required')) {
+    <mat-error>Phone number is required</mat-error>
+    }
+    @if (phoneControl.hasError('pattern')) {
+    <mat-error>Please enter a valid 10-digit phone number</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="file-upload-container">
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+  </div>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="phoneForm.invalid">
+    Save Changes
+  </button>
+</form>

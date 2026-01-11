@@ -7,10 +7,13 @@
   min-height: 400px;
   background-color: var(--color---color-background);
 
-  .orders-grid.stacked {
+  .stacked {
     display: flex;
     flex-direction: column; /* Stacks children vertically */
     gap: 0px; /* Space between the cards */
+    mat-card {
+      max-height: 150px;
+    }
   }
 
   .side-panel {
@@ -20,6 +23,7 @@
     border: 1px solid var(--color-border, #d8dee4);
     box-shadow: none;
     background-color: var(--color-surface);
+    overflow-y: auto;
 
     mat-card-header {
       padding: 12px 16px;
@@ -135,7 +139,21 @@
 .orders-grid.side-by-side {
   display: flex;
   flex-direction: row; /* Places children horizontally */
-  gap: 2px; /* Space between the cards */
+  gap: 0px; /* Space between the cards */
+  mat-card{
+      min-height: 250px;
+      max-height: 500px;
+  }
+}
+
+.orders-grid.stacked {
+  display: flex;
+  flex-direction: column; /* Stacks children vertically */
+  gap: 0px; /* Space between the cards */
+  mat-card {
+    max-height:350px;
+    min-height: 300px;
+  }
 }
 
 .orders-grid.stacked .side-panel {
@@ -149,11 +167,9 @@
 }
 
 .empty-state {
-  margin-top: 16px;
-  background-color: var(--color-surface);
-  mat-card-content
-
-{
-  color: var(--color-text);
-}
+    margin-top: 16px;
+    background-color: var(--color-surface);
+  mat-card-content{
+    color: var(--color-text);
+  }
 }

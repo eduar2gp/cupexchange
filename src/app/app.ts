@@ -3,7 +3,6 @@ import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router
 import { AuthService } from '../app/core/services/auth.service';
 import { PairSelectionService } from '../app/core/services/pair-selection.service';
 import { ThemeService } from '../app/core/services/theme-service';
-//import { OrdersService } from '../app/core/services/orders.service';
 //import { Fcm } from '../app/core/services/fcm.service';
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -27,6 +26,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WalletService } from '../app/core/services/wallet.service'
 import { LanguageService } from '../app/core/services/language.service'
 import { NavigationDecisionService } from '../app/core/services/navigation-decision.service'
+import { Role } from '../app/model/roles.enum'
+import { HasRoleDirective } from '../app/core/directives/has-roles.directive'
 
 @Component({
   selector: 'app-root',
@@ -45,7 +46,8 @@ import { NavigationDecisionService } from '../app/core/services/navigation-decis
     MatFormFieldModule,
     FormsModule,
     MatSlideToggleModule,
-    TranslateModule
+    TranslateModule,
+    HasRoleDirective
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -54,6 +56,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   protected readonly title = signal('');
+  public readonly Role = Role;
 
  //  Services
   public authService = inject(AuthService);
@@ -62,7 +65,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public themeService = inject(ThemeService);
   private walletService = inject(WalletService);
   private navigationDecisionService = inject(NavigationDecisionService);
- // private ordersService = inject(OrdersService);
  // private fcmService = inject(Fcm);
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);

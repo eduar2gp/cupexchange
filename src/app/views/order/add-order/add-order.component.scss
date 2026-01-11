@@ -6,6 +6,8 @@
   background: var(--color-background);
   /* Reduced page margin for better space usage */
   padding: 0.75rem;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
 }
 
 
@@ -17,7 +19,7 @@
   flex-shrink: 1; /* Allow it to shrink */
   /* Reduced internal padding for better content usage */
   padding: 1.5rem;
-  border-radius: 1.5rem;
+  border-radius: 1.0rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.08));
@@ -26,7 +28,7 @@
 .trade-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   /* Reduced vertical space below header */
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--color-divider);
@@ -49,18 +51,21 @@
 
 /* --- Base Styles (Mobile First: Default to smaller sizes) --- */
 .trade-pair {
-  display: flex;
-  align-items: center;
+  display: grip;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-self: center;
   /* Use a smaller gap for mobile/base layout */
-  gap: 0.5rem;
+  gap: 1.5rem;
   /* Set base font size smaller */
-  font-size: 1.2rem;
+  font-size: 1.0rem;
+  background-color: var(--color-surface);
 }
 
   .trade-pair label {
     /* Ensure the text is readable */
     /*font-size: 1em;*/ /* Inherit from parent .trade-pair */
-    font-weight: bold;
+/*    font-weight: bold;*/
   }
 
 .pair-icon {
@@ -68,6 +73,7 @@
   width: 4rem;
   height: 2rem;
   border-radius: 1px;
+  margin: 5px;
 }
 
 /* --- Desktop Layout (Min-width 768px: Apply larger sizes) --- */
@@ -76,7 +82,7 @@
     /* Increase gap for larger screens */
     gap: 1rem;
     /* Increase base font size for better visibility on desktop */
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
 
   .pair-icon {
@@ -97,6 +103,8 @@
 /* Tabs */
 .trade-tabs {
   --mdc-tab-indicator-active-indicator-color: var(--color-primary);
+
+ 
 }
 
 /* Content */
@@ -194,6 +202,6 @@
   flex-basis: calc(40% - 8px);
   flex-grow: 1; /* Allow it to grow */
   flex-shrink: 1; /* Allow it to shrink */
-  /* If the content of side-div needs padding, add it here, e.g., padding: 1rem; */
-  margin: 0%;
+ 
+  
 }

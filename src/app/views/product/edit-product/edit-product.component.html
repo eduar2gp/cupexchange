@@ -1,0 +1,27 @@
+@if (providerData$ | async; as provider) {
+  <label>{{provider.name}}</label>
+  <img [src]="backendBaseUrl + provider.profileImageUrl" width="150px" height="100px" />
+}
+@if (productData$ | async; as product) {
+  <h3>Product Details</h3>
+  <form #productForm="ngForm" (ngSubmit)="saveProduct(product)">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput name="name" [(ngModel)]="product.name" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput name="description" [(ngModel)]="product.description"></textarea>
+    </mat-form-field>
+    <img [src]="backendBaseUrl + product.productImageUrl" width="100px" height="100px" />
+    <div class="file-upload-container">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+      <!--<button mat-stroked-button color="accent" type="button" (click)="fileInput.click()">
+      Choose Image File
+    </button>-->
+  </div>
+  <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid">
+    Save Changes
+  </button>
+</form>
+}

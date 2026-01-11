@@ -1,0 +1,38 @@
+<div class="dashboard-container">
+  <h2>Provider Dashboard</h2>
+  <hr>
+
+  @if (providerData$ | async; as provider) {
+  <div class="provider-details-card">
+    <h3>{{ provider.name }}'s Details</h3>
+
+    @if (provider.profileImageUrl) {
+    <img [src]="backendBaseUrl + provider.profileImageUrl" alt="Provider Profile" class="profile-image">
+    }
+
+    <dl class="details-list">
+      <dt>ID:</dt>
+      <dd>{{ provider.id }}</dd>
+
+      <dt>Email:</dt>
+      <dd>{{ provider.email }}</dd>
+
+      <dt>Phone:</dt>
+      <dd>{{ provider.phone }}</dd>
+
+      @if (provider.userId) {
+      <dt>User ID (Linked Account):</dt>
+      <dd>{{ provider.userId }}</dd>
+      }
+    </dl>
+  </div>
+  } @else {
+  <p class="loading-message">Loading provider data or provider not found...</p>
+  }
+
+  <button color="primary" (click)="navigateToEditProvider()">
+
+    {{ 'PROVIDERS' | translate }}
+  </button>
+
+</div>

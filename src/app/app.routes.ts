@@ -11,6 +11,13 @@ import { RegisterComponent } from '../app/views/register/register.component'
 import { CurrenciesComponent } from '../app/views/wallet/add-wallet/currencies.component'
 import { ProfileComponent } from '../app/views/profile/profile.component'
 import { AddTransactionComponent } from './views/transaction/add-transaction/add-transaction.component';
+import { AddProviderComponent } from './views/provider/add-provider/add-provider.component'
+import { Role } from '../app/model/roles.enum'
+import { ProvidersListComponent } from '../app/views/provider/providers-list/providers-list.component'
+import { EditProviderComponent } from '../app/views/provider/edit-provider/edit-provider.component'
+import { AddProductComponent } from '../app/views/product/add-product/add-product.component'
+import { EditProductComponent } from '../app/views/product/edit-product/edit-product.component'
+import { ProviderDashboardComponent } from '../app/views/provider/provider-dashboard/provider-dashboard.component'
 
 export const routes: Routes = [
    {
@@ -69,5 +76,41 @@ export const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
     canActivate: [roleGuard],
+  },
+  {
+    path: 'add-provider',
+    component: AddProviderComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin] }
+  },
+  {
+    path: 'providers-list',
+    component: ProvidersListComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin] }
+  },
+  {
+    path: 'edit-provider',
+    component: EditProviderComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.Provider] }
+  },
+  {
+    path: 'add-product',
+    component: AddProductComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.Provider] }
+  },
+  {
+    path: 'edit-product',
+    component: EditProductComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.Provider] }
+  },
+  {
+    path: 'provider-dashboard',
+    component: ProviderDashboardComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Provider] }
   }
 ];
