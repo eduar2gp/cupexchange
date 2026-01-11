@@ -107,7 +107,7 @@ export class FCMService {
     return this.messageSubject.asObservable();
   }
 
-  private displayInAppNotification(payload: MessagePayload) {
+  public displayInAppNotification(payload: MessagePayload) {
     // This logic is already correct for reading Data Messages (customTitle/Body)
     const customData = payload.data;
     const customTitle = customData?.['customTitle'];
