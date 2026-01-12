@@ -96,8 +96,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       this.loadTradingPairs();
       if (localStorage.getItem('NOTIFICATIONS_ENABLED') === 'true') {
         this.fcmSubscription = this.fcmService.receiveMessages().subscribe(payload => {
-          console.log('Foreground message handled by component:', payload);
-          this.fcmService.displayInAppNotification(payload);
+          console.log('Foreground message received in UI layer');
         });
       }
     }
