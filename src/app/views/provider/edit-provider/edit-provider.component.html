@@ -9,7 +9,7 @@
       <mat-label>Description</mat-label>
       <textarea matInput name="description" [(ngModel)]="provider.email"></textarea>
     </mat-form-field>
-    <img [src]="backendBaseUrl + provider.profileImageUrl" width="150px" height="100px" />
+    <img [src]="provider.profileImageUrl" width="150px" height="100px" />
     <div class="file-upload-container">
       <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
       <!--<button mat-stroked-button color="accent" type="button" (click)="fileInput.click()">
@@ -26,7 +26,7 @@
 <ul class="product-list">
   @for (product of productsList(); track product.id) {
     <li class="product-item">
-      <img [src]="backendBaseUrl + product.productImageUrl" alt="Product Image A" class="product-image">
+      <img [src]="product.productImageUrl" alt="Product Image A" class="product-image">
       <div class="product-details">
         <h3 class="product-name">{{product.name}}</h3>
         <p class="product-description"> {{product.description}} </p>

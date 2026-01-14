@@ -20,9 +20,6 @@ import { environment } from '../../../../environments/environment'
   styleUrl: './edit-product.component.css'
 })
 export class EditProductComponent {
-
-  public backendBaseUrl: string = environment.baseApiUrl;
-
   
   productData$!: Observable<Product | null>; 
   providerData$!: Observable<Provider | null>;

@@ -23,7 +23,7 @@ export class ProviderDashboardComponent implements OnInit {
 
   // Observable for provider data, initialized from the DataService
   providerData$: Observable<Provider | null>;
-  public backendBaseUrl: string = environment.baseApiUrl;  
+  
   constructor(
     private providersService: ProvidersService,
     private dataService: DataService

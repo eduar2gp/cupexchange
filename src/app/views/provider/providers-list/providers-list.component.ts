@@ -22,8 +22,6 @@ export class ProvidersListComponent implements OnInit {
 
   public Role = Role;
 
-  public backendBaseUrl: string = environment.baseApiUrl;
-
   // 💡 Inject the new dedicated service
   private providersService = inject(ProvidersService);
 

@@ -16,8 +16,6 @@ import { environment } from '../../../../environments/environment'
 })
 export class ProductListComponent implements OnInit {
 
-  public backendBaseUrl: string = environment.baseApiUrl;
-
   // 💡 Inject the new dedicated service
   private productsService = inject(ProductsService);
 

@@ -26,8 +26,6 @@ export class AddProductComponent {
 
   providerData$!: Observable<Provider | null>;
 
-  public backendBaseUrl: string = environment.baseApiUrl;
-
   selectedFile: File | null = null;
 
   // Initial form model state

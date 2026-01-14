@@ -7,7 +7,7 @@
     <h3>{{ provider.name }}'s Details</h3>
 
     @if (provider.profileImageUrl) {
-    <img [src]="backendBaseUrl + provider.profileImageUrl" alt="Provider Profile" class="profile-image">
+    <img [src]="provider.profileImageUrl" alt="Provider Profile" class="profile-image">
     }
 
     <dl class="details-list">

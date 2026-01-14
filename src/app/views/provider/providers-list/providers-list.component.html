@@ -2,7 +2,7 @@
 <ul class="product-list">
   @for (provider of providers(); track provider.id) {
   <li class="product-item" (click)="onClick(provider)">
-    <img [src]="backendBaseUrl + provider.profileImageUrl" alt="Product Image A" class="product-image">
+    <img [src]="provider.profileImageUrl" alt="Product Image A" class="product-image">
     <div class="product-details">
       <h3 class="product-name">{{provider.name}}</h3>
       <p class="product-description"> {{provider.email}} </p>

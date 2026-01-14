@@ -1,44 +1,92 @@
 @if (providerData$ | async; as provider) {
-  <img [src]="backendBaseUrl + provider.profileImageUrl" width="150px" height="100px" />
-  <label>{{provider.name}}</label>
+<div class="provider-header">
+  <img [src]="provider.profileImageUrl"
+       alt="{{provider.name}} profile"
+       class="provider-avatar"
+       width="64"
+       height="64" />
+  <span class="provider-name">{{provider.name}}</span>
+</div>
 }
 
-<div class="p-6 bg-white rounded-xl shadow-lg mb-8">
-  <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Add New Product</h3>
-  <form #productForm="ngForm" (ngSubmit)="saveProduct(productForm.valid!)">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Name -->
-      <input type="text" [(ngModel)]="newProduct.name" name="name" placeholder="Product Name" required
-             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-      <!-- Price -->
-      <input type="number" [(ngModel)]="newProduct.price" name="price" placeholder="Price (e.g., 29.99)" required min="0.01" step="0.01"
-             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-      <!-- Stock Quantity -->
-      <input type="number" [(ngModel)]="newProduct.stockQuantity" name="stockQuantity" placeholder="Stock Quantity" required min="0"
-             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-    </div>
-    <!-- Description -->
-    <textarea [(ngModel)]="newProduct.description" name="description" placeholder="Product Description" rows="2" required
-              class="w-full mt-4 p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+<div class="card form-card">
+  <h2 class="card-title">Add New Product</h2>
 
-    <div class="file-upload-container">
-      <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+  <form #productForm="ngForm" (ngSubmit)="saveProduct(productForm.valid!)" class="product-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="name">Product Name</label>
+        <input id="name"
+               type="text"
+               [(ngModel)]="newProduct.name"
+               name="name"
+               placeholder="e.g. Wireless Mouse"
+               required
+               class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input id="price"
+               type="number"
+               [(ngModel)]="newProduct.price"
+               name="price"
+               placeholder="29.99"
+               required
+               min="0.01"
+               step="0.01"
+               class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock Quantity</label>
+        <input id="stock"
+               type="number"
+               [(ngModel)]="newProduct.stockQuantity"
+               name="stockQuantity"
+               placeholder="0"
+               required
+               min="0"
+               class="form-input" />
+      </div>
     </div>
 
-    <!-- Status Message -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description"
+                [(ngModel)]="newProduct.description"
+                name="description"
+                placeholder="Describe the product features, materials, etc..."
+                rows="4"
+                required
+                class="form-textarea"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="image">Product Image</label>
+      <div class="file-upload-wrapper">
+        <input id="image"
+               type="file"
+               (change)="onFileSelected($event)"
+               accept="image/*"
+               #fileInput
+               class="file-input" />
+        <span class="file-label">Choose file or drag & drop</span>
+      </div>
+    </div>
+
     @if (statusMessage()) {
-    <p class="mt-3 text-sm font-medium" [class.text-green-600]="isSuccess" [class.text-red-600]="!isSuccess">
-      {{
- statusMessage()
-      }}
+    <p class="status-message"
+       [class.status-success]="isSuccess"
+       [class.status-error]="!isSuccess">
+      {{ statusMessage() }}
     </p>
     }
 
-    <!-- Submit Button -->
-    <button type="submit" [disabled]="!productForm.valid || saving()"
-            class="w-full mt-4 py-3 font-semibold rounded-lg transition duration-300 disabled:opacity-50"
-            [class.bg-indigo-600]="productForm.valid" [class.hover:bg-indigo-700]="productForm.valid"
-            [class.text-white]="productForm.valid" [class.bg-gray-300]="!productForm.valid">
+    <button type="submit"
+            [disabled]="!productForm.valid || saving()"
+            class="submit-btn"
+            [class.submit-btn--valid]="productForm.valid && !saving()">
       @if (saving()) {
       Saving...
       } @else {

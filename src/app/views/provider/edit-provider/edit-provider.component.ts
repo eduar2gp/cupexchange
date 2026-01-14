@@ -25,7 +25,6 @@ export class EditProviderComponent implements OnInit {
   private reloadTrigger = new Subject<void>();  
   private productsSubscription: Subscription | undefined;
 
-  public backendBaseUrl: string = environment.baseApiUrl;  
   providerData$!: Observable<Provider | null>; 
   selectedFile: File | null = null;
   private providersService = inject(ProvidersService);

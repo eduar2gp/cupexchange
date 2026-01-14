@@ -1,7 +1,7 @@
 <ul class="product-list" >
   @for (product of products(); track product.id) {
   <li class="product-item" (click)="editProduct(product)">
-    <img [src]="backendBaseUrl + product.productImageUrl" alt="Product Image A" class="product-image">
+    <img [src]="product.productImageUrl" alt="Product Image A" class="product-image">
     <div class="product-details">
       <h3 class="product-name">{{product.name}}</h3>
       <p class="product-description"> {{product.description}} </p>
