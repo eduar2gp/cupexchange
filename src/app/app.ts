@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 import { Subscription, filter } from 'rxjs';
 import { TradingPair } from './model/trading_pair';
@@ -28,6 +29,8 @@ import { NavigationDecisionService } from '../app/core/services/navigation-decis
 import { Role } from '../app/model/roles.enum'
 import { HasRoleDirective } from '../app/core/directives/has-roles.directive'
 import { FCMService } from '../app/core/services/fcm.service';
+import { DataService } from '../app/core/services/data.service'
+import { SearchService } from '../app/core/services/search.service'
 
 @Component({
   selector: 'app-root',
@@ -47,7 +50,8 @@ import { FCMService } from '../app/core/services/fcm.service';
     FormsModule,
     MatSlideToggleModule,
     TranslateModule,
-    HasRoleDirective
+    HasRoleDirective,
+    MatInputModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -67,6 +71,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private navigationDecisionService = inject(NavigationDecisionService);
   private platformId = inject(PLATFORM_ID);
 
+
    //Subscriptions
   private routerSubscription?: Subscription;
   private fcmSubscription?: Subscription;
@@ -82,10 +87,14 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     { value: 'USDCUP', viewValue: 'USD-CUP (Dólar)', imageUrl: 'assets/currencies/usd.png', min: 4, max: 1000, step: 4, minVolume: 0.01 }
   ];
 
+  isEcommerce = () => this.router.url.includes('ecommerce');
+
   //orderCount$!: Observable<number>;
   constructor(
     private languageService: LanguageService,
-    private fcmService: FCMService
+    private fcmService: FCMService,
+    public dataService: DataService,
+    public searchService: SearchService
   ) { }
 
   ngOnInit(): void {
@@ -210,5 +219,24 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.router.navigate(['/add-wallet']); 
     }
+  }
+
+  toggleDashboard(event: any) {
+    const isEcommerce = event.checked;
+
+    // 1. Update the persistent state
+    this.dataService.setEcommerceMode(isEcommerce);
+
+    // 2. Navigate based on the new state
+    if (isEcommerce) {
+      this.router.navigate(['/ecommerce-dashboard']);
+    } else {
+      this.router.navigate(['/exchange-dashboard']);
+    }
+  }
+
+  onSearchChange(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.searchService.updateSearch(filterValue);
   }
 }

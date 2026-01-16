@@ -14,10 +14,12 @@
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'MY_STORE' | translate }}</span>
       </a>
+      @if ((dataService.isEcommerce$ | async) == false) {
       <a mat-list-item routerLink="/add-order" (click)="checkWalletsAndNavigate()">
         <mat-icon matListItemIcon>add_circle</mat-icon>
         <span matListItemTitle>{{ 'NEW_ORDER' | translate }}</span>
       </a>
+      }
       <a mat-list-item routerLink="/profile">
         <mat-icon matListItemIcon>account_box</mat-icon>
         <span matListItemTitle>{{ 'PROFILE' | translate }}</span>
@@ -45,34 +47,42 @@
       <div class="toolbar-left-controls">
         <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
-        </button>
+        </button>        
       </div>
+
+      @if (dataService.isEcommerce$ | async; as isEco) {
+      <mat-form-field appearance="outline" class="search-input">
+        <mat-label>Search Products</mat-label>
+        <input matInput (input)="onSearchChange($event)">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+      } @else {
       <mat-form-field appearance="outline" class="pair-selector">
         <mat-label>{{ 'TRADE' | translate }}</mat-label>
         <mat-select [ngModel]="selectedPair"
                     (ngModelChange)="onPairSelect($event)"
                     [ngModelOptions]="{standalone: true}">
           @for (pair of availablePairs; track pair) {
-
           <mat-option [value]="pair" class="pair-option">
             <span class="pair-option-content">
-              <img [src]="getBaseCurrencyImage(pair.value)"
-                   class="pair-logo"
-                   alt="">
-              <span class="pair-text">
-                {{ formatPairDisplay(pair.value) }}
-              </span>
-              <img [src]="getQuoteCurrencyImage(pair.value)"
-                   class="pair-logo"
-                   alt="">
+              <img [src]="getBaseCurrencyImage(pair.value)" class="pair-logo">
+              <span class="pair-text">{{ formatPairDisplay(pair.value) }}</span>
+              <img [src]="getQuoteCurrencyImage(pair.value)" class="pair-logo">
             </span>
           </mat-option>
           }
         </mat-select>
         <mat-icon matPrefix>paid</mat-icon>
       </mat-form-field>
+      }
+
       <div class="toolbar-right-controls">
         <span class="toolbar-title">{{ title() }}</span>
+        <mat-slide-toggle [checked]="dataService.isEcommerce$ | async"
+                          (change)="toggleDashboard($event)"
+                          color="primary">          
+          <mat-icon>{{ (dataService.isEcommerce$ | async) ? 'autorenew' : 'store' }}</mat-icon>
+        </mat-slide-toggle>
       </div>
     </mat-toolbar>
     }
@@ -83,10 +93,17 @@
     <!-- Bottom navigation (only when authenticated) -->
     @if (authService.isAuthenticated()) {
     <mat-toolbar class="bottom-nav">
-      <a mat-button routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      @if (dataService.isEcommerce$ | async; as isEco) {
+      <a mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active" class="nav-item">
+        <mat-icon>shopping_basket</mat-icon>
+        <span matListItemTitle>{{ 'HOME' | translate }}</span>
+      </a>
+      }@else{
+      <a mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item">
         <mat-icon>show_chart</mat-icon>
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
+      }
       <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item">
         <mat-icon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
@@ -95,10 +112,17 @@
         <mat-icon>poll</mat-icon>
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
+      @if (dataService.isEcommerce$ | async; as isEco) {
+      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item">
+        <mat-icon>add_shopping_cart</mat-icon>
+        <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
+      </a>
+      }@else{
       <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item">
         <mat-icon>compare_arrows</mat-icon>
         <span matListItemTitle>{{ 'TRANSACTIONS' | translate }}</span>
       </a>
+      }
     </mat-toolbar>
     }
   </mat-sidenav-content>

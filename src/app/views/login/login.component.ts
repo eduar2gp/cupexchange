@@ -161,7 +161,10 @@ private loadGoogleScript(): Promise<void> {
       next: (wallets: Wallet[]) => {
         localStorage.setItem('WALLETS', JSON.stringify(wallets));
         this.dataService.walletUpdateCompleted()
-        this.router.navigate(['/dashboard']);
+        if (localStorage.getItem('IS_ECOMMERCE_MODE') === 'true')
+          this.router.navigate(['/ecommerce-dashboard']);
+        else
+          this.router.navigate(['/exchange-dashboard']);
       },
       error: (err) => {
         console.error('Error loading wallets!.', err);

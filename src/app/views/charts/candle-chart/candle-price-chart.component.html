@@ -1,32 +1,37 @@
-@if (tradeVolumeData) {
-<div class="trade-volume-info">
+<div class="trade-dashboard">
 
-  <p>
-    <span class="info-label">Volume:</span>
-    <span class="info-value">{{ tradeVolumeData.totalOpenVolume | number:'1.2-2' }}</span>
-    <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
-  </p>
+  @if (tradeVolumeData(); as data) {
+  <div class="trade-volume-info">
+    <div class="info-group">
+      <span class="info-label">Volume:</span>
+      <span class="info-value">{{ data.totalOpenVolume | number:'1.2-2' }}</span>
+    </div>
 
-  <p>
-    <span class="info-label">Traded (24h):</span>
-    <span class="info-value highlight">{{ tradeVolumeData.tradedVolume24H | number:'1.2-2' }}</span>
-    <!--<span class="volume-unit">{{ tradeVolumeData.currencyPair.split('-')[0] }}</span>-->
-  </p>
+    <div class="info-group">
+      <span class="info-label">Traded (24h):</span>
+      <span class="info-value highlight">{{ data.tradedVolume24H | number:'1.2-2' }}</span>
+    </div>
+  </div>
+  } @else {
+  <div class="loading-volume">Loading volume data...</div>
+  }
 
-</div>
-}
-<div class="interval-selection-bar">
-  <button *ngFor="let interval of availableIntervals"
-          [class.active]="interval === currentInterval"
-          (click)="selectInterval(interval)">
-    {{ interval }}
-  </button>
-</div>
+  <div class="interval-selection-bar">
+    @for (interval of availableIntervals; track interval) {
+    <button type="button"
+            [class.active]="interval === currentInterval"
+            (click)="selectInterval(interval)">
+      {{ interval }}
+    </button>
+    }
+  </div>
 
-<div class="chart-container">
-  <canvas baseChart
-          [data]="chartData"
-          [options]="chartOptions"
-          [type]="'candlestick'">
-  </canvas>
+  <div class="chart-wrapper">
+    <canvas baseChart
+            [data]="chartData"
+            [options]="chartOptions"
+            [type]="'candlestick'"
+            [plugins]="[watermarkPlugin]">
+    </canvas>
+  </div>
 </div>

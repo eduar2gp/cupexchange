@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, afterNextRender, signal } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Provider } from '../../model/provider.model'
 import { Product } from '../../model/product.model'
@@ -26,6 +26,17 @@ export class DataService {
   // The observable for components to subscribe to
   public updateWalletRequired$ = this.updateWalletRequiredSubject.asObservable();
 
+  readonly STORAGE_KEY = 'IS_ECOMMERCE_MODE';
+  private isEcommerceMode = new BehaviorSubject<boolean>(false);
+  public isEcommerce$ = this.isEcommerceMode.asObservable();
+
+  constructor() {
+    afterNextRender(() => {     
+      const saved = localStorage.getItem(this.STORAGE_KEY) === 'true';
+      this.isEcommerceMode.next(saved);
+    });
+  }
+
   // Method to set the value to true
   public triggerWalletUpdate(): void {
     this.updateWalletRequiredSubject.next(true);
@@ -39,8 +50,6 @@ export class DataService {
   public isUpdateRequired(): boolean {
     return this.updateWalletRequiredSubject.value;
   }
-
-  constructor() { }
 
   updateProvider(provider: Provider) {
     this.providerSource.next(provider);
@@ -65,5 +74,16 @@ export class DataService {
 
   getCurrentTransactionRequest(): TransactionRequest | null {
     return this.transactionRequestSource.value;
+  }
+
+  get currentMode(): boolean {
+    return this.isEcommerceMode.value;
+  }
+
+  setEcommerceMode(enabled: boolean) {
+    this.isEcommerceMode.next(enabled);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(this.STORAGE_KEY, String(enabled));
+    }
   }
 }

@@ -1,117 +1,89 @@
-/* =========================
-   Chart Container
-   ========================= */
-.chart-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  /* Mobile first height */
-  height: 260px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+.trade-dashboard {
+  display: flex;
+  flex-direction: column;
+  background-color: #131722;
+  padding: 12px;
   border-radius: 8px;
+  /* Use vh (viewport height) or a fixed height on mobile 
+     to prevent it from stretching too far */
+  height: 100%;
+  max-height: 50vh;
+}
+
+.trade-volume-info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
   padding: 8px;
-  /* Ensure canvas fills container */
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  /* Mobile: Stack the volume labels vertically to save width */
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 4px;
   }
+
+  .info-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-label {
+    color: #848e9c;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .info-value {
+    color: #eaecef;
+    font-weight: 600;
+    font-family: 'Roboto Mono', monospace;
+  }
+
+  .highlight {
+    color: #00ffad;
+  }
+  // Green highlight for 24h volume
 }
 
-/* Small tablets */
-@media (min-width: 480px) {
-  .chart-container {
-    height: 320px;
-  }
-}
-
-/* Tablets */
-@media (min-width: 768px) {
-  .chart-container {
-    height: 420px;
-    padding: 12px;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1024px) {
-  .chart-container {
-    height: 500px;
-    padding: 16px;
-  }
-}
-
-/* =========================
-   Interval Selection Bar
-   ========================= */
 .interval-selection-bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
   margin-bottom: 8px;
 
   button {
-    background: var(--color-surface-elevated);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    color: #848e9c;
+    padding: 4px 12px;
     cursor: pointer;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: all 0.2s;
 
     &:hover {
-      background: var(--color-surface);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 1px;
+      background: #2a2e39;
+      color: #fff;
     }
 
     &.active {
-      background: var(--color-primary);
-      color: #ffffff;
-      border-color: var(--color-primary);
+      background: #2962ff;
+      color: #fff;
+      font-weight: bold;
     }
   }
 }
 
-/* Slightly larger buttons on bigger screens */
-@media (min-width: 768px) {
-  .interval-selection-bar button {
-    font-size: 0.9rem;
-    padding: 6px 12px;
+.chart-wrapper {
+  flex: 1;
+  position: relative;
+  /* Desktop height */
+  min-height: 400px;
+  /* Mobile height: Reduce min-height so it doesn't push 
+     the footer off-screen */
+  @media (max-width: 600px) {
+    min-height: 350px;
+    height: 50vh; // Occupy 30% of the screen height on small devices
   }
-}
-
-
-.trade-volume-info {
-  display: flex; /* Use flexbox for horizontal layout */
-  justify-content: space-around; /* Distribute space evenly */
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 10px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  /*background-color: #f9f9f9;*/ /* Light background */
-  background-color: var(--color-surface);
-  font-size: 0.95em;
-}
-
-.trade-volume-info p {
-  margin: 0;
-  padding: 0 15px; /* Spacing between data points */
-  color: var(--color-text);
-}
-.info-label {
-  font-weight: 500;
-  color: #666;
-  margin-right: 5px;
-}
-
-.info-value {
-  font-weight: bold;
-  /*  color: #333;*/
 }

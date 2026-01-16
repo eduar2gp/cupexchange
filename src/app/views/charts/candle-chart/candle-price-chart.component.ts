@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Candlestick, ChartDataPoint } from '../../../model/candle-stick-data.model'
 import { TradeService } from '../../../../app/core/services/trade.service'
@@ -46,7 +46,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
 
   public currentPairCode: string = 'USDCUP';
   public currentInterval: string = '5m'; // State variable is now public for the template
-  public tradeVolumeData: TradeVolumeDTO | null = null;
+  public tradeVolumeData = signal<TradeVolumeDTO | null>(null);
 
   public chartData: ChartData<'candlestick'> = {
     datasets: [{
@@ -57,6 +57,16 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   };
 
   public chartOptions: ChartOptions<'candlestick'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        enabled: true
+      }
+    },
     scales: {
       x: {
         type: 'time',
@@ -72,25 +82,43 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     }
   };
 
+  public watermarkPlugin = {
+    id: 'watermark',
+    beforeDraw: (chart: any) => {
+      const { ctx, chartArea: { top, left, width, height } } = chart;
+      ctx.save();
+
+      // Watermark style
+      ctx.font = 'bold 40px Roboto, sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; // Very faint white
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Draw the current pair code in the center
+      ctx.fillText(this.currentPairCode, left + width / 2, top + height / 2);
+      ctx.restore();
+    }
+  };
+
   constructor() { }
 
   ngOnInit(): void {
-
-    // Start the real-time subscription listener once
     this.subscribeToCandleUpdates();
 
-    // Pair Selection Subscription
     this.pairSubscription = this.pairSelectionService.selectedPair$.subscribe((pair: TradingPair | null) => {
-
       if (!pair) return;
 
-      const newPairCode = pair.value;
-      const initialLoadOrPairChange = (newPairCode && newPairCode !== this.currentPairCode) || this.chartData.datasets[0].data.length === 0;
+      // Use a microtask to avoid NG0100
+      Promise.resolve().then(() => {
+        const newPairCode = pair.value;
+        const initialLoadOrPairChange = (newPairCode && newPairCode !== this.currentPairCode) ||
+          this.chartData.datasets[0].data.length === 0;
 
-      if (initialLoadOrPairChange) {
-        this.currentPairCode = newPairCode;
-        this.updateChartDataFlow(); // Combined logic for initial/pair change
-      }
+        if (initialLoadOrPairChange) {
+          this.currentPairCode = newPairCode;
+          this.updateChartDataFlow();
+        }
+      });
     });
   }
 
@@ -160,15 +188,14 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   loadTradeVolume(): void {
     const pairCode = this.currentPairCode;
     this.tradeService.getTradeVolume(pairCode)
-      .pipe(
-        catchError(error => {
-          this.tradeVolumeData = null;
-          return of(null);
-        })
-      )
       .subscribe(tradeVolume => {
-        if (tradeVolume)
-          this.tradeVolumeData = tradeVolume;
+        if (tradeVolume) {
+          // Create a NEW object reference to force the signal to trigger
+          this.tradeVolumeData.set({ ...tradeVolume });
+
+          // Debug: Check if data actually has the properties you expect
+          console.log('Trade Volume Signal Updated:', this.tradeVolumeData());
+        }
       });
   }
   // =========================================================
