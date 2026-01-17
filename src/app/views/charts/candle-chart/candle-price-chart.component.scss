@@ -1,7 +1,7 @@
 .trade-dashboard {
   display: flex;
   flex-direction: column;
-  background-color: #131722;
+  background-color: var(--color-background);
   padding: 12px;
   border-radius: 8px;
   /* Use vh (viewport height) or a fixed height on mobile 
@@ -30,13 +30,13 @@
   }
 
   .info-label {
-    color: #848e9c;
+    color: var(--color-accent);
     font-size: 12px;
     text-transform: uppercase;
   }
 
   .info-value {
-    color: #eaecef;
+    color: var(--color-text);
     font-weight: 600;
     font-family: 'Roboto Mono', monospace;
   }
@@ -79,11 +79,11 @@
   flex: 1;
   position: relative;
   /* Desktop height */
-  min-height: 400px;
+  min-height: 300px;
   /* Mobile height: Reduce min-height so it doesn't push 
      the footer off-screen */
   @media (max-width: 600px) {
-    min-height: 350px;
+    min-height: 250px;
     height: 50vh; // Occupy 30% of the screen height on small devices
   }
 }

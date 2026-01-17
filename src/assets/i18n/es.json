@@ -73,5 +73,9 @@
   "PROVIDERS": "Proveedores",
   "MY_STORE": "Mi Tienda",
   "NOTIFICATIONS": "Notificaciones",
-  "MY_CART": "Mi Carro"
+  "MY_CART": "Mi Carro",
+  "TOTAL": "Total",
+  "CLEAR_CART": "Vaciar Carro",
+  "CHECKOUT": "Pagar",
+  "CART_EMPTY": "No hay productos"
 }

@@ -14,7 +14,7 @@
         <p class="product-description">{{ product.description | slice:0:60 }}...</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-flat-button color="primary">
+        <button mat-flat-button color="primary" (click)="addProduct(product)">
           <mat-icon>shopping_cart</mat-icon> ADD TO CART
         </button>
       </mat-card-actions>

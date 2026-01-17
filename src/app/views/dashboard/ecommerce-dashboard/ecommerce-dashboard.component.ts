@@ -6,6 +6,7 @@ import { Product } from '../../../model/product.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -17,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class EcommerceDashboardComponent implements OnInit {
   private productsService = inject(ProductsService);
   private searchService = inject(SearchService);
+  private cartService = inject(CartService);
 
   // State
   private allProducts = signal<Product[]>([]);
@@ -42,4 +44,16 @@ export class EcommerceDashboardComponent implements OnInit {
       this.searchQuery.set(query);
     });
   }
+
+  addProduct(product: Product) {
+    this.cartService.addToCart({
+      productId: product.id!,
+      name: product.name,
+      providerId: product.provider,
+      unitPrice: product.price,
+      quantity: 1,
+      productImgUrl: product.productImageUrl!,
+    });
+  }
+
 }

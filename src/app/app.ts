@@ -31,6 +31,7 @@ import { HasRoleDirective } from '../app/core/directives/has-roles.directive'
 import { FCMService } from '../app/core/services/fcm.service';
 import { DataService } from '../app/core/services/data.service'
 import { SearchService } from '../app/core/services/search.service'
+import { CartService } from '../app/core/services/cart.service'
 
 @Component({
   selector: 'app-root',
@@ -70,7 +71,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private walletService = inject(WalletService);
   private navigationDecisionService = inject(NavigationDecisionService);
   private platformId = inject(PLATFORM_ID);
-
+  public cartService = inject(CartService);
 
    //Subscriptions
   private routerSubscription?: Subscription;
@@ -88,6 +89,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   ];
 
   isEcommerce = () => this.router.url.includes('ecommerce');
+  cartCount$ = this.cartService.cartCount$;
 
   //orderCount$!: Observable<number>;
   constructor(
@@ -95,7 +97,9 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     private fcmService: FCMService,
     public dataService: DataService,
     public searchService: SearchService
-  ) { }
+  ) {
+    
+  }
 
   ngOnInit(): void {
     this.themeService.initTheme();

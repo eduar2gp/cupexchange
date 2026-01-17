@@ -1,11 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CartService } from '../../../core/services/cart.service';
+import { CartItem } from '../../../model/cart-item.model';
+import { map } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-shopping-cart.component',
-  imports: [],
+  selector: 'app-shopping-cart',
+  standalone: true,
+  imports: [
+    TranslateModule,
+    MatIconModule,
+    CommonModule
+  ],
   templateUrl: './shopping-cart.component.html',
-  styleUrl: './shopping-cart.component.scss',
+  styleUrls: ['./shopping-cart.component.scss']
 })
 export class ShoppingCartComponent {
 
+  private cartService = inject(CartService)
+  cartItems$ = this.cartService.cartItems$;
+
+  total$ = this.cartItems$.pipe(
+    map(items =>
+      items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+    )
+  );
+
+  constructor() { }
+
+  removeItem(productId: number): void {
+    this.cartService.removeFromCart(productId);
+  }
+
+  clearCart(): void {
+    this.cartService.clearCart();
+  }
 }

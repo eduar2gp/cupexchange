@@ -73,5 +73,9 @@
   "PROVIDERS": "Providers",
   "MY_STORE": "My Store",
   "NOTIFICATIONS": "Notifications",
-  "MY_CART": "Cart"
+  "MY_CART": "Cart",
+  "TOTAL": "Total",
+  "CLEAR_CART": "Empty Cart",
+  "CHECKOUT": "Checkout",
+  "CART_EMPTY": "Cart is empty"
 }

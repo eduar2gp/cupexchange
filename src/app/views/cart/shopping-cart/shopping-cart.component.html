@@ -1,1 +1,71 @@
-<p>shopping-cart.component works!</p>
+<div class="cart-container">
+
+  <h2>{{ 'MY_CART' | translate }}</h2>
+
+  @if (cartItems$ | async; as items) {
+
+  @if (items.length === 0) {
+  <div class="empty-cart">
+    <mat-icon>shopping_cart</mat-icon>
+    <p>{{ 'CART_EMPTY' | translate }}</p>
+  </div>
+  }
+
+  @else {
+
+  <div class="cart-list">
+
+    @for (item of items; track item.productId) {
+    <div class="cart-item">
+
+      
+      <img mat-card-image [src]="item.productImgUrl" />
+      
+
+      <div class="item-info">
+        <h4>{{ item.name }}</h4>
+        <p>{{ item.unitPrice }}</p>
+      </div>
+
+      <div class="item-quantity">
+        <span>{{ 'QTY' | translate }}: {{ item.quantity }}</span>
+      </div>
+
+      <div class="item-total">
+        {{ (item.unitPrice * item.quantity) | currency }}
+      </div>
+
+      <button mat-icon-button color="warn"
+              (click)="removeItem(item.productId)">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+    }
+
+  </div>
+
+  <div class="cart-summary">
+
+    <div class="total-row">
+      <span>{{ 'TOTAL' | translate }}</span>
+      <strong>{{ total$ | async | currency  }}</strong>
+    </div>
+
+    <div class="cart-actions">
+      <button mat-stroked-button color="warn"
+              (click)="clearCart()">
+        {{ 'CLEAR_CART' | translate }}
+      </button>
+
+      <button mat-raised-button color="primary"
+              routerLink="/checkout">
+        {{ 'CHECKOUT' | translate }}
+      </button>
+    </div>
+
+  </div>
+  }
+  }
+
+</div>

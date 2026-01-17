@@ -113,7 +113,13 @@
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
       @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item">
+      <a mat-button
+         routerLink="/cart"
+         routerLinkActive="active"
+         class="nav-item"
+         matBadge="{{ cartCount$ | async }}"
+         matBadgeHidden="{{ (cartCount$ | async) === 0 }}"
+         matBadgeColor="warn">
         <mat-icon>add_shopping_cart</mat-icon>
         <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
       </a>
