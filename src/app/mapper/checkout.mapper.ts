@@ -3,7 +3,7 @@ import { CreateOrderRequest } from '../model/create-merchant-order-request.model
 
 export function buildOrdersFromCart(
   items: CartItem[],
-  customerId: number
+  customerId: string
 ): CreateOrderRequest[] {
 
   const grouped = new Map<number, CartItem[]>();

@@ -72,4 +72,14 @@ export class CartService {
     const raw = localStorage.getItem(CART_STORAGE_KEY);
     return raw ? JSON.parse(raw) as CartItem[] : [];
   }
+
+  getSnapshot(): CartItem[] {
+    return this.cartItemsSubject.value;
+  }
+
+  removeByProvider(providerId: number) {
+    const filtered = this.cartItemsSubject.value
+      .filter(i => i.providerId !== providerId);
+    this.updateCart(filtered);
+  }
 }

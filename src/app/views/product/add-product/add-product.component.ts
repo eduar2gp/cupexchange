@@ -29,7 +29,7 @@ export class AddProductComponent {
   selectedFile: File | null = null;
 
   // Initial form model state
-  newProduct: Product = { name: '', description: '', price: 0.01, stockQuantity: 1, provider: 0 };
+  newProduct: Product = { name: '', description: '', price: 0.01, stockQuantity: 1, providerId: 0 };
 
   saving = signal(false);
   statusMessage = signal<string | null>(null);
@@ -45,7 +45,7 @@ export class AddProductComponent {
    * Resets the form after successful submission.
    */
   private resetForm(): void {
-    this.newProduct = { name: '', description: '', price: 0.01, stockQuantity: 1, provider: 0 };
+    this.newProduct = { name: '', description: '', price: 0.01, stockQuantity: 1, providerId: 0 };
     // Clear status message after a short delay
     setTimeout(() => this.statusMessage.set(null), 3000);
   }
@@ -68,7 +68,7 @@ export class AddProductComponent {
         // 2. The code inside this block runs when the data arrives
         if (provider && provider?.id !== undefined) {
           // 3. Access the 'id' property on the actual 'provider' object
-          this.newProduct.provider = provider.id;
+          this.newProduct.providerId = provider.id;
           // Now you can proceed with saving the product
           // this.productService.addProduct(this.newProduct).subscribe(...);
           this.productsService.createProduct(this.newProduct).subscribe({

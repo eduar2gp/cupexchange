@@ -5,5 +5,5 @@ description: string;
 price: number;
 stockQuantity: number;
 productImageUrl?: string;
-provider: number;
+providerId: number;
 }

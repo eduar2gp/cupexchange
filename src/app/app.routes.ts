@@ -20,6 +20,7 @@ import { EditProductComponent } from '../app/views/product/edit-product/edit-pro
 import { ProviderDashboardComponent } from '../app/views/provider/provider-dashboard/provider-dashboard.component'
 import { EcommerceDashboardComponent } from '../app/views/dashboard/ecommerce-dashboard/ecommerce-dashboard.component'
 import { ShoppingCartComponent } from '../app/views/cart/shopping-cart/shopping-cart.component'
+import { CheckoutComponent } from './views/checkout/checkout.component';
 
 export const routes: Routes = [
    {
@@ -123,5 +124,10 @@ export const routes: Routes = [
     path: 'cart',
     component: ShoppingCartComponent,
     canActivate: [roleGuard],
-  }
+  },
+  {
+    path: 'checkout',
+    component: CheckoutComponent,
+    canActivate: [roleGuard],
+  }, 
 ];

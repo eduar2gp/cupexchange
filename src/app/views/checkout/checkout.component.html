@@ -1,0 +1,35 @@
+<h2>Checkout</h2>
+
+<div class="orders-wrapper">
+
+  @for (order of groupedOrders; track order.providerId) {
+
+  <mat-card class="order-card">
+
+    <mat-card-title>
+      Provider #{{ order.providerId }}
+    </mat-card-title>
+
+    <mat-card-content>
+      <div class="item-row" *ngFor="let item of order.items">
+        <span>{{ item.name }}</span>
+        <span>x{{ item.quantity }}</span>
+        <span>{{ item.unitPrice | currency }}</span>
+      </div>
+
+      <div class="total">
+        Total: {{ order.total | currency }}
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary"
+              (click)="sendOrder(order)">
+        Send Order
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+
+  }
+</div>

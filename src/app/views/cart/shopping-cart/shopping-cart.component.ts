@@ -5,6 +5,7 @@ import { CartItem } from '../../../model/cart-item.model';
 import { map } from 'rxjs/operators';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -12,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     TranslateModule,
     MatIconModule,
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.scss']
