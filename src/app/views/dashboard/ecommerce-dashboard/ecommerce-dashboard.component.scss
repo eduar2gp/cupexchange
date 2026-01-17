@@ -1,67 +1,123 @@
+/* Container */
 .dashboard-container {
-  padding: 2px;
-  //background-color: var(--color-background);
-  min-height: calc(100vh - 64px); // Adjust based on toolbar height
-  background-color: var(--color-surface-elevated)
+  padding: 1rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  min-height: 100%;
 }
 
+/* Header */
 .dashboard-header {
-  margin-bottom: 24px;
+  background: transparent;
+  color: var(--color-text);
+  margin-bottom: 1rem;
 
   h2 {
-    font-weight: 300;
-    //color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 }
 
+/* Product Grid - Mobile First */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
-  
+  grid-template-columns: 1fr; /* 1 column on mobile */
+  gap: 1rem;
 }
 
+/* Card Styling */
 .product-card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 14px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
   }
 
   img {
-    height: 200px;
+    height: 180px;
     object-fit: cover;
-  }
-
-  .product-name {
-    margin: 16px 0 8px;
-    font-weight: 500;
-  }
-
-  .product-price {
-    font-size: 1.2rem;
-    //color: #2e7d32;
-    font-weight: bold;
-  }
-
-  .product-description {
-    color: #666;
-    font-size: 0.9rem;
+    background: var(--color-surface-elevated);
   }
 }
 
+mat-card-content {
+  padding: 0.75rem 1rem 0.5rem;
+
+  .product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .product-price {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0.25rem 0;
+  }
+
+  .product-description {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+mat-card-actions {
+  padding: 0.75rem 1rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    background: var(--color-primary) !important;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+}
+
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 60px;
-  color: #999;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
 
   mat-icon {
     font-size: 48px;
-    width: 48px;
-    height: 48px;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+
+/* Tablets */
+@media (min-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-header h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Small desktops */
+@media (min-width: 900px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Large desktops */
+@media (min-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

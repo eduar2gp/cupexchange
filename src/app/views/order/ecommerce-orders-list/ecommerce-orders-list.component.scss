@@ -1,0 +1,46 @@
+.orders-container {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  padding: 24px;
+  min-height: 100vh;
+
+  .mat-mdc-table {
+    background: var(--color-surface);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-cell {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    background: var(--color-surface-elevated);
+  }
+
+  .cell-text {
+    color: var(--color-text);
+  }
+
+  .status-chip {
+    &.pending {
+      background-color: #e3b341;
+      color: #fff;
+    }
+
+    &.paid {
+      background-color: #2da44e;
+      color: #fff;
+    }
+
+    &.cancelled {
+      background-color: #cf222e;
+      color: #fff;
+    }
+  }
+}
+
+.loading-shade {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}

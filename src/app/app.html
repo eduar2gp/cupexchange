@@ -108,10 +108,17 @@
         <mat-icon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
+      @if (dataService.isEcommerce$ | async; as isEco) {
+      <a mat-button routerLink="/ecommerce-orders" routerLinkActive="active" class="nav-item">
+        <mat-icon>poll</mat-icon>
+        <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
+      </a>
+      }@else{
       <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item">
         <mat-icon>poll</mat-icon>
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
+      }
       @if (dataService.isEcommerce$ | async; as isEco) {
       <a mat-button
          routerLink="/cart"

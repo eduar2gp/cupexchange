@@ -30,6 +30,7 @@
       <div class="product-details">
         <h3 class="product-name">{{product.name}}</h3>
         <p class="product-description"> {{product.description}} </p>
+        <p class="product-description"> ${{product.price}} </p>
       </div>
       <div>
         <button type="button" (click)="deleteProduct(product.id!)">Delete</button>

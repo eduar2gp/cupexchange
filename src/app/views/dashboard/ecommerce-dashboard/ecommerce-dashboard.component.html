@@ -1,7 +1,7 @@
 <div class="dashboard-container">
-  <header class="dashboard-header">
+  <mat-toolbar class="dashboard-header" color="transparent">
     <h2>Available Products ({{ filteredProducts().length }})</h2>
-  </header>
+  </mat-toolbar>
 
   @if (filteredProducts().length > 0) {
   <div class="product-grid">

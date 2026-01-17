@@ -21,6 +21,7 @@ import { ProviderDashboardComponent } from '../app/views/provider/provider-dashb
 import { EcommerceDashboardComponent } from '../app/views/dashboard/ecommerce-dashboard/ecommerce-dashboard.component'
 import { ShoppingCartComponent } from '../app/views/cart/shopping-cart/shopping-cart.component'
 import { CheckoutComponent } from './views/checkout/checkout.component';
+import { EcommerceOrdersListComponent } from './views/order/ecommerce-orders-list/ecommerce-orders-list.component';
 
 export const routes: Routes = [
    {
@@ -129,5 +130,10 @@ export const routes: Routes = [
     path: 'checkout',
     component: CheckoutComponent,
     canActivate: [roleGuard],
-  }, 
+  },
+  {
+    path: 'ecommerce-orders',
+    component: EcommerceOrdersListComponent,
+    canActivate: [roleGuard],
+  },
 ];
