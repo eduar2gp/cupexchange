@@ -6,15 +6,30 @@ import { DataService } from '../../../core/services/data.service'; // Assuming D
 import { Provider } from '../../../model/provider.model'; // Assuming Provider model path
 import { Observable, catchError, of, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { environment } from '../../../../environments/environment'
 import { TranslateModule } from '@ngx-translate/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @Component({
   standalone: true,
   selector: 'app-provider-dashboard', // Changed selector to follow common conventions
-  imports: [AsyncPipe, TranslateModule],
+  imports: [
+    AsyncPipe,
+    TranslateModule,
+    MatCardModule,
+    MatDividerModule,
+    MatListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './provider-dashboard.component.html',
-  styleUrl: './provider-dashboard.component.css',
+  styleUrl: './provider-dashboard.component.scss',
 })
 export class ProviderDashboardComponent implements OnInit {
 
@@ -76,5 +91,8 @@ export class ProviderDashboardComponent implements OnInit {
 
   navigateToEditProvider() {
     this.router.navigate(['edit-provider'])
+  }
+  navigateToOrders() {
+    this.router.navigate(['provider-orders'])
   }
 }

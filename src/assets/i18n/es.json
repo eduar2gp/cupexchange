@@ -77,5 +77,7 @@
   "TOTAL": "Total",
   "CLEAR_CART": "Vaciar Carro",
   "CHECKOUT": "Pagar",
-  "CART_EMPTY": "No hay productos"
+  "CART_EMPTY": "No hay productos",
+  "CREATE_ORDER": "Crear Orden",
+  "SUBMIT_ORDER": "Enviar Orden"
 }

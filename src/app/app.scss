@@ -129,42 +129,6 @@ mat-sidenav {
 
 /*
 ==================================================
-  BOTTOM NAVIGATION BAR STYLES
-==================================================
-*/
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 70px; /* Explicit height */
-  z-index: 1000;
-  background-color: var(--color-surface-elevated);
-  border-top: 1px solid var(--color-border);
-  padding: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  backdrop-filter: blur(8px);
-  /* CRITICAL: Respect iPhone notch / Android bottom inset */
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
-
-  .nav-item {
-    text-transform: none;
-  }
-
-  .nav-item mat-icon {
-    color: var(--color-text);
-  }
-
-  .nav-label {
-    font-size: 12px;
-    line-height: 1;
-  }
-}
-
-/*
-==================================================
   PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
 ==================================================
 */
@@ -429,4 +393,68 @@ mat-option {
 .search-input{
     margin-top: 25px;
     width: 220px;
+}
+
+/*
+==================================================
+  BOTTOM NAVIGATION BAR STYLES
+==================================================
+*/
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+  background-color: var(--color-surface-elevated);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  padding-bottom: env(safe-area-inset-bottom);
+
+  .nav-item {
+    /* 1. Force the button to take full height */
+    height: 100% !important;
+    min-width: 60px;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    /* 2. Target the internal MDC label wrapper */
+    ::ng-deep .mdc-button__label {
+      display: flex !important;
+      flex-direction: column !important; // This is what stacks them
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 2px; /* Small gap between icon and text */
+      width: 100%;
+    }
+
+    mat-icon {
+      color: var(--color-text);
+      margin: 0 !important;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--color-text-secondary);
+    }
+    /* Active state styling */
+    &.active {
+      .nav-label {
+        color: var(--color-primary);
+      }
+
+      mat-icon {
+        color: var(--color-primary);
+      }
+    }
+  }
 }

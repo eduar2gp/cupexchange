@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { Provider } from '../../../model/provider.model';
 import { Product } from '../../../model/product.model'
-import { AsyncPipe } from '@angular/common';
-
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProvidersService } from '../../../core/services/providers.service';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { environment } from '../../../../environments/environment'
 import { ProductsService } from '../../../core/services/products.service';
@@ -16,9 +18,9 @@ import { Subject, switchMap, filter, Subscription, Observable, combineLatest, st
 @Component({
   standalone: true,
   selector: 'app-edit-provider.component',
-  imports: [AsyncPipe, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [AsyncPipe, FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatCardModule, TranslateModule, CommonModule],
   templateUrl: './edit-provider.component.html',
-  styleUrl: './edit-provider.component.css',
+  styleUrl: './edit-provider.component.scss',
 })
 export class EditProviderComponent implements OnInit {
 

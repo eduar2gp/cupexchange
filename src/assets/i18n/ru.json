@@ -77,5 +77,7 @@
   "TOTAL": "Общий",
   "CLEAR_CART": "Пустая корзина",
   "CHECKOUT": "Проверить",
-  "CART_EMPTY": "Корзина пуста"
+  "CART_EMPTY": "Корзина пуста",
+  "CREATE_ORDER": "Создайте порядок",
+  "SUBMIT_ORDER": "Оформить заказ"
 }

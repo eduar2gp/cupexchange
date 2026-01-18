@@ -10,6 +10,7 @@ export class MerchantOrdersService {
 
   private MERCHANT_ADD_ORDERS_ENDPOINT = '/api/v1/merchant/add-order';
   private MERCHANT_GET_ORDERS = '/api/v1/merchant/orders/customer';
+  private MERCHANT_GET_ORDERS_BY_PROVIDER = '/api/v1/merchant/orders/';
 
   constructor(private http: HttpClient) { }
 
@@ -20,6 +21,11 @@ export class MerchantOrdersService {
 
    getAllMerchantOrdersByCustomer(): Observable<MerchantOrder[]> {
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS}`;
+    return this.http.get<MerchantOrder[]>(url);
+  }
+
+  getAllMerchantOrdersByProvider(providerId: string): Observable<MerchantOrder[]> {
+    const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS_BY_PROVIDER}${providerId}`;
     return this.http.get<MerchantOrder[]>(url);
   }
 }

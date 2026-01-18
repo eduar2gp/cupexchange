@@ -1,38 +1,60 @@
 <div class="dashboard-container">
-  <h2>Provider Dashboard</h2>
-  <hr>
+  <div class="header-section">
+    <h1>Provider Dashboard</h1>
+    <mat-divider></mat-divider>
+  </div>
 
   @if (providerData$ | async; as provider) {
-  <div class="provider-details-card">
-    <h3>{{ provider.name }}'s Details</h3>
-
-    @if (provider.profileImageUrl) {
-    <img [src]="provider.profileImageUrl" alt="Provider Profile" class="profile-image">
-    }
-
-    <dl class="details-list">
-      <dt>ID:</dt>
-      <dd>{{ provider.id }}</dd>
-
-      <dt>Email:</dt>
-      <dd>{{ provider.email }}</dd>
-
-      <dt>Phone:</dt>
-      <dd>{{ provider.phone }}</dd>
-
-      @if (provider.userId) {
-      <dt>User ID (Linked Account):</dt>
-      <dd>{{ provider.userId }}</dd>
+  <mat-card class="provider-card" appearance="outlined">
+    <mat-card-header>
+      @if (provider.profileImageUrl) {
+      <img mat-card-avatar [src]="provider.profileImageUrl" alt="Profile" class="avatar-img">
       }
-    </dl>
-  </div>
+      <mat-card-title>{{ provider.name }}</mat-card-title>
+      <mat-card-subtitle>Provider Account Details</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <span matListItemTitle>ID</span>
+          <span matListItemLine>{{ provider.id }}</span>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Email</span>
+          <span matListItemLine>{{ provider.email }}</span>
+        </mat-list-item>
+
+        <mat-list-item>
+          <span matListItemTitle>Phone</span>
+          <span matListItemLine>{{ provider.phone }}</span>
+        </mat-list-item>
+
+        @if (provider.userId) {
+        <mat-list-item>
+          <span matListItemTitle>Linked User ID</span>
+          <span matListItemLine>{{ provider.userId }}</span>
+        </mat-list-item>
+        }
+      </mat-list>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-stroked-button color="primary" (click)="navigateToEditProvider()">
+        <mat-icon>edit</mat-icon>
+        {{ 'DETAILS' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="navigateToOrders()">
+        <mat-icon>shopping_cart</mat-icon>
+        {{ 'ORDERS' | translate }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
   } @else {
-  <p class="loading-message">Loading provider data or provider not found...</p>
+  <div class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading provider data...</p>
+  </div>
   }
-
-  <button color="primary" (click)="navigateToEditProvider()">
-
-    {{ 'PROVIDERS' | translate }}
-  </button>
-
 </div>

@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { Product } from '../../../model/product.model';
 import { Provider } from '../../../model/provider.model';
 import { AsyncPipe } from '@angular/common';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +17,9 @@ import { environment } from '../../../../environments/environment'
 @Component({
   standalone: true,
   selector: 'app-product-card',
-  imports: [AsyncPipe, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [AsyncPipe, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule, MatCardModule, MatDividerModule],
   templateUrl: './edit-product.component.html',
-  styleUrl: './edit-product.component.css'
+  styleUrl: './edit-product.component.scss'
 })
 export class EditProductComponent {
   

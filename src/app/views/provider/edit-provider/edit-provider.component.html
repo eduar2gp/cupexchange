@@ -1,42 +1,85 @@
-@if (providerData$ | async; as provider) {
-  <h3>Provider Details</h3>
-  <form #productForm="ngForm" (ngSubmit)="saveChanges(provider)">
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input matInput name="name" [(ngModel)]="provider.name" required>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Description</mat-label>
-      <textarea matInput name="description" [(ngModel)]="provider.email"></textarea>
-    </mat-form-field>
-    <img [src]="provider.profileImageUrl" width="150px" height="100px" />
-    <div class="file-upload-container">
-      <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
-      <!--<button mat-stroked-button color="accent" type="button" (click)="fileInput.click()">
-      Choose Image File
-    </button>-->
-  </div>
-  <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid">
-    Save Changes
-  </button>
-</form>
-}
-<h3>Products</h3>
-<button type="button" (click)="addProduct()">Add Product</button>
-<ul class="product-list">
-  @for (product of productsList(); track product.id) {
-    <li class="product-item">
-      <img [src]="product.productImageUrl" alt="Product Image A" class="product-image">
-      <div class="product-details">
-        <h3 class="product-name">{{product.name}}</h3>
-        <p class="product-description"> {{product.description}} </p>
-        <p class="product-description"> ${{product.price}} </p>
-      </div>
-      <div>
-        <button type="button" (click)="deleteProduct(product.id!)">Delete</button>
-        <button type="button" (click)="editProduct(product)">Edit</button>
-      </div>
-    </li>
-  }
-</ul>
+<div class="edit-provider-container">
 
+  @if (providerData$ | async; as provider) {
+  <mat-card class="main-card">
+    <mat-card-header>
+      <mat-card-title>Provider Settings</mat-card-title>
+      <mat-card-subtitle>Update your public profile and contact info</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form #productForm="ngForm" (ngSubmit)="saveChanges(provider)" class="provider-form">
+        <div class="form-row">
+          <div class="image-upload-section">
+            <div class="preview-container">
+              <img [src]="provider.profileImageUrl" class="profile-preview" />
+              <button type="button" mat-mini-fab color="primary" class="upload-btn" (click)="fileInput.click()">
+                <mat-icon>photo_camera</mat-icon>
+              </button>
+            </div>
+            <input type="file" hidden (change)="onFileSelected($event)" accept="image/*" #fileInput>
+            <p class="mat-caption">Profile Image</p>
+          </div>
+
+          <div class="fields-column">
+            <mat-form-field appearance="outline">
+              <mat-label>Business Name</mat-label>
+              <input matInput name="name" [(ngModel)]="provider.name" required>
+              <mat-icon matSuffix>business</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" name="email" [(ngModel)]="provider.email" required>
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button mat-flat-button color="primary" type="submit" [disabled]="productForm.invalid">
+            <mat-icon>save</mat-icon> Save Changes
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  <div class="product-header">
+    <h2>Catalog Management</h2>
+    <button mat-raised-button color="accent" (click)="addProduct()">
+      <mat-icon>add</mat-icon> Add New Product
+    </button>
+  </div>
+
+  <div class="product-grid">
+    @for (product of productsList(); track product.id) {
+    <mat-card class="product-card" appearance="outlined">
+      <img mat-card-image [src]="product.productImageUrl" [alt]="product.name" class="product-img">
+
+      <mat-card-content>
+        <div class="product-info">
+          <h3 class="product-title">{{product.name}}</h3>
+          <span class="product-price">{{product.price | currency}}</span>
+        </div>
+        <p class="product-desc">{{product.description}}</p>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-icon-button color="warn" (click)="deleteProduct(product.id!)" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    } @empty {
+    <div class="empty-state">
+      <mat-icon>inventory_2</mat-icon>
+      <p>No products found in your catalog.</p>
+    </div>
+    }
+  </div>
+</div>

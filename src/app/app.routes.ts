@@ -22,6 +22,7 @@ import { EcommerceDashboardComponent } from '../app/views/dashboard/ecommerce-da
 import { ShoppingCartComponent } from '../app/views/cart/shopping-cart/shopping-cart.component'
 import { CheckoutComponent } from './views/checkout/checkout.component';
 import { EcommerceOrdersListComponent } from './views/order/ecommerce-orders-list/ecommerce-orders-list.component';
+import { ProviderOrdersListComponent } from './views/provider/provider-orders-list/provider-orders-list.component';
 
 export const routes: Routes = [
    {
@@ -114,6 +115,12 @@ export const routes: Routes = [
   {
     path: 'provider-dashboard',
     component: ProviderDashboardComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Provider] }
+  },
+  {
+    path: 'provider-orders',
+    component: ProviderOrdersListComponent,
     canActivate: [roleGuard],
     data: { roles: [Role.Provider] }
   },

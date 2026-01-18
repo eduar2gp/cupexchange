@@ -1,0 +1,63 @@
+<div class="orders-container">
+  <header class="page-header">
+    <h1>Merchant Orders Management</h1>
+    <p class="subtitle">Overview of all orders assigned to your provider account.</p>
+  </header>
+
+  @if (isLoading()) {
+  <div class="loading-shade">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+  } @else if (errorMessage()) {
+  <div class="error-container">
+    <p>{{ errorMessage() }}</p>
+  </div>
+  } @else {
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="orders()">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Order ID </th>
+        <td mat-cell *matCellDef="let order"> #{{order.merchantOrderId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef> Customer ID </th>
+        <td mat-cell *matCellDef="let order"> {{order.customerId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let order">
+          <mat-chip-set>
+            <mat-chip [class]="'status-chip ' + order.status">
+              {{order.status | uppercase}}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef> Revenue </th>
+        <td mat-cell *matCellDef="let order"> {{order.totalPrice | currency}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paid">
+        <th mat-header-cell *matHeaderCellDef> Payment </th>
+        <td mat-cell *matCellDef="let order">
+          <span [class.paid-text]="order.paid" [class.unpaid-text]="!order.paid">
+            {{ order.paid ? 'Settled' : 'Action Required' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    @if (orders().length === 0) {
+    <div class="empty-state">No orders have been placed with your provider yet.</div>
+    }
+  </div>
+  }
+</div>

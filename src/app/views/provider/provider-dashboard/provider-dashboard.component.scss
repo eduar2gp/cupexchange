@@ -1,0 +1,74 @@
+.dashboard-container {
+  padding: 2rem;
+  background-color: var(--color-background);
+  min-height: 100vh;
+  .header-section
+
+{
+  margin-bottom: 2rem;
+  h1
+
+{
+  color: var(--color-text);
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+}
+}
+
+.provider-card {
+  max-width: 600px;
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-radius: 12px;
+  border: 1px solid var(--color-surface-elevated) !important;
+  mat-card-header
+
+{
+  margin-bottom: 1rem;
+  .avatar-img
+
+{
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+}
+
+mat-card-content {
+  padding-top: 1rem;
+}
+
+.mat-mdc-list-item-title {
+  color: var(--color-text-secondary) !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.mat-mdc-list-item-line {
+  color: var(--color-text) !important;
+}
+
+mat-card-actions {
+  padding: 16px;
+  gap: 8px;
+  background-color: var(--color-surface-elevated);
+}
+
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-muted);
+  margin-top: 4rem;
+}
+
+button[mat-flat-button] {
+  background-color: var(--color-primary) !important;
+}
