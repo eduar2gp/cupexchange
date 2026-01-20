@@ -4,6 +4,6 @@ export interface UserProfileData {
   lastName?: string;
   phone?: string;
   address?: string;
-  municipality?: string;
-  province?: string;
+  municipalityId?: number;
+  provinceId?: number;
 }

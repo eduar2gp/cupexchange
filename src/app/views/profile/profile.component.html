@@ -11,73 +11,67 @@
     <h3>Personal Information</h3>
 
     <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <mat-icon matIconPrefix>person</mat-icon> <input matInput formControlName="firstName">
+      </mat-form-field>
 
-      <div class="form-field">
-        <label for="firstName">First Name *</label>
-        <input id="firstName" type="text" formControlName="firstName">
-        <div *ngIf="controls['firstName'].invalid && controls['firstName'].touched" class="error-message">
-          First Name is required.
-        </div>
-      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Middle Name</mat-label>
+        <mat-icon matIconPrefix>badge</mat-icon>
+        <input matInput formControlName="middleName">
+      </mat-form-field>
 
-      <div class="form-field">
-        <label for="middleName">Middle Name</label>
-        <input id="middleName" type="text" formControlName="middleName">
-      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <mat-icon matIconPrefix>groups</mat-icon>
+        <input matInput formControlName="lastName">
+      </mat-form-field>
 
-      <div class="form-field">
-        <label for="lastName">Last Name *</label>
-        <input id="lastName" type="text" formControlName="lastName">
-        <div *ngIf="controls['lastName'].invalid && controls['lastName'].touched" class="error-message">
-          Last Name is required.
-        </div>
-      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <mat-icon matIconPrefix>phone</mat-icon>
+        <input matInput formControlName="phone">
+      </mat-form-field>
 
-      <div class="form-field">
-        <label for="phone">Phone *</label>
-        <input id="phone" type="tel" formControlName="phone">
-        <div *ngIf="controls['phone'].invalid && controls['phone'].touched" class="error-message">
-          Phone number is required.
-        </div>
-      </div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <mat-icon matIconPrefix>home</mat-icon>
+        <input matInput formControlName="address">
+      </mat-form-field>
 
-      <div class="form-field full-width">
-        <label for="address">Address *</label>
-        <input id="address" type="text" formControlName="address">
-      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Province</mat-label>
+        <mat-icon matIconPrefix>map</mat-icon>
+        <mat-select formControlName="provinceId">
+          <mat-option *ngFor="let prov of provinces" [value]="prov.id">
+            {{ prov.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <div class="form-field">
-        <label for="municipality">Municipality *</label>
-        <input id="municipality" type="text" formControlName="municipality">
-      </div>
-
-      <div class="form-field">
-        <label for="province">Province *</label>
-        <input id="province" type="text" formControlName="province">
-      </div>
-
+      <mat-form-field appearance="outline">
+        <mat-label>Municipality</mat-label>
+        <mat-icon matIconPrefix>location_city</mat-icon>
+        <mat-select formControlName="municipalityId">
+          <mat-option *ngFor="let muni of filteredMunicipalities" [value]="muni.id">
+            {{ muni.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </form>
 
   <div class="button-container">
-    <button *ngIf="!isEditing"
-            (click)="toggleEdit()"
-            class="edit-button">
+    <button mat-raised-button *ngIf="!isEditing" (click)="toggleEdit()" color="primary">
       Edit Profile
     </button>
 
-    <button *ngIf="isEditing"
-            (click)="saveProfile()"
-            [disabled]="profileForm.invalid"
-            class="save-button">
-      Save Changes
-    </button>
-
-    <button *ngIf="isEditing"
-            (click)="toggleEdit()"
-            class="cancel-button">
-      Cancel
-    </button>
+    <ng-container *ngIf="isEditing">
+      <button mat-raised-button color="accent" (click)="saveProfile()" [disabled]="profileForm.invalid">
+        Save Changes
+      </button>
+      <button mat-button (click)="toggleEdit()">Cancel</button>
+    </ng-container>
   </div>
 </div>
-

@@ -42,8 +42,9 @@ html {
   --color-sell-surface-light: color-mix(in srgb, var(--color-sell-base) 8%, var(--color-surface, #ffffff));
   --color-buy-text-accent: var(--color-buy-base);
   --color-sell-text-accent: var(--color-sell-base);
-
   --bottom-toolbar-height: 64px;
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
 }
 
 

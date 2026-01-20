@@ -32,6 +32,9 @@ import { FCMService } from '../app/core/services/fcm.service';
 import { DataService } from '../app/core/services/data.service'
 import { SearchService } from '../app/core/services/search.service'
 import { CartService } from '../app/core/services/cart.service'
+import { LocationService } from '../app/core/services/location.service'
+import { Province } from './model/province.model';
+import { Municipality } from './model/muncipality.model';
 
 @Component({
   selector: 'app-root',
@@ -72,6 +75,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private navigationDecisionService = inject(NavigationDecisionService);
   private platformId = inject(PLATFORM_ID);
   public cartService = inject(CartService);
+  public locationService = inject(LocationService);
 
    //Subscriptions
   private routerSubscription?: Subscription;
@@ -107,6 +111,8 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     if (isPlatformBrowser(this.platformId)) {
       //  1. Load pairs from backend (The HTTP request that must complete)
       this.loadTradingPairs();
+      this.loadProvinces();
+      this.loadMunicipalities();
       if (localStorage.getItem('NOTIFICATIONS_ENABLED') === 'true') {
         this.fcmSubscription = this.fcmService.receiveMessages().subscribe(payload => {
           console.log('Foreground message received in UI layer');
@@ -149,6 +155,21 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
         this.initializeSelectedPair();
       }
     });
+  }
+
+  private loadProvinces(): void {
+    this.locationService.getProvinces().subscribe({
+      next: (provinces: Province[]) => {
+        localStorage.setItem('PROVINCES', JSON.stringify(provinces));
+      }
+    })
+  }
+  private loadMunicipalities(): void {
+    this.locationService.getMunicipalities().subscribe({
+      next: (municipalities: Municipality[]) => {
+        localStorage.setItem('MUNICIPALITIES', JSON.stringify(municipalities));
+      }
+    })
   }
 
   private initializeSelectedPair(): void {
@@ -227,10 +248,8 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   toggleDashboard(event: any) {
     const isEcommerce = event.checked;
-
     // 1. Update the persistent state
     this.dataService.setEcommerceMode(isEcommerce);
-
     // 2. Navigate based on the new state
     if (isEcommerce) {
       this.router.navigate(['/ecommerce-dashboard']);

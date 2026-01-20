@@ -62,8 +62,8 @@ export class NavigationDecisionService {
       lastName: loggedInUser.lastName,
       phone: loggedInUser.phone,
       address: loggedInUser.address,
-      municipality: loggedInUser.municipality,
-      province: loggedInUser.province,
+      municipalityId: loggedInUser.municipalityId,
+      provinceId: loggedInUser.provinceId,
     };
 
     // 3. Check for missing data

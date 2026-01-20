@@ -4,141 +4,142 @@ import { CommonModule } from '@angular/common';
 import { User } from '../../model/user.model';
 import { UserProfileData } from '../../model/user-profile-data.model';
 import { UserService } from '../../core/services/user.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { Province } from '../../model/province.model'
+import { Municipality } from '../../model/muncipality.model'
 
 @Component({
   selector: 'app-profile-component',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,
-    MatSnackBarModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
-
-  // Public properties for template access
   public loggedInUser: User | undefined;
   public profileForm!: FormGroup;
   public isEditing: boolean = false;
 
-  // Private property to hold data retrieved from User, used to initialize the form
-  private initialProfileData: UserProfileData | undefined;
+  // Selection Data
+  public provinces: Province[] = [];
+  public allMunicipalities: Municipality[] = [];
+  public filteredMunicipalities: Municipality[] = [];
 
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
-    // Initialize the form here or in ngOnInit
     this.setupForm();
   }
 
   ngOnInit() {
+    this.loadLocationData();
     this.loadUserProfile();
 
-    // Subscribe to form status changes to enable/disable the save button
-    this.profileForm.statusChanges.subscribe(status => {
-      // This check is implicitly handled by profileForm.valid in the template, 
-      // but explicit subscription can be useful for more complex logic.
-      // For now, we rely on the template check.
+    // Listen for Province changes to filter Municipalities
+    this.profileForm.get('provinceId')?.valueChanges.subscribe(provinceId => {
+      this.filterMunicipalities(provinceId);
     });
   }
 
+  private loadLocationData(): void {
+    const provJson = localStorage.getItem('PROVINCES');
+    const muniJson = localStorage.getItem('MUNICIPALITIES');
+
+    this.provinces = provJson ? JSON.parse(provJson) : [];
+    this.allMunicipalities = muniJson ? JSON.parse(muniJson) : [];
+  }
+
+  private filterMunicipalities(provinceId: number): void {
+    this.filteredMunicipalities = this.allMunicipalities.filter(m => m.provinceId === provinceId);
+
+    // Reset municipality if current selection doesn't belong to the new province
+    const currentMuniId = this.profileForm.get('municipalityId')?.value;
+    if (currentMuniId && !this.filteredMunicipalities.find(m => m.id === currentMuniId)) {
+      this.profileForm.get('municipalityId')?.setValue(null);
+    }
+  }
+
   private setupForm(): void {
-    // Initialize the form controls. They start disabled until Edit is clicked.
     this.profileForm = this.fb.group({
       firstName: new FormControl({ value: '', disabled: true }, [Validators.required]),
       middleName: new FormControl({ value: '', disabled: true }),
       lastName: new FormControl({ value: '', disabled: true }, [Validators.required]),
       phone: new FormControl({ value: '', disabled: true }, [Validators.required]),
       address: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      municipality: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      province: new FormControl({ value: '', disabled: true }, [Validators.required]),
+      municipalityId: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      provinceId: new FormControl({ value: null, disabled: true }, [Validators.required]),
     });
   }
 
   private loadUserProfile(): void {
-    // 1. Load User JSON from localStorage
     const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
     if (savedProfileJson) {
       this.loggedInUser = JSON.parse(savedProfileJson) as User;
-    } else {
-      console.error('User data not found in localStorage.');
+
+      // Patch values and trigger municipality filtering
+      this.profileForm.patchValue(this.loggedInUser);
+      if (this.loggedInUser.provinceId) {
+        this.filterMunicipalities(this.loggedInUser.provinceId);
+      }
+    }
+  }
+
+  public toggleEdit(): void {
+    this.isEditing = !this.isEditing;
+    this.isEditing ? this.profileForm.enable() : this.profileForm.disable();
+  }
+
+  public saveProfile(): void {
+    if (this.profileForm.invalid || !this.isEditing) {
+      this.profileForm.markAllAsTouched();
       return;
     }
 
-    // 2. Map User data to UserProfileData
-    this.initialProfileData = {
-      firstName: this.loggedInUser.firstName,
-      middleName: this.loggedInUser.middleName,
-      lastName: this.loggedInUser.lastName,
-      phone: this.loggedInUser.phone,
-      address: this.loggedInUser.address,
-      municipality: this.loggedInUser.municipality,
-      province: this.loggedInUser.province,
-    };
+    const updatedData: UserProfileData = this.profileForm.getRawValue();
 
-    // 3. Populate the form with data
-    this.profileForm.patchValue(this.initialProfileData);
-  }
-
-  /**
-   * Toggles the edit mode and enables/disables form controls.
-   */
-  public toggleEdit(): void {
-    this.isEditing = !this.isEditing;
-
-    if (this.isEditing) {
-      // Enable all controls for editing
-      this.profileForm.enable();
-      // Keep username/email disabled (Non-editable fields)
-      this.profileForm.get('email')?.disable();
-      this.profileForm.get('userName')?.disable();
-      // Note: Since userName is not in the DTO/form definition, it won't be explicitly handled here
-    } else {
-      // Disable all controls when viewing
-      this.profileForm.disable();
-    }
-  }
-
-  /**
-   * Called on click of the save button.
-   */
-  public saveProfile(): void {
-    // Ensure form is valid and component is in editing mode
-    if (this.profileForm.valid && this.isEditing) {
-      // Get the data from the form, which matches the UserProfileData structure
-      const updatedData: UserProfileData = this.profileForm.value;
-
-      this.userService.updateUserProfile(updatedData).subscribe({
-        next: (user: User) => {
-          // Update the loggedInUser with the new data
-          this.loggedInUser = user;
-          localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(user));
+    this.userService.updateUserProfile(updatedData).subscribe({
+      next: (partialUpdate: UserProfileData) => {
+        // 1. Get the current full user object from localStorage
+        const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+        if (savedProfileJson) {
+          const currentUser = JSON.parse(savedProfileJson) as User;
+          // 2. Merge the partial update into the full user object
+          // This keeps email, username, etc., while updating the profile fields
+          const updatedUser: User = {
+            ...currentUser,
+            ...partialUpdate
+          };
+          // 3. Save the merged object back to localStorage
+          localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(updatedUser));
+          // 4. Update the component's state to reflect changes in UI
+          this.loggedInUser = updatedUser;
           this.showToast('Profile updated successfully!');
-          // Exit editing mode
           this.toggleEdit();
-        },
-        error: (err) => {
-          console.error('Profile update failed:', err);
-          this.showToast(err.error)
         }
-      });
-    }
+      },
+      error: (err) => {
+        this.showToast(err.error || 'Update failed');
+      }
+    });
   }
 
-  // Helper method for easier template access to form controls
-  get controls() {
-    return this.profileForm.controls;
-  }
+  get controls() { return this.profileForm.controls; }
 
   showToast(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000, // Duration in milliseconds (3 seconds)
-      panelClass: ['snackbar-success'], // Custom CSS class for styling (see below)
-      horizontalPosition: 'center', // 'start' | 'center' | 'end' | 'left' | 'right'
-      verticalPosition: 'bottom', // 'top' | 'bottom'
-    });
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
 }

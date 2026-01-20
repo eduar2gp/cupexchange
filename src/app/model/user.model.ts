@@ -11,6 +11,6 @@ export interface User {
   phone: string;
   email: string;
   address: string;
-  municipality: string;
-  province: string;
+  municipalityId?: number;
+  provinceId?: number;
 }
