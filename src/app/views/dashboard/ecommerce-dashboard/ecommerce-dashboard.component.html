@@ -1,21 +1,57 @@
 <div class="dashboard-container">
   <mat-toolbar class="dashboard-header" color="transparent">
-    <h2>Available Products ({{ filteredProducts().length }})</h2>
+    <div class="header-content">
+      <h2>Products ({{ filteredProducts().length }})</h2>
+
+      <form [formGroup]="searchForm" class="filter-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Province</mat-label>
+          <mat-icon matIconPrefix>map</mat-icon>
+          <mat-select formControlName="provinceId">
+            <mat-option *ngFor="let prov of provinces" [value]="prov.id">
+              {{ prov.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Municipality</mat-label>
+          <mat-icon matIconPrefix>location_city</mat-icon>
+          <mat-select formControlName="municipalityId">
+            <mat-option *ngFor="let muni of filteredMunicipalities" [value]="muni.id">
+              {{ muni.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-mini-fab color="primary" (click)="performSearch()" aria-label="Search with filters">
+          <mat-icon>search</mat-icon>
+        </button>
+      </form>
+    </div>
   </mat-toolbar>
 
   @if (filteredProducts().length > 0) {
   <div class="product-grid">
     @for (product of filteredProducts(); track product.id) {
-    <mat-card class="product-card">
-      <img mat-card-image [src]="product.productImageUrl || 'assets/placeholder.png'" [alt]="product.name">
+    <mat-card class="product-card" [class.not-available]="!product.available">
+      <div class="image-container">
+        <img mat-card-image [src]="product.productImageUrl || 'assets/placeholder.png'" [alt]="product.name">
+        @if (!product.available) {
+        <div class="availability-overlay">Not available in your area</div>
+        }
+      </div>
+
       <mat-card-content>
         <h3 class="product-name">{{ product.name }}</h3>
         <p class="product-price">{{ product.price | currency }}</p>
         <p class="product-description">{{ product.description | slice:0:60 }}...</p>
       </mat-card-content>
+
       <mat-card-actions>
-        <button mat-flat-button color="primary" (click)="addProduct(product)">
-          <mat-icon>shopping_cart</mat-icon> ADD TO CART
+        <button mat-flat-button color="primary" (click)="addProduct(product)" [disabled]="!product.available">
+          <mat-icon>shopping_cart</mat-icon>
+          {{ product.available ? 'ADD TO CART' : 'OUT OF REACH' }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -24,7 +60,7 @@
   } @else {
   <div class="empty-state">
     <mat-icon>search_off</mat-icon>
-    <p>No products found matching "{{ searchQuery() }}"</p>
+    <p>No products found matching filters</p>
   </div>
   }
 </div>

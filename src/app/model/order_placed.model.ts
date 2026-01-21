@@ -50,8 +50,5 @@ export interface OrderPlaced {
 
   /** Internal order ID from the exchange (often numeric) */
   orderId: number;
-
-  // Optional: useful derived/computed fields (can be added later)
-  // totalValue?: number; // price * volumeTotal
-  // filledPercentage?: number;
+ 
 }

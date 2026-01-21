@@ -1,9 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // 💡 Removed HttpHeaders, as interceptor handles it
+import { HttpClient, HttpParams } from '@angular/common/http'; // 💡 Removed HttpHeaders, as interceptor handles it
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service'; // 💡 Keeping the import, but removing the injection/use
 import { Product } from '../../model/product.model'
 import { environment } from '../../../environments/environment'
+import { Page } from '../../model/page.model';
+import { ProductSearchRequestDTO } from '../../model/product-search-request-dto.model';
 
 /**
  * Defines the structure for a product object.
@@ -21,7 +23,9 @@ export class ProductsService {
   // If BASE_API_URL already ends with '/api/v1', this should just be '/products'.
   // I will assume BASE_API_URL includes the version path and correct the endpoint:
   private PRODUCTS_ENDPOINT = '/api/v1/products';
+  private SEARCH_PRODUCTS_ENDPOINT = '/api/v1/products/search';
   private PRODUCTS_BYPROVIDER_ENDPOINT = '/api/v1/products/by-provider';
+  
 
   /**
    * Fetches the list of products from the backend API.
@@ -31,6 +35,25 @@ export class ProductsService {
   getProducts(): Observable<Product[]> {    
     const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}`;   
     return this.http.get<Product[]>(fullUrl);
+  }
+
+  /**
+   * Fetches paged products based on user location and category filters.
+   */
+  postSearchProducts(
+    request: ProductSearchRequestDTO,
+    page: number = 0,
+    size: number = 20
+  ): Observable<Page<Product>> {
+
+    const fullUrl = `${this.BASE_API_URL}${this.SEARCH_PRODUCTS_ENDPOINT}`;
+
+    // Add pagination as query parameters
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.post<Page<Product>>(fullUrl, request, { params });
   }
 
   getProductsByProvider(providerId: number): Observable<Product[]> {
@@ -93,6 +116,5 @@ export class ProductsService {
     // The <void> or <any> type depends on what your API returns (often an empty body for 204 No Content).
     return this.http.delete<void>(fullUrl);
   }
-
 
 }

@@ -6,4 +6,5 @@ price: number;
 stockQuantity: number;
 productImageUrl?: string;
 providerId: number;
+available?: boolean;
 }

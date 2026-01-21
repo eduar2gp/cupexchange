@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Province } from '../../model/province.model'
 import { Municipality } from '../../model/muncipality.model'
+import { DataService } from '../../core/services/data.service'
 
 @Component({
   selector: 'app-profile-component',
@@ -40,7 +41,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dataService: DataService
   ) {
     this.setupForm();
   }
@@ -127,6 +129,7 @@ export class ProfileComponent implements OnInit {
           localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(updatedUser));
           // 4. Update the component's state to reflect changes in UI
           this.loggedInUser = updatedUser;
+          this.dataService.updateUser(this.loggedInUser)
           this.showToast('Profile updated successfully!');
           this.toggleEdit();
         }
