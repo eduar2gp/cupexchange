@@ -1,0 +1,64 @@
+<div class="details-container">
+  @if (order) {
+  <mat-card class="order-card">
+    <header class="order-header">
+      <h2>Order Details: #{{ order.merchantOrderId }}</h2>
+      <span class="status-badge" [class]="order.status">
+        {{ order.status | uppercase }}
+      </span>
+    </header>
+
+    <mat-divider></mat-divider>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Customer ID:</label>
+        <span>{{ order.customerId }}</span>
+      </div>
+      <div class="info-item">
+        <label>Payment Status:</label>
+        <span [style.color]="order.paid ? '#2da44e' : '#cf222e'">
+          {{ order.paid ? 'Confirmed' : 'Pending' }}
+        </span>
+      </div>
+      <div class="info-item">
+        <label>Total Revenue:</label>
+        <span class="total-price">{{ order.totalPrice | currency }}</span>
+      </div>
+    </div>
+
+    <h3>Items Ordered</h3>
+    <table mat-table [dataSource]="order.orderProducts" class="mat-elevation-z1">
+
+      <ng-container matColumnDef="productId">
+        <th mat-header-cell *matHeaderCellDef> Product ID </th>
+        <td mat-cell *matCellDef="let item"> {{item.productId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef> Qty </th>
+        <td mat-cell *matCellDef="let item"> {{item.quantity}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="priceAtPurchase">
+        <th mat-header-cell *matHeaderCellDef> Unit Price </th>
+        <td mat-cell *matCellDef="let item"> {{item.priceAtPurchase | currency}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subtotal">
+        <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+        <td mat-cell *matCellDef="let item">
+          {{ (item.quantity * item.priceAtPurchase) | currency }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card>
+  } @else {
+  <div class="no-selection">
+    <p>No order selected. Please go back to the dashboard.</p>
+  </div>
+  }
+</div>
