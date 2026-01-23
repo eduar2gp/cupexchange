@@ -7,6 +7,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
 import { MerchantOrder } from '../../../model/merchant-order-reponse.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { DataService } from '../../../core/services/data.service'
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -25,6 +27,8 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ProviderOrdersListComponent implements OnInit {
   private merchantOrderService = inject(MerchantOrdersService);
   private authService = inject(AuthService);
+  private dataService = inject(DataService)
+  private router = inject(Router);
 
   // Signals for reactive UI state
   orders = signal<MerchantOrder[]>([]);
@@ -59,5 +63,10 @@ export class ProviderOrdersListComponent implements OnInit {
       this.errorMessage.set('Provider information not found.');
       this.isLoading.set(false);
     }
+  }
+
+  onClick(merchantOrder: MerchantOrder) {
+    this.dataService.updateMerchantOrder(merchantOrder)
+    this.router.navigate(['merchant-order-details'])
   }
 }

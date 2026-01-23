@@ -4,6 +4,7 @@ import { Provider } from '../../model/provider.model'
 import { Product } from '../../model/product.model'
 import { User } from '../../model/user.model'
 import { TransactionRequest } from '../../model/transaction-request.model'
+import { MerchantOrder } from '../../model/merchant-order-reponse.model'
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,9 @@ export class DataService {
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser: Observable<User | null> = this.currentUserSubject.asObservable();
+
+  private merchantOrderSubject = new BehaviorSubject<MerchantOrder | null>(null);
+  currentMerchantOrder: Observable<MerchantOrder | null> = this.merchantOrderSubject.asObservable();
 
   // The subject to hold and update the value
   private updateWalletRequiredSubject = new BehaviorSubject<boolean>(false);
@@ -61,6 +65,14 @@ export class DataService {
 
   updateUser(user: User | null): void {
     this.currentUserSubject.next(user); // ← Use .next(), not .set()
+  }
+
+  updateMerchantOrder(merchantOrder: MerchantOrder | null): void {
+    this.merchantOrderSubject.next(merchantOrder); 
+  }
+
+  getMerchantOrder(): MerchantOrder | null {
+    return this.merchantOrderSubject.value;
   }
 
   // Optional: helper to get current value synchronously
