@@ -1,64 +1,111 @@
 <div class="details-container">
-  @if (order) {
-  <mat-card class="order-card">
-    <header class="order-header">
-      <h2>Order Details: #{{ order.merchantOrderId }}</h2>
-      <span class="status-badge" [class]="order.status">
-        {{ order.status | uppercase }}
+  @if (order(); as orderData) {
+  <mat-card class="main-card">
+    <mat-card-header class="custom-header">
+      <div class="header-content">
+        <mat-card-title>Order #{{ orderData.merchantOrderId }}</mat-card-title>
+        <mat-card-subtitle>{{ (userProfile()?.firstName || 'Customer') }}'s Purchase</mat-card-subtitle>
+      </div>
+      <span class="status-pill" [attr.data-status]="orderData.status">
+        {{ orderData.status | uppercase }}
       </span>
-    </header>
+    </mat-card-header>
 
-    <mat-divider></mat-divider>
-
-    <div class="info-grid">
-      <div class="info-item">
-        <label>Customer ID:</label>
-        <span>{{ order.customerId }}</span>
+    <mat-card-content>
+      <div class="responsive-grid mb-2">
+        <div class="info-group">
+          <span class="label">Payment Status</span>
+          <span class="value" [class.paid]="orderData.paid" [class.pending]="!orderData.paid">
+            <mat-icon>{{ orderData.paid ? 'check_circle' : 'pending' }}</mat-icon>
+            {{ orderData.paid ? 'Confirmed' : 'Pending' }}
+          </span>
+        </div>
+        <div class="info-group">
+          <span class="label">Total Revenue</span>
+          <span class="value total-amount">{{ orderData.totalPrice | currency }}</span>
+        </div>
       </div>
-      <div class="info-item">
-        <label>Payment Status:</label>
-        <span [style.color]="order.paid ? '#2da44e' : '#cf222e'">
-          {{ order.paid ? 'Confirmed' : 'Pending' }}
-        </span>
-      </div>
-      <div class="info-item">
-        <label>Total Revenue:</label>
-        <span class="total-price">{{ order.totalPrice | currency }}</span>
-      </div>
-    </div>
 
-    <h3>Items Ordered</h3>
-    <table mat-table [dataSource]="order.orderProducts" class="mat-elevation-z1">
+      <mat-divider></mat-divider>
 
-      <ng-container matColumnDef="productId">
-        <th mat-header-cell *matHeaderCellDef> Product ID </th>
-        <td mat-cell *matCellDef="let item"> {{item.productId}} </td>
-      </ng-container>
+      <section class="section">
+        <h3><mat-icon>person</mat-icon> Customer Information</h3>
+        @if (userProfile(); as profile) {
+        <div class="responsive-grid">
+          <div class="info-group">
+            <span class="label">Full Name</span>
+            <span class="value">{{ profile.firstName }} {{ profile.middleName }} {{ profile.lastName }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Email Address</span>
+            <a [href]="'mailto:' + profile.email" class="value link">{{ profile.email || '—' }}</a>
+          </div>
+          <div class="info-group">
+            <span class="label">Phone</span>
+            <span class="value">{{ profile.phone || '—' }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Address</span>
+            <span class="value">{{ profile.address || '—' }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Province</span>
+            <span class="value">{{ getProvinceName() }}</span>
+          </div>
 
-      <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef> Qty </th>
-        <td mat-cell *matCellDef="let item"> {{item.quantity}} </td>
-      </ng-container>
+          <div class="info-group">
+            <span class="label">Municipality</span>
+            <span class="value">{{ getMunicipalityName() }}</span>
+          </div>
+        </div>
+        } @else {
+        <div class="loading-inline">
+          <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+          <span>Fetching profile...</span>
+        </div>
+        }
+      </section>
 
-      <ng-container matColumnDef="priceAtPurchase">
-        <th mat-header-cell *matHeaderCellDef> Unit Price </th>
-        <td mat-cell *matCellDef="let item"> {{item.priceAtPurchase | currency}} </td>
-      </ng-container>
+      <mat-divider></mat-divider>
 
-      <ng-container matColumnDef="subtotal">
-        <th mat-header-cell *matHeaderCellDef> Subtotal </th>
-        <td mat-cell *matCellDef="let item">
-          {{ (item.quantity * item.priceAtPurchase) | currency }}
-        </td>
-      </ng-container>
+      <section class="section">
+        <h3><mat-icon>shopping_bag</mat-icon> Items Ordered</h3>
+        <div class="table-container mat-elevation-z0">
+          <table mat-table [dataSource]="orderData.orderProducts">
+            <ng-container matColumnDef="productId">
+              <th mat-header-cell *matHeaderCellDef> ID </th>
+              <td mat-cell *matCellDef="let item"> #{{item.productId}} </td>
+            </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef> Qty </th>
+              <td mat-cell *matCellDef="let item"> {{item.quantity}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="priceAtPurchase">
+              <th mat-header-cell *matHeaderCellDef> Unit Price </th>
+              <td mat-cell *matCellDef="let item"> {{item.priceAtPurchase | currency}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+              <td mat-cell *matCellDef="let item" class="bold-cell">
+                {{ (item.quantity * item.priceAtPurchase) | currency }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </section>
+    </mat-card-content>
   </mat-card>
   } @else {
-  <div class="no-selection">
-    <p>No order selected. Please go back to the dashboard.</p>
+  <div class="empty-state">
+    <mat-icon>receipt_long</mat-icon>
+    <p>No order selected. Please return to the dashboard.</p>
+    <button mat-stroked-button color="primary">Back to Dashboard</button>
   </div>
   }
 </div>

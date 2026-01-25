@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UserProfileData } from '../../model/user-profile-data.model';
 import { User } from '../../model/user.model'
+import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
 
 export interface UserRegister {
   username: string;
@@ -52,5 +53,12 @@ export class UserService {
     const updateFcmUrl = `${environment.baseApiUrl}${this.UPDATE_FCMTOKEN_ENDPOINT}`
     const payload = { deviceToken: token }    
     return this.http.post<void>(updateFcmUrl, payload);
+  }
+
+  getUserProfile(userId?: string | number): Observable<UserProfileData> {
+    // Build path using endpoints.auth.getUserProfile which includes the '?userId=' suffix.
+    const userIdSegment = (userId !== undefined && userId !== null) ? encodeURIComponent(String(userId)) : '';
+    const url = build(ApiEndpoints.auth.getUserProfile + userIdSegment);
+    return this.http.get<UserProfileData>(url);
   }
 }

@@ -3,6 +3,7 @@ export interface UserProfileData {
   middleName?: string;
   lastName?: string;
   phone?: string;
+  email?: string;
   address?: string;
   municipalityId?: number;
   provinceId?: number;

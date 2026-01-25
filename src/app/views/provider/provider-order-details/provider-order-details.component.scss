@@ -1,46 +1,189 @@
 .details-container {
-  padding: 24px;
-  max-width: 900px;
+  padding: 1rem;
+  max-width: 1000px;
   margin: 0 auto;
+  color: var(--color-text);
+  background-color: var(--color-background);
 
-  .order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 16px;
+  .main-card {
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin: 24px 0;
+  .custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
 
-    .info-item {
-      display: flex;
-      flex-direction: column;
-
-      label {
-        font-size: 0.85rem;
-        color: #666;
+    .header-content {
+      mat-card-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--color-text);
         margin-bottom: 4px;
       }
 
-      span {
-        font-weight: 500;
-        font-size: 1.1rem;
+      mat-card-subtitle {
+        color: var(--color-text-secondary);
       }
     }
   }
 
-  .total-price {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #1976d2;
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+
+    @media (min-width: 600px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 960px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  table {
-    width: 100%;
-    margin-top: 16px;
+  .info-group {
+    display: flex;
+    flex-direction: column;
+
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-weight: 500;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-icon {
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+
+      &.paid {
+        color: var(--color-success);
+      }
+
+      &.pending {
+        color: var(--color-warning);
+      }
+
+      &.total-amount {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+
+      &.link {
+        color: var(--color-primary);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+          color: var(--color-primary-hover);
+        }
+      }
+    }
+  }
+
+  .section {
+    padding: 1.5rem 0;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 1rem;
+
+      mat-icon {
+        color: var(--color-primary);
+      }
+    }
+  }
+  // Modern Status Badges using color-mix
+  .status-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    background-color: var(--color-surface-elevated);
+    color: var(--color-text-secondary);
+
+    &[data-status="shipped"], &[data-status="delivered"] {
+      background-color: color-mix(in srgb, var(--color-success) 12%, transparent);
+      color: var(--color-success);
+    }
+
+    &[data-status="pending"] {
+      background-color: color-mix(in srgb, var(--color-warning) 12%, transparent);
+      color: var(--color-warning);
+    }
+
+    &[data-status="cancelled"] {
+      background-color: color-mix(in srgb, var(--color-danger) 12%, transparent);
+      color: var(--color-danger);
+    }
+  }
+
+  mat-divider {
+    border-top-color: var(--color-divider);
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-surface);
+
+    table {
+      width: 100%;
+      background: transparent;
+    }
+
+    th.mat-mdc-header-cell {
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+    }
+
+    td.mat-mdc-cell {
+      color: var(--color-text);
+      border-bottom-color: var(--color-divider);
+    }
+
+    .bold-cell {
+      font-weight: 700;
+      color: var(--color-text);
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-muted);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1rem;
+    }
   }
 }
