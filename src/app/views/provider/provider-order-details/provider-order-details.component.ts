@@ -12,19 +12,26 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { signal, computed } from '@angular/core';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Province } from '../../../model/province.model';
 import { Municipality } from '../../../model/muncipality.model';
+import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @Component({
   selector: 'app-provider-order-details',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatDividerModule, MatProgressSpinnerModule, MatIconModule],
+  imports: [CommonModule, MatTableModule, MatCardModule, MatDividerModule, MatProgressSpinnerModule, MatIconModule, MatSelectModule],
   templateUrl: './provider-order-details.component.html',
   styleUrl: './provider-order-details.component.scss',
 })
 export class ProviderOrderDetailsComponent implements OnInit {
   private dataService = inject(DataService);
   private userService = inject(UserService);
+  private merchantOrdersService = inject(MerchantOrdersService);
+  private snackbar = inject(MatSnackBar);
 
   // Hold the order in a signal
   order = signal<MerchantOrder | null>(null);
@@ -33,12 +40,12 @@ export class ProviderOrderDetailsComponent implements OnInit {
   private order$ = toObservable(this.order);
 
   // userProfile will update whenever order changes (uses customerId)
+  // userProfile will update only when customerId changes (prevents refetch on status-only updates)
   userProfile = toSignal(
     this.order$.pipe(
-      switchMap((currentOrder) => {
-        const id = currentOrder?.customerId;
-        return id ? this.userService.getUserProfile(id) : of(null);
-      })
+      map((currentOrder) => currentOrder?.customerId ?? null),
+      distinctUntilChanged(),
+      switchMap((id) => (id ? this.userService.getUserProfile(id) : of(null)))
     ),
     { initialValue: null }
   );
@@ -48,6 +55,14 @@ export class ProviderOrderDetailsComponent implements OnInit {
   public allMunicipalities: Municipality[] = [];
 
   displayedColumns: string[] = ['productId', 'quantity', 'priceAtPurchase', 'subtotal'];
+
+  // Status options (matches model: 'pending' | 'process' | 'completed' | 'canceled')
+  statuses: { value: MerchantOrder['status']; label: string }[] = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'process', label: 'Processing' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'canceled', label: 'Canceled' },
+  ];
 
   ngOnInit(): void {
     // Load order synchronously from DataService (same usage as before)
@@ -83,5 +98,27 @@ export class ProviderOrderDetailsComponent implements OnInit {
     if (!muniId) return '—';
     const m = this.allMunicipalities.find(x => x.id === muniId);
     return m?.name ?? '—';
+  }
+
+  // Called when user selects a new status from the mat-select
+  onStatusChange(newStatus: MerchantOrder['status']) {
+    const current = this.order();
+    if (!current || current.status === newStatus) return;
+
+    // Optimistically update UI, then request server update
+    const previous = current.status;
+    this.order.update(o => (o ? { ...o, status: newStatus } : o));
+
+    this.merchantOrdersService.updateOrderStatus(current.merchantOrderId, newStatus).subscribe({
+      next: () => {
+        this.snackbar.open("Order Updated Successfully!", "Success", { duration: 3000 });
+      },
+      error: (err) => {
+        // revert on error
+        console.error('Failed to update order status', err);
+        this.snackbar.open('Failed to update order status' + err, "Error", { duration: 3000 });
+        this.order.update(o => (o ? { ...o, status: previous } : o));
+      }
+    });
   }
 }

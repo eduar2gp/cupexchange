@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar'; // Though not used, good to keep
+import { MatCardModule } from '@angular/material/card';
 
 import { OrderTrade } from '../../../model/order_trade.model';
 import { TradingPair } from '../../../model/trading_pair';
@@ -50,6 +51,7 @@ interface Type {
     MatDialogModule,
     TranslateModule,
     MatProgressSpinnerModule,
+    MatCardModule
   ],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.scss',

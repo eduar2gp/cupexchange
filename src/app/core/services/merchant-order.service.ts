@@ -4,6 +4,7 @@ import { CreateOrderRequest } from '../../model/create-merchant-order-request.mo
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'
 import { MerchantOrder } from '../../model/merchant-order-reponse.model'
+import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
 
 @Injectable({ providedIn: 'root' })
 export class MerchantOrdersService {
@@ -19,7 +20,7 @@ export class MerchantOrdersService {
     return this.http.post(fullUrl, order);
   }
 
-   getAllMerchantOrdersByCustomer(): Observable<MerchantOrder[]> {
+  getAllMerchantOrdersByCustomer(): Observable<MerchantOrder[]> {
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS}`;
     return this.http.get<MerchantOrder[]>(url);
   }
@@ -27,5 +28,15 @@ export class MerchantOrdersService {
   getAllMerchantOrdersByProvider(providerId: string): Observable<MerchantOrder[]> {
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS_BY_PROVIDER}${providerId}`;
     return this.http.get<MerchantOrder[]>(url);
+  }
+
+  updateOrderStatus(merchantOrderId: number, status: string): Observable<string> {
+    const url = build(ApiEndpoints.merchant.MERCHANT_UPDATE_ORDER_STATUS);
+    const payload = {
+      merchantOrderId: merchantOrderId,
+      status: status
+    };
+    // Tell HttpClient to treat the response as plain text
+    return this.http.put(url, payload, { responseType: 'text' });
   }
 }

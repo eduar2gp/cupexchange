@@ -6,9 +6,14 @@
         <mat-card-title>Order #{{ orderData.merchantOrderId }}</mat-card-title>
         <mat-card-subtitle>{{ (userProfile()?.firstName || 'Customer') }}'s Purchase</mat-card-subtitle>
       </div>
-      <span class="status-pill" [attr.data-status]="orderData.status">
-        {{ orderData.status | uppercase }}
-      </span>
+      <mat-form-field class="status-pill" appearance="outline" [attr.data-status]="orderData.status">
+        <mat-label>Status</mat-label>
+        <mat-select [value]="orderData.status" (selectionChange)="onStatusChange($event.value)">
+          <mat-option *ngFor="let s of statuses" [value]="s.value">
+            {{ s.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </mat-card-header>
 
     <mat-card-content>

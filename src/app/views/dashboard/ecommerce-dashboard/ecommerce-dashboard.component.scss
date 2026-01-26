@@ -12,7 +12,7 @@
 /* 2. Header & Filter Form (Force Single Row) */
 .dashboard-header {
   height: auto !important; /* Allows content to define height */
-  min-height: 64px;
+  min-height: 56px;
   background: var(--color-surface) !important;
   border-bottom: 1px solid var(--color-border);
   padding: 8px 16px;
@@ -25,12 +25,12 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 8px;
+  gap: 0px;
 
   h2 {
     margin: 0;
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 500;
     color: var(--color-text);
     white-space: nowrap;
   }
@@ -85,11 +85,31 @@
   }
 }
 
-/* 3. Product Grid */
 .product-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: 1rem;
+  padding: 0.5rem;
+  /* Phone layout (most phones): two equal columns */
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+}
+
+/* Small tablets / narrow desktops: 3 columns */
+@media (min-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Larger screens: 4 columns */
+@media (min-width: 960px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
 }
 
 /* 4. Enhanced Product Card */
@@ -102,6 +122,8 @@
   flex-direction: column;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: none;
+  width: 100%;
+  overflow: hidden;
 
   &:hover {
     transform: translateY(-4px);
@@ -135,6 +157,17 @@
     text-align: center;
     padding: 4px 0;
   }
+}
+
+/* Keep product images correctly fitted and prevent distortion */
+.product-card .image-container img,
+.product-card img[mat-card-image] {
+  width: 100%;
+  height: 160px; /* adjust as needed */
+  object-fit: cover; /* crop to fill without distortion */
+  object-position: center;
+  display: block;
+  border-radius: 6px;
 }
 
 mat-card-content {

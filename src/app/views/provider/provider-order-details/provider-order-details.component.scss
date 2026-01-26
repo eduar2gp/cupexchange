@@ -116,34 +116,112 @@
       }
     }
   }
-  // Modern Status Badges using color-mix
+  // Modern Status Pill Component
   .status-pill {
-    padding: 6px 14px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
     font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.3px;
-    background-color: var(--color-surface-elevated);
-    color: var(--color-text-secondary);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 50px;
+    padding: 2px 12px;
+    transition: all 200ms ease-in-out;
+    border: 1px solid transparent;
+    min-width: 150px;
+    // 1. Force Selected Text and Arrow Color
+    ::ng-deep {
+      .mat-mdc-select-value-text {
+        color: inherit !important; // Follows the parent pill color
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
 
-    &[data-status="shipped"], &[data-status="delivered"] {
-      background-color: color-mix(in srgb, var(--color-success) 12%, transparent);
+      .mat-mdc-select-arrow svg {
+        fill: currentColor !important;
+      }
+      // Remove default Material Form Field styling to let our pill shine
+      .mat-mdc-text-field-wrapper {
+        padding: 0 !important;
+        background-color: transparent !important;
+      }
+
+      .mat-mdc-form-field-flex {
+        padding: 0 4px !important;
+      }
+
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: transparent !important;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        min-height: unset !important;
+        width: fit-content !important;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none; // Hide error/hint space for a compact pill
+      }
+
+      .mat-mdc-select-trigger {
+        display: flex;
+        align-items: center;
+      }
+    }
+    // Status logic
+    &[data-status="shipped"],
+    &[data-status="completed"] {
+      background-color: color-mix(in srgb, var(--color-success) 15%, var(--color-surface-elevated));
       color: var(--color-success);
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--color-success) 20%, var(--color-surface-elevated));
+      }
     }
 
-    &[data-status="pending"] {
-      background-color: color-mix(in srgb, var(--color-warning) 12%, transparent);
+    &[data-status="pending"],
+    &[data-status="process"] {
+      background-color: color-mix(in srgb, var(--color-warning) 15%, var(--color-surface-elevated));
       color: var(--color-warning);
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--color-warning) 20%, var(--color-surface-elevated));
+      }
     }
 
-    &[data-status="cancelled"] {
-      background-color: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    &[data-status="canceled"] {
+      background-color: color-mix(in srgb, var(--color-danger) 15%, var(--color-surface-elevated));
       color: var(--color-danger);
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--color-danger) 20%, var(--color-surface-elevated));
+      }
+    }
+    // Mobile specific: Increase tap target size
+    @media (max-width: 600px) {
+      padding: 6px 10px;
+
+      ::ng-deep .mat-mdc-select-value-text {
+        font-size: 0.7rem;
+      }
     }
   }
+  // Dark mode refinements
+  @media (prefers-color-scheme: dark) {
+    .status-pill {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
-  mat-divider {
-    border-top-color: var(--color-divider);
+      &[data-status] {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    }
   }
 
   .table-container {
@@ -185,5 +263,9 @@
       height: 48px;
       margin-bottom: 1rem;
     }
+  }
+
+  mat-divider {
+    border-top-color: var(--color-divider);
   }
 }
