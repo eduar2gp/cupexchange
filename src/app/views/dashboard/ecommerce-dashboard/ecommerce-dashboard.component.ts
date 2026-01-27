@@ -41,6 +41,8 @@ export class EcommerceDashboardComponent implements OnInit {
   private dataService = inject(DataService);
   private fb = inject(FormBuilder);
 
+  viewMode: 'grid' | 'list' = 'grid';
+
   // State
   private allProducts = signal<Product[]>([]);
   searchQuery = signal<string>('');
@@ -78,6 +80,10 @@ export class EcommerceDashboardComponent implements OnInit {
 
     // Toolbar search listener
     this.searchService.searchQuery$.subscribe(query => this.searchQuery.set(query));
+  }
+
+  setViewMode(mode: 'grid' | 'list') {
+    this.viewMode = mode;
   }
 
   private loadLocationData() {

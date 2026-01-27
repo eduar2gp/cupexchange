@@ -94,6 +94,46 @@
   align-items: start;
 }
 
+/* list layout for product grid */
+.product-grid.list-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* each card becomes a horizontal row in list mode */
+.product-grid.list-mode .product-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* image column */
+.product-grid.list-mode .product-card .image-container {
+  flex: 0 0 120px;
+  max-width: 120px;
+  height: 80px;
+}
+
+/* ensure images fit */
+.product-grid.list-mode .product-card img[mat-card-image] {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* card content expands */
+.product-grid.list-mode .product-card mat-card-content {
+  flex: 1 1 auto;
+}
+
+/* actions aligned right */
+.product-grid.list-mode .product-card mat-card-actions {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
 /* Small tablets / narrow desktops: 3 columns */
 @media (min-width: 600px) {
   .product-grid {

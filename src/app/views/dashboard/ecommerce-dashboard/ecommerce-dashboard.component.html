@@ -23,11 +23,30 @@
           </button>
         </div>
       </form>
+
+      <!-- View toggle buttons (grid / list) -->
+      <div class="view-toggle" role="group" aria-label="View mode">
+        <button mat-icon-button
+                type="button"
+                aria-label="Grid view"
+                (click)="viewMode = 'grid'"
+                [class.active]="viewMode === 'grid'">
+          <mat-icon>grid_view</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                type="button"
+                aria-label="List view"
+                (click)="viewMode = 'list'"
+                [class.active]="viewMode === 'list'">
+          <mat-icon>view_list</mat-icon>
+        </button>
+      </div>
     </div>
   </mat-toolbar>
 
   @if (filteredProducts().length > 0) {
-  <div class="product-grid">
+  <div class="product-grid" [class.list-mode]="viewMode === 'list'">
     @for (product of filteredProducts(); track product.id) {
     <mat-card class="product-card" [class.not-available]="!product.available">
       <div class="image-container">
