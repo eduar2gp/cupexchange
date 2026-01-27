@@ -20,7 +20,7 @@
 }
 
 /* --- SIDE-BY-SIDE LAYOUT (512px+) --- */
-@media (min-width: 512px) {
+@media (min-width: 480px) {
   .trade-page {
     flex-direction: row !important;
     flex-wrap: nowrap !important;

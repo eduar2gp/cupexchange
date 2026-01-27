@@ -1,18 +1,62 @@
 .orders-grid {
-  //display: grid;
-  //grid-template-columns: 1fr 1fr;
-  gap: 0px;
-  padding: 0px;
+  gap: 0;
+  padding: 0;
   box-sizing: border-box;
   min-height: 400px;
   background-color: var(--color---color-background);
 
-  .stacked {
+  /* Side-by-side / default container */
+  &.side-by-side {
     display: flex;
-    flex-direction: column; /* Stacks children vertically */
-    gap: 0px; /* Space between the cards */
+    flex-direction: row;
+    gap: 0;
+
     mat-card {
-      max-height: 150px;
+      min-height: 250px;
+      max-height: 500px;
+    }
+
+    .side-panel {
+      flex: 1 1 50%;
+    }
+
+    /* Side-by-side ordering:
+       - buy-card: Total (volume) left, Price right
+       - sell-card: Price left, Total (volume) right
+    */
+    .buy-card .list-header,
+    .buy-card .order-item {
+      .volume-col { order: 1; flex: 1 1 0; justify-content: flex-start; text-align: left; }
+      .price-col  { order: 2; flex: 0 0 auto; justify-content: flex-end; text-align: right; }
+    }
+
+    .sell-card .list-header,
+    .sell-card .order-item {
+      .price-col  { order: 1; flex: 0 0 auto; justify-content: flex-start; text-align: left; }
+      .volume-col { order: 2; flex: 1 1 0; justify-content: flex-end; text-align: right; }
+    }
+  }
+
+  /* Stacked container: both cards show Total left, Price right
+     (override sell-card to match buy-card in stacked mode) */
+  &.stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    mat-card {
+      max-height: 350px;
+      min-height: 300px;
+    }
+
+    .side-panel {
+      flex: 1 1 auto;
+    }
+
+    .list-header,
+    .order-item {
+      .volume-col { order: 1; flex: 1 1 0; justify-content: flex-start; text-align: left; }
+      .price-col  { order: 2; flex: 0 0 auto; justify-content: flex-end; text-align: right; }
     }
   }
 
@@ -43,16 +87,16 @@
     }
   }
 
-  .list-header, .order-item {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  /* Default row layout fallback */
+  .list-header,
+  .order-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
     padding: 6px 16px;
     font-size: 0.875rem;
-
-    .price-col, .volume-col {
-      padding: 0 4px;
-      display: flex;
-    }
+    min-height: 36px;
   }
 
   .list-header {
@@ -62,58 +106,22 @@
   }
 
   .buy-card {
-    .list-header {
-      .price-col {
-        justify-content: flex-end;
-      }
-
-      .volume-col {
-        justify-content: flex-start;
-      }
-    }
-
     .order-item.buy-item {
       background-color: var(--color-buy-surface-light);
       border-left: 3px solid var(--color-buy-base);
 
-      .volume-col {
-        justify-content: flex-start;
-        color: var(--color-text, #1f2328);
-      }
-
-      .price-col {
-        justify-content: flex-end;
-        color: var(--color-buy-text-accent);
-        font-weight: 500;
-      }
+      .volume-col { color: var(--color-text, #1f2328); }
+      .price-col  { color: var(--color-buy-text-accent); font-weight: 500; }
     }
   }
 
   .sell-card {
-    .list-header {
-      .price-col {
-        justify-content: flex-start;
-      }
-
-      .volume-col {
-        justify-content: flex-end;
-      }
-    }
-
     .order-item.sell-item {
       background-color: var(--color-sell-surface-light);
       border-right: 3px solid var(--color-sell-base);
 
-      .price-col {
-        justify-content: flex-start;
-        color: var(--color-sell-text-accent);
-        font-weight: 500;
-      }
-
-      .volume-col {
-        justify-content: flex-end;
-        color: var(--color-text, #1f2328);
-      }
+      .price-col  { color: var(--color-sell-text-accent); font-weight: 500; }
+      .volume-col { color: var(--color-text, #1f2328); }
     }
   }
 
@@ -133,43 +141,12 @@
   }
 }
 
-/* ---------------------------------------------------- */
-/* 3- Layout: One to the left, one to the right (Side-by-Side) */
-/* ---------------------------------------------------- */
-.orders-grid.side-by-side {
-  display: flex;
-  flex-direction: row; /* Places children horizontally */
-  gap: 0px; /* Space between the cards */
-  mat-card{
-      min-height: 250px;
-      max-height: 500px;
-  }
-}
-
-.orders-grid.stacked {
-  display: flex;
-  flex-direction: column; /* Stacks children vertically */
-  gap: 0px; /* Space between the cards */
-  mat-card {
-    max-height:350px;
-    min-height: 300px;
-  }
-}
-
-.orders-grid.stacked .side-panel {
-  flex: 1 1 auto;
-}
-
-.orders-grid.side-by-side .side-panel {
-  /* Crucial: Takes up 50% of the available space (flex-basis: 50%) 
-       and allows shrinking/growing equally (flex-grow: 1, flex-shrink: 1) */
-  flex: 1 1 50%;
-}
-
+/* fallback empty state card */
 .empty-state {
-    margin-top: 16px;
-    background-color: var(--color-surface);
-  mat-card-content{
+  margin-top: 16px;
+  background-color: var(--color-surface);
+
+  mat-card_content {
     color: var(--color-text);
   }
 }
