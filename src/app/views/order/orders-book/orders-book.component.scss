@@ -122,8 +122,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
-    padding: 1px 0px;
+    gap: 1.5rem;
+    padding: 2px 3px;
     font-size: 0.875rem;
     //min-height: 36px;
   }
@@ -137,7 +137,7 @@
   .buy-card {
     .order-item.buy-item {
       background-color: var(--color-buy-surface-light);
-      border-left: 3px solid var(--color-buy-base);
+      border-left: 2px solid var(--color-buy-base);
       border-right: 1px solid var(--color-buy-base);
 
 
@@ -147,7 +147,7 @@
 
       .price-col {
         color: var(--color-buy-text-accent);
-        font-weight: 400;
+        font-weight: 450;
       }
     }
   }
@@ -155,12 +155,12 @@
   .sell-card {
     .order-item.sell-item {
       background-color: var(--color-sell-surface-light);
-      border-right: 3px solid var(--color-sell-base);
+      border-right: 2px solid var(--color-sell-base);
       border-left: 1px solid var(--color-sell-base);
 
       .price-col {
         color: var(--color-sell-text-accent);
-        font-weight: 400;
+        font-weight: 450;
       }
 
       .volume-col {
