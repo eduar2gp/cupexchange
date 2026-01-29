@@ -55,19 +55,17 @@
         <div class="availability-overlay">Not available in your area</div>
         }
       </div>
-
       <mat-card-content>
-        <h3 class="product-name">{{ product.name }}</h3>
+        <h2 class="product-name">{{ product.name }}</h2>
         <p class="product-price">{{ product.price | currency }}</p>
         <p class="product-description">{{ product.description | slice:0:60 }}...</p>
+        <mat-card-actions>
+          <button mat-flat-button color="primary" (click)="addProduct(product)" [disabled]="!product.available">
+            <mat-icon>shopping_cart</mat-icon>
+            {{ product.available ? 'ADD TO CART' : 'OUT OF REACH' }}
+          </button>
+        </mat-card-actions>
       </mat-card-content>
-
-      <mat-card-actions>
-        <button mat-flat-button color="primary" (click)="addProduct(product)" [disabled]="!product.available">
-          <mat-icon>shopping_cart</mat-icon>
-          {{ product.available ? 'ADD TO CART' : 'OUT OF REACH' }}
-        </button>
-      </mat-card-actions>
     </mat-card>
     }
   </div>

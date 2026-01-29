@@ -4,7 +4,6 @@
   box-sizing: border-box;
   min-height: 400px;
   background-color: var(--color---color-background);
-
   /* Side-by-side / default container */
   &.side-by-side {
     display: flex;
@@ -19,24 +18,44 @@
     .side-panel {
       flex: 1 1 50%;
     }
-
     /* Side-by-side ordering:
        - buy-card: Total (volume) left, Price right
        - sell-card: Price left, Total (volume) right
     */
     .buy-card .list-header,
     .buy-card .order-item {
-      .volume-col { order: 1; flex: 1 1 0; justify-content: flex-start; text-align: left; }
-      .price-col  { order: 2; flex: 0 0 auto; justify-content: flex-end; text-align: right; }
+      .volume-col {
+        order: 1;
+        flex: 1 1 0;
+        justify-content: flex-start;
+        text-align: left;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        justify-content: flex-end;
+        text-align: right;
+      }
     }
 
     .sell-card .list-header,
     .sell-card .order-item {
-      .price-col  { order: 1; flex: 0 0 auto; justify-content: flex-start; text-align: left; }
-      .volume-col { order: 2; flex: 1 1 0; justify-content: flex-end; text-align: right; }
+      .price-col {
+        order: 1;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        text-align: left;
+      }
+
+      .volume-col {
+        order: 2;
+        flex: 1 1 0;
+        justify-content: flex-end;
+        text-align: right;
+      }
     }
   }
-
   /* Stacked container: both cards show Total left, Price right
      (override sell-card to match buy-card in stacked mode) */
   &.stacked {
@@ -55,8 +74,19 @@
 
     .list-header,
     .order-item {
-      .volume-col { order: 1; flex: 1 1 0; justify-content: flex-start; text-align: left; }
-      .price-col  { order: 2; flex: 0 0 auto; justify-content: flex-end; text-align: right; }
+      .volume-col {
+        order: 1;
+        flex: 1 1 0;
+        justify-content: flex-start;
+        text-align: left;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        justify-content: flex-end;
+        text-align: right;
+      }
     }
   }
 
@@ -86,7 +116,6 @@
       flex-direction: column;
     }
   }
-
   /* Default row layout fallback */
   .list-header,
   .order-item {
@@ -94,9 +123,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    padding: 6px 16px;
+    padding: 1px 0px;
     font-size: 0.875rem;
-    min-height: 36px;
+    //min-height: 36px;
   }
 
   .list-header {
@@ -109,9 +138,17 @@
     .order-item.buy-item {
       background-color: var(--color-buy-surface-light);
       border-left: 3px solid var(--color-buy-base);
+      border-right: 1px solid var(--color-buy-base);
 
-      .volume-col { color: var(--color-text, #1f2328); }
-      .price-col  { color: var(--color-buy-text-accent); font-weight: 500; }
+
+      .volume-col {
+        color: var(--color-text, #1f2328);
+      }
+
+      .price-col {
+        color: var(--color-buy-text-accent);
+        font-weight: 400;
+      }
     }
   }
 
@@ -119,9 +156,16 @@
     .order-item.sell-item {
       background-color: var(--color-sell-surface-light);
       border-right: 3px solid var(--color-sell-base);
+      border-left: 1px solid var(--color-sell-base);
 
-      .price-col  { color: var(--color-sell-text-accent); font-weight: 500; }
-      .volume-col { color: var(--color-text, #1f2328); }
+      .price-col {
+        color: var(--color-sell-text-accent);
+        font-weight: 400;
+      }
+
+      .volume-col {
+        color: var(--color-text, #1f2328);
+      }
     }
   }
 
