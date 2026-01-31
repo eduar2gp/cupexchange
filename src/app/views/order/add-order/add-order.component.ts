@@ -288,32 +288,44 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // Called on every input change
   onVolumeInput(value: string): void {
-    this.volumeInput = value; // keep exactly what user typed
-    const parsed = Number(value.replace(/,/g, ''));
+    // Allow user to type freely
+    this.volumeInput = value;
 
-    // Important: If input is empty or invalid (e.g., just a dot), 
-    // assign null or 0 to the model to trigger Angular's 'required' validator if needed.
+    // Clean the input (remove commas) and parse
+    const parsed = parseFloat(value.replace(/,/g, ''));
+
     if (isNaN(parsed) || value.trim() === '') {
-      this.newOrder.volume = 0; // Set to 0 to easily trigger required/min validation
+      this.newOrder.volume = 0;
     } else {
-      this.newOrder.volume = parsed; // numeric model
+      this.newOrder.volume = parsed;
     }
   }
 
-  formatVolumeOnBlur(): void {
-    const volume = this.newOrder.volume;
+  onVolumeBlur(): void {
+    // 1. Get the current numeric value
+    let valueToBound = this.newOrder.volume;
 
-    if (volume !== null && volume !== undefined && !isNaN(volume)) {
-      const precision = 2; 
-      this.volumeInput = this.formatNumberToLocale(volume, precision);
-    } else {
-      // Ensure input is cleared or set to a standard empty state if the model is invalid/null
-      this.volumeInput = '';
+    // 2. Check Minimum
+    if (valueToBound < this.minVolume) {
+      valueToBound = this.minVolume;
     }
+
+    // 3. Check Maximum (Safety for trading)
+    const max = this.getCurrentMaxVolume();
+    if (valueToBound > max) {
+      valueToBound = max;
+    }
+
+    // 4. Update the actual object that gets sent to the API
+    this.newOrder.volume = valueToBound;
+
+    // 5. Update the string that the Input Field is bound to
+    // We use the formatter to ensure it looks like "0.01" or "1,000.00"
+    this.volumeInput = this.formatNumberToLocale(valueToBound, 2);
   }
 
+  
   private formatNumberToLocale(value: number, precision: number = 2): string {
     if (isNaN(value)) {
       return '0';
@@ -349,5 +361,21 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     }
     const quoteCurrency = pair.substring(3, pair.length).toLowerCase();
     return `assets/currencies/${quoteCurrency}.png`;
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    // Allow: Backspace, Tab, End, Home, Left, Right, Delete
+    const allowedKeys = ['Backspace', 'Tab', 'End', 'Home', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    if (allowedKeys.indexOf(event.key) !== -1) {
+      return;
+    }
+
+    // Allow: Number keys and one decimal point
+    const isNumber = /[0-9]/.test(event.key);
+    const isDecimal = event.key === '.' && !this.volumeInput.includes('.');
+
+    if (!isNumber && !isDecimal) {
+      event.preventDefault(); // This stops the character from being entered
+    }
   }
 }

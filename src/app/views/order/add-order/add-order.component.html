@@ -69,16 +69,15 @@
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
                     <input matInput
-                           type="number"
+                           type="text"
                            [ngModel]="volumeInput"
                            (ngModelChange)="onVolumeInput($event)"
-                           (blur)="formatVolumeOnBlur()"
+                           (blur)="onVolumeBlur()"
+                           (keydown)="onKeyDown($event)"
                            name="volumeBuy"
                            required
-                           [min]="minVolume"
                            #volumeBuyControl="ngModel"
-                           placeholder=""
-                           aria-label="Buy amount" />
+                           placeholder="0.00" />
 
                     <mat-hint align="end">
                       {{ 'MINIMUM' | translate }}: {{ minVolume | number:'1.2-2' }} |
@@ -169,15 +168,15 @@
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
                     <input matInput
-                           type="number"
+                           type="text"
                            [ngModel]="volumeInput"
                            (ngModelChange)="onVolumeInput($event)"
-                           (blur)="formatVolumeOnBlur()"
+                           (blur)="onVolumeBlur()"
+                           (keydown)="onKeyDown($event)"
                            name="volumeSell"
                            required
-                           [min]="minVolume"
                            #volumeSellControl="ngModel"
-                           placeholder=""
+                           placeholder="0.00"
                            aria-label="Sell amount" />
 
                     <mat-hint align="end">
