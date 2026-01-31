@@ -98,7 +98,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
 
   loadRecentTrades(): void {
     // 6. HTTP Load: Load the initial set of trades (page 0, size 20)
-    this.tradeService.getRecentTradesPaged(this.currentPair.value, this.currentPage, 20)
+    this.tradeService.getRecentTradesPaged(this.currentPair.value, this.currentPage, 50)
       .subscribe({
         next: (response) => {
           // 7. APPEND the historical trades (historical data is oldest and goes on bottom)

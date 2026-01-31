@@ -26,11 +26,31 @@
     }
   </div>
 
+  <!-- Chart type toggle -->
+  <div class="chart-type-toggle" role="tablist" aria-label="Chart type">
+    <button type="button"
+            role="tab"
+            [attr.aria-selected]="chartType === 'candlestick'"
+            [class.active]="chartType === 'candlestick'"
+            (click)="selectChartType('candlestick')">
+      Candlestick
+    </button>
+
+    <button type="button"
+            role="tab"
+            [attr.aria-selected]="chartType === 'line'"
+            [class.active]="chartType === 'line'"
+            (click)="selectChartType('line')">
+      Line
+    </button>
+  </div>
+
   <div class="chart-wrapper">
     <canvas baseChart
+            *ngIf="chartData"
             [data]="chartData"
             [options]="chartOptions"
-            [type]="'candlestick'"
+            [type]="chartType"
             [plugins]="[watermarkPlugin]">
     </canvas>
   </div>

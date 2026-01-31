@@ -15,27 +15,43 @@
   min-height: 50vh;
   background: var(--color-background);
   padding: 0.25rem;
-  gap: 8px;
+  gap: 1px;
   overflow-x: hidden; // Prevents page-level horizontal scroll
 }
 
 /* --- SIDE-BY-SIDE LAYOUT (512px+) --- */
-@media (min-width: 480px) {
-  .trade-page {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: flex-start;
-  }
+//@media (min-width: 430px) {
+//  .trade-page {
+//    flex-direction: row !important;
+//    flex-wrap: nowrap !important;
+//    align-items: flex-start;
+//  }
 
-  .trade-card {
-    flex: 0 0 calc(62% - 4px) !important;
-    max-width: calc(62% - 4px) !important;
-  }
+//  .trade-card {
+//    flex: 0 0 calc(62%) !important;
+//    max-width: calc(62%) !important;
+//  }
 
-  .side-div {
-    flex: 0 0 calc(38% - 4px) !important;
-    max-width: calc(38% - 4px) !important;
-  }
+//  .side-div {
+//    flex: 0 0 calc(38%) !important;
+//    max-width: calc(38%) !important;
+//  }
+//}
+@media (min-width: 430px) {
+.trade-page {
+  display: grid !important;
+  /* Defines two columns: one taking 1.6x more space than the other */
+  grid-template-columns: 2fr 1fr;
+  gap: 5px; /* Controlled spacing between columns */
+  align-items: start;
+}
+
+/* We no longer need width/flex logic on the children! */
+.trade-card, .side-div {
+  width: 100% !important;
+  max-width: none !important;
+}
+
 }
 
 /* --- TRADE CARD --- */
@@ -60,6 +76,12 @@
   }
 }
 
+.trade-header {
+  display: flex;
+  direction: row;
+  align-items: center;
+  justify-content: center;
+}
 /* --- FORM & SLIDER FIXES --- */
 .trade-form {
   display: flex;
@@ -104,24 +126,34 @@
 
 /* --- BUTTONS & OTHER --- */
 .submit-btn {
-  width: 100%;
-  padding: 0.8rem;
+  width: 95%;
+  padding: 1rem;
   border-radius: 0.75rem;
   font-weight: 700;
-  text-transform: uppercase;
+  //text-transform: uppercase;
   border: none;
   /* Ensure button doesn't overflow */
-  max-width: 100%;
+  max-width: 90%;
 }
 
 .submit-buy {
   background: var(--color-success) !important;
   color: white !important;
+
+  &:disabled {
+    background-color: var(--mdc-filled-button-disabled-container-color, rgba(0, 0, 0, 0.12)) !important;
+    opacity: 0.6;
+  }
 }
 
 .submit-sell {
   background: var(--color-danger) !important;
   color: white !important;
+
+  &:disabled {
+    background-color: var(--mdc-filled-button-disabled-container-color, rgba(0, 0, 0, 0.12)) !important;
+    opacity: 0.6;
+  }
 }
 
 .trade-pair {
@@ -130,7 +162,7 @@
   justify-content: center;
   gap: 8px;
   padding: 0.4rem;
-  background-color: var(--color-surface);
+  background-color: var(--color-background);
   border-radius: 8px;
   font-size: 0.95rem;
 }
@@ -150,4 +182,11 @@
 .side-div {
   width: 100%;
   overflow: hidden;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1rem;
 }

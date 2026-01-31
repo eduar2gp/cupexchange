@@ -32,22 +32,42 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   @Input() layoutMode: LayoutMode = 'side-by-side';
   @Input() MAX_ORDERS_ITEMS: number = 100;
 
-  // 2. COMPUTED STATE: Create reactive, filtered lists (sorted by timestamp)
+  // Helper to safely parse price to a numeric value
+  private parsePrice(p: PublicOrderDTO['price']): number {
+    if (typeof p === 'number') return Number.isFinite(p) ? p : 0;
+    if (typeof p === 'string') {
+      const n = parseFloat(p.replace(/,/g, '')); // tolerate thousand separators
+      return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+  }
+
+  // 2. COMPUTED STATE: Create reactive, filtered lists (sorted by price)
+  // For BUY orders we show highest price first (descending).
   public buyOrders: Signal<PublicOrderDTO[]> = computed(() =>
     this.ordersSignal()
       .filter(o => o.side === 'BUY')
-      .filter(o => o.type !== 'MARKET')
-      // No need to sort here, sorting will be done by price for a real Order Book
-      // but keeping your existing timestamp sort for recent trades list:
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .filter(o => o.type !== 'MARKET') // Exclude MARKET orders from the book view')
+      .sort((a, b) => {
+        const pa = this.parsePrice(a.price);
+        const pb = this.parsePrice(b.price);
+        if (pb !== pa) return pb - pa; // descending by price
+        return b.timestamp - a.timestamp; // tie-breaker: most recent first
+      })
       .slice(0, 50) // Adjust limit for half the screen
   );
 
+  // For SELL orders we show lowest price first (ascending).
   public sellOrders: Signal<PublicOrderDTO[]> = computed(() =>
     this.ordersSignal()
       .filter(o => o.side === 'SELL')
       .filter(o => o.type !== 'MARKET')
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .sort((a, b) => {
+        const pa = this.parsePrice(a.price);
+        const pb = this.parsePrice(b.price);
+        if (pa !== pb) return pa - pb; // ascending by price
+        return a.timestamp - b.timestamp; // tie-breaker: oldest first (or adjust as desired)
+      })
       .slice(0, 50) // Adjust limit for half the screen
   );
 

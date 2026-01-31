@@ -8,7 +8,7 @@
 
       @for (order of buyOrders(); track order.orderId) {
       <div class="order-item buy-item">
-        <span class="volume-col font-mono">{{ order.volumeTotal | number:'1.2-2' }}</span>
+        <span class="volume-col font-mono">{{ order.volumeTotal | number:'1.0-0' }}</span>
         <span class="price-col font-mono">
           {{ order.price | number:priceFormat() }}
         </span>
@@ -31,7 +31,7 @@
         <span class="price-col font-mono">
           {{ order.price | number:priceFormat() }}
         </span>
-        <span class="volume-col font-mono">{{ order.volumeTotal | number:'1.2-2' }}</span>
+        <span class="volume-col font-mono">{{ order.volumeTotal | number:'1.0-0' }}</span>
       </div>
       }
       @empty {

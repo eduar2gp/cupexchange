@@ -16,7 +16,7 @@ import { environment } from '../../../environments/environment';
 })
 export class OrdersService {
   //private readonly ordersCollection: CollectionReference<Order>;
-  private readonly ORDERS_ENDPOINT = '/api/v1/trade/user/orders';
+  private readonly ORDERS_ENDPOINT = '/api/v1/auth/user/orders';
   private readonly CANCEL_ORDER_ENDPOINT = '/api/v1/trade/order/cancel/{orderId}';
 
   // Use inject() consistently for both — this is the modern standalone-friendly way
@@ -69,7 +69,7 @@ export class OrdersService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    const fullUrl = `${environment.baseApiUrl}/api/v1/trade/public/recent-orders/${pairCode}/paged`;
+    const fullUrl = `${environment.baseApiUrl}/api/v1/trade/public/open-orders/${pairCode}/paged`;
 
     return this.http.get<Page<PublicOrderDTO>>(fullUrl, { params });
   }

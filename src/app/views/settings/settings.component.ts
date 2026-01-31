@@ -11,6 +11,7 @@ import { UserService } from '../../core/services/user.service'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { take } from 'rxjs/operators'; // Added take operator
 import { DataService } from '../../core/services/data.service'
+import { ThemeMode } from '../../../app/core/services/theme-service';
 
 @Component({
   selector: 'app-settings',
@@ -59,8 +60,12 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
     this.currentLang = lang;
   }
 
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
+  get currentThemeMode(): ThemeMode {
+    return this.themeService.getMode();
+  }
+
+  changeTheme(mode: ThemeMode): void {
+    this.themeService.setThemeMode(mode);
   }
 
   toggleNotifications(checked: boolean) {
@@ -116,7 +121,4 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
     }
   }
 
-  get isDark(): boolean {
-    return this.themeService.isDark();
-  }
 }

@@ -17,6 +17,9 @@
   "ORDERS": "Orders",
   "NEW_ORDER": "New Order",
   "DARK_MODE": "Dark Mode",
+  "LIGHT_MODE": "Light Mode",
+  "AUTO_TIME": "Automatic",
+  "THEME": "Theme",
   "LOGOUT": "Logout",
   "BUY": "Buy",
   "SELL": "Sell",
@@ -79,5 +82,5 @@
   "CHECKOUT": "Checkout",
   "CART_EMPTY": "Cart is empty",
   "CREATE_ORDER": "Create Order",
-  "SUBMIT_ORDER":  "Submit Order"
+  "SUBMIT_ORDER": "Submit Order"
 }

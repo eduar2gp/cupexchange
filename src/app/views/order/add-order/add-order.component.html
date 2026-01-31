@@ -69,7 +69,7 @@
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
                     <input matInput
-                           type="text"
+                           type="number"
                            [ngModel]="volumeInput"
                            (ngModelChange)="onVolumeInput($event)"
                            (blur)="formatVolumeOnBlur()"
@@ -169,7 +169,7 @@
                   <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
                     <input matInput
-                           type="text"
+                           type="number"
                            [ngModel]="volumeInput"
                            (ngModelChange)="onVolumeInput($event)"
                            (blur)="formatVolumeOnBlur()"
