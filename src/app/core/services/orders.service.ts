@@ -62,12 +62,14 @@ export class OrdersService {
    */
   findRecentOrdersPaged(
     pairCode: string,
+    side: string = '',
     page: number = 0,
     size: number = 20
   ): Observable<Page<PublicOrderDTO>> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('side', side.toString());
 
     const fullUrl = `${environment.baseApiUrl}/api/v1/trade/public/open-orders/${pairCode}/paged`;
 
@@ -77,8 +79,8 @@ export class OrdersService {
   /**
    * Convenience: Get just the first N recent orders
    */
-  findTopNByPairCode(pairCode: string, n: number = 50): Observable<PublicOrderDTO[]> {
-    return this.findRecentOrdersPaged(pairCode, 0, n).pipe(
+  findTopNByPairCodeAndSide(pairCode: string, side: string, n: number = 50): Observable<PublicOrderDTO[]> {
+    return this.findRecentOrdersPaged(pairCode, side, 0, n).pipe(
       map(page => page.content)
     );
   }

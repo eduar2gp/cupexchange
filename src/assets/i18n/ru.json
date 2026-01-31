@@ -82,5 +82,7 @@
   "CHECKOUT": "Проверить",
   "CART_EMPTY": "Корзина пуста",
   "CREATE_ORDER": "Создайте порядок",
-  "SUBMIT_ORDER": "Оформить заказ"
+  "SUBMIT_ORDER": "Оформить заказ",
+  "BUY_ORDERS": "Покупка",
+  "SELL_ORDERS": "Продажа"
 }

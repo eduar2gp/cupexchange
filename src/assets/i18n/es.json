@@ -82,5 +82,7 @@
   "CHECKOUT": "Pagar",
   "CART_EMPTY": "No hay productos",
   "CREATE_ORDER": "Crear Orden",
-  "SUBMIT_ORDER": "Enviar Orden"
+  "SUBMIT_ORDER": "Enviar Orden",
+  "BUY_ORDERS": "Offertas de Compra",
+  "SELL_ORDERS": "Offertas de Venta"
 }

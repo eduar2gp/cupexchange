@@ -82,5 +82,7 @@
   "CHECKOUT": "Checkout",
   "CART_EMPTY": "Cart is empty",
   "CREATE_ORDER": "Create Order",
-  "SUBMIT_ORDER": "Submit Order"
+  "SUBMIT_ORDER": "Submit Order",
+  "BUY_ORDERS": "Buy Orders",
+  "SELL_ORDERS": "Sell Orders"
 }

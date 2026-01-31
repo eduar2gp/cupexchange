@@ -1,172 +1,127 @@
-
-import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal, Input } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal, Input, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { WebSocketService } from '../../../core/services/websocket.service';
 import { PairSelectionService } from '../../../core/services/pair-selection.service';
 import { OrdersService } from '../../../core/services/orders.service';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { TradingPair } from '../../../model/trading_pair';
-import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { PublicOrderDTO } from '../../../model/public_order_dto'
+import { PublicOrderDTO } from '../../../model/public_order_dto';
+import { TranslateModule } from '@ngx-translate/core';
 
 export type LayoutMode = 'stacked' | 'side-by-side' | 'mixed';
 
 @Component({
   selector: 'app-order-book',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    DecimalPipe,
-  ],
+  imports: [CommonModule, MatCardModule, DecimalPipe, TranslateModule],
   templateUrl: './orders-book.component.html',
-  styleUrl: './orders-book.component.scss', // Changed to .scss for CSS variables
-  changeDetection: ChangeDetectionStrategy.OnPush, // Use OnPush with Signals for performance
+  styleUrl: './orders-book.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderBookComponent implements OnInit, OnDestroy {
-  // 1. STATE MANAGEMENT: Use a WritableSignal for the source data
-  private ordersSignal: WritableSignal<PublicOrderDTO[]> = signal([]);
+  // 1. STATE: Separate WritableSignals for Buy and Sell data
+  private ordersSignalBuy: WritableSignal<PublicOrderDTO[]> = signal([]);
+  private ordersSignalSell: WritableSignal<PublicOrderDTO[]> = signal([]);
 
   @Input() layoutMode: LayoutMode = 'side-by-side';
-  @Input() MAX_ORDERS_ITEMS: number = 100;
-
-  // Helper to safely parse price to a numeric value
-  private parsePrice(p: PublicOrderDTO['price']): number {
-    if (typeof p === 'number') return Number.isFinite(p) ? p : 0;
-    if (typeof p === 'string') {
-      const n = parseFloat(p.replace(/,/g, '')); // tolerate thousand separators
-      return Number.isFinite(n) ? n : 0;
-    }
-    return 0;
-  }
-
-  // 2. COMPUTED STATE: Create reactive, filtered lists (sorted by price)
-  // For BUY orders we show highest price first (descending).
-  public buyOrders: Signal<PublicOrderDTO[]> = computed(() =>
-    this.ordersSignal()
-      .filter(o => o.side === 'BUY')
-      .filter(o => o.type !== 'MARKET') // Exclude MARKET orders from the book view')
-      .sort((a, b) => {
-        const pa = this.parsePrice(a.price);
-        const pb = this.parsePrice(b.price);
-        if (pb !== pa) return pb - pa; // descending by price
-        return b.timestamp - a.timestamp; // tie-breaker: most recent first
-      })
-      .slice(0, 50) // Adjust limit for half the screen
-  );
-
-  // For SELL orders we show lowest price first (ascending).
-  public sellOrders: Signal<PublicOrderDTO[]> = computed(() =>
-    this.ordersSignal()
-      .filter(o => o.side === 'SELL')
-      .filter(o => o.type !== 'MARKET')
-      .sort((a, b) => {
-        const pa = this.parsePrice(a.price);
-        const pb = this.parsePrice(b.price);
-        if (pa !== pb) return pa - pb; // ascending by price
-        return a.timestamp - b.timestamp; // tie-breaker: oldest first (or adjust as desired)
-      })
-      .slice(0, 50) // Adjust limit for half the screen
-  );
+  @Input() MAX_ORDERS_ITEMS: number = 50;
 
   public currentPairSignal: WritableSignal<TradingPair | null> = signal(null);
+  private pairSub?: Subscription;
 
-  public priceFormat: Signal<string> = computed(() => {
-    // Read the value from the signal using the getter function ()
-    const pair = this.currentPairSignal();
-    const viewValue = pair?.viewValue;
-
-    if (!viewValue) {
-      return '1.2-2';
-    }
-
-    if (viewValue === 'CUP') {
-      return '1.2-4';
-    } else if (viewValue === 'USD') {
-      return '1.0-0';
-    }
-
-    return '1.2-2';
+  // 2. COMPUTED: Derived signals for the template
+  public buyOrders = computed(() => {
+    return this.ordersSignalBuy()
+      .filter(o => o.type !== 'MARKET')
+      .sort((a, b) => this.parsePrice(b.price) - this.parsePrice(a.price)) // Descending
+      .slice(0, this.MAX_ORDERS_ITEMS);
   });
 
-  private pairSub?: Subscription;
+  public sellOrders = computed(() => {
+    return this.ordersSignalSell()
+      .filter(o => o.type !== 'MARKET')
+      .sort((a, b) => this.parsePrice(a.price) - this.parsePrice(b.price)) // Ascending
+      .slice(0, this.MAX_ORDERS_ITEMS);
+  });
+
+  public priceFormat = computed(() => {
+    const pair = this.currentPairSignal();
+    if (pair?.viewValue === 'CUP') return '1.2-4';
+    if (pair?.viewValue === 'USD') return '1.0-0';
+    return '1.2-2';
+  });
 
   constructor(
     private wsService: WebSocketService,
     private pairSelectionService: PairSelectionService,
     private orderService: OrdersService,
     private ngZone: NgZone,
-    // ChangeDetectorRef is no longer strictly required for state updates, but keeping for Zone management
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    // Inject the signal helper (optional, but a good practice to indicate usage)
-  }
+  ) { }
 
   ngOnInit(): void {
     const initialPair = this.pairSelectionService.getCurrentPair();
-    const pairCode = initialPair?.value || 'USDCUP';
-    this.currentPairSignal.set(initialPair); // Initialize currentPair
+    this.currentPairSignal.set(initialPair);
 
-    this.loadInitialOrders(pairCode);
+    if (initialPair) {
+      this.loadInitialOrders(initialPair.value);
+    }
 
     if (isPlatformBrowser(this.platformId)) {
-      this.wsService.subscribeToRecentOrders(pairCode);
-
       this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
-        this.currentPairSignal.set(pair);
         if (pair) {
+          this.currentPairSignal.set(pair);
           this.loadInitialOrders(pair.value);
-          // Note: The websocket service should handle unsubscribing the OLD pair 
-          // before subscribing to the NEW one, but we call the high-level API here.
           this.wsService.subscribeToRecentOrders(pair.value);
         }
       });
 
-      // Listen to real-time order updates from WebSocket
+      // WebSocket listener
       this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
-        // Run outside Angular's zone for performance, but need to update signal
-        // We use NgZone.run to ensure the signal update triggers a minimal change detection
-        // if the component is outside the main zone.
-        this.ngZone.run(() => {
-          this.upsertOrder(order);
-          // With Signals, no need for this.cdr.detectChanges()
-        });
+        this.ngZone.run(() => this.upsertOrder(order));
       });
     }
   }
 
   private loadInitialOrders(pair: string): void {
-    this.orderService.findTopNByPairCode(pair, this.MAX_ORDERS_ITEMS).subscribe({
-      next: (initialOrders: PublicOrderDTO[]) => {
-        this.ngZone.run(() => {
-          // Use set() to replace the entire array and trigger signal update
-          this.ordersSignal.set(initialOrders);
-        });
+    // Load both sides in parallel
+    forkJoin({
+      buy: this.orderService.findTopNByPairCodeAndSide(pair, 'BUY', this.MAX_ORDERS_ITEMS),
+      sell: this.orderService.findTopNByPairCodeAndSide(pair, 'SELL', this.MAX_ORDERS_ITEMS)
+    }).subscribe({
+      next: (res) => {
+        this.ordersSignalBuy.set(res.buy);
+        this.ordersSignalSell.set(res.sell);
       },
-      error: (err) => {
-        console.error('Failed to load recent orders', err);
-        this.ordersSignal.set([]); // Set empty on error
-      }
+      error: (err) => console.error('Failed to load initial order book', err)
     });
   }
 
   private upsertOrder(newOrder: PublicOrderDTO): void {
-    // Update the signal immutably
-    this.ordersSignal.update(orders => {
-      const index = this.ordersSignal().findIndex(o => o.orderId === newOrder.orderId);
-      if (index !== -1) {
-        // Update existing order immutably
-        return orders.map((order, i) => (i === index ? newOrder : order));
-      } else {
-        // Insert new order (newest at top)
-        return [newOrder, ...orders];
+    // Determine which signal to update
+    const targetSignal = newOrder.side === 'BUY' ? this.ordersSignalBuy : this.ordersSignalSell;
+
+    targetSignal.update(orders => {
+      const index = orders.findIndex(o => o.orderId === newOrder.orderId);
+
+      // If order is finished/cancelled, you might want to remove it
+      if (newOrder.status === 'FILLED' || newOrder.status === 'CANCELED') {
+        return orders.filter(o => o.orderId !== newOrder.orderId);
       }
 
-      // Sorting and slicing is now handled by the computed signals (buyOrders/sellOrders)
-      // to avoid re-sorting the main list on every update.
+      if (index !== -1) {
+        return orders.map((order, i) => (i === index ? newOrder : order));
+      } else {
+        return [newOrder, ...orders];
+      }
     });
+  }
+
+  private parsePrice(p: any): number {
+    if (typeof p === 'number') return p;
+    if (typeof p === 'string') return parseFloat(p.replace(/,/g, '')) || 0;
+    return 0;
   }
 
   ngOnDestroy(): void {
@@ -176,23 +131,10 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- Utility Methods (Kept for template usage) ---
-
-  // Note: formatTime, getSideClass, getStatusBadgeClass, getFillPercentage 
-  // are no longer needed in the template based on the new design (Price/Total only),
-  // but they are kept here in case you re-introduce them later.
-
-  formatTime(timestamp: number): string {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
-    });
-  }
-
   get layoutClasses() {
     return {
       'stacked': this.layoutMode === 'stacked',
       'side-by-side': this.layoutMode === 'side-by-side',
-      // You can add more complex conditions here if needed
     };
   }
 }
