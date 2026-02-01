@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   gaMeasurementId: 'G-DZRVZFK704',
   baseApiUrl: 'https://spring-ecommerce-jzer.onrender.com',
-  googleClientId: '82480889381-qkvarn7rm3hfetal5m579v7s9tohteu7.apps.googleusercontent.com',
+  googleClientId: '866576572790-fs1ra2vfklbf2nia1cn558nsaf3mtmkv.apps.googleusercontent.com',
   firebaseConfig: {
     apiKey: 'AIzaSyCuVblwRZdudPGDk1c2VPYg6zMMC3g0o3E',
     authDomain: 'helloworld-a6508.firebaseapp.com',
