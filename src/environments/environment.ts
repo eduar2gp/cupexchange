@@ -1,5 +1,6 @@
 export const environment = {
-  production: false,  
+  production: false,
+  gaMeasurementId: '',
   baseApiUrl: 'http://192.168.1.68:8080',  
   googleClientId: '82480889381-qkvarn7rm3hfetal5m579v7s9tohteu7.apps.googleusercontent.com',
   firebaseConfig : {

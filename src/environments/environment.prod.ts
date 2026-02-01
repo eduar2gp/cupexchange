@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  gaMeasurementId: 'G-DZRVZFK704',
   baseApiUrl: 'https://spring-ecommerce-jzer.onrender.com',
   googleClientId: '82480889381-qkvarn7rm3hfetal5m579v7s9tohteu7.apps.googleusercontent.com',
   firebaseConfig: {

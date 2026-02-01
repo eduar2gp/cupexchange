@@ -19,11 +19,11 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 import { provideServiceWorker } from '@angular/service-worker';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Providers from the first config
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
 
@@ -48,7 +48,9 @@ export const appConfig: ApplicationConfig = {
           provide: TranslateLoader,
           useClass: TranslateHttpLoader
         }
-      })
+      }),
+      NgxGoogleAnalyticsModule.forRoot(environment.gaMeasurementId),
+      NgxGoogleAnalyticsRouterModule
     ), provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
