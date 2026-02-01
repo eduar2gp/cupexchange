@@ -1,221 +1,223 @@
 <div class="trade-page">
-  <mat-card class="trade-card mat-elevation-z2" role="region" aria-label="Trade card">
-    <mat-card-header class="trade-header">
-      <div class="trade-title">
-        <span class="trade-pair">
-          <img [src]="getBaseCurrencyImage(currentPair?.value)"
-               [alt]="currentPair?.viewValue"
-               class="pair-icon" />
-          <label>{{ formatPairDisplay(currentPair?.value) }}</label>
-          <img [src]="getQuoteCurrencyImage(currentPair?.value)"
-               [alt]="currentPair?.viewValue"
-               class="pair-icon" />
-        </span>
-      </div>
-    </mat-card-header>
+  <div class="upper_level">
+    <mat-card class="trade-card mat-elevation-z2" role="region" aria-label="Trade card">
+      <mat-card-header class="trade-header">
+        <div class="trade-title">
+          <span class="trade-pair">
+            <img [src]="getBaseCurrencyImage(currentPair?.value)"
+                 [alt]="currentPair?.viewValue"
+                 class="pair-icon" />
+            <label>{{ formatPairDisplay(currentPair?.value) }}</label>
+            <img [src]="getQuoteCurrencyImage(currentPair?.value)"
+                 [alt]="currentPair?.viewValue"
+                 class="pair-icon" />
+          </span>
+        </div>
+      </mat-card-header>
 
-    <mat-card-content>
-      <mat-tab-group mat-stretch-tabs
-                     class="trade-tabs"
-                     animationDuration="300ms"
-                     (selectedTabChange)="onTabChange($event)">
-        <mat-tab label="{{ 'BUY' | translate }}">
-          <div class="tab-content">
-            <form #buyForm="ngForm" (ngSubmit)="openConfirmDialog(buyForm)" class="trade-form" role="form" aria-label="Buy order form">
-              <div class="form-grid">
+      <mat-card-content>
+        <mat-tab-group mat-stretch-tabs
+                       class="trade-tabs"
+                       animationDuration="300ms"
+                       (selectedTabChange)="onTabChange($event)">
+          <mat-tab label="{{ 'BUY' | translate }}">
+            <div class="tab-content">
+              <form #buyForm="ngForm" (ngSubmit)="openConfirmDialog(buyForm)" class="trade-form" role="form" aria-label="Buy order form">
+                <div class="form-grid">
 
-                <div class="form-column">
-                  <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>{{ 'ORDER_TYPE' | translate }}</mat-label>
-                    <mat-select [(ngModel)]="newOrder.type"
-                                (ngModelChange)="onOrderModelChange()"
-                                name="typeBuy"
-                                required
-                                aria-label="Order type">
-                      @for (type of types; track type.value) {
-                      <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
+                  <div class="form-column">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>{{ 'ORDER_TYPE' | translate }}</mat-label>
+                      <mat-select [(ngModel)]="newOrder.type"
+                                  (ngModelChange)="onOrderModelChange()"
+                                  name="typeBuy"
+                                  required
+                                  aria-label="Order type">
+                        @for (type of types; track type.value) {
+                        <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
 
-                  @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
-                  <div class="price-slider">
-                    <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
-                    <div class="slider-wrapper">
-                      <mat-slider class="slider"
-                                  [min]="sliderMin"
-                                  [max]="sliderMax"
-                                  [step]="sliderStep"
-                                  discrete
-                                  [ngClass]="getThemeClass()">
-                        <input matSliderThumb
-                               [(ngModel)]="newOrder.price"
-                               (ngModelChange)="onOrderModelChange()"
-                               [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
-                               required />
-                      </mat-slider>
+                    @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
+                    <div class="price-slider">
+                      <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
+                      <div class="slider-wrapper">
+                        <mat-slider class="slider"
+                                    [min]="sliderMin"
+                                    [max]="sliderMax"
+                                    [step]="sliderStep"
+                                    discrete
+                                    [ngClass]="getThemeClass()">
+                          <input matSliderThumb
+                                 [(ngModel)]="newOrder.price"
+                                 (ngModelChange)="onOrderModelChange()"
+                                 [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
+                                 required />
+                        </mat-slider>
+                      </div>
+                      <div class="price-hint mat-hint">
+                        <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>
+                      </div>
                     </div>
-                    <div class="price-hint mat-hint">
-                      <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>
-                    </div>
+                    }
                   </div>
-                  }
-                </div>
 
-                <div class="form-column">
-                  <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
-                    <input matInput
-                           type="text"
-                           [ngModel]="volumeInput"
-                           (ngModelChange)="onVolumeInput($event)"
-                           (blur)="onVolumeBlur()"
-                           (keydown)="onKeyDown($event)"
-                           name="volumeBuy"
-                           required
-                           #volumeBuyControl="ngModel"
-                           placeholder="0.00" />
+                  <div class="form-column">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
+                      <input matInput
+                             type="text"
+                             [ngModel]="volumeInput"
+                             (ngModelChange)="onVolumeInput($event)"
+                             (blur)="onVolumeBlur()"
+                             (keydown)="onKeyDown($event)"
+                             name="volumeBuy"
+                             required
+                             #volumeBuyControl="ngModel"
+                             placeholder="0.00" />
 
-                    <mat-hint align="end">
-                      {{ 'MINIMUM' | translate }}: {{ minVolume | number:'1.2-2' }} |
-                      {{ 'MAXIMUM' | translate }}: {{ maxVolumeBuy | number:'1.2-2' }}
-                    </mat-hint>
+                      <mat-hint align="end">
+                        {{ 'MINIMUM' | translate }}: {{ minVolume | number:'1.2-2' }} |
+                        {{ 'MAXIMUM' | translate }}: {{ maxVolumeBuy | number:'1.2-2' }}
+                      </mat-hint>
 
-                    @if (volumeBuyControl.hasError('required')) {
-                    <mat-error>La cantidad es obligatoria</mat-error>
-                    }
-                    @if (volumeBuyControl.hasError('min')) {
-                    <mat-error>{{ 'MINIMUN' | translate }} {{ minVolume | number:'1.2-2' }}</mat-error>
-                    }
-                    @if (isVolumeExceeded(buyForm)) {
-                    <mat-error>Saldo insuficiente. Máx: {{ maxVolumeBuy | number:'1.2-2' }}</mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-              </div>
-
-              <div class="form-actions">
-                <button type="submit"
-                        mat-flat-button
-                        color="primary"
-                        class="submit-btn submit-buy"
-                        [disabled]="!buyForm.valid || isVolumeExceeded(buyForm) || volumeBuyControl.value == 0 || loading()"
-                        aria-label="Submit buy order">
-                  <ng-container *ngIf="loading()">
-                    <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
-                    {{ 'VERIFYING' | translate }}
-                  </ng-container>
-                  <ng-container *ngIf="!loading()">
-                    {{ 'BUY' | translate }} {{ currentPair?.viewValue }}
-                  </ng-container>
-                </button>
-              </div>
-            </form>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="{{ 'SELL' | translate }}">
-          <div class="tab-content">
-            <form #sellForm="ngForm" (ngSubmit)="openConfirmDialog(sellForm)" class="trade-form" role="form" aria-label="Sell order form">
-              <div class="form-grid">
-
-                <div class="form-column">
-                  <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>{{ 'ORDER_TYPE' | translate }}</mat-label>
-                    <mat-select [(ngModel)]="newOrder.type"
-                                (ngModelChange)="onOrderModelChange()"
-                                name="typeSell"
-                                required
-                                aria-label="Order type">
-                      @for (type of types; track type.value) {
-                      <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
+                      @if (volumeBuyControl.hasError('required')) {
+                      <mat-error>La cantidad es obligatoria</mat-error>
                       }
-                    </mat-select>
-                  </mat-form-field>
-
-                  @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
-                  <div class="price-slider">
-                    <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
-                    <div class="slider-wrapper">
-                      <mat-slider class="slider"
-                                  [min]="sliderMin"
-                                  [max]="sliderMax"
-                                  [step]="sliderStep"
-                                  discrete
-                                  [ngClass]="getThemeClass()">
-                        <input matSliderThumb
-                               [(ngModel)]="newOrder.price"
-                               (ngModelChange)="onOrderModelChange()"
-                               [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
-                               required />
-                      </mat-slider>
-                    </div>
-                    <div class="price-hint mat-hint">
-                      <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>
-                    </div>
+                      @if (volumeBuyControl.hasError('min')) {
+                      <mat-error>{{ 'MINIMUN' | translate }} {{ minVolume | number:'1.2-2' }}</mat-error>
+                      }
+                      @if (isVolumeExceeded(buyForm)) {
+                      <mat-error>Saldo insuficiente. Máx: {{ maxVolumeBuy | number:'1.2-2' }}</mat-error>
+                      }
+                    </mat-form-field>
                   </div>
-                  }
+
                 </div>
 
-                <div class="form-column">
-                  <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
-                    <input matInput
-                           type="text"
-                           [ngModel]="volumeInput"
-                           (ngModelChange)="onVolumeInput($event)"
-                           (blur)="onVolumeBlur()"
-                           (keydown)="onKeyDown($event)"
-                           name="volumeSell"
-                           required
-                           #volumeSellControl="ngModel"
-                           placeholder="0.00"
-                           aria-label="Sell amount" />
+                <div class="form-actions">
+                  <button type="submit"
+                          mat-flat-button
+                          color="primary"
+                          class="submit-btn submit-buy"
+                          [disabled]="!buyForm.valid || isVolumeExceeded(buyForm) || volumeBuyControl.value == 0 || loading()"
+                          aria-label="Submit buy order">
+                    <ng-container *ngIf="loading()">
+                      <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+                      {{ 'VERIFYING' | translate }}
+                    </ng-container>
+                    <ng-container *ngIf="!loading()">
+                      {{ 'BUY' | translate }} {{ currentPair?.viewValue }}
+                    </ng-container>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </mat-tab>
 
-                    <mat-hint align="end">
-                      {{ 'MINIMUM' | translate }}: {{ minVolume | number:'1.2-2' }} |
-                      {{ 'MAXIMUM' | translate }}: {{ maxVolumeSell | number:'1.2-2' }}
-                    </mat-hint>
+          <mat-tab label="{{ 'SELL' | translate }}">
+            <div class="tab-content">
+              <form #sellForm="ngForm" (ngSubmit)="openConfirmDialog(sellForm)" class="trade-form" role="form" aria-label="Sell order form">
+                <div class="form-grid">
 
-                    @if (volumeSellControl.hasError('required')) {
-                    <mat-error>La cantidad es obligatoria</mat-error>
+                  <div class="form-column">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>{{ 'ORDER_TYPE' | translate }}</mat-label>
+                      <mat-select [(ngModel)]="newOrder.type"
+                                  (ngModelChange)="onOrderModelChange()"
+                                  name="typeSell"
+                                  required
+                                  aria-label="Order type">
+                        @for (type of types; track type.value) {
+                        <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+
+                    @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
+                    <div class="price-slider">
+                      <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
+                      <div class="slider-wrapper">
+                        <mat-slider class="slider"
+                                    [min]="sliderMin"
+                                    [max]="sliderMax"
+                                    [step]="sliderStep"
+                                    discrete
+                                    [ngClass]="getThemeClass()">
+                          <input matSliderThumb
+                                 [(ngModel)]="newOrder.price"
+                                 (ngModelChange)="onOrderModelChange()"
+                                 [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
+                                 required />
+                        </mat-slider>
+                      </div>
+                      <div class="price-hint mat-hint">
+                        <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>
+                      </div>
+                    </div>
                     }
-                    @if (volumeSellControl.hasError('min')) {
-                    <mat-error>{{ 'MINIMUN' | translate }} {{ minVolume | number:'1.2-2' }}</mat-error>
-                    }
-                    @if (isVolumeExceeded(sellForm)) {
-                    <mat-error>Saldo insuficiente. Máx: {{ maxVolumeSell | number:'1.2-2' }}</mat-error>
-                    }
-                  </mat-form-field>
+                  </div>
+
+                  <div class="form-column">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>{{ 'AMOUNT' | translate }} ({{ 'VOLUME' | translate }})</mat-label>
+                      <input matInput
+                             type="text"
+                             [ngModel]="volumeInput"
+                             (ngModelChange)="onVolumeInput($event)"
+                             (blur)="onVolumeBlur()"
+                             (keydown)="onKeyDown($event)"
+                             name="volumeSell"
+                             required
+                             #volumeSellControl="ngModel"
+                             placeholder="0.00"
+                             aria-label="Sell amount" />
+
+                      <mat-hint align="end">
+                        {{ 'MINIMUM' | translate }}: {{ minVolume | number:'1.2-2' }} |
+                        {{ 'MAXIMUM' | translate }}: {{ maxVolumeSell | number:'1.2-2' }}
+                      </mat-hint>
+
+                      @if (volumeSellControl.hasError('required')) {
+                      <mat-error>La cantidad es obligatoria</mat-error>
+                      }
+                      @if (volumeSellControl.hasError('min')) {
+                      <mat-error>{{ 'MINIMUN' | translate }} {{ minVolume | number:'1.2-2' }}</mat-error>
+                      }
+                      @if (isVolumeExceeded(sellForm)) {
+                      <mat-error>Saldo insuficiente. Máx: {{ maxVolumeSell | number:'1.2-2' }}</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+
                 </div>
 
-              </div>
+                <div class="form-actions">
+                  <button type="submit"
+                          mat-flat-button
+                          color="warn"
+                          class="submit-btn submit-sell"
+                          [disabled]="!sellForm.valid || isVolumeExceeded(sellForm) || volumeSellControl.value <= 0 || loading()"
+                          aria-label="Submit sell order">
+                    <ng-container *ngIf="loading()">
+                      <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+                      {{ 'VERIFYING' | translate }}
+                    </ng-container>
+                    <ng-container *ngIf="!loading()">
+                      {{ 'SELL' | translate }} {{ currentPair?.viewValue }}
+                    </ng-container>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
 
-              <div class="form-actions">
-                <button type="submit"
-                        mat-flat-button
-                        color="warn"
-                        class="submit-btn submit-sell"
-                        [disabled]="!sellForm.valid || isVolumeExceeded(sellForm) || volumeSellControl.value <= 0 || loading()"
-                        aria-label="Submit sell order">
-                  <ng-container *ngIf="loading()">
-                    <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
-                    {{ 'VERIFYING' | translate }}
-                  </ng-container>
-                  <ng-container *ngIf="!loading()">
-                    {{ 'SELL' | translate }} {{ currentPair?.viewValue }}
-                  </ng-container>
-                </button>
-              </div>
-            </form>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card-content>
-  </mat-card>
-
-  <aside class="side-div" aria-label="Order book">
-    <app-order-book layoutMode="stacked" [MAX_ORDERS_ITEMS]="50"></app-order-book>
-  </aside>
+    <aside class="side-div" aria-label="Order book">
+      <app-order-book layoutMode="stacked" [MAX_ORDERS_ITEMS]="50"></app-order-book>
+    </aside>
+  </div>
 </div>

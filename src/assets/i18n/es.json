@@ -85,5 +85,6 @@
   "SUBMIT_ORDER": "Enviar Orden",
   "BUY_ORDERS": "Offertas de Compra",
   "SELL_ORDERS": "Offertas de Venta",
-  "EXPECTED_PURCHASE": "Ingreso Estimado"
+  "EXPECTED_PURCHASE": "Ingreso Estimado",
+  "EXPECTED_COST": "Costo Estimado"
 }

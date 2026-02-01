@@ -85,5 +85,6 @@
   "SUBMIT_ORDER": "Submit Order",
   "BUY_ORDERS": "Buy Orders",
   "SELL_ORDERS": "Sell Orders",
-  "EXPECTED_PURCHASE": "Expected Purchase"
+  "EXPECTED_PURCHASE": "Expected Purchase",
+  "EXPECTED_COST": "Expected Cost"
 }

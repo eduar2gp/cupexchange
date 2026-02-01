@@ -85,5 +85,6 @@
   "SUBMIT_ORDER": "Оформить заказ",
   "BUY_ORDERS": "Покупка",
   "SELL_ORDERS": "Продажа",
-  "EXPECTED_PURCHASE": "Общая предполагаемая сумма"
+  "EXPECTED_PURCHASE": "Общая предполагаемая сумма",
+  "EXPECTED_COST": "Смета расходов"
 }

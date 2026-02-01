@@ -210,7 +210,12 @@ export class AddOrderComponent implements OnInit, OnDestroy {
           this.newOrder.pairCode
         ).subscribe((totalPrice: string) => {
           const totalFormatted = (+totalPrice).toFixed(2);
-          this.processConfirmation(totalFormatted, form, 'EXPECTED_PURCHASE');
+          if (this.newOrder.side === 'BUY') {
+            this.processConfirmation(totalFormatted, form, 'EXPECTED_COST');
+          }
+          else {
+            this.processConfirmation(totalFormatted, form, 'EXPECTED_PURCHASE');
+          }
         });
       } else {
         const totalFormatted = (this.newOrder.price * this.newOrder.volume).toFixed(2);
@@ -229,11 +234,10 @@ export class AddOrderComponent implements OnInit, OnDestroy {
         title: translations['CONFIRM'] || 'Confirm Order',
         message:
           // 2. Access the translated side (e.g., "Compra" or "Venta")
-          `${translations[sideKey]}: ${this.formatPairDisplay(this.newOrder.pairCode)}\n` +
+          `${translations[sideKey]} ${this.newOrder.volume} ${this.formatPairDisplay(this.newOrder.pairCode)}\n` +
           (this.newOrder.type === 'LIMIT' ? `${this.translate.instant('PRICE')}: ${this.newOrder.price}\n` : '') +
-          `${this.translate.instant('VOLUME')}: ${this.newOrder.volume}\n` +
-          `${translations[translateKey]}: ${total}`
-      };
+          `${translations[translateKey]}: ${ this.newOrder.side === 'BUY' ?  '-'+total : '+'+total } ${this.formatPairDisplayQuote(this.newOrder.pairCode)}`
+      }
 
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
@@ -399,7 +403,13 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   // Formats "CUPUSD" to "CUP - USD" for the UI label
   formatPairDisplay(pair: string | undefined): string {
     if (pair && pair.length >= 6) {
-      return pair.substring(0, 3) + " - " + pair.substring(3);
+      return pair.substring(0, 3);
+    }
+    return pair || '';
+  }
+  formatPairDisplayQuote(pair: string | undefined): string {
+    if (pair && pair.length >= 6) {
+      return pair.substring(3);
     }
     return pair || '';
   }
