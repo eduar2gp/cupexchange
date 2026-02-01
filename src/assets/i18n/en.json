@@ -84,5 +84,6 @@
   "CREATE_ORDER": "Create Order",
   "SUBMIT_ORDER": "Submit Order",
   "BUY_ORDERS": "Buy Orders",
-  "SELL_ORDERS": "Sell Orders"
+  "SELL_ORDERS": "Sell Orders",
+  "EXPECTED_PURCHASE": "Expected Purchase"
 }

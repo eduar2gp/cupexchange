@@ -190,3 +190,38 @@
   justify-content: center;
   margin-top: 1rem;
 }
+
+/* The container that appears when sliderReady() is true */
+.price-slider {
+  animation: sliderFadeIn 0.4s ease-out forwards;
+  opacity: 0; /* Start hidden for the animation to take over */
+  /* Optional: Ensure the slider looks clean in both themes */
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@keyframes sliderFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px); /* Subtle slide up effect */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slider-wrapper {
+  width: 100%;
+  padding: 0 8px;
+}
+
+.price-hint {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  font-weight: 500;
+}

@@ -84,5 +84,6 @@
   "CREATE_ORDER": "Создайте порядок",
   "SUBMIT_ORDER": "Оформить заказ",
   "BUY_ORDERS": "Покупка",
-  "SELL_ORDERS": "Продажа"
+  "SELL_ORDERS": "Продажа",
+  "EXPECTED_PURCHASE": "Общая предполагаемая сумма"
 }

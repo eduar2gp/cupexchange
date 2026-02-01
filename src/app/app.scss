@@ -4,26 +4,19 @@
 ==================================================
 */
 
-/* Fullscreen sidenav container */
 mat-sidenav-container[fullscreen] {
-  /* FIX 2: Use Dynamic Viewport Height for correct mobile behavior (iOS dynamic toolbar issue) */
   height: 100dvh;
   width: 100vw;
 }
 
-// Main sidenav-content: vertical flex layout for fixed header + scrollable content + fixed footer
 mat-sidenav-container[fullscreen] mat-sidenav-content {
   display: flex;
   flex-direction: column;
-  /* FIX 2: Use Dynamic Viewport Height */
   height: 100dvh;
-  /* FIX: Only keep the rule that enables scrolling */
   overflow-y: auto;
-  /* You can still hide horizontal scrolling if you need it */
   overflow-x: hidden;
 }
 
-// Left Sidenav (overlay on mobile)
 mat-sidenav {
   width: 280px;
   background-color: var(--color-surface-elevated);
@@ -65,10 +58,10 @@ mat-sidenav {
       }
     }
 
-     a.no-highlight-active.mat-list-item-active,
-     a.no-highlight-active.router-link-active {
-      background-color: transparent !important; /* Forces the background off */
-      color: var(--color-text) !important; /* Resets text color to default */
+    a.no-highlight-active.mat-list-item-active,
+    a.no-highlight-active.router-link-active {
+      background-color: transparent !important;
+      color: var(--color-text) !important;
     }
   }
 }
@@ -81,35 +74,52 @@ mat-sidenav {
 .app-toolbar {
   flex: 0 0 auto;
   z-index: 10;
-  /* FIX 1: Set reduced height for toolbar */
   height: 46px;
   background-color: var(--color-surface-elevated);
   border-bottom: 1px solid var(--color-border);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
-  align-items: center; /* Vertically centers the items inside the toolbar */
+  justify-content: space-between; /* Fix: Distributes Left, Center, Right */
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
 
   .dark-theme & {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
-  mat-icon{
-      color: var(--color-text);
+
+  mat-icon {
+    color: var(--color-text);
   }
 }
 
-/* FIX: FLEX SPACERS FOR PERFECT CENTERING */
-.toolbar-left-controls,
-.toolbar-right-controls {
-  flex: 1;
+/* Fix for overlapping controls */
+.toolbar-left-controls {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  min-width: 0;
 }
 
-/* Ensure content on the right is pinned to the right edge */
 .toolbar-right-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 12px;
+
+  .toolbar-title {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+/* CENTER ELEMENT: Search/Pair Selector 
+  Aggressive overrides to fit 46px height
+*/
+.pair-selector, .search-input {
+  margin-top: 25px;
 }
 
 /*
@@ -123,132 +133,12 @@ mat-sidenav {
   padding: 20px;
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
-  /* Reserve space for bottom toolbar + mobile safe area */
-  padding-bottom: calc( 20px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom) );
+  padding-bottom: calc(20px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom));
 }
 
 /*
 ==================================================
-  PAIR SELECTOR STYLES (Specific overrides for mat-form-field)
-==================================================
-*/
-.pair-selector {
-  min-width: 210px;
-  width: 220px;
-  //color: var(--color-text);
-  margin: 0; /* Ensures proper Flexbox centering with fixed toolbar height */
-  flex-shrink: 0;
-  flex-grow: 0;
-  margin-top: 25px;
-  /* Control the inner select trigger height */
-  .mat-mdc-select-trigger {
-    height: 36px;
-    line-height: 36px;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  mat-icon[matPrefix] {
-    font-size: 20px;
-    opacity: 0.9;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-  /* Dropdown panel styling */
-  .mat-mdc-select-panel {
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    margin-top: 8px;
-    min-width: calc(100% + 40px) !important; /* Panel wider than field */
-  }
-
-  .pair-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    padding: 0 16px;
-    background-color: var(--color-surface-elevated);
-
-    .pair-option-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-  }
-
-  .pair-logo {
-    width: 40px;
-    height: 20px;
-    object-fit: contain;
-  }
-
-  .pair-text {
-    font-weight: 500;
-    font-size: 14px;
-  }
-  /* The main selector for outlined appearance */
-  &.mat-mdc-outlined-field {
-    /* *** CRITICAL FIXES FOR OUTLINE *** */
-    --mat-mdc-outlined-field-outline-width: 0 !important;
-    --mat-mdc-outlined-field-outline-thick-width: 0 !important;
-    border-radius: 12px;
-    /* Hide the entire outline wrapper */
-    .mat-mdc-form-field-outline {
-      display: none !important;
-      border: none !important;
-    }
-    /* Aggressively ensure no shadow or outline on focus */
-    &.mat-focused {
-      .mat-mdc-form-field-outline {
-        box-shadow: none !important;
-      }
-    }
-  }
-  /* 1. Remove background/shadow from the main wrapper */
-  .mat-mdc-text-field-wrapper {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-  /* 2. Tighter vertical spacing for better fit */
-  .mat-mdc-form-field-infix {
-    padding: 0.5em 0.5em 0.5em 0.5em !important;
-    margin-top: 0 !important; /* Ensure no margin is left by the label */
-  }
-  /* 1. Remove background/shadow from the main wrapper (already present) */
-  .mat-mdc-text-field-wrapper {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-  /* NEW: Target the actual container holding the select trigger */
-  .mat-mdc-form-field-flex {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-  }
-  /* NEW: Target the container when it is focused */
-  &.mat-focused .mat-mdc-form-field-flex {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-  }
-  /* NEW: Target the content padding area itself */
-  .mat-mdc-form-field-infix {
-    /* (Your existing padding rules) */
-    padding: 0.5em 0.5em 0.5em 0.5em !important;
-    margin-top: 0 !important;
-    /* Ensure no internal border/shadow */
-    border: none !important;
-    box-shadow: none !important;
-  }
-}
-
-/*
-==================================================
-  TRADE PAGE LAYOUT (75%/25% Split)
+  TRADE PAGE LAYOUT & SLIDER ANIMATION
 ==================================================
 */
 .trade-page {
@@ -257,93 +147,66 @@ mat-sidenav {
   gap: 16px;
   min-height: 50vh;
   background: var(--color-background);
-  /* Optimized page margin */
   padding: 0.75rem;
 }
 
-/* TRADE CARD (60% Width) */
 .trade-card {
-  /* FIX: Use calc() for precise 60% of remaining space after gap */
   flex-basis: calc(60% - 8px);
   flex-grow: 1;
-  flex-shrink: 1;
-  /* Reduced internal padding */
   padding: 1.5rem;
   border-radius: 1.5rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.08));
 }
 
-/* SIDE DIV (40% Width) */
 .side-div {
-  /* FIX: Use calc() for precise 40% of remaining space after gap */
   flex-basis: calc(40% - 8px);
   flex-grow: 1;
-  flex-shrink: 1;
 }
 
-/* TRADE CARD INTERNAL STYLES */
-.trade-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--color-divider);
-}
-
-.trade-form {
-  display: flex;
-  flex-direction: column;
-  /* Reduced gap between form elements */
-  gap: 0.75rem;
-}
-
+/* Slider Fade-in Animation */
 .price-slider {
   display: flex;
   flex-direction: column;
-  /* FIX: Replaced % margin with consistent vertical padding */
   padding: 1.5rem 0;
+  animation: sliderFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes sliderFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Buttons */
 .submit-btn {
-  /* Margin is 1% to absorb transform: scale(1.02) */
-  margin: 1%;
-  width: 95%;
-  padding: 1rem 1.5rem;
+  margin: 10px auto;
+  width: 100%;
+  padding: 1rem;
   border-radius: 1rem;
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: transform 150ms ease, opacity 150ms ease;
+  transition: transform 150ms ease;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.02);
+  }
 }
 
-
-
-.submit-btn:hover {
-  transform: scale(1.02);
-}
-
-//.submit-btn:active {
-//  transform: scale(0.98);
-//}
-
-.submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Buy / Sell variants */
 .submit-buy {
-  background: linear-gradient( to right, var(--color-success), color-mix(in srgb, var(--color-success) 80%, #000) );
+  background: linear-gradient(to right, var(--color-success), #1b5e20);
+  color: white;
 }
 
 .submit-sell {
-  background: linear-gradient( to right, var(--color-danger), color-mix(in srgb, var(--color-danger) 80%, #000) );
+  background: linear-gradient(to right, var(--color-danger), #b71c1c);
+  color: white;
 }
 
 /*
@@ -351,6 +214,15 @@ mat-sidenav {
   RESPONSIVE ADJUSTMENTS
 ==================================================
 */
+@media (max-width: 768px) {
+  .trade-page {
+    flex-direction: column;
+  }
+
+  .trade-card, .side-div {
+    flex-basis: 100%;
+  }
+}
 
 @media (max-width: 599px) {
   .app-toolbar {
@@ -358,46 +230,15 @@ mat-sidenav {
       display: none;
     }
 
-    .pair-selector {
-      width: 200px;
+    .pair-selector, .search-input {
+      max-width: 180px;
     }
   }
-
-  .main-content {
-    padding: 16px;
-    padding-bottom: calc( 16px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom) );
-  }
-}
-
-@media (min-width: 600px) {
-  .main-content {
-    padding: 32px;
-    padding-bottom: calc( 32px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom) );
-  }
-}
-
-/* General Text/Color Overrides */
-span, mat-select, mat-label {
-  color: var(--color-text);
-}
-
-mat-option {
-  color: var(--color-text);
-}
-
-.route-toggle {
-  //margin-left: 15px;
-  font-size: 8px;
-}
-
-.search-input{
-    margin-top: 25px;
-    width: 220px;
 }
 
 /*
 ==================================================
-  BOTTOM NAVIGATION BAR STYLES
+  BOTTOM NAVIGATION
 ==================================================
 */
 .bottom-nav {
@@ -411,50 +252,71 @@ mat-option {
   border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  backdrop-filter: blur(8px);
   padding-bottom: env(safe-area-inset-bottom);
 
   .nav-item {
-    /* 1. Force the button to take full height */
     height: 100% !important;
-    min-width: 60px;
-    padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    /* 2. Target the internal MDC label wrapper */
+
     ::ng-deep .mdc-button__label {
       display: flex !important;
-      flex-direction: column !important; // This is what stacks them
+      flex-direction: column !important;
       align-items: center !important;
-      justify-content: center !important;
-      gap: 2px; /* Small gap between icon and text */
-      width: 100%;
+      gap: 2px;
     }
 
-    mat-icon {
-      color: var(--color-text);
-      margin: 0 !important;
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
-
-    .nav-label {
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 1.2;
-      color: var(--color-text-secondary);
-    }
-    /* Active state styling */
     &.active {
-      .nav-label {
-        color: var(--color-primary);
-      }
+      color: var(--color-primary);
 
       mat-icon {
         color: var(--color-primary);
       }
     }
   }
+}
+
+/* Global pair logo constraint */
+.pair-logo {
+  width: 24px; /* Standard width for toolbar icons */
+  height: 24px; /* Keeping it 1:1 or adjusted for your assets */
+  object-fit: contain; /* Prevents stretching */
+  border-radius: 4px; /* Optional: soft corners */
+  flex-shrink: 0; /* Prevents the image from being squashed */
+  display: block;
+}
+
+/* Specific overrides for the Pair Selector Trigger (The part you see in the toolbar) */
+.pair-selector {
+  .pair-logo {
+    width: 20px; /* Slightly smaller to fit the 36px field height */
+    height: 20px;
+    margin: 0 4px; /* Space between the logo and the text */
+  }
+
+  .pair-option-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Specific overrides for the Dropdown Options (The list when you click) */
+.mat-mdc-option {
+  .pair-logo {
+    width: 28px; /* Larger logos in the dropdown for better visibility */
+    height: 28px;
+  }
+
+  .pair-text {
+    font-weight: 500;
+    font-size: 14px;
+    flex-grow: 1; /* Pushes the second logo to the right */
+    text-align: center;
+  }
+}
+
+.pair-option-content {
+  display: flex;
+  align-items: center; /* This is the magic line for vertical centering */
 }
