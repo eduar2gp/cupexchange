@@ -64,17 +64,33 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     const initialPair = this.pairSelectionService.getCurrentPair();
     this.currentPairSignal.set(initialPair);
 
-    if (initialPair) {
-      this.loadInitialOrders(initialPair.value);
-    }
-
     if (isPlatformBrowser(this.platformId)) {
+
+      if (initialPair) {
+        // Load initial orders and subscribe websocket for the initial pair
+        this.loadInitialOrders(initialPair.value);
+        this.wsService.subscribeToRecentOrders(initialPair.value);
+      }
+
+      // Subscribe to pair changes. Some implementations of selectedPair$ (BehaviorSubject)
+      // emit the current value immediately when subscribed; that would cause a duplicate
+      // loadInitialOrders call if we don't guard against it. Check currentPairSignal
+      // and only react when the pair value actually changed.
       this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
-        if (pair) {
-          this.currentPairSignal.set(pair);
-          this.loadInitialOrders(pair.value);
+        if (!pair) return;
+
+        const current = this.currentPairSignal();
+        if (current && current.value === pair.value) {
+          // same pair — nothing to reload. Ensure websocket is subscribed (idempotent ideally).
+          // If your wsService.subscribeToRecentOrders is idempotent, this call is safe; otherwise skip.
           this.wsService.subscribeToRecentOrders(pair.value);
+          return;
         }
+
+        // Different pair -> update state, load data and re-subscribe WS
+        this.currentPairSignal.set(pair);
+        this.loadInitialOrders(pair.value);
+        this.wsService.subscribeToRecentOrders(pair.value);
       });
 
       // WebSocket listener
