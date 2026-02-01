@@ -1,29 +1,41 @@
-<!-- Loading state -->
-@if (loading()) {
+<div>
+  <div class="orders-header-row">
+    <h2>Your Orders</h2>
+    <mat-button-toggle-group [ngModel]="filterStatus()"
+                             (ngModelChange)="filterStatus.set($event)"
+                             appearance="standard">
+      <mat-button-toggle value="ALL">All</mat-button-toggle>
+      <mat-button-toggle value="PENDING">Pending</mat-button-toggle>
+      <mat-button-toggle value="COMPLETED">Completed</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Loading state -->
+  @if (loading()) {
   <div class="container">
     <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
     <p>Loading your orders...</p>
   </div>
-}
+  }
 
-<!-- Error state -->
-@if (error()) {
+  <!-- Error state -->
+  @if (error()) {
   <div class="container error">
     <p>{{ error() }}</p>
     <button mat-raised-button color="primary" (click)="refresh()">Retry</button>
   </div>
-}
+  }
 
-<!-- Empty state -->
-@if (!loading() && !error() && displayedOrders().length === 0) {
+  <!-- Empty state -->
+  @if (!loading() && !error() && displayedOrders().length === 0) {
   <div class="container empty">
     <mat-icon>inventory_2</mat-icon>
     <p>No orders found.</p>
   </div>
-}
+  }
 
-<!-- Orders list -->
-@if (!loading() && !error() && displayedOrders().length > 0) {
+  <!-- Orders list -->
+  @if (!loading() && !error() && displayedOrders().length > 0) {
   <mat-list class="orders-list">
     @for (order of displayedOrders(); track order) {
     <mat-list-item class="order-item">
@@ -72,4 +84,5 @@
     </mat-list-item>
     }
   </mat-list>
-}
+  }
+</div>

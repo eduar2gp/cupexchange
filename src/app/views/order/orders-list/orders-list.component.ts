@@ -15,6 +15,8 @@ import { DialogMessageComponent } from '../../shared/dialog-message/dialog-messa
 import { throwError } from 'rxjs';
 import { DataService } from '../../../../app/core/services/data.service'
 import { filter, take, switchMap } from 'rxjs/operators';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-orders-list',
@@ -24,6 +26,8 @@ import { filter, take, switchMap } from 'rxjs/operators';
     MatListModule,
     MatProgressSpinnerModule,
     MatIconModule,
+    MatButtonToggleModule,
+    FormsModule
   ],
   templateUrl: './orders-list.component.html',
   styleUrls: ['./orders-list.component.css']
@@ -36,17 +40,28 @@ export class OrdersListComponent {
     @Inject(PLATFORM_ID) private platformId: Object,
     private dialog: MatDialog,
     private dataService: DataService
-  ) {}
+  ) { }
+
+  filterStatus = signal<'ALL' | 'PENDING' | 'COMPLETED'>('ALL');
 
   // Reactive state using signals
   orders: WritableSignal<OrderPlaced[]> = signal<OrderPlaced[]>([] as OrderPlaced[]);
   loading = signal(true);
   error = signal<string | null>(null);
 
-  // Derived state: sorted or filtered if needed
-  displayedOrders = computed(() =>
-    this.orders().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  );
+  // Updated Derived state: Filter then Sort
+  displayedOrders = computed(() => {
+    let filtered = this.orders();
+    const currentFilter = this.filterStatus();
+
+    if (currentFilter === 'PENDING') {
+      filtered = filtered.filter(o => o.status === 'ACTIVE' || o.status === 'PARTLY_FILLED');
+    } else if (currentFilter === 'COMPLETED') {
+      filtered = filtered.filter(o => o.status !== 'ACTIVE' && o.status !== 'PARTLY_FILLED');
+    }
+
+    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  });
 
  
   ngOnInit(): void {
