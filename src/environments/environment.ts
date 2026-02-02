@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   gaMeasurementId: '',
   baseApiUrl: 'http://192.168.1.68:8080',  
-  googleClientId: '82480889381-qkvarn7rm3hfetal5m579v7s9tohteu7.apps.googleusercontent.com',
+  googleClientId: '866576572790-fs1ra2vfklbf2nia1cn558nsaf3mtmkv.apps.googleusercontent.com',
   firebaseConfig : {
     apiKey: "AIzaSyCuVblwRZdudPGDk1c2VPYg6zMMC3g0o3E",
     authDomain: "helloworld-a6508.firebaseapp.com",

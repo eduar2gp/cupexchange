@@ -98,20 +98,21 @@ private loadGoogleScript(): Promise<void> {
     // Optional: Check if already logged in and redirect
     // Check if already logged in and redirect, but only in the browser
     if (isPlatformBrowser(this.platformId) && this.authService.getToken()) {
-      this.router.navigate(['/dashboard']);
+      if (localStorage.getItem('IS_ECOMMERCE_MODE') === 'true')
+        this.router.navigate(['/ecommerce-dashboard']);
+      else
+        this.router.navigate(['/exchange-dashboard']);
     }
   }
 
   onLogin(): void {
-    this.loginError.set(null); // Clear previous errors
+    this.loginError.set(null);
     this.loading.set(true);
     this.authService.login(this.credentials).subscribe({
       next: (user: User) => {
-        localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(user));
-        this.fetchWallets();
+        this.processLoginSuccess(user); // Use shared logic
       },
       error: (err) => {
-        // Handle login failure (e.g., show an error message)
         console.error('Login Failed', err);
         this.loginError.set('Invalid username or password. Please try again.');
         this.loading.set(false);
@@ -122,52 +123,77 @@ private loadGoogleScript(): Promise<void> {
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
-      callback: (response: any) => this.ngZone.run(() => this.handleCredentialResponse(response)),
-      // Optional: auto_select: true for One Tap on page load
+      callback: (response: any) => {
+        // Run inside NgZone so Angular detects data changes
+        this.ngZone.run(() => {
+          console.log('Google Credential Response:', response);
+          this.handleCredentialResponse(response);
+        });
+      }
     });
 
-    // Optional: Render a button (instead of using the one-tap prompt)
     google.accounts.id.renderButton(
       document.getElementById('google-signin-button'),
-      { theme: 'outline', size: 'large' } // Customization options
+      { theme: 'outline', size: 'large' }
     );
-
-    // Optional: Display the One Tap prompt
-     //google.accounts.id.prompt(); 
   }
 
   goToRegister() {
     this.router.navigate(['/register']); // adjust route path as needed
   }
 
-  handleCredentialResponse(response: any) {    
+  handleCredentialResponse(response: any) {
     const idToken = response.credential;
-    this.googleJWT.idToken = idToken;
-    this.authService.googleLogin({ idToken: idToken }).subscribe({
-      next: () => {
-        // Successful login, redirect to ...
-        this.router.navigate(['/dashboard']);
+    this.loading.set(true); // Set loading for Google login too
+
+    this.authService.googleLogin({ idToken }).subscribe({
+      next: (user: User) => {
+        console.log('Google Auth Successful');
+        this.processLoginSuccess(user); // Use shared logic
       },
       error: (err) => {
-        // Handle login failure (e.g., show an error message)
-        console.error('Login Failed', err);
-        this.loginError.set('Invalid username or password. Please try again.');
+        console.error('Google Login Backend Error:', err);
+        this.loading.set(false);
+        if (err.status === 401) {
+          this.loginError.set('Google authentication failed. Please try again.');
+        } else {
+          this.loginError.set('A server error occurred. Please try again later.');
+        }
       }
-    });    
+    });
+  }
+
+  /**
+   * Centralized logic to handle successful authentication
+   * for both Google and regular login.
+   */
+  private processLoginSuccess(user: User): void {
+    // 1. Save user profile to local storage
+    localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(user));
+
+    // 2. Update DataService signal (assuming it handles the current user state)
+    this.dataService.updateUser(user);
+
+    // 3. Fetch wallets and navigate
+    this.fetchWallets();
   }
 
   fetchWallets(): void {
     this.walletService.getWallets().subscribe({
       next: (wallets: Wallet[]) => {
         localStorage.setItem('WALLETS', JSON.stringify(wallets));
-        this.dataService.walletUpdateCompleted()
-        if (localStorage.getItem('IS_ECOMMERCE_MODE') === 'true')
-          this.router.navigate(['/ecommerce-dashboard']);
-        else
-          this.router.navigate(['/exchange-dashboard']);
+        this.dataService.walletUpdateCompleted();
+
+        // 4. Navigate based on mode
+        const isEcommerce = localStorage.getItem('IS_ECOMMERCE_MODE') === 'true';
+        const targetRoute = isEcommerce ? '/ecommerce-dashboard' : '/exchange-dashboard';
+        this.router.navigate([targetRoute]);
       },
       error: (err) => {
         console.error('Error loading wallets!.', err);
+        this.loading.set(false);
+        // Even if wallets fail, you might want to navigate anyway, 
+        // or stay on login with an error. 
       }
     });
   }
