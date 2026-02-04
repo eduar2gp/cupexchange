@@ -2,7 +2,7 @@
   gap: 0;
   padding: 0;
   box-sizing: border-box;
-  min-height: 400px;
+  //min-height: 400px;
   background-color: var(--color---color-background);
   /* Side-by-side / default container */
   &.side-by-side {
@@ -11,9 +11,13 @@
     gap: 0;
 
     mat-card {
-      min-height: 250px;
-      max-height: 500px;
+      //min-height: 250px;
+      max-height: 150px;
     }
+    //mat-card {
+    //  min-height: 250px;
+    //  max-height: 500px;
+    //}
 
     .side-panel {
       flex: 1 1 50%;

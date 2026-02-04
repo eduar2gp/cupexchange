@@ -243,16 +243,27 @@ mat-sidenav {
 */
 .bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 70px;
+  bottom: 5px;
+  left: 10px;
+  right: 10px;
+  width: auto !important; /* Forces the box to respect both left and right pins */
   z-index: 1000;
   background-color: var(--color-surface-elevated);
   border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-around;
   padding-bottom: env(safe-area-inset-bottom);
+  border-radius: 3rem;
+  /* 1. Use a semi-transparent background */
+  /* This uses your CSS variable but adds 80% opacity */
+  background-color: color-mix(in srgb, var(--color-surface-elevated) 75%, transparent);
+  /* 2. The Glass effect */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Required for Safari */
+  /* 3. Refine the border for the "glass" look */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* 4. Add a shadow so it doesn't get lost on light backgrounds */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
   .nav-item {
     height: 100% !important;
