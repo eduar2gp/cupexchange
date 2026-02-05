@@ -49,15 +49,7 @@
           <mat-icon>menu</mat-icon>
         </button>
       </div>
-
-      <div class="toolbar-center-controls">
-        @if (dataService.isEcommerce$ | async; as isEco) {
-        <mat-form-field appearance="outline" class="search-input">
-          <mat-icon matPrefix>search</mat-icon>
-          <mat-label>Search Products</mat-label>
-          <input matInput (input)="onSearchChange($event)">
-        </mat-form-field>
-        } @else {
+      <div class="toolbar-center-controls">       
         <mat-form-field appearance="outline" class="pair-selector">
           <mat-icon matPrefix>paid</mat-icon>
           <mat-label>{{ 'TRADE' | translate }}</mat-label>
@@ -74,10 +66,8 @@
             </mat-option>
             }
           </mat-select>
-        </mat-form-field>
-        }
+        </mat-form-field>       
       </div>
-
       <div class="toolbar-right-controls">
         <span class="toolbar-title">{{ title() }}</span>
         <mat-slide-toggle [checked]="dataService.isEcommerce$ | async"
@@ -96,7 +86,10 @@
     @if (authService.isAuthenticated()) {
     <mat-toolbar class="bottom-nav">
       @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/ecommerce-dashboard"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}"
+         class="nav-item">
         <mat-icon>shopping_basket</mat-icon>
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>

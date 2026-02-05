@@ -1,183 +1,206 @@
-.dashboard-container {
-  //padding: 1rem;
-  background: var(--color-background);
-  color: var(--color-text);
-  //min-height: 100vh;
-  transition: background 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
 
-/* 2. Header & Filter Form (Force Single Row) */
+/* 1. Reset and Toolbar Base */
 .dashboard-header {
-  height: auto !important; /* Allows content to define height */
-  min-height: 56px;
+  height: auto !important;
+  padding: 8px 12px !important;
   background: var(--color-surface) !important;
   border-bottom: 1px solid var(--color-border);
-  padding: 8px 16px;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
+
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
 }
 
-.header-content {
+/* 2. The Filter Form - The Fix is Here */
+.filter-form {
   display: flex;
   flex-direction: column;
+  gap: 8px;
   width: 100%;
-  gap: 0px;
-
-  h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-}
-
-.filter-form {
-  width: 100%;
-
-  .controls-row {
+  // Group wrappers
+  .location-group, .search-group {
     display: flex;
-    flex-wrap: nowrap; /* STOPS WRAPPING ON MOBILE */
-    align-items: center;
-    gap: 6px;
+    flex-direction: row; // FORCE single line
+    align-items: center; // Vertical center
+    gap: 8px;
     width: 100%;
   }
-  /* Extreme Density Selects */
+  // FORCE inputs and buttons to align perfectly
   mat-form-field {
     flex: 1;
-    min-width: 0; /* Allows shrinking below content width */
-    font-size: 12px;
+    min-width: 0; // Allows shrinking
 
-    ::v-deep {
+    ::ng-deep {
+      // This is the "ghost" space causing the misalignment
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none !important;
+      }
+
       .mat-mdc-text-field-wrapper {
-        background-color: var(--color-surface);
-        padding: 0 8px !important;
-        height: 40px; /* Compact height */
+        height: 48px !important; // Fixed height for alignment
+        background-color: transparent !important;
       }
 
       .mat-mdc-form-field-infix {
-        padding-top: 4px !important;
-        padding-bottom: 4px !important;
-        min-height: 40px !important;
-      }
-
-      .mat-mdc-form-field-label-wrapper {
-        top: 10px;
-      }
-      /* Ensure label stays visible when floating */
-      .mdc-floating-label--float-above {
-        transform: translateY(-24px) scale(0.85) !important;
-      }
-      /* Hide icons on small mobile to maximize space */
-      .mat-icon-prefix {
-        display: none;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+        min-height: 48px !important;
       }
     }
   }
 
-  button {
-    flex-shrink: 0;
-    transform: scale(0.9); /* Slightly smaller search button for mobile */
+  .search-btn {
+    height: 48px; // MUST match the form field height exactly
+    flex-shrink: 0; // Prevent button from squishing
+    white-space: nowrap;
+    border-radius: 8px;
   }
 }
 
+/* 3. Toggle Alignment */
+.view-toggle {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* 4. DESKTOP: One Single Clean Row */
+@media (min-width: 960px) {
+  .dashboard-header .header-container {
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+
+  .filter-form {
+    flex-direction: row;
+    flex: 1;
+    justify-content: space-between;
+
+    .search-group {
+      order: 1; // Search on LEFT
+      width: auto;
+      flex: 0 1 450px;
+    }
+
+    .location-group {
+      order: 2; // Selects on RIGHT
+      width: auto;
+      flex: 0 0 380px;
+    }
+  }
+
+  .view-toggle {
+    order: 3;
+    border-left: 1px solid var(--color-border);
+    padding-left: 12px;
+  }
+}
+
+/* 5. Desktop Layout Override (One Row) */
+@media (min-width: 960px) {
+  .filter-form {
+    flex-direction: row; /* Single row */
+    align-items: center;
+    justify-content: space-between;
+
+    .search-group {
+      order: 1; /* Search on the LEFT */
+      width: auto;
+      flex: 0 1 500px; /* Search gets priority width */
+    }
+
+    .location-group {
+      order: 2; /* Location on the RIGHT */
+      width: auto;
+      flex: 0 0 400px;
+    }
+  }
+}
+
+/* 6. Product Grid (List and Grid Mode) */
 .product-grid {
   display: grid;
-  gap: 0.2rem;
-  //padding: 0.5rem;
-  /* Phone layout (most phones): two equal columns */
+  gap: 1rem;
+  padding: 1rem;
   grid-template-columns: repeat(2, 1fr);
-  align-items: start;
-}
-
-/* list layout for product grid */
-.product-grid.list-mode {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-/* each card becomes a horizontal row in list mode */
-.product-grid.list-mode .product-card {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  //gap: 1rem;
-}
-
-/* image column */
-.product-grid.list-mode .product-card .image-container {
-  flex: 0 0 120px;
-  max-width: 120px;
-  height: 100px;
-}
-
-/* ensure images fit */
-.product-grid.list-mode .product-card img[mat-card-image] {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  box-sizing: border-box;
 
-/* card content expands */
-.product-grid.list-mode .product-card mat-card-content {
-  flex: 1 1 auto;
-}
+  &.list-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 
-/* actions aligned right */
-.product-grid.list-mode .product-card mat-card-actions {
-  flex: 0 0 auto;
-  //margin-left: auto;
-}
+    .product-card {
+      display: flex;
+      flex-direction: row;
+      height: 140px;
+      margin-bottom: 8px;
+      position: relative;
 
-/* Small tablets / narrow desktops: 3 columns */
-@media (min-width: 600px) {
-  .product-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    padding: 0.75rem;
+      .image-container {
+        flex: 0 0 150px;
+        height: 100%;
+      }
+
+      mat-card-content {
+        flex: 1;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+
+        .product-name {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .product-price {
+          font-weight: 700;
+          color: var(--color-primary);
+        }
+
+        .product-description {
+          font-size: 0.85rem;
+          color: var(--color-text-secondary);
+        }
+      }
+      /* Button Pinned to Lower Right */
+      mat-card-actions {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        padding: 0;
+        margin: 0;
+        width: auto;
+
+        button {
+          width: auto;
+          min-width: 110px;
+        }
+      }
+    }
   }
 }
 
-/* Larger screens: 4 columns */
-@media (min-width: 960px) {
-  .product-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    padding: 1rem;
-  }
-}
-
-/* 4. Enhanced Product Card */
+/* 7. Enhanced Product Card */
 .product-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: none;
-  width: 100%;
-  overflow: hidden;
+  transition: transform 0.2s;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  }
-
-  &.not-available {
-    filter: grayscale(0.8);
-    opacity: 0.7;
+  &:not(.list-mode) mat-card-actions button {
+    width: 100%;
   }
 
   .image-container {
-    position: relative;
     height: 160px;
-    background: var(--color-surface-elevated);
 
     img {
       width: 100%;
@@ -185,112 +208,17 @@
       object-fit: cover;
     }
   }
-
-
-  .availability-overlay {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    font-size: 0.75rem;
-    text-align: center;
-    padding: 4px 0;
-  }
 }
 
-/* Keep product images correctly fitted and prevent distortion */
-.product-card .image-container img,
-.product-card img[mat-card-image] {
-  width: 100%;
-  height: 160px; /* adjust as needed */
-  object-fit: cover; /* crop to fill without distortion */
-  object-position: center;
-  display: block;
-  border-radius: 6px;
-}
-
-mat-card-content {
-  padding: 1rem;
-  flex-grow: 1;
-
-  .product-name {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0 0 4px 0;
-    color: var(--color-text);
-  }
-
-  .product-price {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: 8px;
-  }
-
-  .product-description {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: var(--color-text-secondary);
-    margin: 0;
-  }
-}
-
-mat-card-actions {
- 
-
-  button {
-    width: 100%;
-    border-radius: 8px;
-    //letter-spacing: 0.5px;
-  }
-}
-
-/* 5. Responsive Breakpoints */
-
-@media (min-width: 600px) {
-  .header-content {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .filter-form {
-    width: auto;
-    min-width: 450px;
-
-    button {
-      transform: scale(1);
-    }
-
-    mat-form-field {
-      flex: 0 1 180px;
-      font-size: 14px;
-
-      ::v-deep .mat-icon-prefix {
-        display: inline-block;
-      }
-    }
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 960px) {
-  .product-grid {
+/* Grid Breakpoints */
+@media (min-width: 768px) {
+  .product-grid:not(.list-mode) {
     grid-template-columns: repeat(3, 1fr);
   }
-
-  mat-card-actions button {
-    width: auto; /* Buttons return to normal width on desktop */
-  }
 }
 
-@media (min-width: 1280px) {
-  .product-grid {
+@media (min-width: 1200px) {
+  .product-grid:not(.list-mode) {
     grid-template-columns: repeat(4, 1fr);
   }
 }

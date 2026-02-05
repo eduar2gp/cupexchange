@@ -1,0 +1,146 @@
+// Unified container name for both Order Book and Recent Trades
+.trade-list-grid {
+  gap: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--color-background);
+
+  &.side-by-side {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+
+    .side-panel {
+      flex: 1 1 50%;
+      //min-height: 250px;
+    }
+    // Alignment for Buy Card
+    .buy-card {
+      .volume-col {
+        order: 1;
+        flex: 1;
+        text-align: left;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        text-align: right;
+      }
+    }
+    // Alignment for Sell Card
+    .sell-card {
+      .price-col {
+        order: 1;
+        flex: 0 0 auto;
+        text-align: left;
+      }
+
+      .volume-col {
+        order: 2;
+        flex: 1;
+        text-align: right;
+      }
+    }
+  }
+
+  &.stacked {
+    display: flex;
+    flex-direction: column;
+
+    .side-panel {
+      flex: 1 1 auto;
+      max-height: 350px;
+      min-height: 300px;
+    }
+    // In stacked mode, everyone follows Volume Left -> Price Right
+    .list-header, .order-item {
+      .volume-col {
+        order: 1;
+        flex: 1;
+        text-align: left;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        text-align: right;
+      }
+
+      .time-col {
+        order: 3;
+        flex: 0 0 auto;
+        text-align: right;
+        margin-left: 10px;
+      }
+    }
+  }
+  // Shared Panel Styles
+  .side-panel {
+    min-width: 0;
+    border: 1px solid var(--color-border, #d8dee4);
+    box-shadow: none;
+    background-color: var(--color-surface);
+
+    mat-card-content {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  // Row Structure
+  .list-header, .order-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    font-size: 0.875rem;
+  }
+
+  .list-header {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-divider);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+  // Trade Status Coloring
+  .buy-item {
+    background-color: var(--color-buy-surface-light);
+    border-left: 2px solid var(--color-buy-base);
+
+    .buy-price {
+      color: var(--color-buy-text-accent);
+      font-weight: 500;
+    }
+  }
+
+  .sell-item {
+    background-color: var(--color-sell-surface-light);
+    border-left: 2px solid var(--color-sell-base); // Standardized to left border
+    .sell-price {
+      color: var(--color-sell-text-accent);
+      font-weight: 500;
+    }
+  }
+
+  .order-item:hover {
+    filter: brightness(0.95);
+    cursor: default;
+  }
+
+  .font-mono {
+    font-family: monospace;
+  }
+
+  .text-muted {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+  }
+
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+}

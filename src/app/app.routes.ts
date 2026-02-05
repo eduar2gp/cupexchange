@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './views/login/login.component';
 import { ExchangeDashboardComponent } from './views/dashboard/exchange-dashboard/exchange-dashboard.component'
 import { AddOrderComponent } from '../app/views/order/add-order/add-order.component'
-import { OrdersListComponent } from './views/order/orders-list/orders-list.component'
+import { OrdersListComponent } from './views/order/exchange-orders-list/orders-list.component'
 import { roleGuard } from '../app/core/guards/role.guard';
 import { WalletComponent } from '../app/views/wallet/wallet.component'
 import { TransactionsListComponent } from '../app/views/transaction/transactions-list/transactions-list.component'

@@ -35,6 +35,7 @@ import { CartService } from '../app/core/services/cart.service'
 import { LocationService } from '../app/core/services/location.service'
 import { Province } from './model/province.model';
 import { Municipality } from './model/muncipality.model';
+import { RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -55,7 +56,9 @@ import { Municipality } from './model/muncipality.model';
     MatSlideToggleModule,
     TranslateModule,
     HasRoleDirective,
-    MatInputModule
+    MatInputModule,
+    RouterLinkActive
+
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

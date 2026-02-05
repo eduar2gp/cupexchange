@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -29,7 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatIconModule,
     MatToolbarModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInputModule
   ],
   templateUrl: './ecommerce-dashboard.component.html',
   styleUrl: './ecommerce-dashboard.component.scss',
@@ -124,5 +126,9 @@ export class EcommerceDashboardComponent implements OnInit {
       quantity: 1,
       productImgUrl: product.productImageUrl!,
     });
+  }
+  onSearchChange(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.searchService.updateSearch(filterValue);
   }
 }

@@ -1,24 +1,26 @@
-import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef, PLATFORM_ID, Inject, computed, WritableSignal, signal } from '@angular/core';
 import { WebSocketService } from '../../core/services/websocket.service';
 import { PublicTradeDto } from '../../model/public-trade-dto.model'
 import { PairSelectionService } from '../../core/services/pair-selection.service';
 import { Subscription } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common'; // isPlatformBrowser imported
 import { TradeService } from '../../core/services/trade.service';
 import { Observable } from 'rxjs'; // Observable needed for subscription
 import { TradingPair } from '../../model/trading_pair'
+import { CommonModule, DecimalPipe, isPlatformBrowser } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-recent-trades',
   templateUrl: './recent-trades.component.html',
-  styleUrls: ['./recent-trades.component.css'],
-  imports: []  
+  styleUrl: './recent-trades.component.scss',
+  imports: [CommonModule, MatCardModule, DecimalPipe, TranslateModule]  
 })
 export class RecentTradesComponent implements OnInit, OnDestroy {
 
   trades: PublicTradeDto[] = [];
-  private maxTrades = 50; // Limit the visible trades for performance/readability
+  private maxTrades = 7; // Limit the visible trades for performance/readability
 
   private tradeSub!: Subscription;
   private pairSub!: Subscription;
@@ -28,6 +30,8 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
 
   private currentPage = 0; // Pagination page number
   private isBrowser: boolean; // For SSR safety
+
+  public currentPairSignal: WritableSignal<TradingPair | null> = signal(null);
 
   constructor(
     private wsService: WebSocketService,
@@ -43,6 +47,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // 1. Initial Load: Get the current pair and load trades
     this.currentPair = this.pairSelectionService.getCurrentPair() || this.currentPair;
+    this.currentPairSignal.set(this.currentPair);
 
     // Only proceed with data loading and sockets if we are in the browser
     if (this.isBrowser) {
@@ -62,7 +67,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
 
         this.currentPair = pair;
         this.trades = []; // Clear old trades
-
+        this.currentPairSignal.set(pair);
         // Load initial trades for the new pair
         this.loadRecentTrades();
 
@@ -146,4 +151,10 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
   trackByTimestamp(index: number, trade: PublicTradeDto): string {
     return trade.timestamp;
   }
+  public priceFormat = computed(() => {
+    const pair = this.currentPairSignal();
+    if (pair?.viewValue === 'CUP') return '1.2-4';
+    if (pair?.viewValue === 'USD') return '1.0-0';
+    return '1.2-2';
+  });
 }

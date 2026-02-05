@@ -1,34 +1,36 @@
-<div class="recent-trades-container">
-  <table class="trades-table">
-    <thead>
-      <tr>
-        <th>Price</th>
-        <th>Volume</th>
-        <th>Time</th>
-       
-      </tr>
-    </thead>
-    <tbody>
-      @for (trade of trades; track trade) {
-        <tr [class.buy]="trade.side === 'BUY'" [class.sell]="trade.side === 'SELL'">
-          <td class="price">
-            {{ trade.price }}
-          </td>
-          <td class="volume">
-            {{ trade.volume }}
-          </td>
-          <td class="time">
-            {{ formatTime(trade.timestamp) }}
-          </td>
-          
-        </tr>
-      }
-    </tbody>
-  </table>
+<div class="trade-list-grid stacked">
+  <mat-card class="side-panel recent-trades-card">
+    <mat-card-content class="order-list-container">
 
-  @if (trades.length === 0) {
-    <div class="no-trades">
-      Waiting for trades...
-    </div>
-  }
+      <div class="list-header">
+        <span class="price-col">{{ 'PRICE' | translate }}</span>
+        <span class="volume-col">{{ 'VOLUME' | translate }}</span>
+        <span class="time-col">{{ 'TIME' | translate }}</span>
+      </div>
+
+      <div class="scrollable-list">
+        @for (trade of trades; track trade.timestamp) {
+        <div class="order-item" [ngClass]="trade.side === 'BUY' ? 'buy-item' : 'sell-item'">
+
+          <span class="price-col font-mono" [ngClass]="trade.side === 'BUY' ? 'buy-price' : 'sell-price'">
+            {{ trade.price | number:priceFormat() }}
+          </span>
+
+          <span class="volume-col font-mono">
+            {{ trade.volume | number:'1.0-2' }}
+          </span>
+
+          <span class="time-col font-mono text-muted">
+            {{ formatTime(trade.timestamp) }}
+          </span>
+
+        </div>
+        } @empty {
+        <div class="no-data">
+          {{ 'WAITING_FOR_TRADES' | translate }}
+        </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

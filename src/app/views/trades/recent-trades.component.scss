@@ -1,0 +1,166 @@
+// Unified container name for both Order Book and Recent Trades
+.trade-list-grid {
+  gap: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--color-background);
+  // Layout: Side-by-Side (usually for Order Book)
+  &.side-by-side {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+
+    .side-panel {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+    }
+    // Order Book Specific Alignment
+    .buy-card {
+      .volume-col {
+        order: 1;
+        flex: 1;
+        text-align: left;
+        justify-content: flex-start;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        text-align: right;
+        justify-content: flex-end;
+      }
+    }
+
+    .sell-card {
+      .price-col {
+        order: 1;
+        flex: 0 0 auto;
+        text-align: left;
+        justify-content: flex-start;
+      }
+
+      .volume-col {
+        order: 2;
+        flex: 1;
+        text-align: right;
+        justify-content: flex-end;
+      }
+    }
+  }
+  // Layout: Stacked
+  &.stacked {
+    display: flex;
+    flex-direction: column;
+
+    .side-panel {
+      flex: 1 1 auto;
+    }
+    // Default column order for Order Book in stacked mode
+    .buy-card, .sell-card {
+      .volume-col {
+        order: 1;
+        flex: 1;
+        text-align: left;
+      }
+
+      .price-col {
+        order: 2;
+        flex: 0 0 auto;
+        text-align: right;
+      }
+    }
+  }
+  // RECENT TRADES: Always 3 centered columns regardless of grid mode
+  .recent-trades-card {
+    .list-header, .order-item {
+      display: flex;
+      justify-content: center;
+      padding: 4px 8px;
+
+      .price-col, .volume-col, .time-col {
+        flex: 1 1 0px !important; // Force equal 33% width
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex;
+      }
+    }
+  }
+  // Shared Panel Styles
+  .side-panel {
+    min-width: 0;
+    border: 1px solid var(--color-border, #d8dee4);
+    box-shadow: none;
+    background-color: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+
+    mat-card-content {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+  // Shared Row Structure
+  .list-header, .order-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    //min-height: 28px;
+  }
+
+  .list-header {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-divider);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+  // Coloring & Borders
+  .buy-item {
+    background-color: var(--color-buy-surface-light);
+    border-left: 2px solid var(--color-buy-base);
+
+    .buy-price {
+      color: var(--color-buy-text-accent);
+      font-weight: 500;
+    }
+  }
+
+  .sell-item {
+    background-color: var(--color-sell-surface-light);
+    border-left: 2px solid var(--color-sell-base);
+
+    .sell-price {
+      color: var(--color-sell-text-accent);
+      font-weight: 500;
+    }
+  }
+
+  .order-item:hover {
+    filter: brightness(0.95);
+    cursor: default;
+  }
+
+  .scrollable-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0; // Crucial for flex-grow to work properly
+  }
+
+  .font-mono {
+    font-family: 'Roboto Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-muted {
+    opacity: 0.7;
+  }
+
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+}

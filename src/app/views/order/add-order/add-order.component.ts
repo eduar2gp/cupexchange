@@ -27,7 +27,7 @@ import { filter, take, switchMap } from 'rxjs/operators';
 import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { OrderBookComponent } from '../orders-book/orders-book.component';
+import { OrderBookComponent } from '../exchange-orders-book/orders-book.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Router } from '@angular/router';
 

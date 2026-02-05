@@ -1,44 +1,39 @@
 <div class="dashboard-container">
   <mat-toolbar class="dashboard-header">
-    <div class="header-content">
-      <h2>Products ({{ filteredProducts().length }})</h2>
-
-      <form [formGroup]="searchForm" class="filter-form">
-        <div class="controls-row">
+    <div class="header-container">
+      <form [formGroup]="searchForm" class="filter-form" (ngSubmit)="performSearch()">
+        <div class="location-group">
           <mat-form-field appearance="outline" class="compact-select">
-            <mat-label>Province</mat-label>
+            <mat-label>Provincia</mat-label>
             <mat-select formControlName="provinceId">
               <mat-option *ngFor="let prov of provinces" [value]="prov.id">{{ prov.name }}</mat-option>
             </mat-select>
           </mat-form-field>
-
           <mat-form-field appearance="outline" class="compact-select">
-            <mat-label>Muni</mat-label> <mat-select formControlName="municipalityId">
+            <mat-label>Municipio</mat-label>
+            <mat-select formControlName="municipalityId">
               <mat-option *ngFor="let muni of filteredMunicipalities" [value]="muni.id">{{ muni.name }}</mat-option>
             </mat-select>
           </mat-form-field>
-
-          <button mat-mini-fab color="primary" (click)="performSearch()" type="submit">
+        </div>
+        <div class="search-group">
+          <mat-form-field appearance="outline" class="search-input">
+            <mat-label>Search Products</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput (input)="onSearchChange($event)" placeholder="e.g. Laptop">
+          </mat-form-field>
+          <button mat-flat-button color="primary" class="search-btn" type="submit">
             <mat-icon>search</mat-icon>
+            <span class="btn-text">Search</span>
           </button>
         </div>
       </form>
 
-      <!-- View toggle buttons (grid / list) -->
-      <div class="view-toggle" role="group" aria-label="View mode">
-        <button mat-icon-button
-                type="button"
-                aria-label="Grid view"
-                (click)="viewMode = 'grid'"
-                [class.active]="viewMode === 'grid'">
+      <div class="view-toggle">
+        <button mat-icon-button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'">
           <mat-icon>grid_view</mat-icon>
         </button>
-
-        <button mat-icon-button
-                type="button"
-                aria-label="List view"
-                (click)="viewMode = 'list'"
-                [class.active]="viewMode === 'list'">
+        <button mat-icon-button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'">
           <mat-icon>view_list</mat-icon>
         </button>
       </div>

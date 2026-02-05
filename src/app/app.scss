@@ -243,9 +243,9 @@ mat-sidenav {
 */
 .bottom-nav {
   position: fixed;
-  bottom: 5px;
-  left: 10px;
-  right: 10px;
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
   width: auto !important; /* Forces the box to respect both left and right pins */
   z-index: 1000;
   background-color: var(--color-surface-elevated);
@@ -256,12 +256,12 @@ mat-sidenav {
   border-radius: 3rem;
   /* 1. Use a semi-transparent background */
   /* This uses your CSS variable but adds 80% opacity */
-  background-color: color-mix(in srgb, var(--color-surface-elevated) 75%, transparent);
+  background-color: color-mix(in srgb, var(--color-surface-elevated) 0%, transparent);
   /* 2. The Glass effect */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* Required for Safari */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Required for Safari */
   /* 3. Refine the border for the "glass" look */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   /* 4. Add a shadow so it doesn't get lost on light backgrounds */
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
@@ -269,19 +269,51 @@ mat-sidenav {
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
+    transition: all 0.2s ease-in-out;
+    color: var(--color-text); // Default color for inactive
+
+    span[matListItemTitle] {
+      font-weight: 500;
+      color: var(--color-text) !important;
+    }
 
     ::ng-deep .mdc-button__label {
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       gap: 2px;
+      font-size: 0.75rem;
+      font-weight: 400;
     }
 
+    mat-icon {
+      margin: 0 !important;
+    }
+    // ACTIVE STATE
     &.active {
-      color: var(--color-primary);
+      // Force primary color on everything
+      //color: var(--color-primary) !important;
+      background-color: color-mix(in srgb, var(--color-surface-elevated) 50%, transparent);
 
       mat-icon {
-        color: var(--color-primary);
+        //color: var(--color-primary) !important;
+        // Optional: add a slight "active" glow
+        filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-primary), transparent 50%));
+      }
+
+      span[matListItemTitle] {
+        font-weight: 500;
+        color: var(--color-primary) !important;
+      }
+      // Optional: Add a small dot indicator below the active item
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        width: 4px;
+        height: 4px;
+        background-color: var(--color-primary);
+        border-radius: 50%;
       }
     }
   }
