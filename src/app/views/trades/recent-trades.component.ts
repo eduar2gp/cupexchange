@@ -20,7 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class RecentTradesComponent implements OnInit, OnDestroy {
 
   trades: PublicTradeDto[] = [];
-  private maxTrades = 7; // Limit the visible trades for performance/readability
+  private maxTrades = 11; // Limit the visible trades for performance/readability
 
   private tradeSub!: Subscription;
   private pairSub!: Subscription;

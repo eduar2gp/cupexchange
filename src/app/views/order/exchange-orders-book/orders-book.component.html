@@ -13,7 +13,7 @@
           <span class="price-col font-mono buy-price">{{ order.price | number:priceFormat() }}</span>
         </div>
         } @empty {
-        <div class="no-data">{{ 'NO_BUY_ORDERS' | translate }}</div>
+        <!--<div class="no-data">{{ 'NO_BUY_ORDERS' | translate }}</div>-->
         }
       </div>
     </mat-card-content>
@@ -33,7 +33,7 @@
           <span class="volume-col font-mono">{{ order.volumeRemaining | number:'1.0-0' }}</span>
         </div>
         } @empty {
-        <div class="no-data">{{ 'NO_SELL_ORDERS' | translate }}</div>
+        <!--<div class="no-data">{{ 'NO_SELL_ORDERS' | translate }}</div>-->
         }
       </div>
     </mat-card-content>

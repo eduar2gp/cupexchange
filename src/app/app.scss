@@ -293,7 +293,7 @@ mat-sidenav {
     &.active {
       // Force primary color on everything
       //color: var(--color-primary) !important;
-      background-color: color-mix(in srgb, var(--color-surface-elevated) 50%, transparent);
+      background-color: color-mix(in srgb, var(--color-surface-elevated) 100%, transparent);
 
       mat-icon {
         //color: var(--color-primary) !important;

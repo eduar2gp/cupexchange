@@ -3,11 +3,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  background: var(--color-background);
+  //min-height: 100vh;
+  //padding: 20px;
+  //position: relative;
+  //overflow: hidden;
+  //background: var(--color-background);
 }
 
 .login-wrapper::before {
@@ -40,8 +40,9 @@
 
 /* 2. Modern Glassmorphism Card */
 .login-card {
-  width: 100%;
-  max-width: 420px;
+  //width: 100%;
+  //max-width: 420px;
+  margin-top: 10px;
   background: var(--color-surface-elevated);
   color: var(--color-text);
   border-radius: 16px;
@@ -308,7 +309,7 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  //min-height: 100vh;
   padding: 16px;
 }
 
