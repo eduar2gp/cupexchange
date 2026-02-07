@@ -42,7 +42,7 @@
 .login-card {
   //width: 100%;
   //max-width: 420px;
-  margin-top: 100px;
+  margin-top: 15vh;
   background: var(--color-surface-elevated);
   color: var(--color-text);
   border-radius: 16px;
@@ -282,9 +282,10 @@ img {
 /* Responsive */
 @media (max-width: 480px) {
   .login-card {
-    max-width: 100%;
+    //max-width: 100%;
     margin: 12px;
     border-radius: 12px;
+    margin-top: 15vh;
   }
 
   form {
