@@ -208,3 +208,25 @@ mat-form-field {
   flex-shrink: 0; /* prevent shrinking */
   margin-left: 8px; /* small gap from content */
 }
+
+.compact-select-clean {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 180px; // Set your desired max-width here
+  // 1. Remove the outline (for appearance="outline")
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border: none !important;
+  }
+  // 2. Remove the underline ripple (for appearance="fill")
+  .mat-mdc-form-field-focus-indicator,
+  .mdc-line-ripple::before,
+  .mdc-line-ripple::after {
+    display: none !important;
+  }
+  // 3. Optional: Ensure text truncates if the max-width is small
+  .mat-mdc-select-value {
+    text-overflow: ellipsis;
+  }
+}

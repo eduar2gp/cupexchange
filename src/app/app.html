@@ -50,9 +50,9 @@
         </button>
       </div>
       <div class="toolbar-center-controls">       
-        <mat-form-field appearance="outline" class="pair-selector">
+        <mat-form-field appearance="outline" class="compact-select-clean">
           <mat-icon matPrefix>paid</mat-icon>
-          <mat-label>{{ 'TRADE' | translate }}</mat-label>
+          <!--<mat-label>{{ 'TRADE' | translate }}</mat-label>-->
           <mat-select [ngModel]="selectedPair"
                       (ngModelChange)="onPairSelect($event)"
                       [ngModelOptions]="{standalone: true}">
