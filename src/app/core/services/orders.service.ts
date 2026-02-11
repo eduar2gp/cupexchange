@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 import { Order } from '../../model/order.model';
 import { OrderPlaced } from '../../model/order_placed.model';
@@ -81,7 +82,8 @@ export class OrdersService {
    */
   findTopNByPairCodeAndSide(pairCode: string, side: string, n: number = 50): Observable<PublicOrderDTO[]> {
     return this.findRecentOrdersPaged(pairCode, side, 0, n).pipe(
-      map(page => page.content)
+      map(page => page.content),
+      first() // 👈 This ensures the stream closes and tells the SSR server to move on
     );
   }
 }

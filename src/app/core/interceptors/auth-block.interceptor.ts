@@ -14,8 +14,7 @@ export function authBlockInterceptor(
   const isServer = isPlatformServer(platformId);
 
   const protectedUrls = [
-    'add-order',
-    'orders'
+    'add-order',  
   ]; 
 
   const isProtected = protectedUrls.some(url => req.url.includes(url));

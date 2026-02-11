@@ -8,6 +8,9 @@ import { Subscription, forkJoin } from 'rxjs';
 import { TradingPair } from '../../../model/trading_pair';
 import { PublicOrderDTO } from '../../../model/public_order_dto';
 import { TranslateModule } from '@ngx-translate/core';
+import { combineLatest, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 export type LayoutMode = 'stacked' | 'side-by-side' | 'mixed';
 
@@ -61,39 +64,30 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    const initialPair = this.pairSelectionService.getCurrentPair();
-    this.currentPairSignal.set(initialPair);
-
     if (isPlatformBrowser(this.platformId)) {
-
-      if (initialPair) {
-        // Load initial orders and subscribe websocket for the initial pair
-        this.loadInitialOrders(initialPair.value);
-        this.wsService.subscribeToRecentOrders(initialPair.value);
+      // 1. Immediately check if we already have a pair to load data
+      const startingPair = this.pairSelectionService.getCurrentPair();
+      if (startingPair) {
+        console.log('OrderBook: Initial pair found, loading...', startingPair.value);
+        this.currentPairSignal.set(startingPair);
+        this.loadInitialOrders(startingPair.value);
+        this.wsService.subscribeToRecentOrders(startingPair.value);
       }
 
-      // Subscribe to pair changes. Some implementations of selectedPair$ (BehaviorSubject)
-      // emit the current value immediately when subscribed; that would cause a duplicate
-      // loadInitialOrders call if we don't guard against it. Check currentPairSignal
-      // and only react when the pair value actually changed.
+      // 2. Then subscribe to any future changes
       this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
         if (!pair) return;
 
         const current = this.currentPairSignal();
-        if (current && current.value === pair.value) {
-          // same pair — nothing to reload. Ensure websocket is subscribed (idempotent ideally).
-          // If your wsService.subscribeToRecentOrders is idempotent, this call is safe; otherwise skip.
+        // Only reload if the pair is actually different from what we just loaded
+        if (!current || current.value !== pair.value) {
+          console.log('OrderBook: Pair changed, reloading...', pair.value);
+          this.currentPairSignal.set(pair);
+          this.loadInitialOrders(pair.value);
           this.wsService.subscribeToRecentOrders(pair.value);
-          return;
         }
-
-        // Different pair -> update state, load data and re-subscribe WS
-        this.currentPairSignal.set(pair);
-        this.loadInitialOrders(pair.value);
-        this.wsService.subscribeToRecentOrders(pair.value);
       });
 
-      // WebSocket listener
       this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
         this.ngZone.run(() => this.upsertOrder(order));
       });
@@ -101,16 +95,31 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   }
 
   private loadInitialOrders(pair: string): void {
-    // Load both sides in parallel
+    const limit = this.MAX_ORDERS_ITEMS || 5;
+    console.log(`OrderBook: Requesting ${pair} ${limit} items`);
+
     forkJoin({
-      buy: this.orderService.findTopNByPairCodeAndSide(pair, 'BUY', this.MAX_ORDERS_ITEMS),
-      sell: this.orderService.findTopNByPairCodeAndSide(pair, 'SELL', this.MAX_ORDERS_ITEMS)
+      buy: this.orderService.findTopNByPairCodeAndSide(pair, 'BUY', limit).pipe(
+        first(), // 👈 Ensure completion
+        catchError(err => {
+          console.error('OrderBook BUY Error:', err.message);
+          return of([]);
+        })
+      ),
+      sell: this.orderService.findTopNByPairCodeAndSide(pair, 'SELL', limit).pipe(
+        first(), // 👈 Ensure completion
+        catchError(err => {
+          console.error('OrderBook SELL Error:', err.message);
+          return of([]);
+        })
+      )
     }).subscribe({
       next: (res) => {
-        this.ordersSignalBuy.set(res.buy);
-        this.ordersSignalSell.set(res.sell);
+        console.log('OrderBook: Success', res);
+        this.ordersSignalBuy.set(res.buy || []);
+        this.ordersSignalSell.set(res.sell || []);
       },
-      error: (err) => console.error('Failed to load initial order book', err)
+      error: (err) => console.error('OrderBook: Critical forkJoin failure', err)
     });
   }
 
