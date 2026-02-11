@@ -5,7 +5,7 @@
       <h3>Menu</h3>
     </div>
     <mat-nav-list>
-      @if (authService.isAuthenticated()) {
+      <!--@if (authService.isAuthenticated()) {-->
       <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/providers-list">
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
@@ -36,12 +36,12 @@
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>
       </a>
-      }
+      <!--}-->
     </mat-nav-list>
   </mat-sidenav>
   <!-- Main content -->
   <mat-sidenav-content class="sidenav-content">
-    @if (authService.isAuthenticated()) {
+    <!--@if (authService.isAuthenticated()) {-->
     <!-- Top toolbar -->
     <mat-toolbar class="app-toolbar">
       <div class="toolbar-left-controls">
@@ -77,13 +77,13 @@
         </mat-slide-toggle>
       </div>
     </mat-toolbar>
-    }
+    <!--}-->
     <!-- Page content -->
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
     <!-- Bottom navigation (only when authenticated) -->
-    @if (authService.isAuthenticated()) {
+    <!--@if (authService.isAuthenticated()) {-->
     <mat-toolbar class="bottom-nav">
       @if (dataService.isEcommerce$ | async; as isEco) {
       <a mat-button routerLink="/ecommerce-dashboard"
@@ -132,6 +132,6 @@
       </a>
       }
     </mat-toolbar>
-    }
+    <!--}-->
   </mat-sidenav-content>
 </mat-sidenav-container>

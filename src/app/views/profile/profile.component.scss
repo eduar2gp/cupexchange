@@ -1,103 +1,137 @@
+/* Use :host to center the card on the page */
+:host {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background-color: var(--color-background, #f4f7f6);
+}
+
 .profile-container {
-  max-width: 800px;
-  //margin: 2rem auto;
-  padding: 1rem;
+  width: 100%;
+  max-width: 850px;
   background-color: var(--color-surface);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 16px; // Modern, softer corners
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
   color: var(--color-text);
-  transition: var(--transition);
+  transition: transform 0.3s ease;
 
   h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    text-align: center;
     color: var(--color-primary);
+    letter-spacing: -0.5px;
   }
 
   h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    margin: 1.5rem 0 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-surface-elevated);
+    margin: 2.5rem 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-surface-elevated);
     color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 }
 
 .user-info-section {
-  background-color: var(--color-surface-elevated);
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 2rem;
+  background: linear-gradient(135deg, var(--color-surface-elevated), var(--color-surface));
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  // Mobile: Stacked & Centered
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  // Desktop: Sleek horizontal row
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 
-  p {
-    margin: 0.5rem 0;
-    font-size: 0.95rem;
+  .user-info-details {
+    p {
+      margin: 0.4rem 0;
+      font-size: 1.05rem;
+      color: var(--color-text-secondary);
 
-    strong {
-      color: var(--color-text);
+      strong {
+        color: var(--color-text);
+        font-weight: 600;
+        margin-right: 8px;
+      }
     }
   }
 }
 
-/* Responsive Form Grid */
+/* Fixed: Added dot selector and hover effect */
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--color-surface);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--color-surface-elevated);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Professional Form Grid */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr; // Mobile first: 1 column
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 
   @media (min-width: 640px) {
-    grid-template-columns: 1fr 1fr; // Tablet/Desktop: 2 columns
+    grid-template-columns: 1fr 1fr;
   }
 
   .full-width {
-    grid-column: 1 / -1; // Spans both columns
+    grid-column: 1 / -1;
   }
 }
 
-///* Material Field Overrides */
-//::ng-deep {
-//  .mat-mdc-form-field {
-//    width: 100%;
+/* Material UI Professional Overrides */
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
 
-//    .mdc-text-field--outline-notched {
-      //background-color: var(--color-surface);
-//    }
-
-//    .mdc-notched-outline__carrier {
-//      transition: var(--transition);
-//    }
-//  }
-//  /* Target focused label color */
-//  .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
-//    color: var(--color-primary) !important;
-//  }
-//}
+    .mdc-text-field--outline {
+      background-color: rgba(var(--color-primary-rgb), 0.02);
+    }
+  }
+}
 
 .button-container {
-  margin-top: 2rem;
+  margin-top: 3rem;
   display: flex;
-  flex-direction: column; // Stack buttons on mobile
+  flex-direction: column-reverse; // Cancel at bottom on mobile
   gap: 1rem;
 
   @media (min-width: 480px) {
-    flex-direction: row; // Side-by-side on larger screens
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: center; // Center for a balanced "Profile" look
+
   }
 
   button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0.5px;
+    min-width: 180px;
+    padding: 0.8rem 2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
   }
-}
-
-/* Custom Success Toast Style */
-::ng-deep .snackbar-success {
-  --mdc-snackbar-container-color: var(--color-success);
-  --mdc-snackbar-label-text-color: white;
-  --mat-snack-bar-button-color: white;
 }

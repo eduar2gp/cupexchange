@@ -212,7 +212,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   handleLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
   formatPairDisplay(pair: string | undefined): string {

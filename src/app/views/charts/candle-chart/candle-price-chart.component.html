@@ -44,7 +44,7 @@
       Line
     </button>
   </div>
-
+  @if (isBrowser) {
   <div class="chart-wrapper">
     <canvas baseChart
             *ngIf="chartData"
@@ -54,4 +54,10 @@
             [plugins]="[watermarkPlugin]">
     </canvas>
   </div>
+  }
+  @else {
+  <div class="chart-placeholder">
+    Loading Chart...
+  </div>
+  }
 </div>

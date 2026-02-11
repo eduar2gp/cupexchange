@@ -1,10 +1,18 @@
 <div class="profile-container">
-  <h2>My Profile</h2>
 
+  <h2>My Profile</h2>
+  
   <div class="user-info-section">
-    <h3>Account Details</h3>
-    <p><strong>Username:</strong> {{ loggedInUser?.username }}</p>
-    <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
+    <div class="user-info-details">
+      <p><strong>Username:</strong> {{ loggedInUser?.username }}</p>
+      <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
+    </div>
+    <div *ngIf="loggedInUser?.profileImageUrl" class="profile-picture-container">
+      <img class="profile-picture"
+           [src]="loggedInUser?.profileImageUrl"
+           referrerpolicy="no-referrer"
+           alt="Profile Picture">
+    </div>
   </div>
 
   <form [formGroup]="profileForm">

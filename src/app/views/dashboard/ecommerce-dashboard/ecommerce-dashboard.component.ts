@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProductsService } from '../../../core/services/products.service';
@@ -18,6 +18,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -42,6 +43,8 @@ export class EcommerceDashboardComponent implements OnInit {
   private cartService = inject(CartService);
   private dataService = inject(DataService);
   private fb = inject(FormBuilder);
+
+  private platformId = inject(PLATFORM_ID);
 
   viewMode: 'grid' | 'list' = 'grid';
 
@@ -69,19 +72,21 @@ export class EcommerceDashboardComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.loadLocationData();
+    // Wrap logic that touches the DOM or Browser APIs
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadLocationData();
 
-    // Listen for Province changes to filter Municipalities list
+      // Toolbar search listener should also be here
+      this.searchService.searchQuery$.subscribe(query => this.searchQuery.set(query));
+    }
+
+    // This logic is safe for SSR because it's just setting up an observable stream
     this.searchForm.get('provinceId')?.valueChanges.subscribe(provId => {
       this.filteredMunicipalities = this.allMunicipalities.filter(m => m.provinceId === provId);
       this.searchForm.get('municipalityId')?.setValue(null);
     });
 
-    // Initial Search
     this.performSearch();
-
-    // Toolbar search listener
-    this.searchService.searchQuery$.subscribe(query => this.searchQuery.set(query));
   }
 
   setViewMode(mode: 'grid' | 'list') {
@@ -89,10 +94,13 @@ export class EcommerceDashboardComponent implements OnInit {
   }
 
   private loadLocationData() {
-    const provJson = localStorage.getItem('PROVINCES');
-    const muniJson = localStorage.getItem('MUNICIPALITIES');
-    this.provinces = provJson ? JSON.parse(provJson) : [];
-    this.allMunicipalities = muniJson ? JSON.parse(muniJson) : [];
+    // Check if we are in the browser before using localStorage
+    if (isPlatformBrowser(this.platformId)) {
+      const provJson = localStorage.getItem('PROVINCES');
+      const muniJson = localStorage.getItem('MUNICIPALITIES');
+      this.provinces = provJson ? JSON.parse(provJson) : [];
+      this.allMunicipalities = muniJson ? JSON.parse(muniJson) : [];
+    }
   }
 
   performSearch() {

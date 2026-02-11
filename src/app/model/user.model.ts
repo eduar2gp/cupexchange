@@ -13,4 +13,5 @@ export interface User {
   address: string;
   municipalityId?: number;
   provinceId?: number;
+  profileImageUrl?: string;
 }

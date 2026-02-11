@@ -29,7 +29,7 @@ import { ProviderOrderDetailsComponent } from './views/provider/provider-order-d
 export const routes: Routes = [
    {
     path: '',
-    component: LoginComponent,    
+    component: ExchangeDashboardComponent,    
   },
   {
     path: 'login',
@@ -41,8 +41,7 @@ export const routes: Routes = [
   },
    {
     path: 'exchange-dashboard',
-     component: ExchangeDashboardComponent,
-     canActivate: [roleGuard],     
+     component: ExchangeDashboardComponent,         
   },
   {
     path: 'add-wallet',
