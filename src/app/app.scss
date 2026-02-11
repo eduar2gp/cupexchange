@@ -48,6 +48,11 @@ mat-sidenav {
       border-radius: 8px;
       margin: 4px 10px;
       transition: background-color 0.2s ease;
+      // --- Default Title Color ---
+      .mat-mdc-list-item-title, [matListItemTitle] {
+        color: var(--color-text) !important;
+        transition: color 0.2s ease;
+      }
 
       mat-icon {
         color: var(--color-text);
@@ -56,12 +61,17 @@ mat-sidenav {
       &:hover {
         background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
       }
-    }
+      // --- Sidenav Active State ---
+      &.active, &.mat-list-item-active, &.router-link-active {
+        .mat-mdc-list-item-title, [matListItemTitle] {
+          color: var(--color-primary) !important;
+          font-weight: 600;
+        }
 
-    a.no-highlight-active.mat-list-item-active,
-    a.no-highlight-active.router-link-active {
-      background-color: transparent !important;
-      color: var(--color-text) !important;
+        mat-icon {
+          color: var(--color-primary) !important;
+        }
+      }
     }
   }
 }
@@ -80,7 +90,7 @@ mat-sidenav {
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
-  justify-content: space-between; /* Fix: Distributes Left, Center, Right */
+  justify-content: space-between;
   align-items: center;
   padding: 0 12px;
   gap: 8px;
@@ -94,7 +104,6 @@ mat-sidenav {
   }
 }
 
-/* Fix for overlapping controls */
 .toolbar-left-controls {
   flex: 0 0 auto;
   display: flex;
@@ -115,9 +124,6 @@ mat-sidenav {
   }
 }
 
-/* CENTER ELEMENT: Search/Pair Selector 
-  Aggressive overrides to fit 46px height
-*/
 .pair-selector, .search-input {
   margin-top: 25px;
 }
@@ -164,7 +170,6 @@ mat-sidenav {
   flex-grow: 1;
 }
 
-/* Slider Fade-in Animation */
 .price-slider {
   display: flex;
   flex-direction: column;
@@ -184,7 +189,6 @@ mat-sidenav {
   }
 }
 
-/* Buttons */
 .submit-btn {
   margin: 10px auto;
   width: 100%;
@@ -211,33 +215,6 @@ mat-sidenav {
 
 /*
 ==================================================
-  RESPONSIVE ADJUSTMENTS
-==================================================
-*/
-@media (max-width: 768px) {
-  .trade-page {
-    flex-direction: column;
-  }
-
-  .trade-card, .side-div {
-    flex-basis: 100%;
-  }
-}
-
-@media (max-width: 599px) {
-  .app-toolbar {
-    .toolbar-title {
-      display: none;
-    }
-
-    .pair-selector, .search-input {
-      max-width: 180px;
-    }
-  }
-}
-
-/*
-==================================================
   BOTTOM NAVIGATION
 ==================================================
 */
@@ -246,23 +223,17 @@ mat-sidenav {
   bottom: 15px;
   left: 20px;
   right: 20px;
-  width: auto !important; /* Forces the box to respect both left and right pins */
+  width: auto !important;
   z-index: 1000;
-  background-color: var(--color-surface-elevated);
+  background-color: color-mix(in srgb, var(--color-surface-elevated) 80%, transparent);
   border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-around;
   padding-bottom: env(safe-area-inset-bottom);
   border-radius: 3rem;
-  /* 1. Use a semi-transparent background */
-  /* This uses your CSS variable but adds 80% opacity */
-  background-color: color-mix(in srgb, var(--color-surface-elevated) 0%, transparent);
-  /* 2. The Glass effect */
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Required for Safari */
-  /* 3. Refine the border for the "glass" look */
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  /* 4. Add a shadow so it doesn't get lost on light backgrounds */
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
   .nav-item {
@@ -270,11 +241,11 @@ mat-sidenav {
     display: flex !important;
     flex-direction: column !important;
     transition: all 0.2s ease-in-out;
-    color: var(--color-text); // Default color for inactive
+    color: var(--color-text);
 
-    span[matListItemTitle] {
+    span[matListItemTitle], .mat-mdc-list-item-title {
       font-weight: 500;
-      color: var(--color-text) !important;
+      color: inherit !important; // Follows .nav-item color
     }
 
     ::ng-deep .mdc-button__label {
@@ -288,24 +259,21 @@ mat-sidenav {
 
     mat-icon {
       margin: 0 !important;
+      color: inherit;
     }
-    // ACTIVE STATE
+    // --- Bottom Nav Active State ---
     &.active {
-      // Force primary color on everything
-      //color: var(--color-primary) !important;
       background-color: color-mix(in srgb, var(--color-surface-elevated) 100%, transparent);
+      color: var(--color-primary) !important;
 
       mat-icon {
-        //color: var(--color-primary) !important;
-        // Optional: add a slight "active" glow
         filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-primary), transparent 50%));
       }
 
-      span[matListItemTitle] {
-        font-weight: 500;
+      span[matListItemTitle], .mat-mdc-list-item-title {
         color: var(--color-primary) !important;
       }
-      // Optional: Add a small dot indicator below the active item
+
       &::after {
         content: '';
         position: absolute;
@@ -319,22 +287,25 @@ mat-sidenav {
   }
 }
 
-/* Global pair logo constraint */
+/*
+==================================================
+  CURRENCY LOGOS & HELPERS
+==================================================
+*/
 .pair-logo {
-  width: 24px; /* Standard width for toolbar icons */
-  height: 24px; /* Keeping it 1:1 or adjusted for your assets */
-  object-fit: contain; /* Prevents stretching */
-  border-radius: 4px; /* Optional: soft corners */
-  flex-shrink: 0; /* Prevents the image from being squashed */
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
   display: block;
 }
 
-/* Specific overrides for the Pair Selector Trigger (The part you see in the toolbar) */
 .pair-selector {
   .pair-logo {
-    width: 20px; /* Slightly smaller to fit the 36px field height */
+    width: 20px;
     height: 20px;
-    margin: 0 4px; /* Space between the logo and the text */
+    margin: 0 4px;
   }
 
   .pair-option-content {
@@ -344,22 +315,21 @@ mat-sidenav {
   }
 }
 
-/* Specific overrides for the Dropdown Options (The list when you click) */
 .mat-mdc-option {
   .pair-logo {
-    width: 28px; /* Larger logos in the dropdown for better visibility */
+    width: 28px;
     height: 28px;
   }
 
   .pair-text {
     font-weight: 500;
     font-size: 14px;
-    flex-grow: 1; /* Pushes the second logo to the right */
+    flex-grow: 1;
     text-align: center;
   }
 }
 
 .pair-option-content {
   display: flex;
-  align-items: center; /* This is the magic line for vertical centering */
+  align-items: center;
 }

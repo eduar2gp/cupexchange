@@ -33,6 +33,7 @@ import { PairSelectionService } from '../../../../app/core/services/pair-selecti
 import { WebSocketService } from '../../../core/services/websocket.service';
 import { TradingPair } from '../../../model/trading_pair';
 import { TradeVolumeDTO } from '../../../model/trade-volume.model';
+import { first } from 'rxjs/operators';
 
 /* ---------------- CHART REGISTER ---------------- */
 Chart.register(
@@ -152,12 +153,38 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
+  //ngOnInit(): void {
+  //  if (this.isBrowser) {
+  //    this.subscribeToCandleUpdates();
+  //    this.pairSubscription = this.pairSelectionService.selectedPair$.subscribe(
+  //      (pair: TradingPair | null) => {
+  //        if (!pair) return;
+  //        if (pair.value !== this.currentPairCode) {
+  //          this.currentPairCode = pair.value;
+  //          this.updateChartDataFlow();
+  //        }
+  //      }
+  //    );
+  //  }
+  //}
+
   ngOnInit(): void {
     if (this.isBrowser) {
       this.subscribeToCandleUpdates();
+
+      // 1. Immediately grab the current value and trigger the flow
+      const startingPair = this.pairSelectionService.getCurrentPair();
+      if (startingPair) {
+        this.currentPairCode = startingPair.value;
+        this.updateChartDataFlow();
+      }
+
+      // 2. Listen for future changes
       this.pairSubscription = this.pairSelectionService.selectedPair$.subscribe(
         (pair: TradingPair | null) => {
           if (!pair) return;
+
+          // 3. Only trigger if the pair is actually different from what's currently loaded
           if (pair.value !== this.currentPairCode) {
             this.currentPairCode = pair.value;
             this.updateChartDataFlow();
@@ -194,6 +221,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   private fetchHistoricalData(): void {
     this.tradeService
       .getHistoricalCandlesticks(this.currentPairCode, this.currentInterval, 200)
+      .pipe(first())
       .subscribe({
         next: candles => {
           this.rawChartDataPoints = this.tradeService.mapToChartDataPoints(candles) || [];
@@ -275,7 +303,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
             h: Number(p.h) * this.SCALE,
             l: Number(p.l) * this.SCALE,
             c: Number(p.c) * this.SCALE
-          })),
+          })),       
           borderColor: {
             up: '#00ff9d',
             down: '#ff3366',
@@ -300,7 +328,8 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
           pointRadius: 0,
           tension: 0.1,
           borderWidth: 2,
-          fill: false,
+          fill: 'origin',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgb(75,192,192)'
         }]
       };

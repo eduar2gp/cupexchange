@@ -44,19 +44,19 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit(): void {
-    // 1. Initial Load: Get the current pair and load trades
-    this.currentPair = this.pairSelectionService.getCurrentPair() || this.currentPair;
-    this.currentPairSignal.set(this.currentPair);
+  //ngOnInit(): void {
+  //  // 1. Initial Load: Get the current pair and load trades
+  //  this.currentPair = this.pairSelectionService.getCurrentPair() || this.currentPair;
+  //  this.currentPairSignal.set(this.currentPair);
 
-    // Only proceed with data loading and sockets if we are in the browser
-    if (this.isBrowser) {
-      this.loadRecentTrades();
-      this.subscribeToPairChanges();
-      this.subscribeToNewTrades();
-      this.wsService.subscribeToPublicTrades(this.currentPair.value); // Initial socket subscription
-    }
-  }
+  //  // Only proceed with data loading and sockets if we are in the browser
+  //  if (this.isBrowser) {
+  //    this.loadRecentTrades();
+  //    this.subscribeToPairChanges();
+  //    this.subscribeToNewTrades();
+  //    this.wsService.subscribeToPublicTrades(this.currentPair.value); // Initial socket subscription
+  //  }
+  //}
 
   private subscribeToPairChanges(): void {
     // 2. Subscribe to pair changes
@@ -79,27 +79,27 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private subscribeToNewTrades(): void {
-    // 3. Subscribe to trades for the current pair
-    this.tradeSub = this.wsService.publicTrades$.subscribe((newTrades: PublicTradeDto[]) => {
-      // Run inside NgZone for performance and to trigger Angular change detection
-      this.ngZone.run(() => {
+  //private subscribeToNewTrades(): void {
+  //  // 3. Subscribe to trades for the current pair
+  //  this.tradeSub = this.wsService.publicTrades$.subscribe((newTrades: PublicTradeDto[]) => {
+  //    // Run inside NgZone for performance and to trigger Angular change detection
+  //    this.ngZone.run(() => {
 
-        // Only process trades for the active pair
-        const filteredTrades = newTrades.filter(t => t.pair === this.currentPair.value);
+  //      // Only process trades for the active pair
+  //      const filteredTrades = newTrades.filter(t => t.pair === this.currentPair.value);
 
-        // 4. PREPEND the new trades (real-time data is newest and goes on top)
-        this.trades.unshift(...filteredTrades);
+  //      // 4. PREPEND the new trades (real-time data is newest and goes on top)
+  //      this.trades.unshift(...filteredTrades);
 
-        // 5. Limit the list size
-        if (this.trades.length > this.maxTrades) {
-          this.trades.splice(this.maxTrades); // Remove oldest trades from the end
-        }
+  //      // 5. Limit the list size
+  //      if (this.trades.length > this.maxTrades) {
+  //        this.trades.splice(this.maxTrades); // Remove oldest trades from the end
+  //      }
 
-        this.cdr.detectChanges();
-      });
-    });
-  }
+  //      this.cdr.detectChanges();
+  //    });
+  //  });
+  //}
 
   loadRecentTrades(): void {
     // 6. HTTP Load: Load the initial set of trades (page 0, size 20)
@@ -126,14 +126,14 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.tradeSub?.unsubscribe();
-    this.pairSub?.unsubscribe();
+  //ngOnDestroy(): void {
+  //  this.tradeSub?.unsubscribe();
+  //  this.pairSub?.unsubscribe();
 
-    if (this.isBrowser) {
-      this.wsService.unsubscribeFromPublicTrades();
-    }
-  }
+  //  if (this.isBrowser) {
+  //    this.wsService.unsubscribeFromPublicTrades();
+  //  }
+  //}
 
   /**
   * Helper function to format the timestamp for the x-axis label.
@@ -157,4 +157,51 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
     if (pair?.viewValue === 'USD') return '1.0-0';
     return '1.2-2';
   });
+
+
+  ngOnInit(): void {
+    this.currentPair = this.pairSelectionService.getCurrentPair() || this.currentPair;
+    this.currentPairSignal.set(this.currentPair);
+
+    // CRITICAL: Load data only if browser
+    if (this.isBrowser) {
+      this.loadRecentTrades();
+      this.subscribeToPairChanges();
+      this.subscribeToNewTrades();
+
+      // Ensure the service call is protected
+      if (this.currentPair?.value) {
+        this.wsService.subscribeToPublicTrades(this.currentPair.value);
+      }
+    }
+  }
+
+  private subscribeToNewTrades(): void {
+    if (!this.isBrowser) return; // Guard for safety
+
+    this.tradeSub = this.wsService.publicTrades$.subscribe((newTrades: PublicTradeDto[]) => {
+      this.ngZone.run(() => {
+        const filteredTrades = newTrades.filter(t => t.pair === this.currentPair.value);
+        this.trades.unshift(...filteredTrades);
+
+        if (this.trades.length > this.maxTrades) {
+          this.trades.splice(this.maxTrades);
+        }
+
+        // Only detect changes if we are in the browser
+        this.cdr.detectChanges();
+      });
+    });
+  }
+
+  // ... loadRecentTrades and other methods ...
+
+  ngOnDestroy(): void {
+    this.tradeSub?.unsubscribe();
+    this.pairSub?.unsubscribe();
+
+    if (this.isBrowser) {
+      this.wsService.unsubscribeFromPublicTrades();
+    }
+  }
 }

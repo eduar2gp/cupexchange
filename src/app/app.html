@@ -4,39 +4,37 @@
     <div class="menu-header">
       <h3>Menu</h3>
     </div>
-    <mat-nav-list>
-      <!--@if (authService.isAuthenticated()) {-->
-      <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/providers-list">
+    <mat-nav-list>   
+      <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/providers-list" routerLinkActive="active">
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
       </a>
-      <a *appHasRole="[Role.Provider]" mat-list-item routerLink="/provider-dashboard">
+      <a *appHasRole="[Role.Provider]" mat-list-item routerLink="/provider-dashboard" routerLinkActive="active">
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'MY_STORE' | translate }}</span>
       </a>
       @if ((dataService.isEcommerce$ | async) == false) {
-      <a mat-list-item routerLink="/add-order" (click)="checkWalletsAndNavigate()">
+      <a mat-list-item routerLink="/add-order" (click)="checkWalletsAndNavigate()" routerLinkActive="active">
         <mat-icon matListItemIcon>add_circle</mat-icon>
         <span matListItemTitle>{{ 'NEW_ORDER' | translate }}</span>
       </a>
       }
-      <a mat-list-item routerLink="/profile">
+      <a mat-list-item routerLink="/profile" routerLinkActive="active">
         <mat-icon matListItemIcon>account_box</mat-icon>
         <span matListItemTitle>{{ 'PROFILE' | translate }}</span>
       </a>
-      <a mat-list-item routerLink="/wallet">
+      <a mat-list-item routerLink="/wallet" routerLinkActive="active">
         <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
-      <a mat-list-item routerLink="/settings">
+      <a mat-list-item routerLink="/settings" routerLinkActive="active">
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>{{ 'SETTINGS' | translate }}</span>
       </a>
-      <a mat-list-item (click)="handleLogout()">
+      <a mat-list-item routerLink="/login" (click)="handleLogout()" routerLinkActive="active">
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>
-      </a>
-      <!--}-->
+      </a>     
     </mat-nav-list>
   </mat-sidenav>
   <!-- Main content -->

@@ -31,7 +31,9 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   @Input() MAX_ORDERS_ITEMS: number = 50;
 
   public currentPairSignal: WritableSignal<TradingPair | null> = signal(null);
-  private pairSub?: Subscription;
+  private?: Subscription;
+
+  private pairSub!: Subscription;
 
   // 2. COMPUTED: Derived signals for the template
   public buyOrders = computed(() => {
@@ -55,33 +57,62 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     return '1.2-2';
   });
 
+  private isBrowser: boolean;
+
   constructor(
     private wsService: WebSocketService,
     private pairSelectionService: PairSelectionService,
     private orderService: OrdersService,
     private ngZone: NgZone,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) { }
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
+  //ngOnInit(): void {
+  //  if (isPlatformBrowser(this.platformId)) {
+  //    // 1. Immediately check if we already have a pair to load data
+  //    const startingPair = this.pairSelectionService.getCurrentPair();
+  //    if (startingPair) {
+  //      console.log('OrderBook: Initial pair found, loading...', startingPair.value);
+  //      this.currentPairSignal.set(startingPair);
+  //      this.loadInitialOrders(startingPair.value);
+  //      this.wsService.subscribeToRecentOrders(startingPair.value);
+  //    }
+
+  //    // 2. Then subscribe to any future changes
+  //    this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
+  //      if (!pair) return;
+
+  //      const current = this.currentPairSignal();
+  //      // Only reload if the pair is actually different from what we just loaded
+  //      if (!current || current.value !== pair.value) {
+  //        console.log('OrderBook: Pair changed, reloading...', pair.value);
+  //        this.currentPairSignal.set(pair);
+  //        this.loadInitialOrders(pair.value);
+  //        this.wsService.subscribeToRecentOrders(pair.value);
+  //      }
+  //    });
+
+  //    this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
+  //      this.ngZone.run(() => this.upsertOrder(order));
+  //    });
+  //  }
+  //}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      // 1. Immediately check if we already have a pair to load data
+    if (this.isBrowser) {
       const startingPair = this.pairSelectionService.getCurrentPair();
       if (startingPair) {
-        console.log('OrderBook: Initial pair found, loading...', startingPair.value);
         this.currentPairSignal.set(startingPair);
         this.loadInitialOrders(startingPair.value);
         this.wsService.subscribeToRecentOrders(startingPair.value);
       }
 
-      // 2. Then subscribe to any future changes
       this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
         if (!pair) return;
-
         const current = this.currentPairSignal();
-        // Only reload if the pair is actually different from what we just loaded
         if (!current || current.value !== pair.value) {
-          console.log('OrderBook: Pair changed, reloading...', pair.value);
           this.currentPairSignal.set(pair);
           this.loadInitialOrders(pair.value);
           this.wsService.subscribeToRecentOrders(pair.value);
@@ -89,6 +120,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
       });
 
       this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
+        // Only run UI updates inside NgZone in the browser
         this.ngZone.run(() => this.upsertOrder(order));
       });
     }
