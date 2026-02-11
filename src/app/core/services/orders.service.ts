@@ -2,9 +2,8 @@ import { Injectable, inject } from '@angular/core';
 //import { Firestore, collection, collectionData, CollectionReference } from '@angular/fire/firestore';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { first } from 'rxjs/operators';
-
+import { take, defaultIfEmpty, map, catchError } from 'rxjs/operators';
 import { Order } from '../../model/order.model';
 import { OrderPlaced } from '../../model/order_placed.model';
 import { PublicOrderDTO } from '../../model/public_order_dto';
@@ -82,8 +81,9 @@ export class OrdersService {
    */
   findTopNByPairCodeAndSide(pairCode: string, side: string, n: number = 50): Observable<PublicOrderDTO[]> {
     return this.findRecentOrdersPaged(pairCode, side, 0, n).pipe(
-      map(page => page.content),
-      first() // 👈 This ensures the stream closes and tells the SSR server to move on
+      map(page => page?.content || []), // Safety: ensure we always return an array
+      take(1),                          // Closes the stream after 1 emission (SSR friendly)
+      defaultIfEmpty([])                // Final safety: ensures forkJoin gets a value
     );
   }
 }
