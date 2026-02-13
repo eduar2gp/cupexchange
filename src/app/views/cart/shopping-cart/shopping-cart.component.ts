@@ -6,6 +6,11 @@ import { map } from 'rxjs/operators';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-shopping-cart',
@@ -14,7 +19,11 @@ import { RouterModule } from '@angular/router';
     TranslateModule,
     MatIconModule,
     CommonModule,
-    RouterModule
+    RouterModule,
+    MatCardModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatTooltipModule
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.scss']
