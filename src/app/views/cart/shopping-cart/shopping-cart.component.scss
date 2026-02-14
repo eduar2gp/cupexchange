@@ -1,7 +1,8 @@
 .cart-layout {
   display: flex;
   gap: 24px;
-  align-items: flex-start;
+  margin: 10px;
+  //align-items: flex-start;
 
   @media (max-width: 768px) {
     flex-direction: column;
