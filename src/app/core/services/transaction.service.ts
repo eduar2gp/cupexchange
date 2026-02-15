@@ -5,6 +5,7 @@ import { Page } from '../../model/page.model';
 import { Observable } from 'rxjs';
 import { TransactionRequest } from '../../model/transaction-request.model'
 import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
+import { PaymentGateway } from '../../model/payment-gateway.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,11 @@ export class TransactionService {
     return this.http.post(fullUrl, deposit, {
       responseType: 'text' as 'json' // Use 'text' to match Observable<string>
     }) as Observable<string>;
+  }
+
+  getPaymentGateways(currency: string): Observable<PaymentGateway[]> {
+    const fullUrl = build(ApiEndpoints.transaction.PAYMENT_GATEWAYS_ENDPOINT) + currency;
+    return this.http.get<PaymentGateway[]>(fullUrl);
   }
 
 }

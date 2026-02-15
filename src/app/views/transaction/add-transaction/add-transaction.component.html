@@ -19,27 +19,42 @@
 
       @if (transactionRequest) {
       <form #transactionForm="ngForm" (ngSubmit)="submitTransaction()">
+        <div class="transaction-details-section">
+          <mat-form-field appearance="fill" class="full-width-input">
+            <mat-label>Select Payment Gateway</mat-label>
+            <mat-select [(ngModel)]="selectedGatewayCode" name="gateway" required>
+              @for (gateway of paymentGateways; track gateway.id) {
+              <mat-option [value]="gateway.gatewayCode">
+                {{ gateway.gatewayName }} ({{ gateway.gatewayCode }})
+              </mat-option>
+              }
+            </mat-select>
+            @if (paymentGateways.length === 0 && !isLoading) {
+            <mat-hint color="warn">No gateways available for this currency.</mat-hint>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width-input">
-          <mat-label>Transaction Amount ({{ transactionRequest.currencyCode }})</mat-label>
-          <input matInput
-                 type="number"
-                 name="amount"
-                 required
-                 min="0.01"
-                 [(ngModel)]="transactionAmount"
-                 #amountControl="ngModel">
+          <mat-form-field appearance="fill" class="full-width-input">
+            <mat-label>Transaction Amount ({{ transactionRequest.currencyCode }})</mat-label>
+            <input matInput type="number" name="amount" required min="0.01" [(ngModel)]="transactionAmount"
+              #amountControl="ngModel">
+            @if (amountControl.invalid && amountControl.touched) {
+            <mat-error>Amount is required and must be greater than zero.</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-          @if (amountControl.invalid && amountControl.touched) {
-          <mat-error>Amount is required and must be greater than zero.</mat-error>
-          }
-        </mat-form-field>
+        <div class="form-group">
+          <label for="image">Receipt Image</label>
+          <div class="file-upload-wrapper">
+            <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput
+              class="file-input" />
+            <span class="file-label">Choose file or drag & drop</span>
+          </div>
+        </div>
 
         <div class="form-actions">
-          <button mat-raised-button
-                  color="primary"
-                  type="submit"
-                  [disabled]="isLoading || transactionForm.invalid">
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || transactionForm.invalid">
 
             @if (isLoading) {
             <ng-container>

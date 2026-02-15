@@ -19,6 +19,9 @@ import { DataService } from '../../../core/services/data.service';
 import { Wallet } from '../../../model/wallet.model';
 import { TransactionRequest } from '../../../model/transaction-request.model';
 
+import { MatSelectModule } from '@angular/material/select'; // Add this to imports
+import { PaymentGateway } from '../../../model/payment-gateway.model';
+
 @Component({
   selector: 'app-add-transaction',
   standalone: true,
@@ -30,7 +33,8 @@ import { TransactionRequest } from '../../../model/transaction-request.model';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSelectModule
   ],
   templateUrl: './add-transaction.component.html',
   styleUrl: './add-transaction.component.scss',
@@ -42,6 +46,9 @@ export class AddTransactionComponent implements OnInit {
   transactionAmount: number | null = null; // Amount is crucial for verification
   errorMessage: string | null = null;
   isLoading: boolean = false;
+  selectedFile: File | null = null;
+  paymentGateways: PaymentGateway[] = []; // Store fetched gateways
+  selectedGatewayCode: string | null = null; // Track selection
 
   constructor(
     private transactionService: TransactionService,
@@ -64,12 +71,38 @@ export class AddTransactionComponent implements OnInit {
     }
 
     // Initialize transactionAmount if it's not already set
-    if (!this.transactionRequest.amount) {
-      // This is a placeholder; in a real app, this should be pre-filled or handled by the form.
-      this.transactionAmount = 0;
-    } else {
-      this.transactionAmount = this.transactionRequest.amount;
-    }
+    // if (!this.transactionRequest.amount) {
+    //   // This is a placeholder; in a real app, this should be pre-filled or handled by the form.
+    //   this.transactionAmount = 0;
+    // } else {
+    //   this.transactionAmount = this.transactionRequest.amount;
+    // }
+    // Initialize amount
+    this.transactionAmount = this.transactionRequest.amount || 0;
+
+    // Fetch Payment Gateways based on currencyCode
+    this.loadPaymentGateways(this.transactionRequest.currencyCode!);
+  }
+
+  private loadPaymentGateways(currency: string): void {
+    this.isLoading = true;
+    this.transactionService.getPaymentGateways(currency)
+      .pipe(
+        catchError(err => {
+          console.error('Failed to load gateways', err);
+          this.errorMessage = "Could not load payment methods for " + currency;
+          return of([]);
+        })
+      )
+      .subscribe(gateways => {
+        this.paymentGateways = gateways;
+        this.isLoading = false;
+        
+        // Auto-select first gateway if available
+        if (gateways.length > 0) {
+          this.selectedGatewayCode = gateways[0].gatewayCode || null;
+        }
+      });
   }
 
   /**
@@ -131,6 +164,14 @@ export class AddTransactionComponent implements OnInit {
       return;
     }
 
+    if (!this.transactionRequest || !this.selectedGatewayCode) {
+      this.errorMessage = 'Please select a payment gateway.';
+      return;
+    }
+    
+    // Attach selected gateway to the request
+    this.transactionRequest.paymentMethod = this.selectedGatewayCode;
+
     // Update the request with the final amount from the form
     this.transactionRequest.amount = this.transactionAmount;
 
@@ -176,5 +217,13 @@ export class AddTransactionComponent implements OnInit {
       duration: 5000,
       panelClass: [panelClass]
     });
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      console.log('file selected')
+    }
   }
 }
