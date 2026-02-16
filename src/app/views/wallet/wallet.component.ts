@@ -131,15 +131,14 @@ export class WalletComponent implements OnInit, OnDestroy {
     this.router.navigate(['/add-wallet']);
   }
 
-  processTransaction(wallet: Wallet, transactionType: string, paymentMethod: string) {
+  processTransaction(wallet: Wallet, transactionType: string) {
     this.navigationDecisionService.verifyProfile().subscribe(isComplete => {
       if (isComplete) {
 
         // 1. Send all required information to the DataService
         this.dataService.updateTransactionRequest({
           "currencyCode": wallet.currencyCode,
-          "type": transactionType, // 'DEPOSIT' or 'WITHDRAWAL'
-          "paymentMethod": paymentMethod // 'CASH' or 'CARD'
+          "type": transactionType // 'DEPOSIT' or 'WITHDRAWAL'
         });
 
         

@@ -21,6 +21,9 @@ import { TransactionRequest } from '../../../model/transaction-request.model';
 
 import { MatSelectModule } from '@angular/material/select'; // Add this to imports
 import { PaymentGateway } from '../../../model/payment-gateway.model';
+import { Account } from '../../../model/account.model';
+import { ChangeDetectorRef } from '@angular/core';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-transaction',
@@ -49,39 +52,32 @@ export class AddTransactionComponent implements OnInit {
   selectedFile: File | null = null;
   paymentGateways: PaymentGateway[] = []; // Store fetched gateways
   selectedGatewayCode: string | null = null; // Track selection
+  accounts: Account[] = [];
+  selectedAccount: Account | null = null;
 
   constructor(
     private transactionService: TransactionService,
     private dataService: DataService,
     private router: Router,
-    private snackBar: MatSnackBar // Inject MatSnackBar for feedback
+    private snackBar: MatSnackBar, // Inject MatSnackBar for feedback
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-    // 1. Get TransactionRequest from dataService
     this.transactionRequest = this.dataService.getCurrentTransactionRequest();
-
-    // Load wallets immediately
     this.loadWallets();
 
     if (!this.transactionRequest) {
-      this.showToast('Transaction details missing. Redirecting to start page.', 'Error');
+      this.showToast('Transaction details missing. Redirecting...', 'Error');
       this.router.navigate(['/wallet']);
       return;
     }
 
-    // Initialize transactionAmount if it's not already set
-    // if (!this.transactionRequest.amount) {
-    //   // This is a placeholder; in a real app, this should be pre-filled or handled by the form.
-    //   this.transactionAmount = 0;
-    // } else {
-    //   this.transactionAmount = this.transactionRequest.amount;
-    // }
-    // Initialize amount
     this.transactionAmount = this.transactionRequest.amount || 0;
-
-    // Fetch Payment Gateways based on currencyCode
     this.loadPaymentGateways(this.transactionRequest.currencyCode!);
+
+    // ADD THIS LINE HERE
+    this.cdr.detectChanges();
   }
 
   private loadPaymentGateways(currency: string): void {
@@ -89,21 +85,34 @@ export class AddTransactionComponent implements OnInit {
     this.transactionService.getPaymentGateways(currency)
       .pipe(
         catchError(err => {
-          console.error('Failed to load gateways', err);
-          this.errorMessage = "Could not load payment methods for " + currency;
+          this.isLoading = false;
           return of([]);
         })
       )
       .subscribe(gateways => {
         this.paymentGateways = gateways;
         this.isLoading = false;
-        
-        // Auto-select first gateway if available
+
         if (gateways.length > 0) {
-          this.selectedGatewayCode = gateways[0].gatewayCode || null;
+          // Force selection and trigger the account load
+          this.selectGateway(gateways[0]);
         }
+
+        this.cdr.detectChanges(); // 3. Force UI refresh
       });
   }
+
+  // Utility to get only non-null values for the grid display
+  getAccountDetails(account: Account) {
+    const details = [
+      { label: 'Email', value: account.email },
+      { label: 'Phone', value: account.phone },
+      { label: 'Card', value: account.cardNumber }
+    ];
+    return details.filter(detail => detail.value !== null && detail.value !== '');
+  }
+
+
 
   /**
    * Loads wallet data from localStorage.
@@ -158,57 +167,50 @@ export class AddTransactionComponent implements OnInit {
   submitTransaction() {
     this.errorMessage = null;
 
-    // Check 1: Final data check
+    // 1. Validation checks
     if (!this.transactionRequest || this.transactionAmount === null || this.transactionAmount <= 0) {
       this.errorMessage = 'Transaction data incomplete.';
       return;
     }
 
-    if (!this.transactionRequest || !this.selectedGatewayCode) {
-      this.errorMessage = 'Please select a payment gateway.';
-      return;
-    }
-    
-    // Attach selected gateway to the request
-    this.transactionRequest.paymentMethod = this.selectedGatewayCode;
-
-    // Update the request with the final amount from the form
-    this.transactionRequest.amount = this.transactionAmount;
-
-    // Check 2: Balance verification for withdrawals
-    if (this.transactionRequest.type === 'WITHDRAWAL' && !this.verifyAvailableBalance()) {
-      // The verification function already sets the error message and shows a toast
+    if (!this.selectedGatewayCode || !this.selectedAccount) {
+      this.errorMessage = 'Please select a payment gateway and account.';
       return;
     }
 
     this.isLoading = true;
+    this.transactionRequest.amount = this.transactionAmount;
 
-    // Determine which service method to call
-    const transactionObservable =
-      this.transactionRequest.type === 'DEPOSIT'
-        ? this.transactionService.deposit(this.transactionRequest)
-        : this.transactionService.withdrawal(this.transactionRequest);
+    // 2. Start the chain: Add Payment first
+    this.transactionService.addPayment({ accountId: this.selectedAccount.id })
+      .pipe(
+        switchMap((paymentResponse) => {
+          // 3. Inject the referenceId from the payment response
+          if (this.transactionRequest) {
+            this.transactionRequest.referenceId = paymentResponse.id;
+          }
 
-    transactionObservable.pipe(
-      catchError(error => {
+          // 4. Determine and return the next observable (Deposit or Withdrawal)
+          return this.transactionRequest?.type === 'DEPOSIT'
+            ? this.transactionService.deposit(this.transactionRequest)
+            : this.transactionService.withdrawal(this.transactionRequest!);
+        }),
+        catchError((error) => {
+          this.isLoading = false;
+          console.error('Transaction flow failed:', error);
+          const userMessage = error.error?.message || 'Transaction failed.';
+          this.showToast(userMessage, 'Error');
+          // Return 'of(null)' to complete the stream gracefully on error
+          return of(null);
+        })
+      )
+      .subscribe((finalResponse) => {
         this.isLoading = false;
-        console.error('Transaction failed:', error);
-        // Use the error message from the response body if available
-        const userMessage = error.error?.message || 'Transaction failed due to a server error.';
-        this.errorMessage = userMessage;
-
-        // Pass 'Error' literal string
-        this.showToast(userMessage, 'Error');
-        return of(null);
-      })
-    ).subscribe(response => {
-      this.isLoading = false;
-      if (response) {
-        // Pass 'Success' literal string
-        this.showToast(`${this.transactionRequest?.type} successful!`, 'Success');
-        this.router.navigate(['/transactions']);
-      }
-    });
+        if (finalResponse) {
+          this.showToast(`${this.transactionRequest?.type} successful!`, 'Success');
+          this.router.navigate(['/transactions']);
+        }
+      });
   }
 
   private showToast(message: string, type: 'Success' | 'Error'): void {
@@ -225,5 +227,61 @@ export class AddTransactionComponent implements OnInit {
       this.selectedFile = file;
       console.log('file selected')
     }
+  }
+
+  // Helper to compare Account objects for the mat-select dropdown
+  compareAccounts(a1: Account, a2: Account): boolean {
+    return a1 && a2 ? a1.id === a2.id : a1 === a2;
+  }
+
+  onGatewaySelected(gatewayCode: string): void {
+    this.selectedAccount = null;
+    this.accounts = [];
+    this.isLoading = true;
+
+    if (this.transactionRequest?.type === 'DEPOSIT') {
+      this.transactionService.getAccountsByGatewayCode(gatewayCode)
+        .pipe(catchError(() => { this.isLoading = false; return of([]); }))
+        .subscribe(accounts => {
+          this.accounts = accounts;
+          this.isLoading = false;
+          if (this.accounts.length === 1) {
+            this.selectedAccount = this.accounts[0];
+          }
+          // MOVE DETECTION TO THE BOTTOM
+          this.cdr.detectChanges();
+        });
+    }
+    else {
+      this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode)
+        .pipe(catchError(() => { this.isLoading = false; return of([]); }))
+        .subscribe(accounts => {
+          this.accounts = accounts;
+          this.isLoading = false;
+          if (this.accounts.length === 1) {
+            this.selectedAccount = this.accounts[0];
+          }
+          // MOVE DETECTION TO THE BOTTOM
+          this.cdr.detectChanges();
+        });
+    }
+
+  }
+
+  // Inside AddTransactionComponent class
+
+  selectGateway(gateway: PaymentGateway): void {
+    this.selectedGatewayCode = gateway.gatewayCode!;
+    this.selectedAccount = null;
+
+    if (this.selectedGatewayCode) {
+      this.onGatewaySelected(this.selectedGatewayCode);
+    }
+    this.cdr.detectChanges(); // Refresh gateway selection UI
+  }
+
+  selectAccount(account: Account): void {
+    this.selectedAccount = account;
+    this.cdr.detectChanges(); // Refresh account selection UI
   }
 }

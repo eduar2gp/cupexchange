@@ -1,24 +1,21 @@
+// 1. Layout Container
 .transaction-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px; // Base padding for mobile
+  padding: 16px;
   min-height: 100vh;
   background-color: var(--color-background);
-  // Tablet and Desktop View
+
   @media (min-width: 768px) {
     padding: 32px;
   }
 }
 
-// ==========================================================
-// 3. Angular Material Overrides & Custom Styles
-// ==========================================================
-
-// Styling the main card container
+// 2. Card Styling
 mat-card {
   width: 100%;
-  max-width: 480px; // Max width for desktop readability
+  max-width: 600px; // Slightly wider to accommodate grids
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -33,76 +30,131 @@ mat-card {
       color: var(--color-text);
       font-weight: 600;
     }
-
-    .mat-mdc-card-subtitle {
-      color: var(--color-text-secondary);
-    }
   }
-  // Error/Warning Box
+
   .error-box {
     display: flex;
     align-items: center;
     padding: 12px;
     margin-bottom: 16px;
     border-radius: 6px;
-    background-color: rgba(var(--color-danger), 0.1); // Light red background
+    background-color: rgba(var(--color-danger), 0.1);
     border: 1px solid var(--color-danger);
     color: var(--color-danger);
     font-size: 0.95rem;
 
     mat-icon {
       margin-right: 8px;
-      color: var(--color-danger);
       font-size: 20px;
     }
   }
 }
 
-// Full-width form fields
-.full-width-input {
-  width: 100%;
+// 3. Selection Grids & Cards
+.section-label {
+  display: block;
+  margin: 1.5rem 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #5f6368;
 }
 
-// Styling the submit button area
+.gateway-grid, .accounts-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.gateway-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.accounts-grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* Shared Card Logic */
+.selection-card {
+  border: 1.5px solid #dadce0;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  background: var(--color-surface);
+  color: var(--text-color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: #1a73e8;
+    background-color: #f8f9fa;
+  }
+
+  &.selected {
+    border-color: #1a73e8;
+    background-color: var(--color-surface-elevated);
+    box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+    
+    mat-icon { color: #1a73e8; }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 2px 0;
+    .label { color: #70757a; }
+    .value { font-weight: 500; }
+  }
+}
+
+// 4. Form Components
+.full-width-input {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.file-upload-wrapper {
+  margin-top: 8px;
+  .file-input { display: none; }
+  .file-custom-ui {
+    border: 2px dashed #dadce0;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    &:hover { background: #f8f9fa; border-color: #1a73e8; }
+  }
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 24px;
 }
 
-// Primary button styling
-.mat-mdc-raised-button.mat-primary {
-  background-color: var(--color-primary);
-  color: var(--color-surface); // White text on primary button
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  &:disabled {
-    background-color: var(--color-surface-elevated) !important;
-    color: var(--color-text-muted) !important;
-  }
+// 5. Utilities & Feedback
+.info-box {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  &.warn { background: #fef7e0; color: #b06000; }
+  &.info { background: #e8f0fe; color: #1967d2; }
 }
 
-// ==========================================================
-// 4. Global Snackbar/Toast Styling (Place in global styles.scss)
-// ==========================================================
-
-/* These styles must be placed in a global stylesheet (e.g., styles.scss) 
-   to override Angular Material's snackbar styles */
-
-.snackbar-success {
-  .mat-mdc-snack-bar-container {
-    background-color: var(--color-success) !important;
-    color: white !important;
-  }
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
 }
 
-.snackbar-error {
-  .mat-mdc-snack-bar-container {
-    background-color: var(--color-danger) !important;
-    color: white !important;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

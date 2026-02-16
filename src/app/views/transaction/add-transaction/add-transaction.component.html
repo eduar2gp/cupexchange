@@ -2,76 +2,100 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title>
-        {{ transactionRequest?.type | uppercase }} Confirmation
+        {{ transactionRequest?.type | uppercase }} {{ transactionRequest?.currencyCode }}
       </mat-card-title>
-      <mat-card-subtitle>
-        {{ transactionRequest?.paymentMethod | titlecase }} using {{ transactionRequest?.currencyCode }}
-      </mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
       @if (errorMessage) {
-      <div class="error-box">
-        <mat-icon color="warn">error_outline</mat-icon>
-        {{ errorMessage }}
-      </div>
+        <div class="error-box">
+          <mat-icon color="warn">error_outline</mat-icon>
+          {{ errorMessage }}
+        </div>
       }
 
       @if (transactionRequest) {
-      <form #transactionForm="ngForm" (ngSubmit)="submitTransaction()">
-        <div class="transaction-details-section">
-          <mat-form-field appearance="fill" class="full-width-input">
-            <mat-label>Select Payment Gateway</mat-label>
-            <mat-select [(ngModel)]="selectedGatewayCode" name="gateway" required>
+        <form #transactionForm="ngForm" (ngSubmit)="submitTransaction()">
+          <div class="transaction-details-section">
+            
+            <label class="section-label">Select Payment Method</label>
+            <div class="gateway-grid">
               @for (gateway of paymentGateways; track gateway.id) {
-              <mat-option [value]="gateway.gatewayCode">
-                {{ gateway.gatewayName }} ({{ gateway.gatewayCode }})
-              </mat-option>
+                <div class="selection-card gateway-card" 
+                     [class.selected]="selectedGatewayCode === gateway.gatewayCode"
+                     (click)="selectGateway(gateway)">
+                  <div class="card-icon">
+                    <mat-icon>{{ selectedGatewayCode === gateway.gatewayCode ? 'check_circle' : 'payments' }}</mat-icon>
+                  </div>
+                  <div class="card-content">
+                    <span class="main-text">{{ gateway.gatewayName }}</span>
+                    <!-- <span class="sub-text">{{ gateway.gatewayCode }}</span> -->
+                  </div>
+                </div>
               }
-            </mat-select>
-            @if (paymentGateways.length === 0 && !isLoading) {
-            <mat-hint color="warn">No gateways available for this currency.</mat-hint>
-            }
-          </mat-form-field>
+            </div>
 
-          <mat-form-field appearance="fill" class="full-width-input">
-            <mat-label>Transaction Amount ({{ transactionRequest.currencyCode }})</mat-label>
-            <input matInput type="number" name="amount" required min="0.01" [(ngModel)]="transactionAmount"
-              #amountControl="ngModel">
-            @if (amountControl.invalid && amountControl.touched) {
-            <mat-error>Amount is required and must be greater than zero.</mat-error>
+            @if (selectedGatewayCode) {
+              <div class="account-section animate-fade-in">
+                <label class="section-label">Select Receiving Account</label>
+                <div class="accounts-grid">
+                  @for (account of accounts; track account.accountId) {
+                    <div class="selection-card account-card"
+                         [class.selected]="selectedAccount?.accountId === account.accountId" 
+                         (click)="selectAccount(account)">
+                      <div class="card-header">
+                        <mat-icon>{{ selectedAccount?.accountId === account.accountId ? 'check_circle' : 'account_balance' }}</mat-icon>
+                        <span class="account-id">ID: {{ account.accountId }}</span>
+                      </div>
+                      <div class="card-body">
+                        @for (detail of getAccountDetails(account); track detail.label) {
+                          <div class="detail-row">
+                            <span class="label">{{ detail.label }}</span>
+                            <span class="value">{{ detail.value }}</span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
             }
-          </mat-form-field>
-        </div>
 
-        <div class="form-group">
-          <label for="image">Receipt Image</label>
-          <div class="file-upload-wrapper">
-            <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput
-              class="file-input" />
-            <span class="file-label">Choose file or drag & drop</span>
+            <mat-form-field appearance="outline" class="full-width-input amount-field">
+              <mat-label>Transaction Amount ({{ transactionRequest.currencyCode }})</mat-label>
+              <input matInput type="number" name="amount" required min="0.01" [(ngModel)]="transactionAmount" #amountControl="ngModel">
+              <mat-icon matPrefix>attach_money</mat-icon>
+            </mat-form-field>
+
+            <div class="form-group">
+              <label class="section-label">Receipt Image</label>
+              <div class="file-upload-wrapper">
+                <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput class="file-input" />
+                <div class="file-custom-ui" (click)="fileInput.click()">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span class="file-label">{{ selectedFile ? selectedFile.name : 'Choose file or drag & drop' }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div> <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || transactionForm.invalid || !selectedAccount">
+              @if (isLoading) {
+                <ng-container>
+                  <mat-icon>hourglass_empty</mat-icon>
+                  <span>Processing...</span>
+                </ng-container>
+              } @else {
+                <ng-container>
+                  <mat-icon>{{ transactionRequest.type === 'DEPOSIT' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+                  <span>Confirm {{ transactionRequest.type }}</span>
+                </ng-container>
+              }
+            </button>
           </div>
-        </div>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || transactionForm.invalid">
-
-            @if (isLoading) {
-            <ng-container>
-              <mat-icon>hourglass_empty</mat-icon>
-              Processing...
-            </ng-container>
-            } @else {
-            <ng-container>
-              <mat-icon>{{ transactionRequest.type === 'DEPOSIT' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
-              Confirm {{ transactionRequest.type }}
-            </ng-container>
-            }
-          </button>
-        </div>
-      </form>
+        </form>
       } @else {
-      <p>Loading transaction details...</p>
+        <p class="loading-text">Loading transaction details...</p>
       }
     </mat-card-content>
   </mat-card>

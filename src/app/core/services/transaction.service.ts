@@ -6,6 +6,9 @@ import { Observable } from 'rxjs';
 import { TransactionRequest } from '../../model/transaction-request.model'
 import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
 import { PaymentGateway } from '../../model/payment-gateway.model';
+import { Account } from '../../model/account.model';
+import { PaymentRequest } from '../../model/payment-request.model';
+import { PaymentResponse } from '../../model/payment-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +43,26 @@ export class TransactionService {
     }) as Observable<string>;
   }
 
+  addPayment(paymentRequest: PaymentRequest): Observable<PaymentResponse> {
+    const fullUrl = build(ApiEndpoints.transaction.ADD_PAYMENT);
+    return this.http.post(fullUrl, paymentRequest, {
+      responseType: 'json' as 'json' // Use 'json' to match Observable<PaymentResponse>
+    }) as Observable<PaymentResponse>;
+  }
+
   getPaymentGateways(currency: string): Observable<PaymentGateway[]> {
     const fullUrl = build(ApiEndpoints.transaction.PAYMENT_GATEWAYS_ENDPOINT) + currency;
     return this.http.get<PaymentGateway[]>(fullUrl);
+  }
+
+  getAccountsByGatewayCode(gatewayCode: string): Observable<Account[]> {
+    const url = build(ApiEndpoints.transaction.ACCOUNT_BY_GATEWAY_ENDPOINT) + gatewayCode;
+    return this.http.get<Account[]>(url);
+  }
+
+  getAccountsByUserIdAndGatewayCode(gatewayCode: string): Observable<Account[]> {
+    const url = build(ApiEndpoints.transaction.ACCOUNT_BY_USERID_AND_GATEWAY_ENDPOINT) + gatewayCode;
+    return this.http.get<Account[]>(url);
   }
 
 }

@@ -73,13 +73,13 @@
       <div class="wallet-footer">
         <button mat-stroked-button
                 class="action-btn"
-                [matMenuTriggerFor]="menuDepositMethods">
+                (click)="processTransaction(wallet, 'DEPOSIT')">
           <mat-icon>arrow_upward</mat-icon>
           {{ 'DEPOSIT' | translate }}
         </button>
 
         <button mat-stroked-button
-                [matMenuTriggerFor]="menuWithdrawMethods"
+                (click)="processTransaction(wallet, 'WITHDRAWAL')"
                 class="action-btn"
                 [disabled]="wallet.availableBalance <= 0">
           <mat-icon>arrow_downward</mat-icon>
@@ -90,29 +90,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
       </div>
-
-      <mat-menu #menuDepositMethods="matMenu">
-        <button mat-menu-item (click)="processTransaction(wallet, 'DEPOSIT', 'CASH')">
-          <mat-icon>money</mat-icon>
-          {{ 'CASH' | translate }}
-        </button>
-        <button mat-menu-item (click)="processTransaction(wallet, 'DEPOSIT', 'CARD')">
-          <mat-icon>credit_card</mat-icon>
-          {{ 'CARD' | translate }}
-        </button>
-      </mat-menu>
-
-      <mat-menu #menuWithdrawMethods="matMenu">
-        <button mat-menu-item (click)="processTransaction(wallet, 'WITHDRAWAL', 'CASH')">
-          <mat-icon>money</mat-icon>
-          {{ 'CASH' | translate }}
-        </button>
-        <button mat-menu-item (click)="processTransaction(wallet, 'WITHDRAWAL', 'CARD')">
-          <mat-icon>credit_card</mat-icon>
-          {{ 'CARD' | translate }}
-        </button>
-      </mat-menu>
-
+   
       <!-- More Menu -->
       <mat-menu #menu="matMenu">
         <button mat-menu-item>

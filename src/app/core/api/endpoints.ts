@@ -20,7 +20,10 @@ export const ApiEndpoints = {
     USER_TRANSACTIONS_ENDPOINT: '/api/v1/transaction/user',
     DEPOSIT_ENDPOINT: '/api/v1/transaction/deposit',
     WITHDRAWAL_ENDPOINT: '/api/v1/transaction/withdraw',
-    PAYMENT_GATEWAYS_ENDPOINT: '/api/v1/payment-gateways?currency='
+    PAYMENT_GATEWAYS_ENDPOINT: '/api/v1/payment/gateways?currency=',
+    ACCOUNT_BY_GATEWAY_ENDPOINT: '/api/v1/accounts/active?gatewayCode=',
+    ACCOUNT_BY_USERID_AND_GATEWAY_ENDPOINT: '/api/v1/accounts/user?gatewayCode=',
+    ADD_PAYMENT: '/api/v1/payment/add'
   },
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',
