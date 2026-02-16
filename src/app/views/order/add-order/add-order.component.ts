@@ -204,17 +204,28 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   openConfirmDialog(form: NgForm): void {
     if (form.valid && this.currentPair) {
       if (this.newOrder.type === 'MARKET') {
+        // Show loading while estimating if desired, though usually fast
         this.orderTradeService.getMarketOrderTotalPriceEstimated(
           this.newOrder.volume,
           this.newOrder.side,
           this.newOrder.pairCode
-        ).subscribe((totalPrice: string) => {
-          const totalFormatted = (+totalPrice).toFixed(2);
-          if (this.newOrder.side === 'BUY') {
-            this.processConfirmation(totalFormatted, form, 'EXPECTED_COST');
-          }
-          else {
-            this.processConfirmation(totalFormatted, form, 'EXPECTED_PURCHASE');
+        ).subscribe({
+          next: (totalPrice: string) => {
+            const totalFormatted = (+totalPrice).toFixed(2);
+            const translateKey = this.newOrder.side === 'BUY' ? 'EXPECTED_COST' : 'EXPECTED_PURCHASE';
+            this.processConfirmation(totalFormatted, form, translateKey);
+          },
+          error: (err) => {
+            // Extract error message from server response
+            const errorMessage = err.error || 'Could not estimate market price. There might not be enough liquidity.';
+            
+            this.dialog.open(DialogMessageComponent, {
+              width: '400px',
+              data: {
+                title: 'Error',
+                message: errorMessage
+              }
+            });
           }
         });
       } else {

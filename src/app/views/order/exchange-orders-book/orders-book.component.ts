@@ -69,37 +69,6 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  //ngOnInit(): void {
-  //  if (isPlatformBrowser(this.platformId)) {
-  //    // 1. Immediately check if we already have a pair to load data
-  //    const startingPair = this.pairSelectionService.getCurrentPair();
-  //    if (startingPair) {
-  //      console.log('OrderBook: Initial pair found, loading...', startingPair.value);
-  //      this.currentPairSignal.set(startingPair);
-  //      this.loadInitialOrders(startingPair.value);
-  //      this.wsService.subscribeToRecentOrders(startingPair.value);
-  //    }
-
-  //    // 2. Then subscribe to any future changes
-  //    this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
-  //      if (!pair) return;
-
-  //      const current = this.currentPairSignal();
-  //      // Only reload if the pair is actually different from what we just loaded
-  //      if (!current || current.value !== pair.value) {
-  //        console.log('OrderBook: Pair changed, reloading...', pair.value);
-  //        this.currentPairSignal.set(pair);
-  //        this.loadInitialOrders(pair.value);
-  //        this.wsService.subscribeToRecentOrders(pair.value);
-  //      }
-  //    });
-
-  //    this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
-  //      this.ngZone.run(() => this.upsertOrder(order));
-  //    });
-  //  }
-  //}
-
   ngOnInit(): void {
     if (this.isBrowser) {
       const startingPair = this.pairSelectionService.getCurrentPair();
