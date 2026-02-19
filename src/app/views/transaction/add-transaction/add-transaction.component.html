@@ -29,7 +29,6 @@
                   </div>
                   <div class="card-content">
                     <span class="main-text">{{ gateway.gatewayName }}</span>
-                    <!-- <span class="sub-text">{{ gateway.gatewayCode }}</span> -->
                   </div>
                 </div>
               }
@@ -67,19 +66,23 @@
               <mat-icon matPrefix>attach_money</mat-icon>
             </mat-form-field>
 
-            <div class="form-group">
-              <label class="section-label">Receipt Image</label>
-              <div class="file-upload-wrapper">
-                <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput class="file-input" />
-                <div class="file-custom-ui" (click)="fileInput.click()">
-                  <mat-icon>cloud_upload</mat-icon>
-                  <span class="file-label">{{ selectedFile ? selectedFile.name : 'Choose file or drag & drop' }}</span>
+            @if (transactionRequest.type === 'DEPOSIT') {
+              <div class="form-group">
+                <label class="section-label">Receipt Image</label>
+                <div class="file-upload-wrapper">
+                  <input id="image" type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput class="file-input" />
+                  <div class="file-custom-ui" (click)="fileInput.click()">
+                    <mat-icon>cloud_upload</mat-icon>
+                    <span class="file-label">{{ selectedFile ? selectedFile.name : 'Choose file or drag & drop' }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            }
 
-          </div> <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || transactionForm.invalid || !selectedAccount">
+          </div> 
+          
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled || transactionForm.invalid">
               @if (isLoading) {
                 <ng-container>
                   <mat-icon>hourglass_empty</mat-icon>

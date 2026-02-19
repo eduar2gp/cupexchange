@@ -1,29 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { FormsModule } from '@angular/forms'; // Required for template forms
+import { catchError, switchMap } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
-// Angular Material Imports (for a basic submission form/feedback)
+// Angular Material Imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 
-// Service/Model Imports (assuming relative paths)
+// Service/Model Imports
 import { TransactionService } from '../../../core/services/transaction.service';
 import { DataService } from '../../../core/services/data.service';
 import { Wallet } from '../../../model/wallet.model';
 import { TransactionRequest } from '../../../model/transaction-request.model';
-
-import { MatSelectModule } from '@angular/material/select'; // Add this to imports
 import { PaymentGateway } from '../../../model/payment-gateway.model';
 import { Account } from '../../../model/account.model';
 import { ChangeDetectorRef } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-transaction',
@@ -46,12 +44,12 @@ export class AddTransactionComponent implements OnInit {
 
   transactionRequest: TransactionRequest | null = null;
   wallets: Wallet[] = [];
-  transactionAmount: number | null = null; // Amount is crucial for verification
+  transactionAmount: number | null = null;
   errorMessage: string | null = null;
   isLoading: boolean = false;
   selectedFile: File | null = null;
-  paymentGateways: PaymentGateway[] = []; // Store fetched gateways
-  selectedGatewayCode: string | null = null; // Track selection
+  paymentGateways: PaymentGateway[] = [];
+  selectedGatewayCode: string | null = null;
   accounts: Account[] = [];
   selectedAccount: Account | null = null;
 
@@ -59,7 +57,7 @@ export class AddTransactionComponent implements OnInit {
     private transactionService: TransactionService,
     private dataService: DataService,
     private router: Router,
-    private snackBar: MatSnackBar, // Inject MatSnackBar for feedback
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -75,9 +73,24 @@ export class AddTransactionComponent implements OnInit {
 
     this.transactionAmount = this.transactionRequest.amount || 0;
     this.loadPaymentGateways(this.transactionRequest.currencyCode!);
-
-    // ADD THIS LINE HERE
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Logic to disable the submit button based on requirements:
+   * 1. Loading state
+   * 2. Missing account/gateway
+   * 3. No image selected (for DEPOSIT only)
+   */
+  get isSubmitDisabled(): boolean {
+    if (this.isLoading || !this.selectedAccount || !this.selectedGatewayCode) return true;
+    
+    // Requirement 1: If DEPOSIT and no image selected, disable button
+    if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedFile) {
+      return true;
+    }
+    
+    return false;
   }
 
   private loadPaymentGateways(currency: string): void {
@@ -92,17 +105,13 @@ export class AddTransactionComponent implements OnInit {
       .subscribe(gateways => {
         this.paymentGateways = gateways;
         this.isLoading = false;
-
         if (gateways.length > 0) {
-          // Force selection and trigger the account load
           this.selectGateway(gateways[0]);
         }
-
-        this.cdr.detectChanges(); // 3. Force UI refresh
+        this.cdr.detectChanges();
       });
   }
 
-  // Utility to get only non-null values for the grid display
   getAccountDetails(account: Account) {
     const details = [
       { label: 'Email', value: account.email },
@@ -112,11 +121,6 @@ export class AddTransactionComponent implements OnInit {
     return details.filter(detail => detail.value !== null && detail.value !== '');
   }
 
-
-
-  /**
-   * Loads wallet data from localStorage.
-   */
   private loadWallets(): void {
     const walletsJson = localStorage.getItem('WALLETS');
     if (walletsJson) {
@@ -128,30 +132,13 @@ export class AddTransactionComponent implements OnInit {
     }
   }
 
-  /**
-   * Verifies if the requested withdrawal amount is available.
-   * @returns true if valid, false otherwise.
-   */
   private verifyAvailableBalance(): boolean {
-    if (this.transactionRequest?.type !== 'WITHDRAWAL') {
-      return true; // No balance check needed for deposits
-    }
+    if (this.transactionRequest?.type !== 'WITHDRAWAL') return true;
+    if (this.transactionAmount === null || this.transactionAmount <= 0) return false;
 
-    if (this.transactionAmount === null || this.transactionAmount <= 0) {
-      this.errorMessage = 'Please enter a valid amount.';
-      return false;
-    }
+    const targetWallet = this.wallets.find(w => w.currencyCode === this.transactionRequest?.currencyCode);
+    if (!targetWallet) return false;
 
-    const targetWallet = this.wallets.find(
-      w => w.currencyCode === this.transactionRequest?.currencyCode
-    );
-
-    if (!targetWallet) {
-      this.errorMessage = `Wallet for ${this.transactionRequest?.currencyCode} not found.`;
-      return false;
-    }
-
-    // Perform the balance check
     if (targetWallet.availableBalance >= this.transactionAmount) {
       return true;
     } else {
@@ -162,45 +149,47 @@ export class AddTransactionComponent implements OnInit {
   }
 
   /**
-   * Submits the transaction (Deposit or Withdrawal).
+   * Refactored Transaction Submission Flow
    */
   submitTransaction() {
     this.errorMessage = null;
 
-    // 1. Validation checks
     if (!this.transactionRequest || this.transactionAmount === null || this.transactionAmount <= 0) {
       this.errorMessage = 'Transaction data incomplete.';
       return;
     }
 
-    if (!this.selectedGatewayCode || !this.selectedAccount) {
-      this.errorMessage = 'Please select a payment gateway and account.';
-      return;
-    }
+    if (!this.verifyAvailableBalance()) return;
 
     this.isLoading = true;
     this.transactionRequest.amount = this.transactionAmount;
 
-    // 2. Start the chain: Add Payment first
-    this.transactionService.addPayment({ accountId: this.selectedAccount.id })
+    // 1. Add Payment
+    this.transactionService.addPayment({ accountId: this.selectedAccount!.id })
       .pipe(
         switchMap((paymentResponse) => {
-          // 3. Inject the referenceId from the payment response
-          if (this.transactionRequest) {
-            this.transactionRequest.referenceId = paymentResponse.id;
+          const paymentId = paymentResponse.id;
+          this.transactionRequest!.referenceId = paymentId;
+
+          // 2. If Deposit, call updateReceipt first
+          if (this.transactionRequest?.type === 'DEPOSIT' && this.selectedFile) {
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
+            
+            // Requirement 3: call updateReceipt then proceed
+            return this.transactionService.updateReceipt(paymentId, formData).pipe(
+              switchMap(() => this.finalizeTransaction())
+            );
           }
 
-          // 4. Determine and return the next observable (Deposit or Withdrawal)
-          return this.transactionRequest?.type === 'DEPOSIT'
-            ? this.transactionService.deposit(this.transactionRequest)
-            : this.transactionService.withdrawal(this.transactionRequest!);
+          // For Withdrawal, skip receipt upload
+          return this.finalizeTransaction();
         }),
         catchError((error) => {
           this.isLoading = false;
           console.error('Transaction flow failed:', error);
           const userMessage = error.error?.message || 'Transaction failed.';
           this.showToast(userMessage, 'Error');
-          // Return 'of(null)' to complete the stream gracefully on error
           return of(null);
         })
       )
@@ -211,6 +200,12 @@ export class AddTransactionComponent implements OnInit {
           this.router.navigate(['/transactions']);
         }
       });
+  }
+
+  private finalizeTransaction(): Observable<any> {
+    return this.transactionRequest?.type === 'DEPOSIT'
+      ? this.transactionService.deposit(this.transactionRequest)
+      : this.transactionService.withdrawal(this.transactionRequest!);
   }
 
   private showToast(message: string, type: 'Success' | 'Error'): void {
@@ -225,11 +220,10 @@ export class AddTransactionComponent implements OnInit {
     const file: File = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      console.log('file selected')
+      console.log('file selected');
     }
   }
 
-  // Helper to compare Account objects for the mat-select dropdown
   compareAccounts(a1: Account, a2: Account): boolean {
     return a1 && a2 ? a1.id === a2.id : a1 === a2;
   }
@@ -239,49 +233,32 @@ export class AddTransactionComponent implements OnInit {
     this.accounts = [];
     this.isLoading = true;
 
-    if (this.transactionRequest?.type === 'DEPOSIT') {
-      this.transactionService.getAccountsByGatewayCode(gatewayCode)
-        .pipe(catchError(() => { this.isLoading = false; return of([]); }))
-        .subscribe(accounts => {
-          this.accounts = accounts;
-          this.isLoading = false;
-          if (this.accounts.length === 1) {
-            this.selectedAccount = this.accounts[0];
-          }
-          // MOVE DETECTION TO THE BOTTOM
-          this.cdr.detectChanges();
-        });
-    }
-    else {
-      this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode)
-        .pipe(catchError(() => { this.isLoading = false; return of([]); }))
-        .subscribe(accounts => {
-          this.accounts = accounts;
-          this.isLoading = false;
-          if (this.accounts.length === 1) {
-            this.selectedAccount = this.accounts[0];
-          }
-          // MOVE DETECTION TO THE BOTTOM
-          this.cdr.detectChanges();
-        });
-    }
+    const accountObs = this.transactionRequest?.type === 'DEPOSIT'
+      ? this.transactionService.getAccountsByGatewayCode(gatewayCode)
+      : this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode);
 
+    accountObs.pipe(catchError(() => { this.isLoading = false; return of([]); }))
+      .subscribe(accounts => {
+        this.accounts = accounts;
+        this.isLoading = false;
+        if (this.accounts.length === 1) {
+          this.selectedAccount = this.accounts[0];
+        }
+        this.cdr.detectChanges();
+      });
   }
-
-  // Inside AddTransactionComponent class
 
   selectGateway(gateway: PaymentGateway): void {
     this.selectedGatewayCode = gateway.gatewayCode!;
     this.selectedAccount = null;
-
     if (this.selectedGatewayCode) {
       this.onGatewaySelected(this.selectedGatewayCode);
     }
-    this.cdr.detectChanges(); // Refresh gateway selection UI
+    this.cdr.detectChanges();
   }
 
   selectAccount(account: Account): void {
     this.selectedAccount = account;
-    this.cdr.detectChanges(); // Refresh account selection UI
+    this.cdr.detectChanges();
   }
 }

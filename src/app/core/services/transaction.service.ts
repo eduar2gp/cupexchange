@@ -49,6 +49,11 @@ export class TransactionService {
       responseType: 'json' as 'json' // Use 'json' to match Observable<PaymentResponse>
     }) as Observable<PaymentResponse>;
   }
+  
+  updateReceipt(paymentId: number, formData: FormData): Observable<PaymentResponse> {
+    const url = build(ApiEndpoints.transaction.UPDATE_RECEIPT).replace('{id}', paymentId.toString());
+    return this.http.put<PaymentResponse>(url, formData);
+  }
 
   getPaymentGateways(currency: string): Observable<PaymentGateway[]> {
     const fullUrl = build(ApiEndpoints.transaction.PAYMENT_GATEWAYS_ENDPOINT) + currency;

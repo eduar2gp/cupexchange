@@ -23,7 +23,8 @@ export const ApiEndpoints = {
     PAYMENT_GATEWAYS_ENDPOINT: '/api/v1/payment/gateways?currency=',
     ACCOUNT_BY_GATEWAY_ENDPOINT: '/api/v1/accounts/active?gatewayCode=',
     ACCOUNT_BY_USERID_AND_GATEWAY_ENDPOINT: '/api/v1/accounts/user?gatewayCode=',
-    ADD_PAYMENT: '/api/v1/payment/add'
+    ADD_PAYMENT: '/api/v1/payment/add',
+    UPDATE_RECEIPT: '/api/v1/payment/{id}/receipt',
   },
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',
