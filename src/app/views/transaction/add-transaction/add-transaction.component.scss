@@ -158,3 +158,59 @@ mat-card {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.gateway-card {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  max-width: 300px; // Limits card width
+
+  &.selected {
+    border-color: #3f51b5; // Material Primary color
+    background-color: #f5f7ff;
+  }
+
+  .card-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;  // Fixed container size
+    height: 40px; 
+    margin-right: 12px;
+
+    .gateway-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; // Keeps aspect ratio without cropping
+    }
+
+    .selection-overlay {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      
+      mat-icon {
+        color: #3f51b5;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .card-content {
+    .main-text {
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+}
