@@ -1,10 +1,11 @@
-import { Injectable, afterNextRender, signal } from '@angular/core';
+import { Injectable, afterNextRender, signal, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Provider } from '../../model/provider.model'
 import { Product } from '../../model/product.model'
 import { User } from '../../model/user.model'
 import { TransactionRequest } from '../../model/transaction-request.model'
 import { MerchantOrder } from '../../model/merchant-order-reponse.model'
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +35,12 @@ export class DataService {
   private isEcommerceMode = new BehaviorSubject<boolean>(false);
   public isEcommerce$ = this.isEcommerceMode.asObservable();
 
-  constructor() {
-    afterNextRender(() => {     
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    // Standard way to handle browser-only logic in a service
+    if (isPlatformBrowser(this.platformId)) {
       const saved = localStorage.getItem(this.STORAGE_KEY) === 'true';
       this.isEcommerceMode.next(saved);
-    });
+    }
   }
 
   // Method to set the value to true

@@ -4,7 +4,7 @@ import { Transaction } from '../../model/transaction.model';
 import { Page } from '../../model/page.model';
 import { Observable } from 'rxjs';
 import { TransactionRequest } from '../../model/transaction-request.model'
-import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
+import { build, ApiEndpoints } from '../api/endpoints';
 import { PaymentGateway } from '../../model/payment-gateway.model';
 import { Account } from '../../model/account.model';
 import { PaymentRequest } from '../../model/payment-request.model';

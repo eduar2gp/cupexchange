@@ -5,7 +5,8 @@
   align-items: center;
   padding: 16px;
   min-height: 100vh;
-  background-color: #f8f9fa; // Fallback for var(--color-background)
+  background-color: var(--color-background);
+  color: var(--color-text);
 
   @media (min-width: 768px) {
     padding: 32px;
@@ -15,21 +16,21 @@
 // 2. Card Styling
 mat-card {
   width: 100%;
-  max-width: 800px; // Increased to 800px to better fit dual-account grids
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  background-color: var(--color-surface) !important; // Override Material default
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 16px;
 
   .mat-mdc-card-header {
     padding-bottom: 16px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     margin-bottom: 16px;
 
     .mat-mdc-card-title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #202124;
+      color: var(--color-text);
     }
   }
 }
@@ -42,55 +43,60 @@ mat-card {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #5f6368;
+  color: var(--color-text-secondary);
 }
 
+// Base styles (Mobile First - 2 columns)
 .gateway-grid, .accounts-grid {
   display: grid;
+  grid-template-columns: repeat(2, 1fr); // Forces 2 columns on small screens
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.gateway-grid {
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+// Tablet and Desktop (Responsive behavior)
+@media (min-width: 480px) {
+  .gateway-grid { 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+  }
 }
 
-.accounts-grid {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+@media (min-width: 768px) {
+  .accounts-grid { 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+  }
 }
 
 // 4. Shared Selection Card Logic
 .selection-card {
-  border: 1.5px solid #dadce0;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition);
   position: relative;
 
   &:hover {
-    border-color: #1a73e8;
-    background-color: #f8f9fa;
+    border-color: var(--color-primary);
+    background-color: var(--color-background);
   }
 
   &.selected {
-    border-color: #1a73e8;
-    background-color: #e8f0fe;
-    box-shadow: 0 2px 6px rgba(26, 115, 232, 0.2);
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-faded);
     
-    mat-icon { color: #1a73e8; }
+    mat-icon { color: var(--color-primary); }
   }
 
-  // Visual distinction for Provider accounts
   &.provider-variant {
-    background-color: #fcfcfc;
-    border-style: dashed; // Distinguishes "external" accounts
+    border-style: dashed;
     
     &.selected {
       border-style: solid;
-      background-color: #f1f8e9; // Subtle green tint for provider success
-      border-color: #4caf50;
-      mat-icon { color: #4caf50; }
+      background-color: var(--color-success-faded);
+      border-color: var(--color-success);
+      mat-icon { color: var(--color-success); }
     }
   }
 
@@ -99,10 +105,9 @@ mat-card {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
-    font-weight: 600;
+    color: var(--color-text);
     
-    mat-icon { font-size: 20px; }
-    .account-id { font-size: 0.8rem; color: #70757a; }
+    .account-id { font-size: 0.8rem; color: var(--color-text-secondary); }
   }
 
   .detail-row {
@@ -110,15 +115,14 @@ mat-card {
     justify-content: space-between;
     font-size: 0.85rem;
     padding: 4px 0;
-    border-bottom: 1px solid #f1f3f4;
+    border-bottom: 1px solid var(--color-border);
     
-    &:last-child { border-bottom: none; }
-    .label { color: #70757a; font-weight: 400; }
-    .value { font-weight: 500; color: #3c4043; }
+    .label { color: var(--color-text-secondary); }
+    .value { font-weight: 500; color: var(--color-text); }
   }
 }
 
-// 5. Specific Gateway Card Layout
+// 5. Specific Gateway Card Layout (Improved with Overlay)
 .gateway-card {
   display: flex;
   flex-direction: column;
@@ -126,9 +130,10 @@ mat-card {
   text-align: center;
   
   .card-icon {
-    width: 80px;
-    height: 50px;
-    margin-bottom: 8px;
+    position: relative; // Context for the checkmark overlay
+    width: 60px;  // Constrained size
+    height: 40px; 
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,53 +142,45 @@ mat-card {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .selection-overlay {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--color-surface);
+      border-radius: 50%;
+      height: 20px;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 }
 
 // 6. Form Components & Utilities
-.amount-field {
-  margin: 24px 0;
-  width: 100%;
-}
-
 .file-custom-ui {
-  border: 2px dashed #dadce0;
+  border: 2px dashed var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
   padding: 24px;
   border-radius: 12px;
   text-align: center;
-  cursor: pointer;
-  color: #5f6368;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
   
   &:hover { 
-    background: #f8f9fa; 
-    border-color: #1a73e8;
-    color: #1a73e8;
+    background: var(--color-background); 
+    border-color: var(--color-primary);
   }
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 24px;
-  border-top: 1px solid #eee;
-
-  button {
-    padding: 0 32px;
-    height: 48px;
-    font-weight: 600;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+span{
+  font-size: small;
 }

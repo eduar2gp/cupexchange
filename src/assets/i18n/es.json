@@ -68,6 +68,7 @@
   "PROFILE": "Mi Perfil",
   "DEPOSIT": "Depositar",
   "WITHDRAW": "Extraer",
+  "WITHDRAWAL": "Extracción",
   "AVAILABLE": "Disponible",
   "RESERVED": "Reservado",
   "DETAILS": "Detalles",
@@ -86,5 +87,17 @@
   "BUY_ORDERS": "Offertas de Compra",
   "SELL_ORDERS": "Offertas de Venta",
   "EXPECTED_PURCHASE": "Ingreso Estimado",
-  "EXPECTED_COST": "Costo Estimado"
+  "EXPECTED_COST": "Costo Estimado",
+  "TRANSACTION": {
+    "TITLE_FORMAT": "{{type}} {{currency}}",
+    "SELECT_METHOD": "Seleccionar método de pago",
+    "SELECT_USER_ACCOUNT": "Seleccione su cuenta",
+    "SELECT_PROVIDER_RECEIVING_ACCOUNT": "Seleccione la cuenta receptora del proveedor",
+    "SELECT_PROVIDER_SENDING_ACCOUNT": "Seleccione la cuenta emisora del proveedor",
+    "AMOUNT_LABEL": "Monto ({{currency}})",
+    "UPLOAD_LABEL": "Subir comprobante",
+    "UPLOAD_PLACEHOLDER": "Haga clic para subir la imagen",
+    "CONFIRM_ACTION": "Confirmar {{type}}",
+    "PROCESSING": "Procesando..."
+  }
 }

@@ -21,6 +21,7 @@ import { Wallet } from '../../../model/wallet.model';
 import { TransactionRequest } from '../../../model/transaction-request.model';
 import { PaymentGateway } from '../../../model/payment-gateway.model';
 import { Account } from '../../../model/account.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-transaction',
@@ -34,7 +35,8 @@ import { Account } from '../../../model/account.model';
     MatInputModule,
     MatIconModule,
     MatSnackBarModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule
   ],
   templateUrl: './add-transaction.component.html',
   styleUrl: './add-transaction.component.scss',
@@ -211,7 +213,8 @@ export class AddTransactionComponent implements OnInit {
     return [
       { label: 'Email', value: account.email },
       { label: 'Phone', value: account.phone },
-      { label: 'Card', value: account.cardNumber }
+      { label: 'Card', value: account.cardNumber },
+      { label: 'Id', value: account.accountId }
     ].filter(d => d.value);
   }
 

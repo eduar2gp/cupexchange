@@ -68,6 +68,7 @@
   "PROFILE": "Профиль",
   "DEPOSIT": "Депозит",
   "WITHDRAW": "Вывод средств",
+  "WITHDRAWAL": "Вывод средств",
   "AVAILABLE": "Доступно",
   "RESERVED": "Забронировано",
   "DETAILS": "Подробности",
@@ -86,5 +87,17 @@
   "BUY_ORDERS": "Покупка",
   "SELL_ORDERS": "Продажа",
   "EXPECTED_PURCHASE": "Общая предполагаемая сумма",
-  "EXPECTED_COST": "Смета расходов"
+  "EXPECTED_COST": "Смета расходов",
+  "TRANSACTION": {
+    "TITLE_FORMAT": "{{type}} {{currency}}",
+    "SELECT_METHOD": "Выберите способ оплаты",
+    "SELECT_USER_ACCOUNT": "Выберите ваш счет",
+    "SELECT_PROVIDER_RECEIVING_ACCOUNT": "Выберите счет получателя провайдера",
+    "SELECT_PROVIDER_SENDING_ACCOUNT": "Выберите счет отправителя провайдера",
+    "AMOUNT_LABEL": "Сумма ({{currency}})",
+    "UPLOAD_LABEL": "Загрузить чек",
+    "UPLOAD_PLACEHOLDER": "Нажмите, чтобы загрузить изображение",
+    "CONFIRM_ACTION": "Подтвердить {{type}}",
+    "PROCESSING": "Обработка..."
+  }
 }

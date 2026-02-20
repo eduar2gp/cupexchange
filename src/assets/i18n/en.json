@@ -68,6 +68,7 @@
   "PROFILE": "Profile",
   "DEPOSIT": "Deposit",
   "WITHDRAW": "Withdraw",
+  "WITHDRAWAL": "Withdrawal",
   "AVAILABLE": "Available",
   "RESERVED": "Reserved",
   "DETAILS": "Details",
@@ -86,5 +87,17 @@
   "BUY_ORDERS": "Buy Orders",
   "SELL_ORDERS": "Sell Orders",
   "EXPECTED_PURCHASE": "Expected Purchase",
-  "EXPECTED_COST": "Expected Cost"
+  "EXPECTED_COST": "Expected Cost",
+  "TRANSACTION": {
+    "TITLE_FORMAT": "{{type}} {{currency}}",
+    "SELECT_METHOD": "Select Payment Method",
+    "SELECT_USER_ACCOUNT": "Select Your Account",
+    "SELECT_PROVIDER_RECEIVING_ACCOUNT": "Select Provider's Receiving Account",
+    "SELECT_PROVIDER_SENDING_ACCOUNT": "Select Provider's Sending Account",
+    "AMOUNT_LABEL": "Amount ({{currency}})",
+    "UPLOAD_LABEL": "Upload Receipt",
+    "UPLOAD_PLACEHOLDER": "Click to upload image",
+    "CONFIRM_ACTION": "Confirm {{type}}",
+    "PROCESSING": "Processing..."
+  }
 }
