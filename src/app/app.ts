@@ -36,6 +36,7 @@ import { LocationService } from '../app/core/services/location.service'
 import { Province } from './model/province.model';
 import { Municipality } from './model/muncipality.model';
 import { RouterLinkActive } from '@angular/router';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -69,7 +70,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   protected readonly title = signal('');
   public readonly Role = Role;
 
- //  Services
+  //  Services
   public authService = inject(AuthService);
   private router = inject(Router);
   private pairSelectionService = inject(PairSelectionService);
@@ -79,14 +80,15 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   private platformId = inject(PLATFORM_ID);
   public cartService = inject(CartService);
   public locationService = inject(LocationService);
+  public dataService = inject(DataService)
 
-   //Subscriptions
+  //Subscriptions
   private routerSubscription?: Subscription;
   private fcmSubscription?: Subscription;
 
- // Trading pairs
+  // Trading pairs
   availablePairs: TradingPair[] = [];
-  selectedPair: TradingPair | null = null;
+
 
   private readonly STORAGE_KEY = 'preferredTradingPairCode';
 
@@ -96,16 +98,19 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   ];
 
   isEcommerce = () => this.router.url.includes('ecommerce');
-  cartCount$ = this.cartService.cartCount$;
+
+  cartCount$ = this.cartService.cartCount$.pipe(startWith(0));
+
+  selectedPair: TradingPair | null = this.DEFAULT_PAIRS[0];
+  public isEcommerceView$ = this.dataService.isEcommerce$.pipe(startWith(false));
 
   //orderCount$!: Observable<number>;
   constructor(
     private languageService: LanguageService,
     private fcmService: FCMService,
-    public dataService: DataService,
     public searchService: SearchService
   ) {
-    
+
   }
 
   ngOnInit(): void {
@@ -124,7 +129,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     }
     // Order count badge (Uncomment and ensure OrdersService is SSR-safe)
     //this.orderCount$ = this.ordersService.getCurrentUserOrders().pipe(
-     // map(orders => orders.length)
+    // map(orders => orders.length)
     //);
   }
 
@@ -135,7 +140,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.routerSubscription?.unsubscribe();   
+    this.routerSubscription?.unsubscribe();
     if (this.fcmSubscription) {
       this.fcmSubscription.unsubscribe(); // Still critical to unsubscribe from the Subject
     }
@@ -220,7 +225,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       return pair?.substring(0, 3) + "-" + pair?.substring(3, pair.length);
     return '';
   }
- 
+
   getBaseCurrencyImage(pair: string | undefined): string {
     if (!pair || pair.length < 6) {
       return 'assets/currencies/default.png';
@@ -239,13 +244,13 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkWalletsAndNavigate() {
-    this.sidenav.close(); 
+    this.sidenav.close();
     const walletsExist = this.navigationDecisionService
       .verifyWallets(this.pairSelectionService.getCurrentPair()?.value);
     if (walletsExist) {
       this.router.navigate(['/add-order']);
     } else {
-      this.router.navigate(['/add-wallet']); 
+      this.router.navigate(['/add-wallet']);
     }
   }
 

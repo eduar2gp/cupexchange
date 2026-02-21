@@ -68,7 +68,7 @@
       </div>
       <div class="toolbar-right-controls">
         <span class="toolbar-title">{{ title() }}</span>
-        <mat-slide-toggle [checked]="dataService.isEcommerce$ | async"
+        <mat-slide-toggle [checked]="isEcommerceView$ | async"
                           (change)="toggleDashboard($event)"
                           color="primary">
           <mat-icon>{{ (dataService.isEcommerce$ | async) ? 'autorenew' : 'store' }}</mat-icon>
