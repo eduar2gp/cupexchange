@@ -182,11 +182,15 @@ export class AddOrderComponent implements OnInit, OnDestroy {
 
   private updateMaxVolumes(): void {
     if (this.currentPair) {
-      this.maxVolumeSell = this.formValidationService.getMaxVolumeSell(this.currentPair.value);
-      this.maxVolumeBuy = this.formValidationService.getMaxVolumeBuy(
+      const rawSell = this.formValidationService.getMaxVolumeSell(this.currentPair.value);
+      const rawBuy = this.formValidationService.getMaxVolumeBuy(
         this.currentPair.value,
         this.newOrder.price
       );
+
+      // Round to 8 decimal places to kill infinite floats (like 0.33333333333334)
+      this.maxVolumeSell = parseFloat(rawSell.toFixed(8));
+      this.maxVolumeBuy = parseFloat(rawBuy.toFixed(8));
     }
   }
 
@@ -218,7 +222,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
           error: (err) => {
             // Extract error message from server response
             const errorMessage = err.error || 'Could not estimate market price. There might not be enough liquidity.';
-            
+
             this.dialog.open(DialogMessageComponent, {
               width: '400px',
               data: {
@@ -247,7 +251,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
           // 2. Access the translated side (e.g., "Compra" or "Venta")
           `${translations[sideKey]} ${this.newOrder.volume} ${this.formatPairDisplay(this.newOrder.pairCode)}\n` +
           (this.newOrder.type === 'LIMIT' ? `${this.translate.instant('PRICE')}: ${this.newOrder.price}\n` : '') +
-          `${translations[translateKey]}: ${ this.newOrder.side === 'BUY' ?  '-'+total : '+'+total } ${this.formatPairDisplayQuote(this.newOrder.pairCode)}`
+          `${translations[translateKey]}: ${this.newOrder.side === 'BUY' ? '-' + total : '+' + total} ${this.formatPairDisplayQuote(this.newOrder.pairCode)}`
       }
 
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -321,8 +325,15 @@ export class AddOrderComponent implements OnInit, OnDestroy {
 
   isVolumeExceeded(form: NgForm): boolean {
     if (!form || !this.currentPair) return false;
+
     const maxVolume = this.newOrder.side === 'BUY' ? this.maxVolumeBuy : this.maxVolumeSell;
-    return this.newOrder.volume > maxVolume + 1e-9;
+
+    // Round both values to 2 decimal places specifically
+    const vol = Math.round(this.newOrder.volume * 100) / 100;
+    const max = Math.round(maxVolume * 100) / 100;
+
+    // Now, if vol is 100.01 and max is 100.01, it returns false (Correct)
+    return vol > max;
   }
 
   getCurrentMaxVolume(): number {
@@ -348,35 +359,25 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   }
 
   onVolumeInput(value: string | null): void {
-    // 1. Safety check: If value is null, undefined, or not a string, reset to defaults
-    if (value === null || value === undefined || typeof value !== 'string') {
-      this.volumeInput = '';
+    if (!value) {
       this.newOrder.volume = 0;
       return;
     }
-
-    // 2. Update the display string
     this.volumeInput = value;
-
-    // 3. Clean and parse (Safe to use .replace now)
     const parsed = parseFloat(value.replace(/,/g, ''));
-
-    // 4. Update the numeric model
-    this.newOrder.volume = isNaN(parsed) ? 0 : parsed;
+    if (!isNaN(parsed)) {
+      // Rounding here prevents the "10.00000000000004" issue during typing
+      this.newOrder.volume = parseFloat(parsed.toFixed(6));
+    }
   }
 
   onVolumeBlur(): void {
-    let valueToBound = this.newOrder.volume || 0; // Fallback to 0 if null/NaN
-
-    // Check Minimum
-    if (valueToBound < this.minVolume) {
-      valueToBound = this.minVolume;
-    }
-
-    // Check Maximum
+    let valueToBound = this.newOrder.volume || 0;
     const max = this.getCurrentMaxVolume();
+
     if (valueToBound > max) {
-      valueToBound = max;
+      // Round max to 2 decimals when assigning it back to the model
+      valueToBound = Math.round(max * 100) / 100;
     }
 
     this.newOrder.volume = valueToBound;
