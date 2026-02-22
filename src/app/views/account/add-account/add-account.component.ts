@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { AccountService } from '../../../core/services/account.service';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { Account } from '../../../model/account.model';
 import { PaymentGateway } from '../../../model/payment-gateway.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-add-account',
@@ -27,6 +28,7 @@ import { PaymentGateway } from '../../../model/payment-gateway.model';
   styleUrl: './add-account.component.scss'
 })
 export class AddAccountComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
   private accountService = inject(AccountService);
   private transactionService = inject(TransactionService);
   private snackBar = inject(MatSnackBar);
@@ -39,7 +41,9 @@ export class AddAccountComponent implements OnInit {
   isLoading = false;
 
   ngOnInit() {
-    this.loadGateways('USD');
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadGateways('USD');
+    }
   }
 
   selectCurrency(currency: string) {
