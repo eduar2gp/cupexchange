@@ -1,0 +1,104 @@
+<div class="transaction-container">
+    <mat-card class="styled-card">
+        <mat-card-header>
+            <mat-card-title>{{ 'ACCOUNTS.ACCOUNTS' | translate }}</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+            <form #accountForm="ngForm" (ngSubmit)="onSubmit()">
+
+                <label class="section-label">{{ 'TRANSACTION.SELECT_CURRENCY' | translate }}</label>
+                <div class="gateway-grid">
+                    <div class="selection-card gateway-card" [class.selected]="account.baseCurrency === 'USD'" (click)="selectCurrency('USD')">
+                        <div class="card-icon">
+                            <img src="assets/currencies/usd.png" alt="USD" class="gateway-img" />
+                            <div class="selection-overlay" *ngIf="account.baseCurrency === 'USD'"><mat-icon>check_circle</mat-icon></div>
+                        </div>
+                        <div class="card-content"><span>USD</span></div>
+                    </div>
+                    <div class="selection-card gateway-card" [class.selected]="account.baseCurrency === 'CUP'" (click)="selectCurrency('CUP')">
+                        <div class="card-icon">
+                            <img src="assets/currencies/cup.png" alt="CUP" class="gateway-img" />
+                            <div class="selection-overlay" *ngIf="account.baseCurrency === 'CUP'"><mat-icon>check_circle</mat-icon></div>
+                        </div>
+                        <div class="card-content"><span>CUP</span></div>
+                    </div>
+                </div>
+
+                <label class="section-label">{{ 'TRANSACTION.SELECT_METHOD' | translate }}</label>
+                <div class="gateway-grid">
+                    @for (gateway of paymentGateways; track gateway.id) {
+                    <div class="selection-card gateway-card" [class.selected]="selectedGatewayCode === gateway.gatewayCode" (click)="selectGateway(gateway)">
+                        <div class="card-icon">
+                            <img class="gateway-img" [src]="'assets/payment_gateways/' + gateway.gatewayCode + '.png'" onerror="this.src='assets/payment_gateways/default.png'" />
+                            <div class="selection-overlay" *ngIf="selectedGatewayCode === gateway.gatewayCode"><mat-icon>check_circle</mat-icon></div>
+                        </div>
+                        <div class="card-content"><span>{{ gateway.gatewayName }}</span></div>
+                    </div>
+                    }
+                </div>
+
+                <div class="animate-fade-in" *ngIf="selectedGatewayCode">
+                    <label class="section-label">{{ 'ACCOUNTS.ID_INFO' | translate }}</label>
+                    <div class="form-grid">
+
+                        @if (isVisible('accountId')) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>Account ID</mat-label>
+                            <input matInput name="accountId" [(ngModel)]="account.accountId" #accId="ngModel"
+                                (input)="applyPrefix()" [required]="isRequired('accountId')">
+                            <mat-error *ngIf="accId.invalid">Account ID is required</mat-error>
+                        </mat-form-field>
+                        }
+
+                        @if (isVisible('userName')) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ account.baseCurrency === 'CUP' ? 'Name on Card' : 'Full Name' }}</mat-label>
+                            <input matInput name="userName" [(ngModel)]="account.accountName" #uName="ngModel"
+                                pattern="^[a-zA-Z\s]*$" [required]="isRequired('userName')">
+                            <mat-error *ngIf="uName.errors?.['pattern']">Only letters allowed</mat-error>
+                            <mat-error *ngIf="uName.errors?.['required']">Full name is mandatory</mat-error>
+                        </mat-form-field>
+                        }
+
+                        @if (isVisible('email')) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput name="email" type="email" [(ngModel)]="account.email" #email="ngModel"
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" [required]="isRequired('email')">
+                            <mat-error *ngIf="email.errors?.['pattern']">Invalid email format</mat-error>
+                        </mat-form-field>
+                        }
+
+                        @if (isVisible('phone')) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>Phone</mat-label>
+                            <input matInput name="phone" [(ngModel)]="account.phone" #phone="ngModel"
+                                pattern="^[0-9+]*$" [required]="isRequired('phone')">
+                            <mat-error *ngIf="phone.errors?.['pattern']">Invalid phone number</mat-error>
+                        </mat-form-field>
+                        }
+
+                        @if (isVisible('cardNumber')) {
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Card Number</mat-label>
+                            <input matInput name="cardNumber" [(ngModel)]="account.cardNumber" #cNumber="ngModel"
+                                minlength="16" maxlength="16" pattern="^[0-9]*$" [required]="isRequired('cardNumber')">
+                            <mat-error *ngIf="cNumber.errors?.['minlength'] || cNumber.errors?.['pattern']">
+                                Card number must be 16 digits
+                            </mat-error>
+                        </mat-form-field>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button mat-flat-button color="primary" type="submit"
+                        [disabled]="!accountForm.form.valid || !selectedGatewayCode || isLoading">
+                        {{ (isLoading ? 'TRANSACTION.PROCESSING' : 'TRANSACTION.CONFIRM_ACTION') | translate: { type: '' } }}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

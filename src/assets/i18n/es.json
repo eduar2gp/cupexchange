@@ -98,6 +98,11 @@
     "UPLOAD_LABEL": "Subir comprobante",
     "UPLOAD_PLACEHOLDER": "Haga clic para subir la imagen",
     "CONFIRM_ACTION": "Confirmar {{type}}",
-    "PROCESSING": "Procesando..."
-  }
+    "PROCESSING": "Procesando...",
+    "SELECT_CURRENCY": "Seleccionar mondeda"
+  },
+   "ACCOUNTS": {
+    "ACCOUNTS": "Cuentas",
+    "ID_INFO": "Identificadores de la cuenta"
+   }
 }

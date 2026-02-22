@@ -24,6 +24,7 @@ import { CheckoutComponent } from './views/checkout/checkout.component';
 import { EcommerceOrdersListComponent } from './views/order/ecommerce-orders-list/ecommerce-orders-list.component';
 import { ProviderOrdersListComponent } from './views/provider/provider-orders-list/provider-orders-list.component';
 import { ProviderOrderDetailsComponent } from './views/provider/provider-order-details/provider-order-details.component';
+import { AddAccountComponent } from './views/account/add-account/add-account.component';
 
 
 export const routes: Routes = [
@@ -150,4 +151,9 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: [Role.Provider] }
   },
+  {
+    path: 'add-account',
+    component: AddAccountComponent,
+    canActivate: [roleGuard]
+  }
 ];

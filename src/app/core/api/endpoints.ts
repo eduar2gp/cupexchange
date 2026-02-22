@@ -26,6 +26,9 @@ export const ApiEndpoints = {
     ADD_PAYMENT: '/api/v1/payment/add',
     UPDATE_RECEIPT: '/api/v1/payment/{id}/receipt',
   },
+  account: {
+    ADD_ACCOUNT: '/api/v1/accounts'
+  },
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',
     ESTIMATE_MARKET_ORDER_TOTAL_PRICE: '/api/v1/trade/estimate-market-order-total-price',

@@ -211,6 +211,7 @@ export class AddTransactionComponent implements OnInit {
 
   getAccountDetails(account: Account) {
     return [
+      { label: 'Name', value: account.accountName },
       { label: 'Email', value: account.email },
       { label: 'Phone', value: account.phone },
       { label: 'Card', value: account.cardNumber },

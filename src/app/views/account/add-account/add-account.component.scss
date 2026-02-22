@@ -1,0 +1,130 @@
+.transaction-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background-color: var(--color-background);
+  min-height: 100vh;
+}
+
+.styled-card {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.section-label {
+  display: block;
+  margin: 24px 0 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+}
+
+// Grid Logic: 2 columns on mobile, auto-fill on desktop
+.gateway-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+.selection-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-background);
+  }
+
+  &.selected {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  }
+}
+
+.card-icon {
+  position: relative;
+  width: 60px;
+  height: 40px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon { font-size: 32px; width: 32px; height: 32px; color: var(--color-text-secondary); }
+  
+  .gateway-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .selection-overlay {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    background: var(--color-surface);
+    border-radius: 50%;
+    mat-icon { font-size: 20px; color: var(--color-primary); }
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+  .full-width { grid-column: span 2; @media (max-width: 600px) { grid-column: span 1; } }
+}
+
+.form-actions {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-divider);
+  display: flex;
+  justify-content: flex-end;
+
+  button { padding: 0 40px; height: 48px; border-radius: 24px; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  // If a field is the only one in its row, it looks better full width
+  mat-form-field:only-child {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    mat-form-field:only-child { grid-column: span 1; }
+  }
+}

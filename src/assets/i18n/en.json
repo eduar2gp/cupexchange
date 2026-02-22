@@ -98,6 +98,11 @@
     "UPLOAD_LABEL": "Upload Receipt",
     "UPLOAD_PLACEHOLDER": "Click to upload image",
     "CONFIRM_ACTION": "Confirm {{type}}",
-    "PROCESSING": "Processing..."
-  }
+    "PROCESSING": "Processing...",
+    "SELECT_CURRENCY": "Select currency"
+  },
+   "ACCOUNTS": {
+    "ACCOUNTS": "Accounts",
+    "ID_INFO": "Account IDs"
+   }
 }
