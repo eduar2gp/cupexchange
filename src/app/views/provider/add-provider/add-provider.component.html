@@ -1,50 +1,44 @@
-<h3>Add New Provider</h3>
-<form [formGroup]="phoneForm" (ngSubmit)="saveProvider()">
+<div class="form-container">
+  <div class="provider-card">
+    <h3>Add New Provider</h3>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Name</mat-label>
-    <input matInput
-           formControlName="name"
-           type="text" required
-           [(ngModel)]="newProvider.name">
-    @if (nameControl.hasError('required') && nameControl.touched) {
-    <mat-error>Name is required.</mat-error>
-    }
-  </mat-form-field>
+    <form [formGroup]="phoneForm" (ngSubmit)="saveProvider()" class="provider-form">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Full name">
+        @if (nameControl.touched && nameControl.invalid) {
+          <mat-error>Name is required.</mat-error>
+        }
+      </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Email</mat-label>
-    <input matInput
-           type="email"
-           email
-           required
-           formControlName="email" [(ngModel)]="newProvider.email">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="email@example.com">
+        @if (emailControl.touched) {
+          @if (emailControl.hasError('required')) { <mat-error>Email is required.</mat-error> }
+          @if (emailControl.hasError('pattern')) { <mat-error>Enter a valid email address.</mat-error> }
+        }
+      </mat-form-field>
 
-    @if (emailControl.touched && emailControl.errors?.['required']) {
-    <mat-error>Email is required.</mat-error>
-    }
-    @if (emailControl.touched && emailControl.errors?.['pattern']) {
-    <mat-error>Please enter a valid email address.</mat-error>
-    }
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber" placeholder="1234567890">
+        <mat-icon matSuffix style="color: var(--color-text-muted)">phone</mat-icon>
+        @if (phoneControl.touched) {
+          @if (phoneControl.hasError('required')) { <mat-error>Phone is required.</mat-error> }
+          @if (phoneControl.hasError('pattern')) { <mat-error>10-digit number required.</mat-error> }
+        }
+      </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Phone Number</mat-label>
-    <input matInput formControlName="phoneNumber" type="number" placeholder="e.g. (555) 555-1234" [(ngModel)]="newProvider.phone">
+      <div class="file-upload-section">
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+      </div>
 
-    @if (phoneControl.hasError('required')) {
-    <mat-error>Phone number is required</mat-error>
-    }
-    @if (phoneControl.hasError('pattern')) {
-    <mat-error>Please enter a valid 10-digit phone number</mat-error>
-    }
-  </mat-form-field>
+      <button mat-flat-button class="save-btn" type="submit" [disabled]="phoneForm.invalid">
+        SAVE PROVIDER
+      </button>
 
-  <div class="file-upload-container">
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+    </form>
   </div>
-
-  <button mat-raised-button color="primary" type="submit" [disabled]="phoneForm.invalid">
-    Save Changes
-  </button>
-</form>
+</div>

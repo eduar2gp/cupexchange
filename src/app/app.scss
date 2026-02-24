@@ -257,7 +257,7 @@ mat-sidenav {
   display: flex;
   justify-content: space-around;
   padding-bottom: env(safe-area-inset-bottom);
-  border-radius: 3rem;
+  border-radius: 1rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.5);

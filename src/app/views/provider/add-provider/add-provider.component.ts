@@ -12,7 +12,7 @@ import { FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, React
   selector: 'app-add-provider.component',
   imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule],
   templateUrl: './add-provider.component.html',
-  styleUrl: './add-provider.component.css'
+  styleUrl: './add-provider.component.scss'
 })
 export class AddProviderComponent implements OnInit {
 
@@ -58,31 +58,36 @@ export class AddProviderComponent implements OnInit {
   }
 
   saveProvider() {    
-    if (this.phoneForm.valid) {
-      this.newProvider.userId = localStorage.getItem("userId") ?? undefined;
-      this.providersService.createProvider(this.newProvider).subscribe({
-        next: (response) => {          
-          if (this.selectedFile) {
-            const formData = new FormData();
-            formData.append('file', this.selectedFile, this.selectedFile.name);
-            this.providersService.updateProviderImage(response.id!, formData).subscribe({
-              next: (updatedProduct: any) => {
-                console.log('Provider image saved successfully!', updatedProduct);
-                // Handle success (e.g., navigate, show notification)
-              },
-              error: (err: any) => {
-                console.error('Error saving product:', err);
-                // Handle error
-              }
-            });
-          }
-        },
-        error: (err) => {
-          console.error('Error saving product:', err);
+  if (this.phoneForm.valid) {
+    // 1. Sync form values to the model
+    const formValues = this.phoneForm.value;
+    
+    this.newProvider = {
+      ...this.newProvider,
+      name: formValues.name,
+      email: formValues.email,
+      phone: formValues.phoneNumber, // Note the mapping from 'phoneNumber' key
+      userId: localStorage.getItem("userId") ?? undefined
+    };
+
+    this.providersService.createProvider(this.newProvider).subscribe({
+      next: (response) => {          
+        if (this.selectedFile) {
+          const formData = new FormData();
+          formData.append('file', this.selectedFile, this.selectedFile.name);
+          this.providersService.updateProviderImage(response.id!, formData).subscribe({
+            next: (updatedProduct: any) => {
+              console.log('Provider image saved successfully!', updatedProduct);
+              this.phoneForm.reset(); // Clear form on success
+            },
+            error: (err: any) => console.error('Error saving image:', err)
+          });
         }
-      });
-    }
+      },
+      error: (err) => console.error('Error saving provider:', err)
+    });
   }
+}
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
