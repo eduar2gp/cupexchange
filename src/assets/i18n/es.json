@@ -102,6 +102,7 @@
     "SELECT_CURRENCY": "Seleccionar mondeda"
   },
    "ACCOUNTS": {
+    "ACCOUNT_MANAGER": "Administrador de cuentas",
     "ACCOUNTS": "Cuentas",
     "ID_INFO": "Identificadores de la cuenta"
    }

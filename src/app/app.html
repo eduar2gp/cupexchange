@@ -9,6 +9,10 @@
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
       </a>
+      <a *appHasRole="[Role.AccountManager]" mat-list-item routerLink="/account-manager-dashboard" routerLinkActive="active">
+        <mat-icon matListItemIcon>assured_workload</mat-icon>
+        <span matListItemTitle>{{ 'ACCOUNTS.ACCOUNT_MANAGER' | translate }}</span>
+      </a>
       <a *appHasRole="[Role.Provider]" mat-list-item routerLink="/provider-dashboard" routerLinkActive="active">
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'MY_STORE' | translate }}</span>

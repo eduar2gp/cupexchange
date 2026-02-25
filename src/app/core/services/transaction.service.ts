@@ -9,6 +9,8 @@ import { PaymentGateway } from '../../model/payment-gateway.model';
 import { Account } from '../../model/account.model';
 import { PaymentRequest } from '../../model/payment-request.model';
 import { PaymentResponse } from '../../model/payment-request.model';
+import { TransactionManagerResponse } from '../../model/transaction-manager.model';
+import { TransactionActionRequest } from '../../model/transaction-actio-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +70,28 @@ export class TransactionService {
   getAccountsByUserIdAndGatewayCode(gatewayCode: string): Observable<Account[]> {
     const url = build(ApiEndpoints.transaction.ACCOUNT_BY_USERID_AND_GATEWAY_ENDPOINT) + gatewayCode;
     return this.http.get<Account[]>(url);
+  }
+
+  /**
+   * Retrieves paginated transactions for a specific account manager/provider user.
+   * This includes the transaction details and the receipt payment URL.
+   */
+  getAccountManagerTransactions(
+    page: number = 0,
+    size: number = 20
+  ): Observable<Page<TransactionManagerResponse>> {
+    const url = `${build(ApiEndpoints.transaction.ACCOUNT_MANAGER_TRANSACTIONS)}`;
+    
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<Page<TransactionManagerResponse>>(url, { params });
+  }
+
+  processTransactionAction(payload: TransactionActionRequest): Observable<string> {
+    const url = build(ApiEndpoints.transaction.ADMIN_PROCESS);
+    return this.http.post(url, payload, { responseType: 'text' as 'json' }) as Observable<string>;
   }
 
 }

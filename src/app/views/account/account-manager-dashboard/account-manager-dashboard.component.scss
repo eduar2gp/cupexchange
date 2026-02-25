@@ -1,0 +1,147 @@
+.dashboard-wrapper {
+  margin: 24px;
+  position: relative;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-surface-elevated);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  .header-container {
+    padding: 20px 24px;
+    background-color: var(--color-surface-elevated);
+    border-bottom: 1px solid var(--color-surface-elevated);
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .table-container {
+    position: relative;
+    max-height: calc(100vh - 300px);
+    overflow: auto;
+    background-color: var(--color-surface);
+  }
+
+  .loading-shade {
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: rgba(var(--color-surface), 0.7);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Angular Material Table Customization
+  table {
+    width: 100%;
+    background-color: transparent;
+
+    th.mat-mdc-header-cell {
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 16px;
+    }
+
+    td.mat-mdc-cell {
+      color: var(--color-text);
+      padding: 16px;
+      border-bottom: 1px solid var(--color-surface-elevated);
+    }
+
+    // Interactive Row Logic
+    .interactive-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+
+      &:hover {
+        background-color: var(--color-surface-elevated) !important;
+      }
+
+      &:active {
+        background-color: rgba(11, 74, 166, 0.08); // Slight primary tint on click
+      }
+    }
+  }
+
+  // Chips Styling (Using your defined success/danger colors)
+  .chip-withdrawal {
+    background-color: rgba(207, 34, 46, 0.12) !important;
+    color: var(--color-danger) !important;
+    border: 1px solid rgba(207, 34, 46, 0.2);
+    font-weight: 600;
+  }
+
+  .chip-deposit {
+    background-color: rgba(31, 136, 61, 0.12) !important;
+    color: var(--color-success) !important;
+    border: 1px solid rgba(31, 136, 61, 0.2);
+    font-weight: 600;
+  }
+
+  // Status Labels
+  .status-label {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--color-surface-elevated);
+    color: var(--color-text-secondary);
+    
+    &[data-status="PENDING"] {
+      color: var(--color-warning);
+      background-color: rgba(154, 103, 0, 0.1);
+    }
+    
+    &[data-status="COMPLETED"] {
+      color: var(--color-success);
+    }
+  }
+
+  .font-bold {
+    font-weight: 600;
+  }
+
+  .empty-cell {
+    padding: 40px !important;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  // Paginator Integration
+  mat-paginator {
+    background-color: var(--color-surface-elevated);
+    border-top: 1px solid var(--color-surface-elevated);
+    color: var(--color-text-secondary);
+  }
+}
+
+// Global Dialog Styling Overrides (Add to styles.scss if needed)
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--color-surface);
+  
+  .mdc-dialog__title {
+    color: var(--color-text);
+  }
+  
+  .mdc-dialog__content {
+    color: var(--color-text-secondary);
+  }
+}

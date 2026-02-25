@@ -25,6 +25,8 @@ export const ApiEndpoints = {
     ACCOUNT_BY_USERID_AND_GATEWAY_ENDPOINT: '/api/v1/accounts/user?gatewayCode=',
     ADD_PAYMENT: '/api/v1/payment/add',
     UPDATE_RECEIPT: '/api/v1/payment/{id}/receipt',
+    ACCOUNT_MANAGER_TRANSACTIONS: '/api/v1/transaction/account-manager',
+    ADMIN_PROCESS: '/api/v1/transaction/admin/process'
   },
   account: {
     ADD_ACCOUNT: '/api/v1/accounts'

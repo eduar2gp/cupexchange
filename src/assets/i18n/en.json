@@ -102,6 +102,7 @@
     "SELECT_CURRENCY": "Select currency"
   },
    "ACCOUNTS": {
+    "ACCOUNT_MANAGER": "Accounts Dashboard",
     "ACCOUNTS": "Accounts",
     "ID_INFO": "Account IDs"
    }
