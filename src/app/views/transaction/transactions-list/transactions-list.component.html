@@ -1,81 +1,44 @@
 <div class="transactions-page">
-
-  <!-- Loading -->
-  @if (loading()) {
-  <div class="state-container">
-    <mat-progress-spinner mode="indeterminate"
-                          diameter="48">
-    </mat-progress-spinner>
-
-    <p class="state-text">Loading transactions...</p>
-  </div>
-  }
-
-  <!-- Error -->
-  @if (error()) {
-  <div class="state-container error">
-    <mat-icon class="state-icon">error_outline</mat-icon>
-    <p class="state-text">{{ error() }}</p>
-
-    <button mat-raised-button
-            color="primary"
-            class="retry-button"
-            (click)="refresh()">
-      <mat-icon>refresh</mat-icon>
-      Retry
-    </button>
-  </div>
-  }
-
-  <!-- Empty -->
-  @if (!loading() && !error() && transactions().length === 0) {
-  <div class="state-container empty">
-    <mat-icon class="state-icon">receipt_long</mat-icon>
-    <p class="state-title">No transactions found</p>
-    <p class="state-subtitle">Your transactions will appear here</p>
-  </div>
-  }
-
-  <!-- List -->
   @if (!loading() && !error() && transactions().length > 0) {
-  <div class="transactions-card">
+    <div class="transactions-card">
+      <h3 class="transactions-title">Transactions</h3>
 
-    <h3 class="transactions-title">Transacciones</h3>
-
-    <div class="transactions-list">
-      @for (tx of transactions(); track tx) {
-      <div class="transaction-item"
-           [class.positive]="tx.amount >= 0"
-           [class.negative]="tx.amount < 0">
-
-        <div class="transaction-main">
-          <!-- Left -->
-          <div class="transaction-left">
-            <div class="type-icon">
-              <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
-            </div>
-
-            <div class="transaction-info">
-              <div class="type">
-                {{ tx.type.replace('_', ' ') | titlecase }}
+      <div class="transactions-list">
+        @for (tx of transactions(); track tx.id) {
+          <div class="transaction-item">
+            <div class="transaction-main">
+              <div class="transaction-left">
+                <div class="type-icon" [ngClass]="tx.type.toLowerCase()">
+                  <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
+                </div>
+                <div class="transaction-info">
+                  <div class="type-header">
+                    <span class="type-name">{{ tx.type.replace('_', ' ') | titlecase }}</span>
+                    @if (tx.type === 'DEPOSIT' || tx.type === 'WITHDRAWAL') {
+                      <span class="status-tag" [ngClass]="getStatusClass(tx.status)">
+                        {{ tx.status || 'PENDING' }}
+                      </span>
+                    }
+                  </div>
+                  <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
+                </div>
               </div>
-              <div class="date">
-                {{ tx.createdAt | date:'MMM d, y • h:mm a' }}
+              <div class="amount" [class.positive]="tx.amount >= 0" [class.negative]="tx.amount < 0">
+                {{ tx.amount >= 0 ? '+' : '' }}{{ tx.amount | number:'1.2-8' }} {{ tx.currency }}
               </div>
             </div>
           </div>
-
-          <!-- Right -->
-          <div class="amount">
-            {{ (tx.amount >= 0 ? '+' : '') + (tx.amount | number:'1.2-8') }}
-            {{ tx.currency }}
-          </div>
-        </div>
-
+        }
       </div>
-      }
-    </div>
-  </div>
-  }
 
+      <mat-paginator 
+        [length]="totalElements()"
+        [pageSize]="pageSize()"
+        [pageIndex]="currentPage()"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="handlePageEvent($event)"
+        aria-label="Select page of transactions">
+      </mat-paginator>
+    </div>
+  }
 </div>

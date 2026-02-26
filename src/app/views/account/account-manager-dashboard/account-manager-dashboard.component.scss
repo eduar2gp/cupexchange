@@ -1,147 +1,137 @@
+:host {
+  display: block;
+}
+
 .dashboard-wrapper {
-  margin: 24px;
+  margin: 4px; // Minimal margin to maximize screen real estate on phone
   position: relative;
   background-color: var(--color-surface);
   color: var(--color-text);
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--color-surface-elevated);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
+  @media (min-width: 768px) {
+    margin: 12px;
+  }
+
   .header-container {
-    padding: 20px 24px;
+    padding: 12px 16px;
     background-color: var(--color-surface-elevated);
     border-bottom: 1px solid var(--color-surface-elevated);
 
     h1 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      color: var(--color-text);
     }
 
     .subtitle {
-      margin: 4px 0 0;
-      font-size: 0.875rem;
+      margin: 2px 0 0;
+      font-size: 0.7rem;
       color: var(--color-text-secondary);
     }
   }
 
   .table-container {
     position: relative;
-    max-height: calc(100vh - 300px);
-    overflow: auto;
+    max-height: calc(100vh - 250px);
+    overflow-x: hidden; // Prevents the "wobble" and forces columns to fit
+    overflow-y: auto;
     background-color: var(--color-surface);
   }
 
-  .loading-shade {
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: rgba(var(--color-surface), 0.7);
-    backdrop-filter: blur(2px);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  // Angular Material Table Customization
   table {
     width: 100%;
+    table-layout: fixed; // Essential for "squeezing" columns into mobile view
     background-color: transparent;
+    border-collapse: collapse;
 
-    th.mat-mdc-header-cell {
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
+    th.mat-mdc-header-cell, td.mat-mdc-cell {
+      padding: 8px 4px; // Aggressively small padding for phone
       font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      padding: 16px;
-    }
-
-    td.mat-mdc-cell {
-      color: var(--color-text);
-      padding: 16px;
       border-bottom: 1px solid var(--color-surface-elevated);
+      
+      &:first-child { padding-left: 8px; }
+      &:last-child { padding-right: 8px; }
+
+      @media (min-width: 768px) {
+        padding: 16px;
+        font-size: 0.875rem;
+      }
     }
 
-    // Interactive Row Logic
+    // Column Width Hard-coding for Mobile (forces critical info to stay visible)
+    .mat-column-type { width: 75px; } 
+    .mat-column-amount { width: 80px; text-align: right; }
+    .mat-column-status { width: 70px; }
+    .mat-column-actions { width: 45px; text-align: center; }
+    
+    // Reference ID column will take up all remaining space and truncate if needed
+    .mat-column-referenceId {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .interactive-row {
       cursor: pointer;
-      transition: background-color 0.15s ease-in-out;
-
-      &:hover {
-        background-color: var(--color-surface-elevated) !important;
-      }
-
-      &:active {
-        background-color: rgba(11, 74, 166, 0.08); // Slight primary tint on click
-      }
+      &:hover { background-color: var(--color-surface-elevated) !important; }
     }
   }
 
-  // Chips Styling (Using your defined success/danger colors)
+  // Hide Timestamp on phones to prevent horizontal overflow
+  .hidden-xs {
+    @media (max-width: 600px) {
+      display: none !important;
+    }
+  }
+
+  // Chips & Labels: Sized down for mobile
+  mat-chip {
+    --mdc-chip-label-text-size: 0.65rem;
+    min-height: 24px !important;
+    padding: 0 6px !important;
+  }
+
   .chip-withdrawal {
-    background-color: rgba(207, 34, 46, 0.12) !important;
-    color: var(--color-danger) !important;
-    border: 1px solid rgba(207, 34, 46, 0.2);
-    font-weight: 600;
+    --mdc-chip-elevated-container-color: rgba(207, 34, 46, 0.1);
+    color: var(--color-danger);
+    border: 1px solid rgba(207, 34, 46, 0.1);
   }
 
   .chip-deposit {
-    background-color: rgba(31, 136, 61, 0.12) !important;
-    color: var(--color-success) !important;
-    border: 1px solid rgba(31, 136, 61, 0.2);
-    font-weight: 600;
+    --mdc-chip-elevated-container-color: rgba(31, 136, 61, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(31, 136, 61, 0.1);
   }
 
-  // Status Labels
   .status-label {
-    font-size: 0.8rem;
-    padding: 4px 8px;
+    font-size: 0.65rem;
+    padding: 2px 4px;
     border-radius: 4px;
     background: var(--color-surface-elevated);
-    color: var(--color-text-secondary);
     
-    &[data-status="PENDING"] {
-      color: var(--color-warning);
-      background-color: rgba(154, 103, 0, 0.1);
-    }
-    
-    &[data-status="COMPLETED"] {
-      color: var(--color-success);
-    }
+    &[data-status="PENDING"] { color: var(--color-warning); }
+    &[data-status="COMPLETED"] { color: var(--color-success); }
   }
 
-  .font-bold {
-    font-weight: 600;
-  }
-
-  .empty-cell {
-    padding: 40px !important;
-    text-align: center;
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-
-  // Paginator Integration
+  // Restored Paginator: Kept full visibility for max item control
   mat-paginator {
     background-color: var(--color-surface-elevated);
     border-top: 1px solid var(--color-surface-elevated);
-    color: var(--color-text-secondary);
-  }
-}
-
-// Global Dialog Styling Overrides (Add to styles.scss if needed)
-.mat-mdc-dialog-container {
-  --mdc-dialog-container-color: var(--color-surface);
-  
-  .mdc-dialog__title {
-    color: var(--color-text);
-  }
-  
-  .mdc-dialog__content {
-    color: var(--color-text-secondary);
+    
+    @media (max-width: 600px) {
+      ::ng-deep .mat-mdc-paginator-container {
+        flex-wrap: wrap; // Allows labels to stack if the screen is exceptionally narrow
+        justify-content: center;
+        padding: 4px 0;
+      }
+      
+      ::ng-deep .mat-mdc-paginator-page-size {
+        margin-right: 8px;
+      }
+    }
   }
 }

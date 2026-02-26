@@ -1,184 +1,145 @@
-/* =========================================================
-   Page wrapper
-   ========================================================= */
 .transactions-page {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-/*  padding: 1rem;*/
+  padding: 16px;
+  background-color: var(--color-background);
+  min-height: 100%;
 }
 
-/* =========================================================
-   Shared state containers
-   ========================================================= */
-.state-container {
-/*  min-height: 280px;*/
-  width: 100%;
-/*  max-width: 720px;*/
-/*  padding: 2.5rem 2rem;*/
-/*  border-radius: 1.25rem;*/
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-/*  gap: 0.75rem;*/
-  text-align: center;
-  color: var(--color-text-secondary);
-}
-
-.state-text {
-  font-size: 0.95rem;
-}
-
-.state-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.state-subtitle {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-/* Error state */
-.state-container.error {
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-}
-
-  .state-container.error .state-icon {
-    color: var(--color-danger);
-  }
-
-/* Empty state */
-.state-container.empty .state-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: var(--color-text-muted);
-}
-
-/* Spinner */
-mat-progress-spinner {
-  --mdc-circular-progress-active-indicator-color: var(--color-primary);
-}
-
-/* Retry button */
-.retry-button {
-  margin-top: 1rem;
-}
-
-/* =========================================================
-   Transactions card
-   ========================================================= */
 .transactions-card {
-  width: 100%;
-/*  max-width: 900px;*/
-/*  padding: 2rem;*/
-/*  border-radius: 1.5rem;*/
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
 }
 
-/* Header */
 .transactions-title {
-/*  margin-bottom: 1.5rem;*/
-/*  font-size: 1.5rem;*/
-/*  font-weight: 700;*/
+  padding: 20px 16px 8px;
+  margin: 0;
   color: var(--color-text);
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-/* =========================================================
-   List
-   ========================================================= */
-.transactions-list {
-  display: flex;
-  flex-direction: column;
-/*  gap: 0.75rem;*/
-}
-
-/* =========================================================
-   Transaction item
-   ========================================================= */
 .transaction-item {
-/*  padding: 1rem 1.25rem;*/
-  border-radius: 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  transition: background 120ms ease, transform 120ms ease;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-surface-elevated);
+  transition: background-color 0.2s;
 }
 
-  .transaction-item:hover {
-    background: var(--color-surface-elevated);
-  }
+.transaction-item:hover {
+  background-color: var(--color-surface-elevated);
+}
 
-  /* Positive / Negative accent */
-  .transaction-item.positive {
-    border-left: 4px solid var(--color-success);
-  }
-
-  .transaction-item.negative {
-    border-left: 4px solid var(--color-danger);
-  }
-
-/* =========================================================
-   Transaction layout
-   ========================================================= */
 .transaction-main {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-/*  gap: 1rem;*/
+  align-items: center;
 }
 
-/* Left side */
 .transaction-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .type-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  background: var(--color-surface-elevated);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary);
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
 }
+
+.type-icon.deposit { color: var(--color-success); }
+.type-icon.withdrawal { color: var(--color-danger); }
 
 .transaction-info {
   display: flex;
   flex-direction: column;
 }
 
-.type {
-  font-size: 0.9rem;
-  font-weight: 600;
+.type-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.type-name {
   color: var(--color-text);
+  font-weight: 500;
 }
 
 .date {
-  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+/* Status Tags */
+.status-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-completed { background: rgba(31, 136, 61, 0.1); color: var(--color-success); }
+.status-pending { background: rgba(154, 103, 0, 0.1); color: var(--color-warning); }
+.status-cancelled { background: rgba(207, 34, 46, 0.1); color: var(--color-danger); }
+
+.amount {
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.amount.positive { color: var(--color-success); }
+.amount.negative { color: var(--color-danger); }
+
+/* State Containers */
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.state-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
   color: var(--color-text-muted);
 }
 
-/* Right side (amount) */
-.amount {
-  font-size: 0.95rem;
-  font-weight: 600;
-  white-space: nowrap;
+/* Pagination Custom Styling */
+mat-paginator {
+  background-color: transparent !important; /* Inherit from .transactions-card */
+  border-top: 1px solid var(--color-surface-elevated);
+  color: var(--color-text-secondary) !important;
 }
 
-.transaction-item.positive .amount {
-  color: var(--color-success);
+/* Style the text inside the paginator */
+::ng-deep .mat-mdc-paginator-range-label,
+::ng-deep .mat-mdc-paginator-page-size-label {
+  color: var(--color-text-muted) !important;
 }
 
-.transaction-item.negative .amount {
-  color: var(--color-danger);
+/* Style the navigation buttons */
+::ng-deep .mat-mdc-icon-button[disabled] {
+  opacity: 0.4;
+  color: var(--color-text-muted) !important;
+}
+
+::ng-deep .mat-mdc-button-touch-target {
+  color: var(--color-text) !important;
+}
+
+/* Ensure the card has a clean bottom */
+.transactions-card {
+  margin-bottom: 24px;
 }
