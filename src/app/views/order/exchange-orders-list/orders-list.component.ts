@@ -1,22 +1,24 @@
-import { OrdersService } from '../../../core/services/orders.service'
-import { Component, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, computed, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformServer } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { OrderPlaced } from '../../../model/order_placed.model'; // your refined interface
-import { OnInit, Inject } from '@angular/core';
-import { PLATFORM_ID } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
-import { WritableSignal } from '@angular/core';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component'
-import { throwError } from 'rxjs';
-import { DataService } from '../../../../app/core/services/data.service'
-import { filter, take, switchMap } from 'rxjs/operators';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { Observable, throwError } from 'rxjs';
+import { filter, take, switchMap } from 'rxjs/operators';
+
+import { OrdersService } from '../../../core/services/orders.service';
+import { Page } from '../../../model/page.model';
+import { OrderPlaced } from '../../../model/order_placed.model';
+import { DataService } from '../../../../app/core/services/data.service';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component';
 
 @Component({
   selector: 'app-orders-list',
@@ -27,78 +29,88 @@ import { FormsModule } from '@angular/forms';
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonToggleModule,
+    MatButtonModule,
+    MatPaginatorModule,
+    MatTooltipModule,
     FormsModule
   ],
   templateUrl: './orders-list.component.html',
   styleUrls: ['./orders-list.component.css']
 })
-export class OrdersListComponent {
-
+export class OrdersListComponent implements OnInit {
   private ordersService = inject(OrdersService);
+  private dialog = inject(MatDialog);
+  private dataService = inject(DataService);
 
-  constructor(    
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private dialog: MatDialog,
-    private dataService: DataService
-  ) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
+  // --- State Signals ---
   filterStatus = signal<'ALL' | 'PENDING' | 'COMPLETED'>('ALL');
-
-  // Reactive state using signals
-  orders: WritableSignal<OrderPlaced[]> = signal<OrderPlaced[]>([] as OrderPlaced[]);
+  orders = signal<OrderPlaced[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
 
-  // Updated Derived state: Filter then Sort
+  // --- Pagination Signals ---
+  totalElements = signal(0);
+  pageSize = signal(10);
+  currentPage = signal(0);
+
+  // Derived state: Shows orders returned by backend
+  // Note: Backend handles sorting by date now
   displayedOrders = computed(() => {
-    let filtered = this.orders();
     const currentFilter = this.filterStatus();
+    const allOrders = this.orders();
 
-    if (currentFilter === 'PENDING') {
-      filtered = filtered.filter(o => o.status === 'ACTIVE' || o.status === 'PARTLY_FILLED');
-    } else if (currentFilter === 'COMPLETED') {
-      filtered = filtered.filter(o => o.status !== 'ACTIVE' && o.status !== 'PARTLY_FILLED');
-    }
+    if (currentFilter === 'ALL') return allOrders;
 
-    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return allOrders.filter(o => {
+      const isPending = o.status === 'ACTIVE' || o.status === 'PARTLY_FILLED';
+      return currentFilter === 'PENDING' ? isPending : !isPending;
+    });
   });
 
- 
   ngOnInit(): void {
-    if (isPlatformServer(this.platformId)) {
-      // During prerender/SSR: skip call, use empty/placeholder data
-      this.orders.set([]); // or [{ placeholder: true }]
-      return;
-    }
-
-    // Browser only: safe to call (user may be authenticated)
+    if (isPlatformServer(this.platformId)) return;
     this.loadOrders();
   }
 
-  private loadOrders(): void {
+  loadOrders(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.ordersService.getOrdersFromExchangeBackend().subscribe({
-      next: (orders) => {
-        this.orders.set(orders);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load orders', err);
-        this.error.set('Failed to load orders. Please try again later.');
-        this.loading.set(false);
-      }
-    });
+    this.ordersService.getOrdersFromExchangeBackend(this.currentPage(), this.pageSize())
+      .subscribe({
+        next: (page: Page<OrderPlaced>) => {
+          this.orders.set(page.content);
+          this.totalElements.set(page.totalElements);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to load orders', err);
+          this.error.set('Failed to load orders. Please try again later.');
+          this.loading.set(false);
+        }
+      });
   }
 
-  // Optional: refresh method (e.g., pull-to-refresh or button)
+  handlePageEvent(e: PageEvent) {
+    this.pageSize.set(e.pageSize);
+    this.currentPage.set(e.pageIndex);
+    this.loadOrders();
+  }
+
+  onFilterChange(newFilter: 'ALL' | 'PENDING' | 'COMPLETED') {
+    this.filterStatus.set(newFilter);
+    // When filtering, usually you want to jump back to the first page
+    this.currentPage.set(0);
+    this.loadOrders();
+  }
+
   refresh(): void {
     this.loadOrders();
   }
 
-  
-  openConfirmDialog(order: any): void {
+  openConfirmDialog(order: OrderPlaced): void {
     const dialogData: ConfirmDialogData = {
       title: 'Confirmar',
       message: 'Esta acción es irreversible!'
@@ -108,69 +120,37 @@ export class OrdersListComponent {
       data: dialogData,
     });
     dialogRef.afterClosed().subscribe((result: boolean) => {     
-      if (result) {        
-        this.cancelOrder(order);
-      } 
+      if (result) this.cancelOrder(order);
     });
   }
 
-
   cancelOrder(order: OrderPlaced): void {
     this.dataService.currentUser
-  .pipe(
-    // 1. Ensure a user object is emitted (not null)
-    filter(user => user !== null),
-    // 2. Take only the first emitted user value
-    take(1),
-    // 3. Switch to the Observable returned by the service call
-    switchMap(user => {
-      // Check if user is valid and has the required data (e.g., userName)
-      if (user && user.username && order && order.id) {
-        
-        // Pass the Order object (which holds the ID) and the userName
-        // The service method will use this data to construct the URL.
-        return this.ordersService.cancelOrder(order, user.username);
-      
-      }
-      
-      // If user or order data is missing, return an observable of an error
-      // or simply 'EMPTY' if you want to silently skip the operation.
-      // For cancellation, an error is more appropriate. We use throwError from RxJS.
-      // NOTE: You must import 'throwError' and 'EMPTY' from 'rxjs'.
-      return throwError(() => new Error('Cannot cancel order: Missing user or order details.'));
-    })
-  )
-  .subscribe({
-    next: (response) => {
-      // Since cancelOrder returns Observable<string>, 'response' will be the string.
-      console.log('Order cancelled successfully:', response);
-      this.loadOrders();
-      this.dataService.triggerWalletUpdate();
-      // Determine success message (simplified since the service returns a string)
-      let successMessage = response || 'Order cancelada exitosamente!';
-
-      // Open success dialog
-      this.dialog.open(DialogMessageComponent, {
-        width: '400px',
-        data: {
-          title: 'Success',
-          message: successMessage
+      .pipe(
+        filter(user => user !== null),
+        take(1),
+        switchMap(user => {
+          if (user?.username && order?.id) {
+            return this.ordersService.cancelOrder(order, user.username);
+          }
+          return throwError(() => new Error('Missing user or order details.'));
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          this.loadOrders();
+          this.dataService.triggerWalletUpdate();
+          this.dialog.open(DialogMessageComponent, {
+            width: '400px',
+            data: { title: 'Success', message: response || 'Order cancelada!' }
+          });
+        },
+        error: (err) => {
+          this.dialog.open(DialogMessageComponent, {
+            width: '400px',
+            data: { title: 'Error', message: err.message }
+          });
         }
       });
-      // OPTIONAL: Close the current dialog/modal if this logic is within one.
-      // this.dialogRef.close(true); 
-    },
-    error: (err) => {
-      // Handle errors from the HTTP call OR the throwError from switchMap
-      console.error('Order cancellation failed:', err);
-      this.dialog.open(DialogMessageComponent, {
-        width: '400px',
-        data: {
-          title: 'Cancellation Failed',
-          message: err.message || 'An unexpected error occurred during cancellation.'
-        }
-      });
-    }
-  });
   }
 }

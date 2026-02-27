@@ -1,8 +1,8 @@
-<div>
+<div class="orders-container">
   <div class="orders-header-row">
     <h2>Your Orders</h2>
     <mat-button-toggle-group [ngModel]="filterStatus()"
-                             (ngModelChange)="filterStatus.set($event)"
+                             (ngModelChange)="onFilterChange($event)"
                              appearance="standard">
       <mat-button-toggle value="ALL">All</mat-button-toggle>
       <mat-button-toggle value="PENDING">Pending</mat-button-toggle>
@@ -10,79 +10,70 @@
     </mat-button-toggle-group>
   </div>
 
-  <!-- Loading state -->
   @if (loading()) {
-  <div class="container">
-    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
-    <p>Loading your orders...</p>
-  </div>
+    <div class="centered-state">
+      <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+      <p>Loading your orders...</p>
+    </div>
   }
 
-  <!-- Error state -->
   @if (error()) {
-  <div class="container error">
-    <p>{{ error() }}</p>
-    <button mat-raised-button color="primary" (click)="refresh()">Retry</button>
-  </div>
+    <div class="centered-state error">
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="refresh()">Retry</button>
+    </div>
   }
 
-  <!-- Empty state -->
   @if (!loading() && !error() && displayedOrders().length === 0) {
-  <div class="container empty">
-    <mat-icon>inventory_2</mat-icon>
-    <p>No orders found.</p>
-  </div>
+    <div class="centered-state empty">
+      <mat-icon>inventory_2</mat-icon>
+      <p>No orders found.</p>
+    </div>
   }
 
-  <!-- Orders list -->
   @if (!loading() && !error() && displayedOrders().length > 0) {
-  <mat-list class="orders-list">
-    @for (order of displayedOrders(); track order) {
-    <mat-list-item class="order-item">
-      <!-- Header Row -->
-      <div class="order-header" matLine>
-        <!-- Left: Base Currency -->
-        <strong class="base-currency">{{ order.pair.baseCurrency }}</strong>
+    <mat-list class="orders-list">
+      @for (order of displayedOrders(); track order.id) {
+        <mat-list-item class="order-item">
+          <div class="order-header" matLine>
+            <strong class="base-currency">{{ order.pair.baseCurrency }}</strong>
+            <span class="side-wrapper">
+              <span class="side" [class.buy]="order.side === 'BUY'" [class.sell]="order.side === 'SELL'">
+                {{ order.side }}
+              </span>
+            </span>
+            <div class="status-actions">
+              <span class="status">{{ order.status }}</span>
+              @if (order.status === 'ACTIVE' || order.status === 'PARTLY_FILLED') {
+                <button mat-icon-button color="warn" (click)="openConfirmDialog(order)" matTooltip="Cancel Order">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
 
-        <!-- Center: BUY/SELL Badge -->
-        <span class="side-wrapper">
-          <span class="side" [class.buy]="order.side === 'BUY'" [class.sell]="order.side === 'SELL'">
-            {{ order.side }}
-          </span>
-        </span>
+          <div matLine class="order-details">
+            <span>Price: {{ order.price | number:'1.2-4' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
+            <span> | Vol: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
+          </div>
 
-        <!-- Right: Status + Cancel Button -->
-        <div class="status-actions">
-          <span class="status">{{ order.status }}</span>
+          <div matLine class="order-date">
+            <span>{{ order.createdAt | date:'medium' }}</span>
+            @if (order.status === 'FILLED') {
+              <mat-icon class="filled-icon">check_circle</mat-icon>
+            }
+          </div>
+        </mat-list-item>
+      }
+    </mat-list>
 
-          <!-- Cancel button: shown only for ACTIVE or PARTLY_FILLED -->
-          @if (order.status === 'ACTIVE' || order.status === 'PARTLY_FILLED') {
-          <button mat-icon-button
-                  color="warn"
-                  (click)="openConfirmDialog(order)"
-                  matTooltip="Cancel Order"
-                  class="cancel-button">
-            <mat-icon>close</mat-icon>
-          </button>
-          }
-        </div>
-      </div>
-
-      <!-- Details Row -->
-      <div matLine class="order-details">
-        <span>Price: {{ order.price | number:'1.2-4' }} {{ order.reservedCurrency || order.pair.quoteCurrency }}</span>
-        <span>| Volume: {{ order.volumeFilled }} / {{ order.volumeTotal }}</span>
-      </div>
-
-      <!-- Date Row -->
-      <div matLine class="order-date">
-        <span>{{ order.createdAt | date:'medium' }}</span>
-        @if (order.fullyFilled) {
-        <mat-icon class="filled-icon">check_circle</mat-icon>
-        }
-      </div>
-    </mat-list-item>
-    }
-  </mat-list>
+    <mat-paginator 
+      [length]="totalElements()"
+      [pageSize]="pageSize()"
+      [pageIndex]="currentPage()"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="handlePageEvent($event)"
+      aria-label="Select page of orders">
+    </mat-paginator>
   }
 </div>

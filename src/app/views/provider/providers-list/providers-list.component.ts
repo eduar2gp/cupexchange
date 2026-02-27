@@ -10,13 +10,15 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment'
 import { HasRoleDirective } from '../../../core/directives/has-roles.directive'
 import { Role } from '../../../model/roles.enum';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'app-providers-list',
   standalone: true,
   imports: [MatListModule, MatIconModule, MatDividerModule, HasRoleDirective],
   templateUrl: './providers-list.component.html',
-  styleUrl: './providers-list.component.css',
+  styleUrl: './providers-list.component.scss',
 })
 export class ProvidersListComponent implements OnInit {
 

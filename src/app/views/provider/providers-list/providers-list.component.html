@@ -1,12 +1,22 @@
-<button *appHasRole="[Role.Admin,Role.Provider]" type="button" (click)="addProvider()">Add Provider</button>
-<ul class="product-list">
-  @for (provider of providers(); track provider.id) {
-  <li class="product-item" (click)="onClick(provider)">
-    <img [src]="provider.profileImageUrl" alt="Product Image A" class="product-image">
-    <div class="product-details">
-      <h3 class="product-name">{{provider.name}}</h3>
-      <p class="product-description"> {{provider.email}} </p>
-    </div>
-  </li>
-  }
-</ul>
+<div class="list-container">
+  <div class="header-actions" *appHasRole="[Role.Admin, Role.Provider]">
+    <button mat-flat-button color="primary" (click)="addProvider()">
+      <mat-icon>add</mat-icon>
+      Add Provider
+    </button>
+  </div>
+
+  <mat-nav-list class="provider-list">
+    @for (provider of providers(); track provider.id) {
+      <mat-list-item (click)="onClick(provider)" class="provider-item">
+        <img matListItemAvatar [src]="provider.profileImageUrl" [alt]="provider.name">
+        
+        <span matListItemTitle class="provider-name">{{provider.name}}</span>
+        <span matListItemLine class="provider-email">{{provider.email}}</span>
+        
+        <!-- <mat-icon matListItemMeta class="chevron">chevron_right</mat-icon> -->
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    }
+  </mat-nav-list>
+</div>

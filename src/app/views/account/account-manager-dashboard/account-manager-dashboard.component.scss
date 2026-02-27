@@ -3,7 +3,7 @@
 }
 
 .dashboard-wrapper {
-  margin: 4px; // Minimal margin to maximize screen real estate on phone
+  margin: 4px; 
   position: relative;
   background-color: var(--color-surface);
   color: var(--color-text);
@@ -13,7 +13,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
   @media (min-width: 768px) {
-    margin: 12px;
+    margin: 24px; // Increased margin for better desktop look
   }
 
   .header-container {
@@ -21,35 +21,46 @@
     background-color: var(--color-surface-elevated);
     border-bottom: 1px solid var(--color-surface-elevated);
 
+    @media (min-width: 768px) {
+      padding: 20px 24px;
+    }
+
     h1 {
       margin: 0;
       font-size: 1.1rem;
       font-weight: 700;
+      @media (min-width: 768px) { font-size: 1.5rem; }
     }
 
     .subtitle {
       margin: 2px 0 0;
       font-size: 0.7rem;
       color: var(--color-text-secondary);
+      @media (min-width: 768px) { font-size: 0.875rem; }
     }
   }
 
   .table-container {
     position: relative;
     max-height: calc(100vh - 250px);
-    overflow-x: hidden; // Prevents the "wobble" and forces columns to fit
+    overflow-x: auto; // Change to auto for desktop flexibility
     overflow-y: auto;
     background-color: var(--color-surface);
   }
 
   table {
     width: 100%;
-    table-layout: fixed; // Essential for "squeezing" columns into mobile view
+    // Change: Fixed on mobile, auto/unset on desktop for full width
+    table-layout: fixed; 
     background-color: transparent;
     border-collapse: collapse;
 
+    @media (min-width: 768px) {
+      table-layout: auto; 
+    }
+
     th.mat-mdc-header-cell, td.mat-mdc-cell {
-      padding: 8px 4px; // Aggressively small padding for phone
+      padding: 8px 4px;
       font-size: 0.75rem;
       border-bottom: 1px solid var(--color-surface-elevated);
       
@@ -62,37 +73,42 @@
       }
     }
 
-    // Column Width Hard-coding for Mobile (forces critical info to stay visible)
-    .mat-column-type { width: 75px; } 
-    .mat-column-amount { width: 80px; text-align: right; }
-    .mat-column-status { width: 70px; }
-    .mat-column-actions { width: 45px; text-align: center; }
-    
-    // Reference ID column will take up all remaining space and truncate if needed
-    .mat-column-referenceId {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    // Only apply fixed widths on mobile (< 768px)
+    @media (max-width: 767px) {
+      .mat-column-type { width: 75px; } 
+      .mat-column-amount { width: 80px; text-align: right; }
+      .mat-column-status { width: 70px; }
+      .mat-column-actions { width: 45px; }
+      
+      .mat-column-referenceId {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     .interactive-row {
       cursor: pointer;
+      transition: background 0.2s;
       &:hover { background-color: var(--color-surface-elevated) !important; }
     }
   }
 
-  // Hide Timestamp on phones to prevent horizontal overflow
   .hidden-xs {
     @media (max-width: 600px) {
       display: none !important;
     }
   }
 
-  // Chips & Labels: Sized down for mobile
+  // Chips & Labels
   mat-chip {
     --mdc-chip-label-text-size: 0.65rem;
     min-height: 24px !important;
     padding: 0 6px !important;
+    @media (min-width: 768px) {
+      --mdc-chip-label-text-size: 0.75rem;
+      min-height: 32px !important;
+    }
   }
 
   .chip-withdrawal {
@@ -112,25 +128,21 @@
     padding: 2px 4px;
     border-radius: 4px;
     background: var(--color-surface-elevated);
+    @media (min-width: 768px) { font-size: 0.8rem; padding: 4px 8px; }
     
     &[data-status="PENDING"] { color: var(--color-warning); }
     &[data-status="COMPLETED"] { color: var(--color-success); }
   }
 
-  // Restored Paginator: Kept full visibility for max item control
   mat-paginator {
     background-color: var(--color-surface-elevated);
     border-top: 1px solid var(--color-surface-elevated);
     
     @media (max-width: 600px) {
       ::ng-deep .mat-mdc-paginator-container {
-        flex-wrap: wrap; // Allows labels to stack if the screen is exceptionally narrow
+        flex-wrap: wrap; 
         justify-content: center;
         padding: 4px 0;
-      }
-      
-      ::ng-deep .mat-mdc-paginator-page-size {
-        margin-right: 8px;
       }
     }
   }

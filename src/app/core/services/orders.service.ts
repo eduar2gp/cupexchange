@@ -31,10 +31,12 @@ export class OrdersService {
    // return collectionData(this.ordersCollection, { idField: 'id' }) as Observable<Order[]>;
   //}
 
-  getOrdersFromExchangeBackend(): Observable<OrderPlaced[]> {
-    const fullUrl = `${environment.baseApiUrl}${this.ORDERS_ENDPOINT}`;
-    return this.http.get<OrderPlaced[]>(fullUrl);
-  }
+  getOrdersFromExchangeBackend(page: number = 0, size: number = 10): Observable<Page<OrderPlaced>> {
+  const fullUrl = `${environment.baseApiUrl}${this.ORDERS_ENDPOINT}`;
+  // Passing params to the backend
+  const params = { page: page.toString(), size: size.toString() };
+  return this.http.get<Page<OrderPlaced>>(fullUrl, { params });
+}
 
   
   cancelOrder(order: OrderPlaced | undefined, userName: string): Observable<string> | Observable<never> {
