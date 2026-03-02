@@ -1,0 +1,32 @@
+<div class="provider-container">
+  <h2>Provider Liquidity Overview</h2>
+
+  <div *ngIf="isLoading()" class="loader">Loading balances...</div>
+
+  <table *ngIf="!isLoading()">
+    <thead>
+      <tr>
+        <th>Provider Name</th>
+        <th>Gateway ID</th>
+        <th>Currency</th>
+        <th>Available Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let provider of providerData()">
+        <td>{{ provider.accountName }}</td>
+        <td>#{{ provider.paymentGatewayId }}</td>
+        <td><strong>{{ provider.currencyCode }}</strong></td>
+        <td [class.low-liquidity]="provider.calculatedBalance < 1000">
+          {{ provider.calculatedBalance | number:'1.2-8' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <button [disabled]="currentPage() === 0" (click)="onPageChange(currentPage() - 1)">Previous</button>
+    <span>Page {{ currentPage() + 1 }} of {{ (totalElements() / pageSize()) | number:'1.0-0' }}</span>
+    <button [disabled]="providerData().length < pageSize()" (click)="onPageChange(currentPage() + 1)">Next</button>
+  </div>
+</div>

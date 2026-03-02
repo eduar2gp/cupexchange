@@ -29,7 +29,8 @@ export const ApiEndpoints = {
     ADMIN_PROCESS: '/api/v1/transaction/admin/process'
   },
   account: {
-    ADD_ACCOUNT: '/api/v1/accounts'
+    ADD_ACCOUNT: '/api/v1/accounts',
+    ACCOUNT_PROVIDER_BALANCE: '/api/v1/accounts/providers/balances'
   },
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',

@@ -26,6 +26,7 @@ import { ProviderOrdersListComponent } from './views/provider/provider-orders-li
 import { ProviderOrderDetailsComponent } from './views/provider/provider-order-details/provider-order-details.component';
 import { AddAccountComponent } from './views/account/add-account/add-account.component';
 import { AccountManagerDashboardComponent } from './views/account/account-manager-dashboard/account-manager-dashboard.component';
+import { AccountProviderBalanceComponent } from './views/account/account-provider-balances/account-provider-balance.component';
 
 
 export const routes: Routes = [
@@ -162,5 +163,11 @@ export const routes: Routes = [
     component: AccountManagerDashboardComponent,
     canActivate: [roleGuard],
     data: { roles: [Role.AccountManager]}
-  }
+  },
+  {
+    path: 'account-provider-balances',
+    component: AccountProviderBalanceComponent,
+    canActivate: [roleGuard],
+    data: {roles: [Role.Admin]} 
+  },
 ];

@@ -104,6 +104,7 @@
    "ACCOUNTS": {
     "ACCOUNT_MANAGER": "Administrador de cuentas",
     "ACCOUNTS": "Cuentas",
-    "ID_INFO": "Identificadores de la cuenta"
+    "ID_INFO": "Identificadores de la cuenta",
+    "ACCOUNT_PROVIDER_BALANCES": "Balance Cuentas Proveedor"
    }
 }
