@@ -4,7 +4,7 @@
     <div class="menu-header">
       <h3>Menu</h3>
     </div>
-    <mat-nav-list>   
+    <mat-nav-list>
       <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/account-provider-balances" routerLinkActive="active">
         <mat-icon matListItemIcon>savings</mat-icon>
         <span matListItemTitle>{{ 'ACCOUNTS.ACCOUNT_PROVIDER_BALANCES' | translate }}</span>
@@ -13,7 +13,8 @@
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
       </a>
-      <a *appHasRole="[Role.AccountManager]" mat-list-item routerLink="/account-manager-dashboard" routerLinkActive="active">
+      <a *appHasRole="[Role.AccountManager]" mat-list-item routerLink="/account-manager-dashboard"
+        routerLinkActive="active">
         <mat-icon matListItemIcon>assured_workload</mat-icon>
         <span matListItemTitle>{{ 'ACCOUNTS.ACCOUNT_MANAGER' | translate }}</span>
       </a>
@@ -46,7 +47,7 @@
       <a mat-list-item routerLink="/login" (click)="handleLogout()" routerLinkActive="active">
         <mat-icon matListItemIcon>logout</mat-icon>
         <span matListItemTitle>{{ 'LOGOUT' | translate }}</span>
-      </a>     
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <!-- Main content -->
@@ -59,13 +60,12 @@
           <mat-icon>menu</mat-icon>
         </button>
       </div>
-      <div class="toolbar-center-controls">       
+      <div class="toolbar-center-controls">
         <mat-form-field appearance="outline" class="compact-select-clean">
           <mat-icon matPrefix>paid</mat-icon>
           <!--<mat-label>{{ 'TRADE' | translate }}</mat-label>-->
-          <mat-select [ngModel]="selectedPair"
-                      (ngModelChange)="onPairSelect($event)"
-                      [ngModelOptions]="{standalone: true}">
+          <mat-select [ngModel]="selectedPair" (ngModelChange)="onPairSelect($event)"
+            [ngModelOptions]="{standalone: true}">
             @for (pair of availablePairs; track pair.value) {
             <mat-option [value]="pair" class="pair-option">
               <span class="pair-option-content">
@@ -76,15 +76,24 @@
             </mat-option>
             }
           </mat-select>
-        </mat-form-field>       
+        </mat-form-field>
       </div>
       <div class="toolbar-right-controls">
         <span class="toolbar-title">{{ title() }}</span>
-        <mat-slide-toggle [checked]="isEcommerceView$ | async"
+        <!-- <mat-slide-toggle [checked]="isEcommerceView$ | async"
                           (change)="toggleDashboard($event)"
                           color="primary">
           <mat-icon>{{ (dataService.isEcommerce$ | async) ? 'autorenew' : 'store' }}</mat-icon>
-        </mat-slide-toggle>
+        </mat-slide-toggle> -->
+        <button mat-icon-button 
+        routerLink="/notifications" 
+        routerLinkActive="active"
+          [matBadge]="notificationCount$ | async" 
+          [matBadgeHidden]="(notificationCount$ | async) === 0"
+          matBadgeColor="warn" 
+          aria-label="View notifications">
+          <mat-icon>notifications</mat-icon>
+        </button>
       </div>
     </mat-toolbar>
     <!--}-->
@@ -96,10 +105,8 @@
     <!--@if (authService.isAuthenticated()) {-->
     <mat-toolbar class="bottom-nav">
       @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button routerLink="/ecommerce-dashboard"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: true}"
-         class="nav-item">
+      <a mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}" class="nav-item">
         <mat-icon>shopping_basket</mat-icon>
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
@@ -125,13 +132,8 @@
       </a>
       }
       @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button
-         routerLink="/cart"
-         routerLinkActive="active"
-         class="nav-item"
-         matBadge="{{ cartCount$ | async }}"
-         matBadgeHidden="{{ (cartCount$ | async) === 0 }}"
-         matBadgeColor="warn">
+      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
+        matBadgeHidden="{{ (cartCount$ | async) === 0 }}" matBadgeColor="warn">
         <mat-icon>add_shopping_cart</mat-icon>
         <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
       </a>

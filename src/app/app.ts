@@ -104,6 +104,9 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   selectedPair: TradingPair | null = this.DEFAULT_PAIRS[0];
   public isEcommerceView$ = this.dataService.isEcommerce$.pipe(startWith(false));
 
+  // Add this to your class properties
+  notificationCount$ = this.dataService.unreadNotificationsCount$.pipe(startWith(0));
+
   //orderCount$!: Observable<number>;
   constructor(
     private languageService: LanguageService,
@@ -218,6 +221,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   handleLogout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+    this.dataService.unreadNotificationsSubject.next(0);
   }
 
   formatPairDisplay(pair: string | undefined): string {

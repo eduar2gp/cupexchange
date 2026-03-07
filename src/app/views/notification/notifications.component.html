@@ -1,0 +1,37 @@
+<div class="notifications-wrapper">
+  <div class="header">
+    <h2>Notifications</h2>
+  </div>
+
+  <div *ngIf="notifications$ | async as notifications; else loading" class="list-container">
+    
+    <div *ngFor="let n of notifications" 
+         class="notification-card" 
+         [class.unread]="!n.isSeen">
+      
+      <div class="dot" *ngIf="!n.isSeen"></div>
+      
+      <div class="content">
+        <div class="meta">
+          <span class="title">{{ n.title }}</span>
+          <span class="time">{{ n.createdAt | date:'shortTime' }}</span>
+        </div>
+        <p class="msg">{{ n.message }}</p>
+      </div>
+
+      <button *ngIf="!n.isSeen" 
+              (click)="markAsRead(n.id)" 
+              class="read-btn">
+        Mark as Read
+      </button>
+    </div>
+
+    <div *ngIf="notifications.length === 0" class="empty-state">
+      <p>No notifications yet!</p>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="loader">Loading your updates...</div>
+  </ng-template>
+</div>

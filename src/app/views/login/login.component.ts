@@ -174,6 +174,10 @@ private loadGoogleScript(): Promise<void> {
     // 2. Update DataService signal (assuming it handles the current user state)
     this.dataService.updateUser(user);
 
+    // 3. Load Notifications (New Step)
+  // This populates the BehaviorSubject we linked to the Navbar badge
+    this.dataService.getUnseenNotificationCount(user.userId);
+
     // 3. Fetch wallets and navigate
     this.fetchWallets();
   }

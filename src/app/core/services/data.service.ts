@@ -6,6 +6,8 @@ import { User } from '../../model/user.model'
 import { TransactionRequest } from '../../model/transaction-request.model'
 import { MerchantOrder } from '../../model/merchant-order-reponse.model'
 import { isPlatformBrowser } from '@angular/common';
+import { build, ApiEndpoints } from '../api/endpoints';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +37,7 @@ export class DataService {
   private isEcommerceMode = new BehaviorSubject<boolean>(false);
   public isEcommerce$ = this.isEcommerceMode.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {
     // Standard way to handle browser-only logic in a service
     if (isPlatformBrowser(this.platformId)) {
       const saved = localStorage.getItem(this.STORAGE_KEY) === 'true';
@@ -99,5 +101,41 @@ export class DataService {
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.STORAGE_KEY, String(enabled));
     }
+  }
+
+  // Initial count is 0
+  public unreadNotificationsSubject = new BehaviorSubject<number>(0);
+  
+  // Public observable for the UI
+  unreadNotificationsCount$ = this.unreadNotificationsSubject.asObservable();
+
+  // Method to increment the count (e.g., when a message arrives)
+  incrementNotifications() {
+    const currentCount = this.unreadNotificationsSubject.value;
+    this.unreadNotificationsSubject.next(currentCount + 1);
+  }
+
+  // Method to reset the count (e.g., when the user visits the notifications page)
+  resetNotifications() {
+    this.unreadNotificationsSubject.next(0);
+  }
+
+  // Method to set a specific count (e.g., after an API call)
+  setNotifications(count: number) {
+    this.unreadNotificationsSubject.next(count);
+  }
+
+  /**
+   * Fetches the unread count and updates the BehaviorSubject
+   */
+  getUnseenNotificationCount(userId: number | string): void {
+    const url = build(ApiEndpoints.notification.GET_UNSEEN_COUNT, { userId });
+    this.http.get<number>(url).subscribe({
+      next: (count) => {
+        // 4. Update the subject so all subscribers see the new value
+        this.unreadNotificationsSubject.next(count);
+      },
+      error: (err) => console.error('Error fetching notification count:', err)
+    });
   }
 }

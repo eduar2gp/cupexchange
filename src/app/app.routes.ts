@@ -27,6 +27,7 @@ import { ProviderOrderDetailsComponent } from './views/provider/provider-order-d
 import { AddAccountComponent } from './views/account/add-account/add-account.component';
 import { AccountManagerDashboardComponent } from './views/account/account-manager-dashboard/account-manager-dashboard.component';
 import { AccountProviderBalanceComponent } from './views/account/account-provider-balances/account-provider-balance.component';
+import { NotificationsComponent } from './views/notification/notifications.component';
 
 
 export const routes: Routes = [
@@ -170,4 +171,9 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: {roles: [Role.Admin]} 
   },
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    canActivate: [roleGuard]
+  }
 ];

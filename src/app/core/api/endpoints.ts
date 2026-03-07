@@ -35,7 +35,23 @@ export const ApiEndpoints = {
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',
     ESTIMATE_MARKET_ORDER_TOTAL_PRICE: '/api/v1/trade/estimate-market-order-total-price',
+  },
+  notification: {
+    GET_UNSEEN_COUNT: '/api/v1/notifications/user/{userId}/unread-count',
+    GET_ALL_NOTIFICATIONS: '/api/v1/notifications/user/{userId}',
+    MARK_AS_SEEN: '/api/v1/notifications/{id}/seen'
   }
 };
 
-export const build = (path: string) => `${ApiEndpoints.base}${path}`;
+export const build = (path: string, params?: Record<string, string | number>) => {
+  let url = `${ApiEndpoints.base}${path}`;
+  
+  if (params) {
+    Object.keys(params).forEach(key => {
+      // Replaces {userId} with the value of params.userId
+      url = url.replace(`{${key}}`, params[key].toString());
+    });
+  }
+  
+  return url;
+};
