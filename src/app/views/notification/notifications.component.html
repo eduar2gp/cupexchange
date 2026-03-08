@@ -3,35 +3,58 @@
     <h2>Notifications</h2>
   </div>
 
-  <div *ngIf="notifications$ | async as notifications; else loading" class="list-container">
+  <div *ngIf="notifications$ | async as notifications; else loading">
     
-    <div *ngFor="let n of notifications" 
-         class="notification-card" 
-         [class.unread]="!n.isSeen">
-      
-      <div class="dot" *ngIf="!n.isSeen"></div>
-      
-      <div class="content">
-        <div class="meta">
-          <span class="title">{{ n.title }}</span>
-          <span class="time">{{ n.createdAt | date:'shortTime' }}</span>
-        </div>
-        <p class="msg">{{ n.message }}</p>
-      </div>
+    <div class="list-container">
+      <mat-card *ngFor="let n of notifications" 
+                [class.unread-card]="!n.isSeen" 
+                class="notification-card">
+        
+        <mat-card-content>
+          <div class="card-layout">
+            <div class="status-indicator">
+              <mat-icon *ngIf="!n.isSeen" color="primary">fiber_manual_record</mat-icon>
+            </div>
+            
+            <div class="text-content">
+              <div class="meta">
+                <span class="title">{{ n.title }}</span>
+                <span class="time">{{ n.createdAt | date:'shortTime' }}</span>
+              </div>
+              <p class="msg">{{ n.message }}</p>
+            </div>
 
-      <button *ngIf="!n.isSeen" 
-              (click)="markAsRead(n.id)" 
-              class="read-btn">
-        Mark as Read
-      </button>
+            <div class="actions">
+              <button mat-stroked-button 
+                      color="primary" 
+                      *ngIf="!n.isSeen" 
+                      (click)="markAsRead(n.id)">
+                Mark as Read
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
 
+    <mat-paginator [length]="totalElements"
+                   [pageSize]="pageSize"
+                   [pageIndex]="currentPage"
+                   [pageSizeOptions]="[5, 10, 25]"
+                   (page)="handlePageEvent($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+
     <div *ngIf="notifications.length === 0" class="empty-state">
+      <mat-icon>notifications_none</mat-icon>
       <p>No notifications yet!</p>
     </div>
   </div>
 
   <ng-template #loading>
-    <div class="loader">Loading your updates...</div>
+    <div class="loader-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading updates...</p>
+    </div>
   </ng-template>
 </div>

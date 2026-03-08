@@ -5,6 +5,7 @@ import { Account } from '../../model/account.model';
 import { build, ApiEndpoints } from '../api/endpoints';
 import { ProviderBalance } from '../../model/provider-balance.model';
 import { Page } from '../../model/page.model';
+import { User } from '../../model/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,14 @@ export class AccountService {
   addAccount(account: Partial<Account>): Observable<Account> {
     const url = build(ApiEndpoints.account.ADD_ACCOUNT);
     return this.http.post<Account>(url, account);
+  }
+
+  getAccounts(user: User): Observable<Account[]> {
+    // 1. Build the URL using the userId from the user object
+    // Note: ensure the placeholder in your endpoint is {userId}
+    const url = build(ApiEndpoints.account.GET_USER_ACCOUNTS, { userId: user.userId });
+    // 2. Execute the GET request
+    return this.http.get<Account[]>(url);
   }
 
  /**

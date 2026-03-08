@@ -99,9 +99,10 @@
     "UPLOAD_PLACEHOLDER": "Haga clic para subir la imagen",
     "CONFIRM_ACTION": "Confirmar {{type}}",
     "PROCESSING": "Procesando...",
-    "SELECT_CURRENCY": "Seleccionar mondeda"
+    "SELECT_CURRENCY": "Seleccionar moneda"
   },
    "ACCOUNTS": {
+    "ADD_ACCOUNT": "Agregar cuenta",
     "ACCOUNT_MANAGER": "Administrador de cuentas",
     "ACCOUNTS": "Cuentas",
     "ID_INFO": "Identificadores de la cuenta",
