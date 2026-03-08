@@ -20,6 +20,7 @@ import { WalletService } from '../../core/services/wallet.service'
 import { Wallet } from '../../model/wallet.model'
 import { DataService } from '../../../app/core/services/data.service'
 import { User } from '../../../app/model/user.model'
+import { NotificationService } from '../../core/services/notification.service';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   // Inject the service and router
   private authService = inject(AuthService);
   private router = inject(Router);
+  private notificationService = inject(NotificationService)
 
   private platformId = inject(PLATFORM_ID);  
 
@@ -176,7 +178,7 @@ private loadGoogleScript(): Promise<void> {
 
     // 3. Load Notifications (New Step)
   // This populates the BehaviorSubject we linked to the Navbar badge
-    this.dataService.getUnseenNotificationCount(user.userId);
+    this.notificationService.refreshUnreadCount(Number(user.userId))
 
     // 3. Fetch wallets and navigate
     this.fetchWallets();

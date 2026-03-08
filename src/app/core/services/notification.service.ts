@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { build, ApiEndpoints } from '../api/endpoints';
 import { Notification } from '../../model/notification.model';
 import { Page } from '../../model/page.model';
@@ -12,7 +12,7 @@ export class NotificationService {
     private http = inject(HttpClient);
 
     // Subjects for State Management
-    private unreadNotificationsSubject = new BehaviorSubject<number>(0);
+    public unreadNotificationsSubject = new BehaviorSubject<number>(0);
     private notificationsSubject = new BehaviorSubject<Notification[]>([]);
     private totalElementsSubject = new BehaviorSubject<number>(0);
 

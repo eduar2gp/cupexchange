@@ -37,6 +37,7 @@ import { Province } from './model/province.model';
 import { Municipality } from './model/muncipality.model';
 import { RouterLinkActive } from '@angular/router';
 import { startWith } from 'rxjs/operators';
+import { NotificationService } from './core/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -81,6 +82,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public cartService = inject(CartService);
   public locationService = inject(LocationService);
   public dataService = inject(DataService)
+  public notificationService = inject(NotificationService)
 
   //Subscriptions
   private routerSubscription?: Subscription;
@@ -88,7 +90,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   // Trading pairs
   availablePairs: TradingPair[] = [];
-
 
   private readonly STORAGE_KEY = 'preferredTradingPairCode';
 
@@ -105,7 +106,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public isEcommerceView$ = this.dataService.isEcommerce$.pipe(startWith(false));
 
   // Add this to your class properties
-  notificationCount$ = this.dataService.unreadNotificationsCount$.pipe(startWith(0));
+  notificationCount$ = this.notificationService.unreadNotificationsCount$;
 
   //orderCount$!: Observable<number>;
   constructor(
@@ -221,7 +222,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   handleLogout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
-    this.dataService.unreadNotificationsSubject.next(0);
+    this.notificationService.unreadNotificationsSubject.next(0);
   }
 
   formatPairDisplay(pair: string | undefined): string {
