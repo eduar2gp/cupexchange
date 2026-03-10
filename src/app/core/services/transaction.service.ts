@@ -74,17 +74,23 @@ export class TransactionService {
 
   /**
    * Retrieves paginated transactions for a specific account manager/provider user.
-   * This includes the transaction details and the receipt payment URL.
+   * Now supports an optional status filter (PENDING, COMPLETED, REJECTED).
    */
   getAccountManagerTransactions(
     page: number = 0,
-    size: number = 20
+    size: number = 20,
+    status?: string // Added optional status parameter
   ): Observable<Page<TransactionManagerResponse>> {
     const url = `${build(ApiEndpoints.transaction.ACCOUNT_MANAGER_TRANSACTIONS)}`;
     
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
+
+    // Add status to params if it's provided and not 'ALL'
+    if (status && status !== 'ALL') {
+      params = params.set('status', status);
+    }
 
     return this.http.get<Page<TransactionManagerResponse>>(url, { params });
   }

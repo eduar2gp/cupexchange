@@ -3,7 +3,7 @@
 }
 
 .dashboard-wrapper {
-  margin: 4px; 
+  margin: 4px;
   position: relative;
   background-color: var(--color-surface);
   color: var(--color-text);
@@ -13,15 +13,21 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
   @media (min-width: 768px) {
-    margin: 24px; // Increased margin for better desktop look
+    margin: 24px;
   }
 
   .header-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     padding: 12px 16px;
     background-color: var(--color-surface-elevated);
     border-bottom: 1px solid var(--color-surface-elevated);
 
     @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
       padding: 20px 24px;
     }
 
@@ -29,121 +35,127 @@
       margin: 0;
       font-size: 1.1rem;
       font-weight: 700;
-      @media (min-width: 768px) { font-size: 1.5rem; }
+      color: var(--color-text);
+
+      @media (min-width: 768px) {
+        font-size: 1.5rem;
+      }
     }
 
     .subtitle {
       margin: 2px 0 0;
       font-size: 0.7rem;
       color: var(--color-text-secondary);
-      @media (min-width: 768px) { font-size: 0.875rem; }
+
+      @media (min-width: 768px) {
+        font-size: 0.875rem;
+      }
+    }
+
+    .filter-section {
+      min-width: 200px;
+
+      // Overriding Material form-field background to match surface-elevated
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background-color: var(--color-surface) !important;
+      }
     }
   }
 
   .table-container {
     position: relative;
-    max-height: calc(100vh - 250px);
-    overflow-x: auto; // Change to auto for desktop flexibility
-    overflow-y: auto;
+    max-height: calc(100vh - 280px);
+    overflow: auto;
     background-color: var(--color-surface);
   }
 
   table {
     width: 100%;
-    // Change: Fixed on mobile, auto/unset on desktop for full width
-    table-layout: fixed; 
+    table-layout: fixed;
     background-color: transparent;
-    border-collapse: collapse;
 
     @media (min-width: 768px) {
-      table-layout: auto; 
+      table-layout: auto;
     }
 
-    th.mat-mdc-header-cell, td.mat-mdc-cell {
-      padding: 8px 4px;
-      font-size: 0.75rem;
+    th.mat-mdc-header-cell {
+      background-color: var(--color-surface);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+    }
+
+    td.mat-mdc-cell {
+      color: var(--color-text);
       border-bottom: 1px solid var(--color-surface-elevated);
-      
-      &:first-child { padding-left: 8px; }
-      &:last-child { padding-right: 8px; }
-
-      @media (min-width: 768px) {
-        padding: 16px;
-        font-size: 0.875rem;
-      }
-    }
-
-    // Only apply fixed widths on mobile (< 768px)
-    @media (max-width: 767px) {
-      .mat-column-type { width: 75px; } 
-      .mat-column-amount { width: 80px; text-align: right; }
-      .mat-column-status { width: 70px; }
-      .mat-column-actions { width: 45px; }
-      
-      .mat-column-referenceId {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
 
     .interactive-row {
       cursor: pointer;
       transition: background 0.2s;
-      &:hover { background-color: var(--color-surface-elevated) !important; }
+
+      &:hover {
+        background-color: var(--color-surface-elevated) !important;
+      }
     }
   }
 
-  .hidden-xs {
-    @media (max-width: 600px) {
-      display: none !important;
-    }
+  // Status & Type Chips
+  mat-chip-set {
+    display: inline-flex;
   }
 
-  // Chips & Labels
   mat-chip {
-    --mdc-chip-label-text-size: 0.65rem;
+    --mdc-chip-label-text-size: 0.7rem;
+    font-weight: 600 !important;
     min-height: 24px !important;
-    padding: 0 6px !important;
-    @media (min-width: 768px) {
-      --mdc-chip-label-text-size: 0.75rem;
-      min-height: 32px !important;
+    padding: 0 8px !important;
+
+    // Type styling
+    &.chip-withdrawal {
+      --mdc-chip-elevated-container-color: #fce8e8; // Light Danger
+      color: var(--color-danger);
     }
-  }
 
-  .chip-withdrawal {
-    --mdc-chip-elevated-container-color: rgba(207, 34, 46, 0.1);
-    color: var(--color-danger);
-    border: 1px solid rgba(207, 34, 46, 0.1);
-  }
+    &.chip-deposit {
+      --mdc-chip-elevated-container-color: #e8f5e9; // Light Success
+      color: var(--color-success);
+    }
 
-  .chip-deposit {
-    --mdc-chip-elevated-container-color: rgba(31, 136, 61, 0.1);
-    color: var(--color-success);
-    border: 1px solid rgba(31, 136, 61, 0.1);
-  }
+    /* Target the chip host */
+    .status-chip {
 
-  .status-label {
-    font-size: 0.65rem;
-    padding: 2px 4px;
-    border-radius: 4px;
-    background: var(--color-surface-elevated);
-    @media (min-width: 768px) { font-size: 0.8rem; padding: 4px 8px; }
-    
-    &[data-status="PENDING"] { color: var(--color-warning); }
-    &[data-status="COMPLETED"] { color: var(--color-success); }
+      /* Force background colors on the container */
+      &[data-status="PENDING"] {
+        background-color: #fff8e1 !important;
+        --mdc-chip-elevated-container-color: #fff8e1 !important;
+        --mdc-chip-label-text-color: var(--color-warning) !important;
+        border: 1px solid rgba(154, 103, 0, 0.2) !important;
+      }
+
+      &[data-status="COMPLETED"] {
+        background-color: #e8f5e9 !important;
+        --mdc-chip-elevated-container-color: #e8f5e9 !important;
+        --mdc-chip-label-text-color: var(--color-success) !important;
+        border: 1px solid rgba(31, 136, 61, 0.2) !important;
+      }
+
+      &[data-status="REJECTED"] {
+        background-color: #fce8e8 !important;
+        --mdc-chip-elevated-container-color: #fce8e8 !important;
+        --mdc-chip-label-text-color: var(--color-danger) !important;
+        border: 1px solid rgba(207, 34, 46, 0.2) !important;
+      }
+
+      /* Target the internal Material text label specifically */
+      ::ng-deep .mdc-evolution-chip__text-label {
+        color: inherit !important;
+      }
+    }
   }
 
   mat-paginator {
-    background-color: var(--color-surface-elevated);
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
     border-top: 1px solid var(--color-surface-elevated);
-    
-    @media (max-width: 600px) {
-      ::ng-deep .mat-mdc-paginator-container {
-        flex-wrap: wrap; 
-        justify-content: center;
-        padding: 4px 0;
-      }
-    }
   }
 }

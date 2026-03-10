@@ -1,5 +1,6 @@
 import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Added for ngModel
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -7,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field'; // Added
+import { MatSelectModule } from '@angular/material/select'; // Added
 
 import { TransactionService } from '../../../core/services/transaction.service';
 import { TransactionManagerResponse } from '../../../model/transaction-manager.model';
@@ -16,9 +19,9 @@ import { TransactionConfirmDialogComponent } from '../../../views/shared/confirm
   selector: 'app-account-manager-dashboard',
   standalone: true,
   imports: [
-    CommonModule, MatTableModule, MatPaginatorModule,
+    CommonModule, FormsModule, MatTableModule, MatPaginatorModule,
     MatProgressSpinnerModule, MatButtonModule, MatIconModule,
-    MatChipsModule, MatDialogModule
+    MatChipsModule, MatDialogModule, MatFormFieldModule, MatSelectModule
   ],
   templateUrl: './account-manager-dashboard.component.html',
   styleUrl: './account-manager-dashboard.component.scss',
@@ -28,10 +31,12 @@ export class AccountManagerDashboardComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly platformId = inject(PLATFORM_ID);
 
-  // Ensure your array looks like this:
   displayedColumns: string[] = ['type', 'amount', 'actions', 'status', 'timestamp'];
   transactions = signal<TransactionManagerResponse[]>([]);
   isLoading = signal<boolean>(false);
+  
+  // Status Filter Signal
+  statusFilter = signal<string>('ALL'); 
 
   totalElements = 0;
   pageSize = 10;
@@ -43,10 +48,12 @@ export class AccountManagerDashboardComponent implements OnInit {
     }
   }
 
+  // Updated to include status in the request
   loadData(pageIndex: number = this.currentPage, pageSize: number = this.pageSize): void {
     this.isLoading.set(true);
-    // Note: Use actual user ID from your auth service in production
-    this.transactionService.getAccountManagerTransactions(pageIndex, pageSize)
+    const status = this.statusFilter() === 'ALL' ? undefined : this.statusFilter();
+    
+    this.transactionService.getAccountManagerTransactions(pageIndex, pageSize, status)
       .subscribe({
         next: (res) => {
           this.transactions.set(res.content);
@@ -55,6 +62,11 @@ export class AccountManagerDashboardComponent implements OnInit {
         },
         error: () => this.isLoading.set(false)
       });
+  }
+
+  onFilterChange() {
+    this.currentPage = 0; // Reset to first page on filter change
+    this.loadData();
   }
 
   handlePageEvent(event: PageEvent) {
