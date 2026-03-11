@@ -3,7 +3,7 @@
 }
 
 .dashboard-wrapper {
-  margin: 4px;
+  margin: 8px;
   position: relative;
   background-color: var(--color-surface);
   color: var(--color-text);
@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 12px 16px;
+    padding: 16px;
     background-color: var(--color-surface-elevated);
     border-bottom: 1px solid var(--color-surface-elevated);
 
@@ -31,125 +31,136 @@
       padding: 20px 24px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--color-text);
-
-      @media (min-width: 768px) {
-        font-size: 1.5rem;
+    .title-section {
+      h1 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-text);
+        @media (min-width: 768px) { font-size: 1.5rem; }
       }
-    }
 
-    .subtitle {
-      margin: 2px 0 0;
-      font-size: 0.7rem;
-      color: var(--color-text-secondary);
-
-      @media (min-width: 768px) {
-        font-size: 0.875rem;
+      .subtitle {
+        margin: 4px 0 0;
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        @media (min-width: 768px) { font-size: 0.875rem; }
       }
     }
 
     .filter-section {
-      min-width: 200px;
+      width: 100%;
+      @media (min-width: 768px) {
+        width: 220px;
+      }
 
-      // Overriding Material form-field background to match surface-elevated
-      ::ng-deep .mat-mdc-text-field-wrapper {
-        background-color: var(--color-surface) !important;
+      // Makes the filter look cleaner in the header
+      mat-form-field {
+        width: 100%;
+        ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+          display: none; // Hide hint/error space to save vertical room
+        }
       }
     }
   }
 
   .table-container {
     position: relative;
-    max-height: calc(100vh - 280px);
-    overflow: auto;
+    width: 100%;
+    overflow-x: auto; // Fixes "cut off" content on mobile
+    -webkit-overflow-scrolling: touch;
     background-color: var(--color-surface);
   }
 
   table {
     width: 100%;
-    table-layout: fixed;
-    background-color: transparent;
-
-    @media (min-width: 768px) {
-      table-layout: auto;
-    }
+    table-layout: auto; // Allows columns to expand to fit content
+    border-collapse: collapse;
 
     th.mat-mdc-header-cell {
       background-color: var(--color-surface);
       color: var(--color-text-secondary);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     td.mat-mdc-cell {
+      padding: 12px 8px;
       color: var(--color-text);
       border-bottom: 1px solid var(--color-surface-elevated);
+      vertical-align: middle;
+
+      @media (min-width: 768px) {
+        padding: 16px;
+      }
     }
 
     .interactive-row {
       cursor: pointer;
       transition: background 0.2s;
-
       &:hover {
         background-color: var(--color-surface-elevated) !important;
       }
     }
   }
 
-  // Status & Type Chips
+  // --- CHIP STYLING: THE "FIX ALL" VERSION ---
   mat-chip-set {
-    display: inline-flex;
+    display: flex;
   }
 
-  mat-chip {
+  // Target the mat-chip element
+  mat-chip.mat-mdc-chip {
     --mdc-chip-label-text-size: 0.7rem;
     font-weight: 600 !important;
     min-height: 24px !important;
-    padding: 0 8px !important;
+    
+    // Pierce the Shadow DOM to force text color
+    ::ng-deep .mdc-evolution-chip__text-label {
+      color: inherit !important;
+    }
 
-    // Type styling
+    // 1. TYPE COLORS
     &.chip-withdrawal {
-      --mdc-chip-elevated-container-color: #fce8e8; // Light Danger
-      color: var(--color-danger);
+      background-color: #fce8e8 !important; // Fallback
+      --mdc-chip-elevated-container-color: #fce8e8 !important;
+      color: var(--color-danger) !important;
     }
 
     &.chip-deposit {
-      --mdc-chip-elevated-container-color: #e8f5e9; // Light Success
-      color: var(--color-success);
+      background-color: #e8f5e9 !important;
+      --mdc-chip-elevated-container-color: #e8f5e9 !important;
+      color: var(--color-success) !important;
     }
 
-    /* Target the chip host */
-    .status-chip {
-
-      /* Force background colors on the container */
+    // 2. STATUS COLORS (Targeting class + attribute)
+    &.status-chip {
       &[data-status="PENDING"] {
         background-color: #fff8e1 !important;
         --mdc-chip-elevated-container-color: #fff8e1 !important;
-        --mdc-chip-label-text-color: var(--color-warning) !important;
+        color: var(--color-warning) !important;
         border: 1px solid rgba(154, 103, 0, 0.2) !important;
       }
 
       &[data-status="COMPLETED"] {
         background-color: #e8f5e9 !important;
         --mdc-chip-elevated-container-color: #e8f5e9 !important;
-        --mdc-chip-label-text-color: var(--color-success) !important;
+        color: var(--color-success) !important;
         border: 1px solid rgba(31, 136, 61, 0.2) !important;
       }
 
       &[data-status="REJECTED"] {
         background-color: #fce8e8 !important;
         --mdc-chip-elevated-container-color: #fce8e8 !important;
-        --mdc-chip-label-text-color: var(--color-danger) !important;
+        color: var(--color-danger) !important;
         border: 1px solid rgba(207, 34, 46, 0.2) !important;
       }
+    }
+  }
 
-      /* Target the internal Material text label specifically */
-      ::ng-deep .mdc-evolution-chip__text-label {
-        color: inherit !important;
-      }
+  .hidden-xs {
+    @media (max-width: 600px) {
+      display: none !important;
     }
   }
 
@@ -158,4 +169,18 @@
     color: var(--color-text-secondary);
     border-top: 1px solid var(--color-surface-elevated);
   }
+}
+
+// Ensure the loading spinner is centered
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
