@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { isPlatformBrowser } from '@angular/common';
+import { User } from '../../../model/user.model';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -43,6 +44,7 @@ export class EcommerceDashboardComponent implements OnInit {
   private cartService = inject(CartService);
   private dataService = inject(DataService);
   private fb = inject(FormBuilder);
+  public loggedInUser: User | undefined;
 
   private platformId = inject(PLATFORM_ID);
 
@@ -104,13 +106,16 @@ export class EcommerceDashboardComponent implements OnInit {
   }
 
   performSearch() {
-    const user = this.dataService.getCurrentUserValue();
+    const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+    if (savedProfileJson) {
+      this.loggedInUser = JSON.parse(savedProfileJson) as User;
+    }
     const formValues = this.searchForm.value;
 
     const request: ProductSearchRequestDTO = {
       // User's home location (for availability flag)
-      userMunicipalityId: user?.municipalityId || null,
-      userProvinceId: user?.provinceId || null,
+      userMunicipalityId: this.loggedInUser?.municipalityId || null,
+      userProvinceId: this.loggedInUser?.provinceId || null,
 
       // Filter selection
       selectedProvinceId: formValues.provinceId,
