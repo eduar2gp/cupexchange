@@ -1,32 +1,74 @@
-<div class="provider-container">
-  <h2>Provider Liquidity Overview</h2>
+<mat-card class="provider-card">
 
-  <div *ngIf="isLoading()" class="loader">Loading balances...</div>
+  <mat-card-header>
+    <mat-card-title>Provider Liquidity Overview</mat-card-title>
+  </mat-card-header>
 
-  <table *ngIf="!isLoading()">
-    <thead>
-      <tr>
-        <th>Provider Name</th>
-        <th>Gateway ID</th>
-        <th>Currency</th>
-        <th>Available Balance</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let provider of providerData()">
-        <td>{{ provider.accountName }}</td>
-        <td>#{{ provider.paymentGatewayId }}</td>
-        <td><strong>{{ provider.currencyCode }}</strong></td>
-        <td [class.low-liquidity]="provider.calculatedBalance < 1000">
-          {{ provider.calculatedBalance | number:'1.2-8' }}
+  <mat-card-content>
+
+    <div class="loader" *ngIf="isLoading()">
+      <mat-progress-spinner
+        diameter="40"
+        mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+
+    <table
+      mat-table
+      [dataSource]="providerData()"
+      *ngIf="!isLoading()"
+      class="balance-table">
+
+      <!-- Provider -->
+      <ng-container matColumnDef="accountName">
+        <th mat-header-cell *matHeaderCellDef>Provider</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.accountName }}
         </td>
-      </tr>
-    </tbody>
-  </table>
+      </ng-container>
 
-  <div class="pagination">
-    <button [disabled]="currentPage() === 0" (click)="onPageChange(currentPage() - 1)">Previous</button>
-    <span>Page {{ currentPage() + 1 }} of {{ (totalElements() / pageSize()) | number:'1.0-0' }}</span>
-    <button [disabled]="providerData().length < pageSize()" (click)="onPageChange(currentPage() + 1)">Next</button>
-  </div>
-</div>
+      <!-- Gateway -->
+      <ng-container matColumnDef="gatewayId">
+        <th mat-header-cell *matHeaderCellDef>Gateway</th>
+        <td mat-cell *matCellDef="let row">
+          #{{ row.paymentGatewayId }}
+        </td>
+      </ng-container>
+
+      <!-- Currency -->
+      <ng-container matColumnDef="currency">
+        <th mat-header-cell *matHeaderCellDef>Currency</th>
+        <td mat-cell *matCellDef="let row">
+          <strong class="currency">{{ row.currencyCode }}</strong>
+        </td>
+      </ng-container>
+
+      <!-- Balance -->
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef>Available Balance</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [class.low-liquidity]="row.calculatedBalance < 1000">
+
+          {{ row.calculatedBalance | number:'1.2-8' }}
+
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+
+  </mat-card-content>
+
+  <mat-paginator
+    [length]="totalElements()"
+    [pageSize]="pageSize()"
+    [pageIndex]="currentPage()"
+    [pageSizeOptions]="[5,10,25,50]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+
+</mat-card>
