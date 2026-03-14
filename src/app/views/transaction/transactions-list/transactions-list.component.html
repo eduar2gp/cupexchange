@@ -1,44 +1,40 @@
 <div class="transactions-page">
   @if (!loading() && !error() && transactions().length > 0) {
-    <div class="transactions-card">
-      <h3 class="transactions-title">Transactions</h3>
+  <div class="transactions-card">
+    <h3 class="transactions-title">Transactions</h3>
 
-      <div class="transactions-list">
-        @for (tx of transactions(); track tx.id) {
-          <div class="transaction-item">
-            <div class="transaction-main">
-              <div class="transaction-left">
-                <div class="type-icon" [ngClass]="tx.type.toLowerCase()">
-                  <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
-                </div>
-                <div class="transaction-info">
-                  <div class="type-header">
-                    <span class="type-name">{{ tx.type.replace('_', ' ') | titlecase }}</span>
-                    @if (tx.type === 'DEPOSIT' || tx.type === 'WITHDRAWAL') {
-                      <span class="status-tag" [ngClass]="getStatusClass(tx.status)">
-                        {{ tx.status || 'PENDING' }}
-                      </span>
-                    }
-                  </div>
-                  <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
-                </div>
+    <div class="transactions-list">
+      @for (tx of transactions(); track tx.id) {
+      <div class="transaction-item">
+        <div class="transaction-main">
+          <div class="transaction-left">
+            <div class="type-icon" [ngClass]="tx.type.toLowerCase()">
+              <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
+            </div>
+            <div class="transaction-info">
+              <div class="type-header">
+                <span class="type-name">{{ tx.type.replace('_', ' ') | titlecase }}</span>
+                @if (tx.type === 'DEPOSIT' || tx.type === 'WITHDRAWAL') {
+                <span class="status-tag" [ngClass]="getStatusClass(tx.status)">
+                  {{ tx.status || 'PENDING' }}
+                </span>
+                }
               </div>
-              <div class="amount" [class.positive]="tx.amount >= 0" [class.negative]="tx.amount < 0">
-                {{ tx.amount >= 0 ? '+' : '' }}{{ tx.amount | number:'1.2-8' }} {{ tx.currency }}
-              </div>
+              <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
             </div>
           </div>
-        }
+          <div class="amount" [class.positive]="tx.type === 'DEPOSIT'" [class.negative]="tx.type === 'WITHDRAWAL'">
+            {{ tx.type === 'WITHDRAWAL' ? '-' : '+' }}
+            {{ tx.amount | number:'1.2-8' }} {{ tx.currency }}
+          </div>
+        </div>
       </div>
-
-      <mat-paginator 
-        [length]="totalElements()"
-        [pageSize]="pageSize()"
-        [pageIndex]="currentPage()"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        (page)="handlePageEvent($event)"
-        aria-label="Select page of transactions">
-      </mat-paginator>
+      }
     </div>
+
+    <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="currentPage()"
+      [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)" aria-label="Select page of transactions">
+    </mat-paginator>
+  </div>
   }
 </div>

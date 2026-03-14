@@ -49,7 +49,7 @@ export class AddTransactionComponent implements OnInit {
   errorMessage: string | null = null;
   isLoading: boolean = false;
   selectedFile: File | null = null;
-  
+
   paymentGateways: PaymentGateway[] = [];
   selectedGatewayCode: string | null = null;
 
@@ -82,20 +82,16 @@ export class AddTransactionComponent implements OnInit {
   }
 
   get isSubmitDisabled(): boolean {
-    // 1. Loading state
     if (this.isLoading) return true;
-    
-    // 2. Gateway must be selected
     if (!this.selectedGatewayCode) return true;
-
-    // 3. BOTH accounts must be selected
-    if (!this.selectedUserAccount || !this.selectedProviderAccount) return true;
-    
-    // 4. If DEPOSIT, image is mandatory
+    if (!this.selectedUserAccount) return true;
+    if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedProviderAccount) {
+      return true;
+    }
     if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedFile) {
       return true;
     }
-    
+    if(this.transactionAmount == 0) return true;
     return false;
   }
 
@@ -120,86 +116,115 @@ export class AddTransactionComponent implements OnInit {
     this.providerAccounts = [];
     this.isLoading = true;
 
-    // Fetch both lists regardless of transaction type
-    forkJoin({
-      user: this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode),
-      provider: this.transactionService.getAccountsByGatewayCode(gatewayCode)
-    }).pipe(
-      catchError(err => {
-        this.showToast('Failed to load accounts for this gateway.', 'Error');
-        return of({ user: [], provider: [] });
-      })
-    ).subscribe(({ user, provider }) => {
-      this.userAccounts = user;
-      this.providerAccounts = provider;
-      this.isLoading = false;
+    const isDeposit = this.transactionRequest?.type === 'DEPOSIT';
 
-      // Auto-select if only one option exists
-      if (this.userAccounts.length === 1) this.selectedUserAccount = this.userAccounts[0];
-      if (this.providerAccounts.length === 1) this.selectedProviderAccount = this.providerAccounts[0];
-      
-      this.cdr.detectChanges();
-    });
+    let request$: Observable<any>;
+
+    if (isDeposit) {
+      // Deposit requires BOTH user + provider accounts
+      request$ = forkJoin({
+        user: this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode),
+        provider: this.transactionService.getAccountsByGatewayCode(gatewayCode)
+      });
+    } else {
+      // Withdrawal only needs user accounts
+      request$ = this.transactionService
+        .getAccountsByUserIdAndGatewayCode(gatewayCode)
+        .pipe(
+          switchMap(userAccounts => of({ user: userAccounts, provider: [] }))
+        );
+    }
+
+    request$
+      .pipe(
+        catchError(() => {
+          this.showToast('Failed to load accounts for this gateway.', 'Error');
+          return of({ user: [], provider: [] });
+        })
+      )
+      .subscribe(({ user, provider }) => {
+        this.userAccounts = user;
+        this.providerAccounts = provider;
+        this.isLoading = false;
+
+        if (this.userAccounts.length === 1) {
+          this.selectedUserAccount = this.userAccounts[0];
+        }
+
+        if (this.providerAccounts.length === 1) {
+          this.selectedProviderAccount = this.providerAccounts[0];
+        }
+
+        this.cdr.detectChanges();
+      });
   }
 
   submitTransaction() {
-  if (!this.transactionRequest || !this.transactionAmount || this.transactionAmount <= 0) return;
-  if (!this.verifyAvailableBalance()) return;
+    if (!this.transactionRequest || !this.transactionAmount || this.transactionAmount <= 0) return;
 
-  this.isLoading = true;
+    this.isLoading = true;
 
-  // 1. Determine FROM and TO based on Transaction Type
-  const fromId = this.transactionRequest.type === 'DEPOSIT' 
-    ? this.selectedUserAccount!.id 
-    : this.selectedProviderAccount!.id;
+    // 1. Sync the request object with the current UI state
+    this.transactionRequest.amount = this.transactionAmount;
+    // this.transactionRequest.currencyCode = this.selectedUserAccount!.currencyCode;
 
-  const toId = this.transactionRequest.type === 'DEPOSIT' 
-    ? this.selectedProviderAccount!.id 
-    : this.selectedUserAccount!.id;
+    let fromId: number | null = null;
+    let toId: number | null = null;
 
-  // 2. Add Payment - NOW INCLUDING THE AMOUNT
-  this.transactionService.addPayment({ 
-    fromAccountId: fromId, 
-    toAccountId: toId,
-    amount: this.transactionAmount,
-    requestType: this.transactionRequest.type,
-  })
-    .pipe(
-      switchMap((paymentResponse) => {
-        const paymentId = paymentResponse.id;
-        // Update the transaction request with the generated payment ID
-        this.transactionRequest!.referenceId = paymentId;
-        this.transactionRequest!.amount = this.transactionAmount; // Ensure request object is updated too
+    if (this.transactionRequest.type === 'DEPOSIT') {
+      // Deposit: User -> Provider (User selects both)
+      fromId = this.selectedUserAccount!.id;
+      toId = this.selectedProviderAccount!.id;
+    } else {
+      // Withdrawal: System -> User (User only selects their destination)
+      fromId = 0; // Or leave null, as backend ignores it for waterfall
+      toId = this.selectedUserAccount!.id;
+    }
 
-        // 3. If DEPOSIT, handle receipt upload
-        if (this.transactionRequest?.type === 'DEPOSIT' && this.selectedFile) {
-          const formData = new FormData();
-          formData.append('file', this.selectedFile);
-          return this.transactionService.updateReceipt(paymentId, formData).pipe(
-            switchMap(() => this.finalizeTransaction())
-          );
-        }
-        return this.finalizeTransaction();
-      }),
-      catchError((error) => {
+    // 2. Add Payment
+    this.transactionService.addPayment({
+      fromAccountId: fromId,
+      toAccountId: toId,
+      amount: this.transactionAmount,
+      requestType: this.transactionRequest.type,
+      // currencyCode: this.transactionRequest.currencyCode
+    })
+      .pipe(
+        switchMap((paymentResponse) => {
+          // Handle potential array response from Waterfall
+          const paymentId = Array.isArray(paymentResponse) ? paymentResponse[0].id : paymentResponse.id;
+
+          // 3. Update referenceId for the subsequent 'deposit' call
+          this.transactionRequest!.referenceId = paymentId.toString();
+
+          if (this.transactionRequest?.type === 'DEPOSIT') {
+            if (this.selectedFile) {
+              const formData = new FormData();
+              formData.append('file', this.selectedFile);
+              return this.transactionService.updateReceipt(paymentId, formData).pipe(
+                switchMap(() => this.transactionService.deposit(this.transactionRequest!))
+              );
+            }
+            return this.transactionService.deposit(this.transactionRequest!);
+          }
+
+          // Withdrawals are handled entirely by addPayment (the Waterfall)
+          return of(paymentResponse);
+
+        }),
+        catchError((error) => {
+          this.isLoading = false;
+          this.showToast(error.error?.details || error.error?.message || 'Transaction failed.', 'Error');
+          return of(null);
+        })
+      )
+      .subscribe((finalResponse) => {
         this.isLoading = false;
-        this.showToast(error.error?.message || 'Transaction failed.', 'Error');
-        return of(null);
-      })
-    )
-    .subscribe((finalResponse) => {
-      this.isLoading = false;
-      if (finalResponse) {
-        this.showToast(`${this.transactionRequest?.type} successful!`, 'Success');
-        this.router.navigate(['/transactions']);
-      }
-    });
-}
-
-  private finalizeTransaction(): Observable<any> {
-    return this.transactionRequest?.type === 'DEPOSIT'
-      ? this.transactionService.deposit(this.transactionRequest)
-      : this.transactionService.withdrawal(this.transactionRequest!);
+        if (finalResponse) {
+          this.showToast(`${this.transactionRequest?.type} processed successfully!`, 'Success');
+          this.router.navigate(['/transactions']);
+        }
+      });
   }
 
   // UI Helper Methods
