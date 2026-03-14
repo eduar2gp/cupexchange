@@ -161,7 +161,8 @@ export class AddTransactionComponent implements OnInit {
   this.transactionService.addPayment({ 
     fromAccountId: fromId, 
     toAccountId: toId,
-    amount: this.transactionAmount
+    amount: this.transactionAmount,
+    requestType: this.transactionRequest.type,
   })
     .pipe(
       switchMap((paymentResponse) => {
