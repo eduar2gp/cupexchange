@@ -12,7 +12,7 @@ import { WalletService } from '../../../core/services/wallet.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-add-wallet', 
+  selector: 'app-add-wallet',
   standalone: true,
   imports: [CommonModule, MatListModule, TranslateModule],
   templateUrl: './currencies.component.html',
@@ -44,35 +44,39 @@ export class CurrenciesComponent implements OnInit {
     const pairsJson = localStorage.getItem('CURRENCIES_PAIRS');
     this.allCurrencies = pairsJson ? JSON.parse(pairsJson) as TradingPair[] : [];
 
-    // --- 2. Create Set of Existing Wallet Currency Codes for efficient lookup ---
-    // This Set contains unique currency codes from the user's wallets (e.g., {'CUP', 'USD'})
+    // --- 2. Wallet currency lookup ---
     const walletCurrencyCodes = new Set(this.wallets.map(w => w.currencyCode));
 
-    // --- 3. Filter and Separate Trading Pairs using a Map for uniqueness ---
+    // --- 3. Reduce to build both lists ---
+    const result = this.allCurrencies.reduce(
+      (acc, pair) => {
+        const currencyCode = pair.viewValue;
 
-    // A Map is used to store existing currencies temporarily, keyed by the unique currency code (viewValue).
-    // This guarantees no duplicate entries in the list of existing currencies.
-    const uniqueExistingCurrenciesMap = new Map<string, TradingPair>();
-    this.availableCurrencies = [];
-
-    // Iterate through all possible currency options
-    for (const pair of this.allCurrencies) {
-      const currencyCode = pair.viewValue;
-
-      if (walletCurrencyCodes.has(currencyCode)) {
-        // Currency already has an existing wallet.
-        // Check the map before adding. If the key already exists, do nothing (i.e., prevent duplicate).
-        if (!uniqueExistingCurrenciesMap.has(currencyCode)) {
-          uniqueExistingCurrenciesMap.set(currencyCode, pair);
+        if (walletCurrencyCodes.has(currencyCode)) {
+          // Existing wallet currencies (unique via Map)
+          if (!acc.existingMap.has(currencyCode)) {
+            acc.existingMap.set(currencyCode, pair);
+          }
+        } else {
+          // Available currencies (unique via Set)
+          if (!acc.availableSet.has(currencyCode)) {
+            acc.availableSet.add(currencyCode);
+            acc.available.push(pair);
+          }
         }
-      } else {
-        // Currency does not yet have an existing wallet.
-        this.availableCurrencies.push(pair);
-      }
-    }
 
-    // --- 4. Convert the unique Map entries back to the final array ---
-    this.existingCurrencies = Array.from(uniqueExistingCurrenciesMap.values());
+        return acc;
+      },
+      {
+        existingMap: new Map<string, TradingPair>(),
+        availableSet: new Set<string>(),
+        available: [] as TradingPair[]
+      }
+    );
+
+    // --- 4. Assign final results ---
+    this.availableCurrencies = result.available;
+    this.existingCurrencies = Array.from(result.existingMap.values());
   }
 
   onCurrencySelect(pair: TradingPair): void {
