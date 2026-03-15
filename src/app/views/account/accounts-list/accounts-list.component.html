@@ -1,22 +1,47 @@
 <div class="accounts-container">
+
   <div class="header-section">
     <h2>{{ 'ACCOUNTS.ACCOUNTS' | translate }}</h2>
-    <button class="add-btn" (click)="navigateToNewAccount()">+{{'ACCOUNTS.ADD_ACCOUNT' | translate}}</button>
+    <button class="add-btn" (click)="navigateToNewAccount()">
+      +{{ 'ACCOUNTS.ADD_ACCOUNT' | translate }}
+    </button>
   </div>
 
-  <div *ngIf="accounts$ | async as accounts; else stateTemplate">
-    <div class="accounts-grid">
-      <div *ngFor="let account of accounts" class="account-card">
-        
+  <ng-container *ngIf="accounts$ | async as accounts; else stateTemplate">
+
+    <div *ngIf="accounts.length === 0" class="empty-state">
+      <p>No accounts found. Add one to get started.</p>
+    </div>
+
+    <div *ngIf="accounts.length > 0" class="accounts-grid">
+
+      <div *ngFor="let account of accounts" class="account-card" [class.provider-card]="account.provider">
+
         <div class="card-header">
-          <div class="gateway-badge">{{ account?.gatewayName || 'Unknown Gateway' }}</div>
-          <span *ngIf="account?.accountId" class="account-id">ID: {{ account.accountId }}</span>
+          <div class="gateway-badge">
+            {{ account?.gatewayName || 'Unknown Gateway' }}
+          </div>
+
+          <div class="header-right">
+            <span *ngIf="account?.accountId" class="account-id">
+              ID: {{ account.accountId }}
+            </span>
+
+            <span *ngIf="account.provider" class="provider-badge">
+              Provider
+            </span>
+          </div>
         </div>
-        
+
         <div class="card-info">
           <h3>{{ account?.accountName || 'Unnamed Account' }}</h3>
+
           <p class="card-number">
-            {{ account?.cardNumber ? '•••• •••• •••• ' + account.cardNumber.slice(-4) : 'No card number' }}
+            {{
+            account?.cardNumber
+            ? '•••• •••• •••• ' + account.cardNumber.slice(-4)
+            : 'No card number'
+            }}
           </p>
         </div>
 
@@ -24,6 +49,7 @@
           <p *ngIf="account.email" class="meta-item">
             <i class="icon-email"></i> {{ account.email }}
           </p>
+
           <p *ngIf="account.phone" class="meta-item">
             <i class="icon-phone"></i> {{ account.phone }}
           </p>
@@ -32,14 +58,16 @@
         <div class="card-footer">
           <span class="currency">{{ account?.baseCurrency }}</span>
           <span class="user">{{ account?.userName }}</span>
+          <button *ngIf="account.provider" class="balance-btn" (click)="checkBalance(account.id)">
+            Check Balance
+          </button>
         </div>
+
       </div>
+
     </div>
 
-    <div *ngIf="accounts.length === 0" class="empty-state">
-      <p>No accounts found. Add one to get started.</p>
-    </div>
-  </div>
+  </ng-container>
 
   <ng-template #stateTemplate>
     <div *ngIf="isLoading" class="loader">Loading accounts...</div>
@@ -47,4 +75,5 @@
       <p>Unable to load accounts. Please try again later.</p>
     </div>
   </ng-template>
+
 </div>

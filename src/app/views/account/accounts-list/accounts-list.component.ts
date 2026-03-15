@@ -6,6 +6,8 @@ import { Observable, of } from 'rxjs'; // 'of' is used to return a safe empty ar
 import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-accounts-list',
@@ -17,7 +19,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class AccountsListComponent implements OnInit {
   private accountsService = inject(AccountService);
   private router = inject(Router)
-  
+  private dialog = inject(MatDialog);
+
   // Use a $ suffix for Observables
   accounts$: Observable<Account[]> | undefined;
   isLoading = true;
@@ -38,7 +41,36 @@ export class AccountsListComponent implements OnInit {
     }
   }
 
-   navigateToNewAccount() {
+  checkBalance(accountId: number) {
+    this.accountsService.getAccountBalance(accountId).subscribe({
+      next: (res) => {
+        const message = `
+      Account: ${res.accountName || 'N/A'}
+      Balance: ${res.calculatedBalance || 'N/A'}
+      Currency: ${res.currencyCode || ''}
+      `;
+        this.dialog.open(DialogMessageComponent, {
+          data: {
+            title: 'Provider Balance',
+            message: message
+          }
+        });
+
+      },
+      error: (err) => {
+        console.error(err);
+
+        this.dialog.open(DialogMessageComponent, {
+          data: {
+            title: 'Error',
+            message: 'Unable to retrieve account balance.'
+          }
+        });
+      }
+    });
+  }
+
+  navigateToNewAccount() {
     this.router.navigate(['/add-account']);
   }
 }

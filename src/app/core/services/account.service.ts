@@ -27,14 +27,14 @@ export class AccountService {
     return this.http.get<Account[]>(url);
   }
 
- /**
-   * Retrieves paginated provider balances.
-   * @param page The page index (starting at 0)
-   * @param size The number of records per page
-   */
+  /**
+    * Retrieves paginated provider balances.
+    * @param page The page index (starting at 0)
+    * @param size The number of records per page
+    */
   getAccountProvidersBalances(page: number = 0, size: number = 10): Observable<Page<ProviderBalance>> {
     const url = build(ApiEndpoints.account.ACCOUNT_PROVIDER_BALANCE);
-    
+
     // Set up query parameters ?page=x&size=y
     const params = new HttpParams()
       .set('page', page.toString())
@@ -42,5 +42,10 @@ export class AccountService {
 
     return this.http.get<Page<ProviderBalance>>(url, { params });
   }
-  
+
+  getAccountBalance(accountId: number = 0): Observable<ProviderBalance> {
+    const url = build(ApiEndpoints.account.GET_ACCOUNT_BALANCE, { accountId: accountId });
+    return this.http.get<ProviderBalance>(url);
+  }
+
 }

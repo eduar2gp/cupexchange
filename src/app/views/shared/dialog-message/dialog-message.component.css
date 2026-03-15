@@ -81,3 +81,7 @@ button:focus-visible {
 .container {
   background-color: var(--color-surface);
 }
+
+p {
+  white-space: pre-line;
+}

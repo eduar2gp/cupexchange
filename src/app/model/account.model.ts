@@ -9,4 +9,5 @@ export interface Account {
   email: string | null;
   phone: string | null;
   cardNumber: string;
+  provider: boolean;
 }

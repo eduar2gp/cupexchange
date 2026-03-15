@@ -31,7 +31,8 @@ export const ApiEndpoints = {
   account: {
     ADD_ACCOUNT: '/api/v1/accounts',
     ACCOUNT_PROVIDER_BALANCE: '/api/v1/accounts/providers/balances',
-    GET_USER_ACCOUNTS: '/api/v1/accounts/user/{userId}'
+    GET_USER_ACCOUNTS: '/api/v1/accounts/user/{userId}',
+    GET_ACCOUNT_BALANCE: '/api/v1/accounts/{accountId}/balance'
   },
   order: {
     NEW_ORDER_ENDPOINT: '/api/v1/trade/order',

@@ -46,9 +46,32 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, border-color 0.2s;
 
+  /* Provider accounts visual highlight */
+  &.provider-card {
+    border-left: 4px solid var(--color-success);
+    background: linear-gradient(
+      to right,
+      rgba(46, 125, 50, 0.06),
+      transparent
+    );
+  }
+
   &:hover {
     transform: translateY(-4px);
     border-color: var(--color-accent);
+  }
+
+  /* Header */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .gateway-badge {
@@ -59,6 +82,22 @@
     font-weight: 600;
     padding: 4px 10px;
     border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .account-id {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Provider label */
+  .provider-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--color-success);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
     text-transform: uppercase;
   }
 
@@ -76,6 +115,16 @@
       font-family: 'Courier New', Courier, monospace;
       letter-spacing: 2px;
       font-size: 0.9rem;
+    }
+  }
+
+  .contact-info {
+    margin-bottom: 1rem;
+
+    .meta-item {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      margin: 0.2rem 0;
     }
   }
 
@@ -99,7 +148,8 @@
   }
 }
 
-.loader, .empty-state {
+.loader,
+.empty-state {
   text-align: center;
   color: var(--color-text-muted);
   padding: 4rem;
@@ -108,11 +158,9 @@
   border: 2px dashed var(--color-surface-elevated);
 }
 
-/* Inside accounts-list.component.scss */
-
+/* Grid Layout */
 .accounts-grid {
   display: grid;
-  // This will automatically fit as many 300px cards as possible
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   width: 100%;
@@ -121,12 +169,11 @@
 /* Mobile Support */
 @media (max-width: 480px) {
   .accounts-container {
-    padding: 1rem; // Less padding on small screens
+    padding: 1rem;
   }
 
   .accounts-grid {
-    // On very small phones, allow cards to be slightly smaller than 300px if needed
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 
   .header-section {
@@ -135,7 +182,22 @@
     gap: 1rem;
 
     .add-btn {
-      width: 100%; // Full width button on mobile
+      width: 100%;
     }
   }
+}
+
+.balance-btn {
+  margin-left: auto;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.balance-btn:hover {
+  opacity: 0.9;
 }
