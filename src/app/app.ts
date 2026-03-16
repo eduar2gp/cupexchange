@@ -136,11 +136,10 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     // map(orders => orders.length)
     //);
   }
-
+  
   async ngAfterViewInit() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Close sidenav on navigation
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.sidenav?.close());
@@ -149,25 +148,40 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(async () => {
         const introJs = (await import('intro.js')).default;
 
-        const intro = introJs();
-
-        // Fix tooltip positioning on mobile / iPhone
-        intro.onbeforechange((targetElement: HTMLElement) => {
-          if (targetElement) {
-            // Scroll the element into view
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Optional: offset for fixed headers (adjust pixels as needed)
-            window.scrollBy(0, -60);
-          }
-          return true; // ✅ must return boolean
+        const intro = introJs().setOptions({
+          // 1. Disable the built-in auto-scroll to prevent conflict
+          scrollToElement: false,
+          // 2. Optional: Ensure the helper layer doesn't clip on small screens
+          positionPrecedence: ['bottom', 'top', 'right', 'left']
         });
 
-        // Start tutorial using your existing HTML data-intro/data-step
-        intro.start();
+        intro.onbeforechange(async (targetElement: HTMLElement) => {
+          if (targetElement) {
+            const headerOffset = 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+
+            // Option 2.1: If using 'smooth' scroll, wait a tiny bit for the 
+            // scroll to start before letting Intro.js position the tooltip.
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+
+          return true; // <--- This satisfies the 'introBeforeChangeCallback' type
+        });
+
+        // 4. Force a refresh after a small delay to catch the final position
+        intro.onafterchange(() => {
+          setTimeout(() => intro.refresh(), 100);
+        });
+
+        intro.start();
         localStorage.setItem('tutorial_seen', 'true');
-      }, 600); // slight delay to ensure elements rendered
+      }, 600);
     }
   }
 
