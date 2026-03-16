@@ -44,6 +44,7 @@
     "chartjs-chart-financial": "^0.2.1",
     "express": "^5.1.0",
     "firebase": "^12.7.0",
+    "intro.js": "^8.3.2",
     "luxon": "^3.7.2",
     "ng2-charts": "^8.0.0",
     "ngx-google-analytics": "^14.0.1",

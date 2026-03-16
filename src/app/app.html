@@ -85,13 +85,10 @@
                           color="primary">
           <mat-icon>{{ (dataService.isEcommerce$ | async) ? 'autorenew' : 'store' }}</mat-icon>
         </mat-slide-toggle> -->
-        <button mat-icon-button 
-        routerLink="/notifications" 
-        routerLinkActive="active"
-          [matBadge]="notificationCount$ | async" 
-          [matBadgeHidden]="(notificationCount$ | async) === 0"
-          matBadgeColor="warn" 
-          aria-label="View notifications">
+        <button mat-icon-button routerLink="/notifications" routerLinkActive="active"
+          [matBadge]="notificationCount$ | async" [matBadgeHidden]="(notificationCount$ | async) === 0"
+          matBadgeColor="warn" aria-label="View notifications"
+          [attr.data-intro]="'LOGIN_TUTORIAL.NOTIFICATIONS' | translate" attr.data-step="3">
           <mat-icon>notifications</mat-icon>
         </button>
       </div>
@@ -111,12 +108,14 @@
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
       }@else{
-      <a mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item"
+      [attr.data-intro]="'LOGIN_TUTORIAL.DASHBOARD' | translate" attr.data-step="5">
         <mat-icon>show_chart</mat-icon>
         <span matListItemTitle>{{ 'HOME' | translate }}</span>
       </a>
       }
-      <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.WALLETS' | translate" attr.data-step="1">
         <mat-icon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
@@ -126,7 +125,8 @@
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
       }@else{
-      <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.ORDERS' | translate" attr.data-step="4">
         <mat-icon>poll</mat-icon>
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
@@ -138,7 +138,8 @@
         <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
       </a>
       }@else{
-      <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item">
+      <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" attr.data-step="2">
         <mat-icon>compare_arrows</mat-icon>
         <span matListItemTitle>{{ 'TRANSACTIONS' | translate }}</span>
       </a>

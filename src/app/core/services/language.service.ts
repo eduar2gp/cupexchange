@@ -20,10 +20,10 @@ export class LanguageService {
 
     const lang =
       savedLang ??
-      (this.SUPPORTED_LANGS.includes(browserLang) ? browserLang : 'en');
+      (this.SUPPORTED_LANGS.includes(browserLang) ? browserLang : 'es');
 
     this.translate.addLangs(this.SUPPORTED_LANGS);
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang('es');
     this.use(lang);
   }
 

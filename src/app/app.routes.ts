@@ -29,6 +29,7 @@ import { AccountManagerDashboardComponent } from './views/account/account-manage
 import { AccountProviderBalanceComponent } from './views/account/account-provider-balances/account-provider-balance.component';
 import { NotificationsComponent } from './views/notification/notifications.component';
 import { AccountsListComponent } from './views/account/accounts-list/accounts-list.component';
+import { WhoWeAreComponent } from './views/shared/whoweare/who-we-are.component';
 
 
 export const routes: Routes = [
@@ -39,6 +40,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'who-we-are',
+    component: WhoWeAreComponent
   },
   {
     path: 'register',

@@ -101,11 +101,26 @@
     "PROCESSING": "Processing...",
     "SELECT_CURRENCY": "Select currency"
   },
-   "ACCOUNTS": {
+  "ACCOUNTS": {
     "ADD_ACCOUNT": "Add account",
     "ACCOUNT_MANAGER": "Accounts Dashboard",
     "ACCOUNTS": "Accounts",
     "ID_INFO": "Account IDs",
     "ACCOUNT_PROVIDER_BALANCES": "Provider Account Balances"
-   }
+  },
+  "LOGIN_WHO_WE_ARE": "About us",
+  "WHO_WE_ARE": {
+    "TITLE": "Who We Are",
+    "MISSION": "We are a team with the mission of simplifying the exchange of Cuban pesos with foreign currencies.",
+    "SYSTEM": "Our platform uses the peer-to-peer system and a distributed network of holding accounts to enable secure and automated currency exchange.",
+    "MARKET": "We aim to reflect real market supply and demand to provide fair exchange rates.",
+    "GOAL": "Our goal is to offer a secure, fast, and convenient platform that makes currency exchange easier and more transparent for everyone."
+  },
+  "LOGIN_TUTORIAL": {
+    "WALLETS": "Create wallets and add funds",
+    "TRANSACTIONS": "Check all your transactions",
+    "NOTIFICATIONS": "Deposit status updates will show up in the notifications page",
+    "ORDERS": "After your deposit is approved proceed to create your first order",
+    "DASHBOARD": "Price charts open orders and live transactions are shown in the dashboard page"
+  }
 }

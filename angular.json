@@ -42,6 +42,7 @@
               "src/firebase-messaging-sw.js"
             ],
             "styles": [
+              "node_modules/intro.js/minified/introjs.min.css",
               "src/styles.scss"
             ],
             "server": "src/main.server.ts",

@@ -1,0 +1,35 @@
+.who-card {
+  max-width: 720px;
+  margin: 60px auto;
+  padding: 32px;
+
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+.who-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-bottom: 16px;
+}
+
+.who-content {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.who-paragraph {
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+}
+
+.highlight {
+  margin-top: 24px;
+  font-weight: 500;
+  color: var(--color-text);
+}

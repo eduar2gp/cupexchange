@@ -137,7 +137,15 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     //);
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!localStorage.getItem('tutorial_seen')) {
+      const introJs = (await import('intro.js')).default;
+      setTimeout(() => {
+        introJs().start();
+        localStorage.setItem('tutorial_seen', 'true');
+      }, 800);
+    }
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.sidenav?.close());
