@@ -139,16 +139,36 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   async ngAfterViewInit() {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (!localStorage.getItem('tutorial_seen')) {
-      const introJs = (await import('intro.js')).default;
-      setTimeout(() => {
-        introJs().start();
-        localStorage.setItem('tutorial_seen', 'true');
-      }, 800);
-    }
+
+    // Close sidenav on navigation
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.sidenav?.close());
+
+    if (!localStorage.getItem('tutorial_seen')) {
+      setTimeout(async () => {
+        const introJs = (await import('intro.js')).default;
+
+        const intro = introJs();
+
+        // Fix tooltip positioning on mobile / iPhone
+        intro.onbeforechange((targetElement: HTMLElement) => {
+          if (targetElement) {
+            // Scroll the element into view
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Optional: offset for fixed headers (adjust pixels as needed)
+            window.scrollBy(0, -60);
+          }
+          return true; // ✅ must return boolean
+        });
+
+        // Start tutorial using your existing HTML data-intro/data-step
+        intro.start();
+
+        localStorage.setItem('tutorial_seen', 'true');
+      }, 600); // slight delay to ensure elements rendered
+    }
   }
 
   ngOnDestroy(): void {
@@ -196,20 +216,15 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-
     const savedCode = localStorage.getItem(this.STORAGE_KEY);
     let pairToSelect: TradingPair | undefined;
-
     if (savedCode) {
       pairToSelect = this.availablePairs.find(p => p.value === savedCode);
     }
-
     if (!pairToSelect) {
       pairToSelect = this.availablePairs[0];
     }
-
     this.selectedPair = pairToSelect || null;
-
     if (this.selectedPair) {
       this.pairSelectionService.setSelectedPair(this.selectedPair);
     }
@@ -246,7 +261,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     const baseCurrency = pair.substring(0, 3).toLowerCase();
     return `assets/currencies/${baseCurrency}.png`;
   }
-
 
   getQuoteCurrencyImage(pair: string | undefined): string {
     if (!pair || pair.length < 6) {
