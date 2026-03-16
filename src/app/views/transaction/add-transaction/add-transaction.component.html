@@ -12,6 +12,10 @@
 
     <mat-card-content>
 
+      <button class="add-btn" (click)="navigateToNewAccount()">
+          +{{ 'ACCOUNTS.ADD_ACCOUNT' | translate }}
+      </button>
+
       @if (errorMessage) {
       <div class="error-box">
         <mat-icon color="warn">error_outline</mat-icon>

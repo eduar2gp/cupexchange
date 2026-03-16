@@ -184,3 +184,18 @@ mat-card {
 span{
   font-size: small;
 }
+
+.add-btn {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}

@@ -121,6 +121,6 @@
     "TRANSACTIONS": "Revisa todas tus transacciones",
     "NOTIFICATIONS": "Las actualizaciones del estado de los depósitos aparecerán en la página de notificaciones",
     "ORDERS": "Después de que se apruebe tu depósito, procede a crear tu primera orden",
-    "DASHBOARD": "En el tablero se muestran los gráficos de precios, órdenes abiertas y transacciones en vivo"
+    "DASHBOARD": "En el tablero se muestran los gráficos de precios, órdenes abiertas y transacciones en tiempo real"
   }
 }

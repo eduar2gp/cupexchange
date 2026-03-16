@@ -58,22 +58,24 @@ export class WalletComponent implements OnInit, OnDestroy {
   }
 
   loadWalletsOnInit(): void {
-    if (this.dataService.isUpdateRequired()) {     
-      this.fetchWallets()
+    const walletsJson = localStorage.getItem('WALLETS');
+    // Check if an update is forced OR if the local storage is empty/null
+    if (this.dataService.isUpdateRequired() || !walletsJson) {     
+      this.fetchWallets();
     } else {     
-      this.loadWalletsFromLocalStorage();
+      // Data exists and no update is required, so load from cache
+      this.loadWalletsFromLocalStorage(walletsJson);
     }
   }
 
-  private loadWalletsFromLocalStorage(): void {
-    const walletsJson = localStorage.getItem('WALLETS');
-    let loadedWallets: Wallet[];
-    if (walletsJson) {
-      loadedWallets = JSON.parse(walletsJson) as Wallet[];
-    } else {
-      loadedWallets = [];
+  private loadWalletsFromLocalStorage(cachedData: string): void {
+    try {
+      const loadedWallets = JSON.parse(cachedData) as Wallet[];
+      this.wallets.set(loadedWallets);
+    } catch (error) {
+      console.error("Error parsing wallets from localStorage", error);
+      this.fetchWallets(); // Fallback to fetch if JSON is corrupted
     }
-    this.wallets.set(loadedWallets);
   }
 
   fetchWallets(): void {
@@ -98,6 +100,7 @@ export class WalletComponent implements OnInit, OnDestroy {
         // 'data' contains the Wallet[] returned by getWallets
         this.dataService.walletUpdateCompleted()
         this.wallets.set(data);
+        localStorage.setItem('WALLETS', JSON.stringify(data));
       },
       error: (err) => {
         console.error('Error fetching wallets:', err); // Changed 'providers' to 'wallets'

@@ -91,7 +91,7 @@ export class AddTransactionComponent implements OnInit {
     if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedFile) {
       return true;
     }
-    if(this.transactionAmount == 0) return true;
+    if (this.transactionAmount == 0) return true;
     return false;
   }
 
@@ -161,6 +161,8 @@ export class AddTransactionComponent implements OnInit {
 
   submitTransaction() {
     if (!this.transactionRequest || !this.transactionAmount || this.transactionAmount <= 0) return;
+
+    if(!this.verifyAvailableBalance()) return;
 
     this.isLoading = true;
 
@@ -271,5 +273,9 @@ export class AddTransactionComponent implements OnInit {
       duration: 5000,
       panelClass: type === 'Success' ? ['snackbar-success'] : ['snackbar-error']
     });
+  }
+
+  navigateToNewAccount() {
+    this.router.navigate(['/add-account']);
   }
 }
