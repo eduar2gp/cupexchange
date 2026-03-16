@@ -1,35 +1,30 @@
 .who-card {
-  max-width: 720px;
-  margin: 60px auto;
-  padding: 32px;
-
-  background: var(--color-surface);
-  color: var(--color-text);
-
-  border-radius: 14px;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 }
 
 .who-title {
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  margin-bottom: 16px;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
 }
 
 .who-content {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
 }
 
 .who-paragraph {
-  margin-bottom: 18px;
-  font-size: 1.1rem;
+    font-size: 1.1rem;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    /* Helps prevent large gaps between words */
 }
 
 .highlight {
-  margin-top: 24px;
-  font-weight: 500;
-  color: var(--color-text);
+    color: var(--color-text);
 }
