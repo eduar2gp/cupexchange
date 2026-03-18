@@ -79,3 +79,53 @@
 mat-paginator { width: 100%; border-top: 1px solid var(--color-surface-elevated); }
 ::ng-deep .mat-mdc-paginator-range-label,
 ::ng-deep .mat-mdc-paginator-page-size-label { color: var(--color-text-muted) !important; }
+
+/* Mobile Optimizations */
+@media (max-width: 600px) {
+  .transactions-card {
+    margin: 0; /* Remove outside margins to use full screen width */
+    border-radius: 0; /* Optional: square edges look cleaner on mobile */
+    box-shadow: none;
+    border-bottom: 1px solid var(--color-surface-elevated);
+  }
+
+  .transaction-item {
+    padding: 12px 8px; /* Reduce horizontal padding */
+  }
+
+  .transaction-main {
+    gap: 8px; /* Ensure there is a gap between left info and right amount */
+  }
+
+  .transaction-left {
+    gap: 8px; /* Tighten gap between icon and text */
+    flex: 1;  /* Allow this section to grow/shrink */
+    min-width: 0; /* Critical for text-overflow to work */
+  }
+
+  .type-icon {
+    width: 36px;  /* Slightly smaller icon */
+    height: 36px;
+    flex-shrink: 0; /* Prevent icon from squishing */
+  }
+
+  .type-name {
+    font-size: 0.9rem; /* Smaller text for mobile */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .amount {
+    font-size: 0.9rem;
+    flex-shrink: 0; /* Ensure the price never wraps or squishes */
+    text-align: right;
+  }
+
+  /* Adjust paginator for mobile */
+  ::ng-deep .mat-mdc-paginator-container {
+    padding: 0 4px !important;
+    justify-content: center !important;
+    flex-wrap: wrap;
+  }
+}
