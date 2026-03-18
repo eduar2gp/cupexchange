@@ -99,7 +99,8 @@
     "UPLOAD_PLACEHOLDER": "Haga clic para subir la imagen",
     "CONFIRM_ACTION": "Confirmar {{type}}",
     "PROCESSING": "Procesando...",
-    "SELECT_CURRENCY": "Seleccionar moneda"
+    "SELECT_CURRENCY": "Seleccionar moneda",
+    "NO_TRANSACTIONS_FOUND": "No se encuentran transacciones"
   },
   "ACCOUNTS": {
     "ADD_ACCOUNT": "Agregar cuenta",

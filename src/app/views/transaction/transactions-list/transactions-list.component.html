@@ -1,5 +1,5 @@
 <mat-card class="transactions-card">
-  <mat-card-title class="transactions-title">Transactions</mat-card-title>
+  <mat-card-title class="transactions-title">{{ 'TRANSACTIONS' | translate}}</mat-card-title>
 
   <mat-card-content>
     @if (loading()) {
@@ -58,7 +58,7 @@
         @empty {
           <div class="state-container">
             <mat-icon class="state-icon">receipt_long</mat-icon>
-            <div>No transactions found</div>
+            <div>{{ 'TRANSACTION.NO_TRANSACTIONS_FOUND' | translate }}</div>
           </div>
         }
       </mat-list>

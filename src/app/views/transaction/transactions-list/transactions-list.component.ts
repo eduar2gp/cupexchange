@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Transaction } from '../../../model/transaction.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transactions-list',
@@ -27,7 +28,8 @@ import { Transaction } from '../../../model/transaction.model';
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    TranslateModule
   ],
   templateUrl: './transactions-list.component.html',
   styleUrls: ['./transactions-list.component.scss'],

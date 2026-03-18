@@ -98,7 +98,9 @@
     "UPLOAD_LABEL": "Загрузить чек",
     "UPLOAD_PLACEHOLDER": "Нажмите, чтобы загрузить изображение",
     "CONFIRM_ACTION": "Подтвердить {{type}}",
-    "PROCESSING": "Обработка..."
+    "PROCESSING": "Обработка...",
+    "SELECT_CURRENCY": "Выберите валюту",
+    "NO_TRANSACTIONS_FOUND": "Транзакции не найдены"
   },
   "LOGIN_WHO_WE_ARE": "Кто мы",
   "WHO_WE_ARE": {
