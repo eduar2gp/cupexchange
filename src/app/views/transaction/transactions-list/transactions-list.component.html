@@ -1,40 +1,80 @@
-<div class="transactions-page">
-  @if (!loading() && !error() && transactions().length > 0) {
-  <div class="transactions-card">
-    <h3 class="transactions-title">Transactions</h3>
+<mat-card class="transactions-card">
+  <mat-card-title class="transactions-title">Transactions</mat-card-title>
 
-    <div class="transactions-list">
-      @for (tx of transactions(); track tx.id) {
-      <div class="transaction-item">
-        <div class="transaction-main">
-          <div class="transaction-left">
-            <div class="type-icon" [ngClass]="tx.type.toLowerCase()">
-              <mat-icon>{{ getTypeIcon(tx.type) }}</mat-icon>
-            </div>
-            <div class="transaction-info">
-              <div class="type-header">
-                <span class="type-name">{{ tx.type.replace('_', ' ') | titlecase }}</span>
-                @if (tx.type === 'DEPOSIT' || tx.type === 'WITHDRAWAL') {
-                <span class="status-tag" [ngClass]="getStatusClass(tx.status)">
-                  {{ tx.status || 'PENDING' }}
-                </span>
-                }
-              </div>
-              <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
-            </div>
-          </div>
-          <div class="amount" [class.positive]="tx.type === 'DEPOSIT'" [class.negative]="tx.type === 'WITHDRAWAL'">
-            {{ tx.type === 'WITHDRAWAL' ? '-' : '+' }}
-            {{ tx.amount | number:'1.2-8' }} {{ tx.currency }}
-          </div>
-        </div>
+  <mat-card-content>
+    @if (loading()) {
+      <div class="state-container">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
       </div>
-      }
-    </div>
+    } 
+    
+    @else if (error()) {
+      <div class="state-container">
+        <mat-icon class="state-icon">error_outline</mat-icon>
+        <div class="error-text">{{ error() }}</div>
+        <button mat-stroked-button color="primary" (click)="refresh()" class="retry-button">
+          Retry
+        </button>
+      </div>
+    } 
 
-    <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="currentPage()"
-      [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)" aria-label="Select page of transactions">
-    </mat-paginator>
-  </div>
+    @else {
+      <mat-list class="transactions-list">
+        @for (tx of transactions(); track tx.id) {
+          <mat-list-item class="transaction-item">
+            <div matLine class="transaction-main">
+              <div class="transaction-left">
+                <div class="type-icon" [ngClass]="getTypeClass(tx.type)">
+                  <mat-icon aria-hidden="false" [aria-label]="tx.type">
+                    {{ getTypeIcon(tx.type) }}
+                  </mat-icon>
+                </div>
+
+                <div class="transaction-info">
+                  <div class="type-header">
+                    <span class="type-name">
+                      {{ (tx.type || '').replace('_', ' ') | titlecase }}
+                    </span>
+                    
+                    @if (isDepositOrWithdrawal(tx.type)) {
+                      <mat-chip [ngClass]="getStatusClass(tx.status)" selected>
+                        {{ tx.status || 'PENDING' }}
+                      </mat-chip>
+                    }
+                  </div>
+                  <div class="date">{{ tx.createdAt | date:'MMM d, y • h:mm a' }}</div>
+                </div>
+              </div>
+
+              <div class="amount" [ngClass]="getAmountClass(tx.type)">
+                <span class="sign">{{ isWithdrawal(tx.type) ? '-' : '' }}</span>
+                <span class="value">{{ tx.amount | number:'1.2-8' }}</span>
+                <span class="currency">{{ tx.currency }}</span>
+              </div>
+            </div>
+          </mat-list-item>
+        } 
+        
+        @empty {
+          <div class="state-container">
+            <mat-icon class="state-icon">receipt_long</mat-icon>
+            <div>No transactions found</div>
+          </div>
+        }
+      </mat-list>
+    }
+  </mat-card-content>
+
+  @if (totalElements() > 0) {
+    <mat-card-actions>
+      <mat-paginator 
+        [length]="totalElements()" 
+        [pageSize]="pageSize()" 
+        [pageIndex]="currentPage()"
+        [pageSizeOptions]="[5, 10, 25, 50]" 
+        (page)="handlePageEvent($event)" 
+        aria-label="Select page">
+      </mat-paginator>
+    </mat-card-actions>
   }
-</div>
+</mat-card>

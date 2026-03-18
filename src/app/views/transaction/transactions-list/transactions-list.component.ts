@@ -1,15 +1,19 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, tap, catchError, filter } from 'rxjs/operators'; 
+import { of } from 'rxjs';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Add this
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
 
 import { TransactionService } from '../../../core/services/transaction.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Page } from '../../../model/page.model';
 import { Transaction } from '../../../model/transaction.model';
 
 @Component({
@@ -17,93 +21,117 @@ import { Transaction } from '../../../model/transaction.model';
   standalone: true,
   imports: [
     CommonModule,
+    MatCardModule,
     MatProgressSpinnerModule,
     MatListModule,
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
-    MatPaginatorModule // Add this
+    MatPaginatorModule
   ],
   templateUrl: './transactions-list.component.html',
-  styleUrl: './transactions-list.component.css',
+  styleUrls: ['./transactions-list.component.scss'],
 })
-export class TransactionsListComponent implements OnInit {
+export class TransactionsListComponent {
   private transactionService = inject(TransactionService);
   private authService = inject(AuthService);
 
-  // Pagination Signals
-  transactionsPage = signal<Page<Transaction> | null>(null);
-  totalElements = signal(0);
+  // State Signals
   pageSize = signal(10);
   currentPage = signal(0);
-  
-  loading = signal(true);
+  loading = signal(false);
   error = signal<string | null>(null);
 
-  transactions = computed(() => this.transactionsPage()?.content ?? []);
+  // 1. Create a computed object for our parameters
+  // We define the type explicitly so 'p' isn't unknown in the pipe
+  private paramsSignal = computed(() => ({
+    user: this.authService.currentUser$(), // Ensure this is a signal in your service
+    page: this.currentPage(),
+    size: this.pageSize()
+  }));
 
-  ngOnInit(): void {
-    this.loadTransactions();
-  }
+  // 2. The Reactive Pipe
+  private transactionsResource = toSignal(
+    toObservable(this.paramsSignal).pipe(
+      // The filter prevents the API call if user is null
+      filter((p): p is { user: any; page: number; size: number } => !!p.user),
+      tap(() => {
+        this.loading.set(true);
+        this.error.set(null);
+      }),
+      switchMap(p => 
+        this.transactionService.getTransactionsByUserIdPaginated(
+          p.user.userId, 
+          p.page, 
+          p.size
+        ).pipe(
+          catchError(() => {
+            this.error.set('Failed to load transactions');
+            return of(null);
+          }),
+          tap(() => this.loading.set(false))
+        )
+      )
+    ),
+    { initialValue: null }
+  );
 
-  loadTransactions(): void {
-    const user = this.authService.currentUser$();
-    if (!user) {
-      this.error.set('User not authenticated');
-      this.loading.set(false);
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.transactionService.getTransactionsByUserIdPaginated(
-      user.userId, 
-      this.currentPage(), 
-      this.pageSize()
-    ).subscribe({
-      next: (pageData) => {
-        this.transactionsPage.set(pageData);
-        this.totalElements.set(pageData.totalElements);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load transactions');
-        this.loading.set(false);
-      }
-    });
-  }
+  // 3. Selectors for the Template
+  transactions = computed(() => this.transactionsResource()?.content ?? []);
+  totalElements = computed(() => this.transactionsResource()?.totalElements ?? 0);
 
   handlePageEvent(event: PageEvent): void {
     this.currentPage.set(event.pageIndex);
     this.pageSize.set(event.pageSize);
-    this.loadTransactions();
   }
 
-  getTypeIcon(type: string): string {
-    const iconMap: { [key: string]: string } = {
+  trackById(index: number, item: Transaction) {
+    return item?.id;
+  }
+
+  getTypeIcon(type?: string): string {
+    const iconMap: Record<string, string> = {
       'deposit': 'arrow_downward',
       'withdrawal': 'arrow_upward',
       'trade_buy': 'shopping_cart',
       'trade_sell': 'sell',
       'fee_collection': 'account_balance_wallet'
     };
-    return iconMap[type.toLowerCase()] || 'receipt_long';
+    return iconMap[(type || '').toLowerCase()] || 'receipt_long';
+  }
+
+  getTypeClass(type?: string): string {
+    const t = (type || '').toUpperCase();
+    if (t === 'DEPOSIT') return 'deposit';
+    if (t === 'WITHDRAWAL') return 'withdrawal';
+    if (t.includes('TRADE')) return 'trade';
+    if (t.includes('FEE')) return 'fee';
+    return 'neutral';
+  }
+
+  getAmountClass(type?: string): string {
+    const t = (type || '').toUpperCase();
+    return (t === 'DEPOSIT') ? 'positive' : (t === 'WITHDRAWAL' || t.includes('FEE')) ? 'negative' : 'neutral-amount';
   }
 
   getStatusClass(status?: string): string {
-    if (!status) return 'status-pending';
-    switch (status.toUpperCase()) {
-      case 'COMPLETED': return 'status-completed';
-      case 'FAILED':
-      case 'REJECT':
-      case 'CANCELLED': return 'status-cancelled';
-      default: return 'status-pending';
-    }
+    const s = (status || '').toUpperCase();
+    if (s === 'COMPLETED') return 'status-completed';
+    if (['FAILED', 'REJECT', 'CANCELLED'].includes(s)) return 'status-cancelled';
+    return 'status-pending';
+  }
+
+  isDepositOrWithdrawal(type?: string): boolean {
+    const t = (type || '').toUpperCase();
+    return t === 'DEPOSIT' || t === 'WITHDRAWAL';
+  }
+
+  isWithdrawal(type?: string): boolean {
+    return (type || '').toUpperCase() === 'WITHDRAWAL';
   }
 
   refresh(): void {
+    // Simply resetting the signal triggers the logic above
     this.currentPage.set(0);
-    this.loadTransactions();
   }
 }
