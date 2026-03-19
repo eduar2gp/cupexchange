@@ -40,9 +40,9 @@
     <mat-paginator [length]="totalElements"
                    [pageSize]="pageSize"
                    [pageIndex]="currentPage"
-                   [pageSizeOptions]="[5, 10, 25]"
+                   [pageSizeOptions]="[5, 10, 25, 50]"                
                    (page)="handlePageEvent($event)"
-                   aria-label="Select page">
+                   showFirstLastButtons>
     </mat-paginator>
 
     <div *ngIf="notifications.length === 0" class="empty-state">
