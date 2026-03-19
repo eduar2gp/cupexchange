@@ -66,15 +66,13 @@
   </mat-card-content>
 
   @if (totalElements() > 0) {
-    <mat-card-actions>
       <mat-paginator 
         [length]="totalElements()" 
         [pageSize]="pageSize()" 
         [pageIndex]="currentPage()"
         [pageSizeOptions]="[5, 10, 25, 50]" 
         (page)="handlePageEvent($event)" 
-        aria-label="Select page">
+        showFirstLastButtons>
       </mat-paginator>
-    </mat-card-actions>
   }
 </mat-card>
