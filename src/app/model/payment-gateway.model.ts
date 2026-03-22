@@ -3,4 +3,5 @@ export interface PaymentGateway {
     baseCurrency?: string;  
     gatewayName?: string;
     gatewayCode?: string;
+    method?: string;
 }

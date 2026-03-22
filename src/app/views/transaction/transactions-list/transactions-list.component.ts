@@ -95,6 +95,7 @@ export class TransactionsListComponent {
     const iconMap: Record<string, string> = {
       'deposit': 'arrow_downward',
       'withdrawal': 'arrow_upward',
+      'TRADE_DEBIT': 'arrow_downward',
       'trade_buy': 'shopping_cart',
       'trade_sell': 'sell',
       'fee_collection': 'account_balance_wallet'
@@ -129,7 +130,7 @@ export class TransactionsListComponent {
   }
 
   isWithdrawal(type?: string): boolean {
-    return (type || '').toUpperCase() === 'WITHDRAWAL';
+    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'TRADE_CREDIT' || (type || '').toUpperCase() === 'FEE_PAYMENT';
   }
 
   refresh(): void {

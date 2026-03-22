@@ -52,6 +52,7 @@ export class AddTransactionComponent implements OnInit {
 
   paymentGateways: PaymentGateway[] = [];
   selectedGatewayCode: string | null = null;
+  selectedGatewayMethod: string | null = null;
 
   // Dual account logic
   userAccounts: Account[] = [];
@@ -189,6 +190,7 @@ export class AddTransactionComponent implements OnInit {
       toAccountId: toId,
       amount: this.transactionAmount,
       requestType: this.transactionRequest.type,
+      method: this.selectedGatewayMethod
       // currencyCode: this.transactionRequest.currencyCode
     })
       .pipe(
@@ -232,6 +234,7 @@ export class AddTransactionComponent implements OnInit {
   // UI Helper Methods
   selectGateway(gateway: PaymentGateway): void {
     this.selectedGatewayCode = gateway.gatewayCode!;
+    this.selectedGatewayMethod = gateway.method!;
     this.onGatewaySelected(this.selectedGatewayCode);
   }
 
