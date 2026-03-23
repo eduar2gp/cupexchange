@@ -30,6 +30,7 @@ import { AccountProviderBalanceComponent } from './views/account/account-provide
 import { NotificationsComponent } from './views/notification/notifications.component';
 import { AccountsListComponent } from './views/account/accounts-list/accounts-list.component';
 import { WhoWeAreComponent } from './views/shared/whoweare/who-we-are.component';
+import { CashOrdersListComponent } from './views/order/cash-orders-list/cash-orders-list.component';
 
 
 export const routes: Routes = [
@@ -76,6 +77,11 @@ export const routes: Routes = [
   {
     path: 'orders',
     component: OrdersListComponent,
+    canActivate: [roleGuard],    
+  },
+  {
+    path: 'cash-orders',
+    component: CashOrdersListComponent,
     canActivate: [roleGuard],    
   },
   {

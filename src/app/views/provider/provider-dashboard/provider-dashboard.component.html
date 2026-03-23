@@ -49,6 +49,12 @@
         <mat-icon>shopping_cart</mat-icon>
         {{ 'ORDERS' | translate }}
       </button>
+      @if(provider.cashProvider){
+      <button mat-flat-button color="primary" (click)="navigateToCashOrders()">
+        <mat-icon>money</mat-icon>
+        {{ 'CASH_ORDERS' | translate }}
+      </button>
+      }
     </mat-card-actions>
   </mat-card>
   } @else {

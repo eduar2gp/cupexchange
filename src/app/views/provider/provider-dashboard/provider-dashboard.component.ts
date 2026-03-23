@@ -95,4 +95,7 @@ export class ProviderDashboardComponent implements OnInit {
   navigateToOrders() {
     this.router.navigate(['provider-orders'])
   }
+  navigateToCashOrders(){
+    this.router.navigate(['cash-orders'])
+  }
 }

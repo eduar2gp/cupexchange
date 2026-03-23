@@ -5,4 +5,5 @@ export interface Provider {
   phone: string;
   userId?: string;
   profileImageUrl?: string;
+  cashProvider?: boolean;
 }

@@ -4,7 +4,10 @@ import { CreateOrderRequest } from '../../model/create-merchant-order-request.mo
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'
 import { MerchantOrder } from '../../model/merchant-order-reponse.model'
-import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
+import { build, ApiEndpoints } from '../../../app/core/api/endpoints';
+import { CashOrder } from '../../model/cash-order-response.model';
+import { Page } from '../../model/page.model';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class MerchantOrdersService {
@@ -23,6 +26,23 @@ export class MerchantOrdersService {
   getAllMerchantOrdersByCustomer(): Observable<MerchantOrder[]> {
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS}`;
     return this.http.get<MerchantOrder[]>(url);
+  }
+
+  getCashMerchantOrdersByProviderId(
+    providerId: string,
+    page: number = 0,
+    size: number = 20,
+    sort: string = 'createdAt,desc'
+  ): Observable<Page<CashOrder>> {
+    const url = build(ApiEndpoints.merchant.MERCHANT_GET_CASH_ORDERS_BY_PROVIDER, {
+      providerId: providerId
+    });
+    // Set up the query parameters for Spring Pageable
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
+    return this.http.get<Page<CashOrder>>(url, { params });
   }
 
   getAllMerchantOrdersByProvider(providerId: string): Observable<MerchantOrder[]> {

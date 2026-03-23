@@ -14,6 +14,7 @@ export const ApiEndpoints = {
     MERCHANT_ADD_ORDERS_ENDPOINT: '/api/v1/merchant/add-order',
     MERCHANT_GET_ORDERS: '/api/v1/merchant/orders/customer',
     MERCHANT_GET_ORDERS_BY_PROVIDER: '/api/v1/merchant/orders/',
+    MERCHANT_GET_CASH_ORDERS_BY_PROVIDER: '/api/v1/merchant/cash-orders/{providerId}',
     MERCHANT_UPDATE_ORDER_STATUS: '/api/v1/merchant/update-status',
   },
   transaction: {
