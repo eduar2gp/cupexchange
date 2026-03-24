@@ -17,10 +17,12 @@ import { MatSelectModule } from '@angular/material/select';
 // Service/Model Imports
 import { TransactionService } from '../../../core/services/transaction.service';
 import { DataService } from '../../../core/services/data.service';
+import { ProvidersService } from '../../../core/services/providers.service';
 import { Wallet } from '../../../model/wallet.model';
 import { TransactionRequest } from '../../../model/transaction-request.model';
 import { PaymentGateway } from '../../../model/payment-gateway.model';
 import { Account } from '../../../model/account.model';
+import { Provider } from '../../../model/provider.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -43,6 +45,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class AddTransactionComponent implements OnInit {
 
+  // Transaction State
   transactionRequest: TransactionRequest | null = null;
   wallets: Wallet[] = [];
   transactionAmount: number | null = null;
@@ -50,11 +53,21 @@ export class AddTransactionComponent implements OnInit {
   isLoading: boolean = false;
   selectedFile: File | null = null;
 
-  paymentGateways: PaymentGateway[] = [];
+  // Payment Method Logic
+  paymentMethods = ['CASH', 'BANK', 'WALLET'];
+  selectedMethod: string | null = null;
+
+  // Gateway Logic
+  allPaymentGateways: PaymentGateway[] = [];
+  filteredGateways: PaymentGateway[] = [];
   selectedGatewayCode: string | null = null;
   selectedGatewayMethod: string | null = null;
 
-  // Dual account logic
+  // Provider (Cash) Logic
+  providers: Provider[] = [];
+  selectedProvider: Provider | null = null;
+
+  // Account logic (Bank/Wallet)
   userAccounts: Account[] = [];
   providerAccounts: Account[] = [];
   selectedUserAccount: Account | null = null;
@@ -63,6 +76,7 @@ export class AddTransactionComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private dataService: DataService,
+    private providersService: ProvidersService,
     private router: Router,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
@@ -78,22 +92,72 @@ export class AddTransactionComponent implements OnInit {
       return;
     }
 
+    this.setAvailablePaymentMethods(this.transactionRequest.currencyCode);
     this.transactionAmount = this.transactionRequest.amount || 0;
+
+    // 1. Get Municipality ID and Load Cash Providers
+    const currentUser = this.dataService.getCurrentUserValue();
+    if (currentUser?.municipalityId) {
+      this.loadCashProviders(currentUser.municipalityId);
+    }
+
+    // 2. Load all available gateways for the currency
     this.loadPaymentGateways(this.transactionRequest.currencyCode!);
   }
 
-  get isSubmitDisabled(): boolean {
-    if (this.isLoading) return true;
-    if (!this.selectedGatewayCode) return true;
-    if (!this.selectedUserAccount) return true;
-    if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedProviderAccount) {
-      return true;
+  private setAvailablePaymentMethods(currencyCode: string | undefined): void {
+    switch (currencyCode) {
+      case 'CUP':
+        this.paymentMethods = ['CASH', 'BANK'];
+        break;
+      case 'MLC':
+        this.paymentMethods = ['BANK'];
+        break;
+      case 'USD':
+        this.paymentMethods = ['CASH', 'BANK', 'WALLET'];
+        break;
+      default:
+        this.paymentMethods = ['BANK']; // Safe fallback
     }
-    if (this.transactionRequest?.type === 'DEPOSIT' && !this.selectedFile) {
-      return true;
+    if (this.paymentMethods.length === 1) {
+      this.selectPaymentMethod(this.paymentMethods[0]);
     }
-    if (this.transactionAmount == 0) return true;
-    return false;
+  }
+
+  /**
+   * Loads providers filtered by Municipality for the CASH flow
+   */
+  private loadCashProviders(municipalityId: number): void {
+    this.providersService.getProvidersByMunicipalityId(municipalityId)
+      .pipe(catchError(() => of({ content: [] })))
+      .subscribe(response => {
+        this.providers = response.content;
+        this.cdr.detectChanges();
+      });
+  }
+
+  /**
+   * Filters payment gateways based on the top-level method (BANK vs WALLET)
+   */
+  selectPaymentMethod(method: string): void {
+    this.selectedMethod = method;
+    this.resetSelections();
+
+    if (method !== 'CASH') {
+      this.filteredGateways = this.allPaymentGateways.filter(
+        g => g.method?.toUpperCase() === method
+      );
+    }
+  }
+
+  private resetSelections(): void {
+    this.selectedGatewayCode = null;
+    this.selectedGatewayMethod = null;
+    this.selectedProvider = null;
+    this.selectedUserAccount = null;
+    this.selectedProviderAccount = null;
+    this.userAccounts = [];
+    this.providerAccounts = [];
   }
 
   private loadPaymentGateways(currency: string): void {
@@ -101,137 +165,111 @@ export class AddTransactionComponent implements OnInit {
     this.transactionService.getPaymentGateways(currency)
       .pipe(catchError(() => of([])))
       .subscribe(gateways => {
-        this.paymentGateways = gateways;
+        this.allPaymentGateways = gateways;
         this.isLoading = false;
-        if (gateways.length > 0) {
-          this.selectGateway(gateways[0]);
-        }
         this.cdr.detectChanges();
       });
   }
 
-  onGatewaySelected(gatewayCode: string): void {
-    this.selectedUserAccount = null;
-    this.selectedProviderAccount = null;
-    this.userAccounts = [];
-    this.providerAccounts = [];
-    this.isLoading = true;
+  selectProvider(provider: Provider): void {
+    this.selectedProvider = provider;
+    // For now, cash providers don't require account selection logic
+    this.cdr.detectChanges();
+  }
 
-    const isDeposit = this.transactionRequest?.type === 'DEPOSIT';
+  get isSubmitDisabled(): boolean {
+    if (this.isLoading) return true;
+    if (this.transactionAmount === null || this.transactionAmount <= 0) return true;
 
-    let request$: Observable<any>;
-
-    if (isDeposit) {
-      // Deposit requires BOTH user + provider accounts
-      request$ = forkJoin({
-        user: this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode),
-        provider: this.transactionService.getAccountsByGatewayCode(gatewayCode)
-      });
-    } else {
-      // Withdrawal only needs user accounts
-      request$ = this.transactionService
-        .getAccountsByUserIdAndGatewayCode(gatewayCode)
-        .pipe(
-          switchMap(userAccounts => of({ user: userAccounts, provider: [] }))
-        );
+    if (this.selectedMethod === 'CASH') {
+      return !this.selectedProvider;
     }
 
-    request$
-      .pipe(
-        catchError(() => {
-          this.showToast('Failed to load accounts for this gateway.', 'Error');
-          return of({ user: [], provider: [] });
-        })
-      )
+    // Bank/Wallet logic
+    if (!this.selectedGatewayCode || !this.selectedUserAccount) return true;
+    if (this.transactionRequest?.type === 'DEPOSIT' && (!this.selectedProviderAccount || !this.selectedFile)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  onGatewaySelected(gatewayCode: string): void {
+    this.isLoading = true;
+    const isDeposit = this.transactionRequest?.type === 'DEPOSIT';
+
+    const request$ = isDeposit
+      ? forkJoin({
+        user: this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode),
+        provider: this.transactionService.getAccountsByGatewayCode(gatewayCode)
+      })
+      : this.transactionService.getAccountsByUserIdAndGatewayCode(gatewayCode).pipe(
+        switchMap(user => of({ user, provider: [] }))
+      );
+
+    request$.pipe(catchError(() => of({ user: [], provider: [] })))
       .subscribe(({ user, provider }) => {
         this.userAccounts = user;
         this.providerAccounts = provider;
         this.isLoading = false;
-
-        if (this.userAccounts.length === 1) {
-          this.selectedUserAccount = this.userAccounts[0];
-        }
-
-        if (this.providerAccounts.length === 1) {
-          this.selectedProviderAccount = this.providerAccounts[0];
-        }
-
+        if (this.userAccounts.length === 1) this.selectedUserAccount = this.userAccounts[0];
+        if (this.providerAccounts.length === 1) this.selectedProviderAccount = this.providerAccounts[0];
         this.cdr.detectChanges();
       });
   }
 
   submitTransaction() {
-    if (!this.transactionRequest || !this.transactionAmount || this.transactionAmount <= 0) return;
-
-    if(!this.verifyAvailableBalance()) return;
+    if (!this.transactionRequest || !this.transactionAmount || !this.verifyAvailableBalance()) return;
 
     this.isLoading = true;
-
-    // 1. Sync the request object with the current UI state
     this.transactionRequest.amount = this.transactionAmount;
-    // this.transactionRequest.currencyCode = this.selectedUserAccount!.currencyCode;
 
-    let fromId: number | null = null;
-    let toId: number | null = null;
-
-    if (this.transactionRequest.type === 'DEPOSIT') {
-      // Deposit: User -> Provider (User selects both)
-      fromId = this.selectedUserAccount!.id;
-      toId = this.selectedProviderAccount!.id;
-    } else {
-      // Withdrawal: System -> User (User only selects their destination)
-      fromId = 0; // Or leave null, as backend ignores it for waterfall
-      toId = this.selectedUserAccount!.id;
-    }
-
-    // 2. Add Payment
-    this.transactionService.addPayment({
-      fromAccountId: fromId,
-      toAccountId: toId,
+    let payload: any = {
       amount: this.transactionAmount,
       requestType: this.transactionRequest.type,
-      method: this.selectedGatewayMethod
-      // currencyCode: this.transactionRequest.currencyCode
-    })
-      .pipe(
-        switchMap((paymentResponse) => {
-          // Handle potential array response from Waterfall
-          const paymentId = Array.isArray(paymentResponse) ? paymentResponse[0].id : paymentResponse.id;
+      method: this.selectedMethod
+    };
 
-          // 3. Update referenceId for the subsequent 'deposit' call
+    if (this.selectedMethod === 'CASH') {
+      payload.providerId = this.selectedProvider?.id;
+    } else {
+      payload.fromAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedUserAccount?.id : 0;
+      payload.toAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedProviderAccount?.id : this.selectedUserAccount?.id;
+    }
+
+    this.transactionService.addPayment(payload)
+      .pipe(
+        switchMap((paymentResponse: any) => {
+          const paymentId = Array.isArray(paymentResponse) ? paymentResponse[0].id : paymentResponse.id;
           this.transactionRequest!.referenceId = paymentId.toString();
 
-          if (this.transactionRequest?.type === 'DEPOSIT') {
-            if (this.selectedFile) {
-              const formData = new FormData();
-              formData.append('file', this.selectedFile);
-              return this.transactionService.updateReceipt(paymentId, formData).pipe(
-                switchMap(() => this.transactionService.deposit(this.transactionRequest!))
-              );
-            }
-            return this.transactionService.deposit(this.transactionRequest!);
+          if (this.transactionRequest?.type === 'DEPOSIT' && this.selectedFile) {
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
+            return this.transactionService.updateReceipt(paymentId, formData).pipe(
+              switchMap(() => this.transactionService.deposit(this.transactionRequest!))
+            );
           }
-
-          // Withdrawals are handled entirely by addPayment (the Waterfall)
-          return of(paymentResponse);
-
+          return this.transactionRequest?.type === 'DEPOSIT'
+            ? this.transactionService.deposit(this.transactionRequest!)
+            : of(paymentResponse);
         }),
         catchError((error) => {
           this.isLoading = false;
-          this.showToast(error.error?.details || error.error?.message || 'Transaction failed.', 'Error');
+          this.showToast(error.error?.details || 'Transaction failed.', 'Error');
           return of(null);
         })
       )
-      .subscribe((finalResponse) => {
+      .subscribe((final) => {
         this.isLoading = false;
-        if (finalResponse) {
-          this.showToast(`${this.transactionRequest?.type} processed successfully!`, 'Success');
+        if (final) {
+          this.showToast('Transaction processed successfully!', 'Success');
           this.router.navigate(['/transactions']);
         }
       });
   }
 
-  // UI Helper Methods
+  // --- UI Helpers ---
   selectGateway(gateway: PaymentGateway): void {
     this.selectedGatewayCode = gateway.gatewayCode!;
     this.selectedGatewayMethod = gateway.method!;
@@ -240,16 +278,6 @@ export class AddTransactionComponent implements OnInit {
 
   selectUserAccount(account: Account): void { this.selectedUserAccount = account; }
   selectProviderAccount(account: Account): void { this.selectedProviderAccount = account; }
-
-  getAccountDetails(account: Account) {
-    return [
-      { label: 'Name', value: account.accountName },
-      { label: 'Email', value: account.email },
-      { label: 'Phone', value: account.phone },
-      { label: 'Card', value: account.cardNumber },
-      { label: 'Id', value: account.accountId }
-    ].filter(d => d.value);
-  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -272,13 +300,16 @@ export class AddTransactionComponent implements OnInit {
   }
 
   private showToast(message: string, type: 'Success' | 'Error'): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 5000,
-      panelClass: type === 'Success' ? ['snackbar-success'] : ['snackbar-error']
-    });
+    this.snackBar.open(message, 'Close', { duration: 5000, panelClass: type === 'Success' ? ['snackbar-success'] : ['snackbar-error'] });
   }
 
-  navigateToNewAccount() {
-    this.router.navigate(['/add-account']);
+  getAccountDetails(account: Account) {
+    return [
+      { label: 'Name', value: account.accountName },
+      { label: 'Card', value: account.cardNumber },
+      { label: 'Id', value: account.accountId }
+    ].filter(d => d.value);
   }
+
+  navigateToNewAccount() { this.router.navigate(['/add-account']); }
 }

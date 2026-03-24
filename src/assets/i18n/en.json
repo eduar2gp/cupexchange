@@ -101,7 +101,10 @@
     "CONFIRM_ACTION": "Confirm {{type}}",
     "PROCESSING": "Processing...",
     "SELECT_CURRENCY": "Select currency",
-    "NO_TRANSACTIONS_FOUND": "No transactions found"
+    "NO_TRANSACTIONS_FOUND": "No transactions found",
+    "SELECT_CASH_PROVIDER": "Select cash provider",
+    "SELECT_BANK_ACCOUNT": "Select Bank Account",
+    "SELECT_WALLET_ACCOUNT": "Select Wallet"
   },
   "ACCOUNTS": {
     "ADD_ACCOUNT": "Add account",

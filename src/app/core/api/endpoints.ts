@@ -43,6 +43,9 @@ export const ApiEndpoints = {
     GET_UNSEEN_COUNT: '/api/v1/notifications/user/{userId}/unread-count',
     GET_ALL_NOTIFICATIONS: '/api/v1/notifications/user/{userId}',
     MARK_AS_SEEN: '/api/v1/notifications/{id}/seen'
+  },
+  provider: {
+    GET_CASH_PROVIDER_BY_MUNICIPALITY: '/api/v1/providers/cash-providers/{municipalityId}'
   }
 };
 

@@ -101,7 +101,10 @@
     "CONFIRM_ACTION": "Confirmar {{type}}",
     "PROCESSING": "Procesando...",
     "SELECT_CURRENCY": "Seleccionar moneda",
-    "NO_TRANSACTIONS_FOUND": "No se encuentran transacciones"
+    "NO_TRANSACTIONS_FOUND": "No se encuentran transacciones",
+    "SELECT_CASH_PROVIDER": "Selecciona proveedor de efectivo",
+    "SELECT_BANK_ACCOUNT": "Selecciona Cuenta de Banco",
+    "SELECT_WALLET_ACCOUNT": "Selecciona Billetera"
   },
   "ACCOUNTS": {
     "ADD_ACCOUNT": "Agregar cuenta",

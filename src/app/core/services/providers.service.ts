@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http'; // 💡 Removed HttpHeaders, 
 import { Observable } from 'rxjs';
 import { Provider } from '../../model/provider.model'
 import { environment } from '../../../environments/environment'
+import { build, ApiEndpoints } from '../api/endpoints';
+import { Page } from '../../model/page.model';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +31,29 @@ export class ProvidersService {
     return this.http.get<Provider[]>(fullUrl);
   }
 
+  getProvidersByMunicipalityId(
+    municipalityId: number,
+    page: number = 0,
+    size: number = 10,
+    sort: string = 'name,asc'
+  ): Observable<Page<Provider>> {
+    // Build the URL using your existing utility
+    const url = build(ApiEndpoints.provider.GET_CASH_PROVIDER_BY_MUNICIPALITY, { municipalityId });
+    // Set up the query parameters
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
+    return this.http.get<Page<Provider>>(url, { params });
+  }
+
   updateProvider(providerId: number, provider: Provider): Observable<Provider> {
     const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}/${providerId}`;
     return this.http.put<Provider>(fullUrl, provider);
   }
-  
+
   updateProviderImage(providerId: number, formData: FormData): Observable<Provider> {
-    const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}/${providerId}/image`;    
+    const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}/${providerId}/image`;
     return this.http.post<Provider>(fullUrl, formData);
   }
 
@@ -43,8 +62,8 @@ export class ProvidersService {
     return this.http.post<Provider>(fullUrl, provider);
   }
 
-  getProviderById(providerId: string): Observable<Provider>{
+  getProviderById(providerId: string): Observable<Provider> {
     const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}/${providerId}`;
     return this.http.get<Provider>(fullUrl);
-  }  
+  }
 }

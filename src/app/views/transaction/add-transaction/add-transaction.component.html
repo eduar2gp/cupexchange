@@ -1,6 +1,5 @@
 <div class="transaction-container">
   <mat-card>
-
     <mat-card-header>
       <mat-card-title>
         {{ 'TRANSACTION.TITLE_FORMAT' | translate: {
@@ -11,9 +10,8 @@
     </mat-card-header>
 
     <mat-card-content>
-
       <button class="add-btn" (click)="navigateToNewAccount()">
-          +{{ 'ACCOUNTS.ADD_ACCOUNT' | translate }}
+        +{{ 'ACCOUNTS.ADD_ACCOUNT' | translate }}
       </button>
 
       @if (errorMessage) {
@@ -24,66 +22,78 @@
       }
 
       @if (transactionRequest) {
-
       <form #transactionForm="ngForm" (ngSubmit)="submitTransaction()">
-
-        <!-- Payment Method -->
-        <label class="section-label">
-          {{ 'TRANSACTION.SELECT_METHOD' | translate }}
-        </label>
-
+        <label class="section-label">{{ 'TRANSACTION.SELECT_METHOD' | translate }}</label>
         <div class="gateway-grid">
-          @for (gateway of paymentGateways; track gateway.id) {
+          @for (method of paymentMethods; track method) {
+          <div class="selection-card method-card" [class.selected]="selectedMethod === method"
+            (click)="selectPaymentMethod(method)">
+            <div class="card-content">
+              <mat-icon>{{ method === 'CASH' ? 'payments' : (method === 'BANK' ? 'account_balance' :
+                'account_balance_wallet') }}</mat-icon>
+              <span>{{ method | translate }}</span>
+            </div>
+          </div>
+          }
+        </div>
 
+        @if (selectedMethod === 'CASH') {
+        <label class="section-label animate-fade-in">{{ 'TRANSACTION.SELECT_CASH_PROVIDER' | translate }}</label>
+        <div class="gateway-grid animate-fade-in">
+          @for (provider of providers; track provider.id) {
+          <div class="selection-card gateway-card" [class.selected]="selectedProvider?.id === provider.id"
+            (click)="selectProvider(provider)">
+            <div class="card-icon">
+              <img class="gateway-img" [src]="provider.profileImageUrl || 'assets/payment_gateways/default.png'"
+                onerror="this.src='assets/payment_gateways/default.png'" [alt]="provider.name" />
+              @if (selectedProvider?.id === provider.id) {
+              <div class="selection-overlay"><mat-icon>check_circle</mat-icon></div>
+              }
+            </div>
+            <div class="card-content">
+              <span>{{ provider.name }}</span>
+              <small>{{ provider.phone }}</small>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+        @if (selectedMethod === 'BANK' || selectedMethod === 'WALLET') {
+        <label class="section-label animate-fade-in">
+          {{ (selectedMethod === 'BANK' ? 'TRANSACTION.SELECT_BANK_ACCOUNT' : 'TRANSACTION.SELECT_WALLET_ACCOUNT') |
+          translate }}
+        </label>
+        <div class="gateway-grid animate-fade-in">
+          @for (gateway of filteredGateways; track gateway.id) {
           <div class="selection-card gateway-card" [class.selected]="selectedGatewayCode === gateway.gatewayCode"
             (click)="selectGateway(gateway)">
-
             <div class="card-icon">
-
               <img class="gateway-img" [src]="'assets/payment_gateways/' + gateway.gatewayCode + '.png'"
                 onerror="this.src='assets/payment_gateways/default.png'" [alt]="gateway.gatewayName" />
-
               @if (selectedGatewayCode === gateway.gatewayCode) {
-              <div class="selection-overlay">
-                <mat-icon>check_circle</mat-icon>
-              </div>
+              <div class="selection-overlay"><mat-icon>check_circle</mat-icon></div>
               }
-
             </div>
-
             <div class="card-content">
               <span>{{ gateway.gatewayName }}</span>
             </div>
-
           </div>
-
           }
         </div>
+        }
 
-
-        <!-- Account Selection -->
         @if (selectedGatewayCode) {
-
         <div class="account-selection-container animate-fade-in">
-
-          <!-- USER ACCOUNTS -->
-          <label class="section-label">
-            {{ 'TRANSACTION.SELECT_USER_ACCOUNT' | translate }}
-          </label>
-
+          <label class="section-label">{{ 'TRANSACTION.SELECT_USER_ACCOUNT' | translate }}</label>
           <div class="accounts-grid">
             @for (account of userAccounts; track account.id) {
-
             <div class="selection-card account-card" [class.selected]="selectedUserAccount?.id === account.id"
               (click)="selectUserAccount(account)">
-
               <div class="card-header">
-                <mat-icon>
-                  {{ selectedUserAccount?.id === account.id ? 'check_circle' : 'person' }}
-                </mat-icon>
+                <mat-icon>{{ selectedUserAccount?.id === account.id ? 'check_circle' : 'person' }}</mat-icon>
                 <span>{{ account.gatewayName }}</span>
               </div>
-
               <div class="card-body">
                 @for (detail of getAccountDetails(account); track detail.label) {
                 <div class="detail-row">
@@ -92,35 +102,21 @@
                 </div>
                 }
               </div>
-
             </div>
-
             }
           </div>
 
-
-          <!-- PROVIDER ACCOUNTS (DEPOSIT ONLY) -->
           @if (transactionRequest.type === 'DEPOSIT') {
-
-          <label class="section-label">
-            {{ 'TRANSACTION.SELECT_PROVIDER_RECEIVING_ACCOUNT' | translate }}
-          </label>
-
+          <label class="section-label">{{ 'TRANSACTION.SELECT_PROVIDER_RECEIVING_ACCOUNT' | translate }}</label>
           <div class="accounts-grid">
             @for (account of providerAccounts; track account.id) {
-
             <div class="selection-card account-card provider-variant"
               [class.selected]="selectedProviderAccount?.id === account.id" (click)="selectProviderAccount(account)">
-
               <div class="card-header">
-                <mat-icon>
-                  {{ selectedProviderAccount?.id === account.id
-                  ? 'check_circle'
-                  : 'account_balance' }}
-                </mat-icon>
+                <mat-icon>{{ selectedProviderAccount?.id === account.id ? 'check_circle' : 'account_balance'
+                  }}</mat-icon>
                 <span>{{ account.gatewayName }}</span>
               </div>
-
               <div class="card-body">
                 @for (detail of getAccountDetails(account); track detail.label) {
                 <div class="detail-row">
@@ -129,85 +125,43 @@
                 </div>
                 }
               </div>
-
             </div>
-
             }
           </div>
-
           }
-
         </div>
-
         }
 
+        <div class="amount-section animate-fade-in">
+          <mat-form-field appearance="outline" class="full-width-input amount-field">
+            <mat-label>{{ 'TRANSACTION.AMOUNT_LABEL' | translate: { currency: transactionRequest.currencyCode }
+              }}</mat-label>
+            <input matInput type="number" name="amount" required [(ngModel)]="transactionAmount">
+            <mat-icon matPrefix>attach_money</mat-icon>
+          </mat-form-field>
 
-        <!-- Amount -->
-        <mat-form-field appearance="outline" class="full-width-input amount-field">
-
-          <mat-label>
-            {{ 'TRANSACTION.AMOUNT_LABEL' | translate: {
-            currency: transactionRequest.currencyCode
-            } }}
-          </mat-label>
-
-          <input matInput type="number" name="amount" required [(ngModel)]="transactionAmount">
-
-          <mat-icon matPrefix>attach_money</mat-icon>
-
-        </mat-form-field>
-
-
-        <!-- Receipt Upload (Deposit only) -->
-        @if (transactionRequest.type === 'DEPOSIT') {
-        <div class="form-group">
-
-          <label class="section-label">
-            {{ 'TRANSACTION.UPLOAD_LABEL' | translate }}
-          </label>
-
-          <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput hidden>
-
-          <div class="file-custom-ui" (click)="fileInput.click()">
-            <mat-icon>cloud_upload</mat-icon>
-
-            <span>
-              {{ selectedFile
-              ? selectedFile.name
-              : ('TRANSACTION.UPLOAD_PLACEHOLDER' | translate) }}
-            </span>
-
+          @if (transactionRequest.type === 'DEPOSIT') {
+          <div class="form-group">
+            <label class="section-label">{{ 'TRANSACTION.UPLOAD_LABEL' | translate }}</label>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput hidden>
+            <div class="file-custom-ui" (click)="fileInput.click()">
+              <mat-icon>cloud_upload</mat-icon>
+              <span>{{ selectedFile ? selectedFile.name : ('TRANSACTION.UPLOAD_PLACEHOLDER' | translate) }}</span>
+            </div>
           </div>
-
+          }
         </div>
-        }
 
-
-        <!-- Submit -->
         <div class="form-actions">
-
           <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled">
-
-            <mat-icon>
-              {{ isLoading ? 'hourglass_empty' : 'done' }}
-            </mat-icon>
-
-            {{ isLoading
-            ? ('TRANSACTION.PROCESSING' | translate)
-            : ('TRANSACTION.CONFIRM_ACTION' | translate: {
-            type: transactionRequest.type
-            })
-            }}
-
+            <mat-icon>{{ isLoading ? 'hourglass_empty' : 'done' }}</mat-icon>
+            {{ isLoading ? ('TRANSACTION.PROCESSING' | translate) : ('TRANSACTION.CONFIRM_ACTION' | translate: { type:
+            transactionRequest.type }) }}
           </button>
-
         </div>
 
       </form>
-
       }
-
     </mat-card-content>
-
   </mat-card>
 </div>
