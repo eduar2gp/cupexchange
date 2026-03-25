@@ -301,8 +301,9 @@ export class AddTransactionComponent implements OnInit {
         catchError((error) => {
           this.isLoading = false;
           // Standardized error handling
-          const msg = error.error?.message || error.error?.details || 'Cash order failed.';
-          this.showToast(msg, 'Error');
+          const msg = error.error?.available || 'Cash order failed.';
+          const title = error.error?.error || 'Error';
+          this.showToast(msg, title);
           return of(null);
         })
       )
