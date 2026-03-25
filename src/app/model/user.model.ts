@@ -1,6 +1,6 @@
 import { Role } from '../model/roles.enum';
 export interface User {
-  userId: string;
+  userId: number;
   jwtToken: string;
   username: string;
   providerId?: string | null;

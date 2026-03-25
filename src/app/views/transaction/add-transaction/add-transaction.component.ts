@@ -24,6 +24,9 @@ import { PaymentGateway } from '../../../model/payment-gateway.model';
 import { Account } from '../../../model/account.model';
 import { Provider } from '../../../model/provider.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
+import { CashOrderRequestDTO } from '../../../model/cash-order-request.model';
+import { User } from '../../../model/user.model';
 
 @Component({
   selector: 'app-add-transaction',
@@ -73,17 +76,21 @@ export class AddTransactionComponent implements OnInit {
   selectedUserAccount: Account | null = null;
   selectedProviderAccount: Account | null = null;
 
+  user: User | null = null;
+
   constructor(
     private transactionService: TransactionService,
     private dataService: DataService,
     private providersService: ProvidersService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private merchantOrderService: MerchantOrdersService
   ) { }
 
   ngOnInit(): void {
     this.transactionRequest = this.dataService.getCurrentTransactionRequest();
+    this.user = this.dataService.getCurrentUserValue();
     this.loadWallets();
 
     if (!this.transactionRequest) {
@@ -180,11 +187,9 @@ export class AddTransactionComponent implements OnInit {
   get isSubmitDisabled(): boolean {
     if (this.isLoading) return true;
     if (this.transactionAmount === null || this.transactionAmount <= 0) return true;
-
     if (this.selectedMethod === 'CASH') {
-      return !this.selectedProvider;
+      return !this.selectedProvider; // Must have a provider for Cash orders
     }
-
     // Bank/Wallet logic
     if (!this.selectedGatewayCode || !this.selectedUserAccount) return true;
     if (this.transactionRequest?.type === 'DEPOSIT' && (!this.selectedProviderAccount || !this.selectedFile)) {
@@ -224,18 +229,21 @@ export class AddTransactionComponent implements OnInit {
     this.isLoading = true;
     this.transactionRequest.amount = this.transactionAmount;
 
+    // --- NEW: CASH ORDER LOGIC ---
+    if (this.selectedMethod === 'CASH') {
+      this.handleCashOrder();
+      return;
+    }
+
+    // --- EXISTING: BANK/WALLET LOGIC ---
     let payload: any = {
       amount: this.transactionAmount,
       requestType: this.transactionRequest.type,
       method: this.selectedMethod
     };
 
-    if (this.selectedMethod === 'CASH') {
-      payload.providerId = this.selectedProvider?.id;
-    } else {
-      payload.fromAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedUserAccount?.id : 0;
-      payload.toAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedProviderAccount?.id : this.selectedUserAccount?.id;
-    }
+    payload.fromAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedUserAccount?.id : 0;
+    payload.toAccountId = this.transactionRequest.type === 'DEPOSIT' ? this.selectedProviderAccount?.id : this.selectedUserAccount?.id;
 
     this.transactionService.addPayment(payload)
       .pipe(
@@ -264,6 +272,44 @@ export class AddTransactionComponent implements OnInit {
         this.isLoading = false;
         if (final) {
           this.showToast('Transaction processed successfully!', 'Success');
+          this.router.navigate(['/transactions']);
+        }
+      });
+  }
+
+  private handleCashOrder(): void {
+    // Safety check: Ensure the user object exists to get the ID
+    const currentUser = this.dataService.getCurrentUserValue();
+    
+    if (!currentUser || !this.selectedProvider) {
+      this.showToast('Missing user or provider information.', 'Error');
+      this.isLoading = false;
+      return;
+    }
+
+    const cashOrderPayload: CashOrderRequestDTO = {
+      // Use the actual user ID from the user session/service
+      userId: this.user!.userId, 
+      providerId: this.selectedProvider.id!,
+      amount: this.transactionAmount!,
+      currencyCode: this.transactionRequest!.currencyCode!,
+      type: this.transactionRequest!.type! 
+    };
+
+    this.merchantOrderService.createCashOrder(cashOrderPayload)
+      .pipe(
+        catchError((error) => {
+          this.isLoading = false;
+          // Standardized error handling
+          const msg = error.error?.message || error.error?.details || 'Cash order failed.';
+          this.showToast(msg, 'Error');
+          return of(null);
+        })
+      )
+      .subscribe((response) => {
+        this.isLoading = false;
+        if (response) {
+          this.showToast('Cash order created successfully!', 'Success');
           this.router.navigate(['/transactions']);
         }
       });

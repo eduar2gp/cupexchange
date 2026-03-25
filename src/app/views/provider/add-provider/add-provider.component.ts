@@ -18,7 +18,7 @@ export class AddProviderComponent implements OnInit {
 
   private providersService = inject(ProvidersService);
 
-  newProvider: Provider = { name: '', email: '', phone: '', userId: '' };
+  newProvider: Provider = { name: '', email: '', phone: '', userId: 0 };
 
   selectedFile: File | null = null;
 
@@ -62,13 +62,15 @@ export class AddProviderComponent implements OnInit {
     // 1. Sync form values to the model
     const formValues = this.phoneForm.value;
     
-    this.newProvider = {
-      ...this.newProvider,
-      name: formValues.name,
-      email: formValues.email,
-      phone: formValues.phoneNumber, // Note the mapping from 'phoneNumber' key
-      userId: localStorage.getItem("userId") ?? undefined
-    };
+    const storedUserId = localStorage.getItem("userId");
+
+this.newProvider = {
+  ...this.newProvider,
+  name: formValues.name,
+  email: formValues.email,
+  phone: formValues.phoneNumber,
+  userId: storedUserId ? parseInt(storedUserId, 10) : 0
+};
 
     this.providersService.createProvider(this.newProvider).subscribe({
       next: (response) => {          

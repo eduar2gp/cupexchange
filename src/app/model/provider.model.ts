@@ -3,7 +3,7 @@ export interface Provider {
   name: string;
   email: string;
   phone: string;
-  userId?: string;
+  userId: number;
   profileImageUrl?: string;
   cashProvider?: boolean;
 }

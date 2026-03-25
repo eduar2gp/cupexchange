@@ -83,7 +83,7 @@
         </div>
         }
 
-        @if (selectedGatewayCode) {
+        @if (selectedGatewayCode && selectedMethod !== 'CASH') {
         <div class="account-selection-container animate-fade-in">
           <label class="section-label">{{ 'TRANSACTION.SELECT_USER_ACCOUNT' | translate }}</label>
           <div class="accounts-grid">
@@ -140,7 +140,7 @@
             <mat-icon matPrefix>attach_money</mat-icon>
           </mat-form-field>
 
-          @if (transactionRequest.type === 'DEPOSIT') {
+          @if (transactionRequest.type === 'DEPOSIT' && selectedMethod !== 'CASH') {
           <div class="form-group">
             <label class="section-label">{{ 'TRANSACTION.UPLOAD_LABEL' | translate }}</label>
             <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput hidden>

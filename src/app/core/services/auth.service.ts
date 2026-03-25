@@ -100,10 +100,10 @@ export class AuthService {
     this.dataService.updateUser(response);
   }
 
-  private storeToken(token: string, userId: string): void {
+  private storeToken(token: string, userId: number): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.TOKEN_KEY, token);
-      localStorage.setItem(this.USER_ID_KEY, userId);
+      localStorage.setItem(this.USER_ID_KEY, String(userId));
     }
     this.currentToken.set(token);
   }

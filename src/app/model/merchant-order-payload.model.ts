@@ -1,6 +1,6 @@
 export interface OrderPayload {
   providerId: number;
-  customerId: string;
+  customerId: number;
   status: 'pending';
   paid: false;
   totalPrice: number;

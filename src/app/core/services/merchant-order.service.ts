@@ -8,6 +8,7 @@ import { build, ApiEndpoints } from '../../../app/core/api/endpoints';
 import { CashOrder } from '../../model/cash-order-response.model';
 import { Page } from '../../model/page.model';
 import { HttpParams } from '@angular/common/http';
+import { CashOrderRequestDTO } from '../../model/cash-order-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class MerchantOrdersService {
@@ -17,6 +18,12 @@ export class MerchantOrdersService {
   private MERCHANT_GET_ORDERS_BY_PROVIDER = '/api/v1/merchant/orders/';
 
   constructor(private http: HttpClient) { }
+
+
+  createCashOrder(order: CashOrderRequestDTO): Observable<any> {
+    const fullUrl = build(ApiEndpoints.merchant.MERCHANT_ADD_CASH_ORDER)
+    return this.http.post(fullUrl, order);
+  }
 
   createOrder(order: CreateOrderRequest): Observable<any> {
     const fullUrl = `${environment.baseApiUrl}${this.MERCHANT_ADD_ORDERS_ENDPOINT}`;
@@ -54,6 +61,16 @@ export class MerchantOrdersService {
     const url = build(ApiEndpoints.merchant.MERCHANT_UPDATE_ORDER_STATUS);
     const payload = {
       merchantOrderId: merchantOrderId,
+      status: status
+    };
+    // Tell HttpClient to treat the response as plain text
+    return this.http.put(url, payload, { responseType: 'text' });
+  }
+
+  updateCashOrderStatus(cashOrderId: number, status: string): Observable<string> {
+    const url = build(ApiEndpoints.merchant.MERCHANT_UPDATE_CASH_ORDER_STATUS);
+    const payload = {
+      orderId: cashOrderId,
       status: status
     };
     // Tell HttpClient to treat the response as plain text
