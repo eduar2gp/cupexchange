@@ -126,9 +126,7 @@ export class EditProviderComponent implements OnInit {
     this.userService.getUsersWithoutProvider(
       this.currentPage(),
       this.pageSize(),
-      term, // username
-      term, // phone
-      term  // email
+      term
     ).subscribe({
       next: (response) => {
         this.searchResults.set(response.content);

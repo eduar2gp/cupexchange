@@ -53,7 +53,7 @@ export class UserService {
     return this.http.patch<User>(fullUrl, {}, { params });
   }
 
-  getUsersWithoutProvider(page: number = 0, size: number = 10, username: string, phone: string, email: string): Observable<Page<User>> {
+  getUsersWithoutProvider(page: number = 0, size: number = 10, searchTerm: string): Observable<Page<User>> {
 
     const fullUrl = build(ApiEndpoints.auth.GET_USERS_WITHOUT_PROVIDER)
 
@@ -61,9 +61,7 @@ export class UserService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    if (username) params = params.set('username', username);
-    if (phone) params = params.set('phone', phone);
-    if (email) params = params.set('email', email);
+    if (searchTerm) params = params.set('searchTerm', searchTerm);
 
     return this.http.get<Page<User>>(fullUrl, { params });
 
