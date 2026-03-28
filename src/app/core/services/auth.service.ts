@@ -95,7 +95,7 @@ export class AuthService {
   }
 
   private handleSuccessfulLogin(response: User): void {
-    this.storeToken(response.jwtToken, response.userId);
+    this.storeToken(response.jwtToken, response.id);
     this.currentUser.set(response);
     this.dataService.updateUser(response);
   }

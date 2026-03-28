@@ -3,5 +3,6 @@ export enum Role {
   Admin = 'ROLE_ADMIN',
   Provider = 'ROLE_PROVIDER',
   SuperAdmin = 'ROLE_SUPER_ADMIN',
-  AccountManager = 'ROLE_ACCOUNT_MANAGER'
+  AccountManager = 'ROLE_ACCOUNT_MANAGER',
+  StoreManager = 'ROLE_STORE_MANAGER'
 }

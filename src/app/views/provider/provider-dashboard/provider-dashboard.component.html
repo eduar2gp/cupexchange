@@ -41,7 +41,7 @@
     </mat-card-content>
 
     <mat-card-actions align="end">
-      <button mat-stroked-button color="primary" (click)="navigateToEditProvider()">
+      <button *appHasRole="[Role.Provider, Role.Admin]" mat-stroked-button color="primary" (click)="navigateToEditProvider()">
         <mat-icon>edit</mat-icon>
         {{ 'DETAILS' | translate }}
       </button>

@@ -1,6 +1,6 @@
 <div class="edit-provider-container">
 
-  @if (providerData$ | async; as provider) {
+  @if (provider(); as providerData) {
   <mat-card class="main-card">
     <mat-card-header>
       <mat-card-title>Provider Settings</mat-card-title>
@@ -8,11 +8,11 @@
     </mat-card-header>
 
     <mat-card-content>
-      <form #productForm="ngForm" (ngSubmit)="saveChanges(provider)" class="provider-form">
+      <form #productForm="ngForm" (ngSubmit)="saveChanges(providerData)" class="provider-form">
         <div class="form-row">
           <div class="image-upload-section">
             <div class="preview-container">
-              <img [src]="provider.profileImageUrl" class="profile-preview" />
+              <img [src]="providerData.profileImageUrl" class="profile-preview" />
               <button type="button" mat-mini-fab color="primary" class="upload-btn" (click)="fileInput.click()">
                 <mat-icon>photo_camera</mat-icon>
               </button>
@@ -24,13 +24,13 @@
           <div class="fields-column">
             <mat-form-field appearance="outline">
               <mat-label>Business Name</mat-label>
-              <input matInput name="name" [(ngModel)]="provider.name" required>
+              <input matInput name="name" [(ngModel)]="providerData.name" required>
               <mat-icon matSuffix>business</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>Email Address</mat-label>
-              <input matInput type="email" name="email" [(ngModel)]="provider.email" required>
+              <input matInput type="email" name="email" [(ngModel)]="providerData.email" required>
               <mat-icon matSuffix>email</mat-icon>
             </mat-form-field>
           </div>
@@ -45,6 +45,143 @@
     </mat-card-content>
   </mat-card>
   }
+
+  <mat-card class="location-card" style="margin-top: 20px;">
+    <mat-card-header>
+      <mat-card-title>Service Areas</mat-card-title>
+      <mat-card-subtitle>Assign your business to a specific municipality</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="location-form-row" style="display: flex; gap: 16px; margin-top: 16px; align-items: baseline;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Province</mat-label>
+          <mat-select (selectionChange)="onProvinceChange($event.value)">
+            @for (province of provinces; track province.id) {
+            <mat-option [value]="province.id">{{province.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Municipality</mat-label>
+          <mat-select [(ngModel)]="selectedMunicipalityId" [disabled]="!selectedProvinceId()">
+            @for (muni of filteredMunicipalities(); track muni.id) {
+            <mat-option [value]="muni.id">{{muni.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button color="accent" [disabled]="!selectedMunicipalityId()" (click)="onLinkMunicipality()">
+          <mat-icon>add_location_alt</mat-icon> Add Service Area
+        </button>
+      </div>
+
+      <div class="active-locations-section" style="margin-top: 24px;">
+        <h4 style="margin-bottom: 12px; font-weight: 500; color: #666;">Current Coverage</h4>
+
+        @if (providerCoverage(); as coverage) {
+        <mat-chip-set aria-label="Active municipalities">
+          @for (muni of coverage.activeMunicipalities; track muni.id) {
+          <mat-chip class="muni-chip">
+            <mat-icon matChipAvatar>place</mat-icon>
+            <strong>{{muni.name}}</strong>, {{muni.provinceName}}
+            <!-- <button matChipRemove (click)="onUnlinkMunicipality(muni.id)">
+                <mat-icon>cancel</mat-icon>
+              </button> -->
+          </mat-chip>
+          } @empty {
+          <p class="mat-caption" style="font-style: italic;">No active service areas assigned yet.</p>
+          }
+        </mat-chip-set>
+        } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="user-search-card" style="margin-top: 24px; border: 1px solid #e0e0e0; box-shadow: none;">
+    <mat-card-header>
+      <div mat-card-avatar><mat-icon color="primary">person_add</mat-icon></div>
+      <mat-card-title>Link Existing Users</mat-card-title>
+      <mat-card-subtitle>Find users without a provider to add to your business</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content style="padding-top: 20px;">
+      <div class="search-container" style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px;">
+        <mat-form-field appearance="outline" style="flex: 1;" subscriptSizing="dynamic">
+          <mat-label>Search by Username, Email, or Phone</mat-label>
+          <input matInput #userInput (keyup.enter)="currentPage.set(0); onSearchUsers(userInput.value)">
+          <mat-icon matPrefix style="margin-right: 8px;">search</mat-icon>
+          @if (userInput.value) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="userInput.value=''; searchResults.set([])">
+            <mat-icon>close</mat-icon>
+          </button>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" (click)="currentPage.set(0); onSearchUsers(userInput.value)">
+          Search
+        </button>
+      </div>
+
+      @if (isSearching()) {
+      <mat-progress-bar mode="indeterminate" style="margin-bottom: 16px;"></mat-progress-bar>
+      }
+
+      <div class="table-responsive" style="border-radius: 8px; overflow: hidden; border: 1px solid #f0f0f0;">
+        <table mat-table [dataSource]="searchResults()" class="full-width-table">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Full Name </th>
+            <td mat-cell *matCellDef="let user">
+              <div style="font-weight: 500;">{{user.firstName}} {{user.lastName}}</div>
+              <div class="mat-caption" style="color: #777;">@{{user.username}}</div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="contact">
+            <th mat-header-cell *matHeaderCellDef> Contact Info </th>
+            <td mat-cell *matCellDef="let user">
+              <div style="display: flex; align-items: center; gap: 4px; font-size: 13px;">
+                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">email</mat-icon> {{user.email}}
+              </div>
+              <div style="display: flex; align-items: center; gap: 4px; font-size: 13px; color: #666;">
+                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">phone</mat-icon> {{user.phone || 'N/A'}}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Action </th>
+            <td mat-cell *matCellDef="let user" style="text-align: right;">
+              <button mat-button color="primary" (click)="onLinkUser(user)">
+                <mat-icon>add_link</mat-icon> Link to Business
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['name', 'contact', 'actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name', 'contact', 'actions'];" class="result-row"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="3" style="padding: 40px; text-align: center;">
+              @if (!isSearching() && userInput.value) {
+              <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ccc;">person_off</mat-icon>
+              <p style="color: #888; margin-top: 8px;">No matching users found without a provider.</p>
+              } @else if (!userInput.value) {
+              <p style="color: #888;">Enter a search term above to find users.</p>
+              }
+            </td>
+          </tr>
+        </table>
+        <mat-paginator [length]="searchTotalElements()" [pageSize]="pageSize()" [pageIndex]="currentPage()"
+          [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)" aria-label="Select page of users">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
   <div class="product-header">
     <h2>Catalog Management</h2>

@@ -289,7 +289,7 @@ export class AddTransactionComponent implements OnInit {
 
     const cashOrderPayload: CashOrderRequestDTO = {
       // Use the actual user ID from the user session/service
-      userId: this.user!.userId, 
+      userId: this.user!.id, 
       providerId: this.selectedProvider.id!,
       amount: this.transactionAmount!,
       currencyCode: this.transactionRequest!.currencyCode!,

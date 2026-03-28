@@ -178,7 +178,7 @@ private loadGoogleScript(): Promise<void> {
 
     // 3. Load Notifications (New Step)
   // This populates the BehaviorSubject we linked to the Navbar badge
-    this.notificationService.refreshUnreadCount(Number(user.userId))
+    this.notificationService.refreshUnreadCount(Number(user.id))
 
     // 3. Fetch wallets and navigate
     this.fetchWallets();

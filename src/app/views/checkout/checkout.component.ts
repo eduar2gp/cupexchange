@@ -71,14 +71,14 @@ export class CheckoutComponent {
 
     const currentUser = this.authService.getCurrentUser();
 
-    if (!currentUser || !currentUser.userId) {
+    if (!currentUser || !currentUser.id) {
       console.error('No logged-in user, cannot send order');
       return;
     }
 
     const payload: OrderPayload = {
       providerId: orderGroup.providerId,
-      customerId: currentUser.userId,
+      customerId: currentUser.id,
       status: 'pending',
       paid: false,
       totalPrice: orderGroup.total,

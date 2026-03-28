@@ -22,7 +22,7 @@ export class AccountService {
   getAccounts(user: User): Observable<Account[]> {
     // 1. Build the URL using the userId from the user object
     // Note: ensure the placeholder in your endpoint is {userId}
-    const url = build(ApiEndpoints.account.GET_USER_ACCOUNTS, { userId: user.userId });
+    const url = build(ApiEndpoints.account.GET_USER_ACCOUNTS, { userId: user.id });
     // 2. Execute the GET request
     return this.http.get<Account[]>(url);
   }

@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UserProfileData } from '../../model/user-profile-data.model';
 import { User } from '../../model/user.model'
-import { build, ApiEndpoints } from '../../../app/core/api/endpoints'; 
+import { build, ApiEndpoints } from '../../../app/core/api/endpoints';
+import { Page } from '../../model/page.model';
 
 export interface UserRegister {
   username: string;
@@ -44,6 +45,30 @@ export class UserService {
     });
   }
 
+  linkUserToProvider(userId: number, providerId: number, roleName: string): Observable<User> {
+    const fullUrl = build(ApiEndpoints.auth.LINK_USER_PROVIDER, { userId, providerId });
+    // 1. Reassign the params because .set() returns a new object
+    const params = new HttpParams().set('roleName', roleName);
+    // 2. Add an empty body {} as the second argument
+    return this.http.patch<User>(fullUrl, {}, { params });
+  }
+
+  getUsersWithoutProvider(page: number = 0, size: number = 10, username: string, phone: string, email: string): Observable<Page<User>> {
+
+    const fullUrl = build(ApiEndpoints.auth.GET_USERS_WITHOUT_PROVIDER)
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (username) params = params.set('username', username);
+    if (phone) params = params.set('phone', phone);
+    if (email) params = params.set('email', email);
+
+    return this.http.get<Page<User>>(fullUrl, { params });
+
+  }
+
   updateUserProfile(user: UserProfileData): Observable<User> {
     const updateUrl = `${environment.baseApiUrl}${this.UPDATE_PROFILE_ENDPOINT}`
     return this.http.post<User>(updateUrl, user);
@@ -51,7 +76,7 @@ export class UserService {
 
   updateUserFCMToken(token: string | null): Observable<void> {
     const updateFcmUrl = `${environment.baseApiUrl}${this.UPDATE_FCMTOKEN_ENDPOINT}`
-    const payload = { deviceToken: token }    
+    const payload = { deviceToken: token }
     return this.http.post<void>(updateFcmUrl, payload);
   }
 

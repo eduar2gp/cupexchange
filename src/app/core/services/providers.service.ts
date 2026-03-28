@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment'
 import { build, ApiEndpoints } from '../api/endpoints';
 import { Page } from '../../model/page.model';
 import { HttpParams } from '@angular/common/http';
+import { ProviderCoveragePayload } from '../../model/provider-coverage-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,24 @@ export class ProvidersService {
       .set('size', size.toString())
       .set('sort', sort);
     return this.http.get<Page<Provider>>(url, { params });
+  }
+
+  getProvidersCoverage(providerId: number): Observable<ProviderCoveragePayload> {
+    const fullUrl = build(ApiEndpoints.location.GET_PROVIDER_COVERAGE, { providerId });
+    // Pass the interface as a generic to ensure type safety
+    return this.http.get<ProviderCoveragePayload>(fullUrl).pipe(
+      // Optional: add catchError or map operators here if needed
+    );
+  }
+
+  linkProviderMunicipality(providerId: number, municipalityId: number): Observable<any> {
+    const fullUrl = build(ApiEndpoints.provider.LINK_PROVIDER_MUNICIPALITY);
+    // Construct the body to match the ProviderMunicipalityId class in Java
+    const body = {
+      providerId: providerId,
+      municipalityId: municipalityId
+    };
+    return this.http.post(fullUrl, body, { responseType: 'text' });
   }
 
   updateProvider(providerId: number, provider: Provider): Observable<Provider> {

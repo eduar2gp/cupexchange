@@ -8,7 +8,9 @@ export const ApiEndpoints = {
     updateProfile: '/api/v1/auth/update/profile',
     updateFcmToken: '/api/v1/auth/update/fcm-token',
     getUserProfile: '/api/v1/auth/user/profile?userId=',
-    getUserOrders: '/api/v1/auth/user/orders?userId='
+    getUserOrders: '/api/v1/auth/user/orders?userId=',
+    GET_USERS_WITHOUT_PROVIDER: '/api/v1/auth/users/provider-is-null',
+    LINK_USER_PROVIDER: '/api/v1/auth/{userId}/link-provider/{providerId}'
   },
   merchant: {
     MERCHANT_ADD_ORDERS_ENDPOINT: '/api/v1/merchant/add-order',
@@ -47,7 +49,11 @@ export const ApiEndpoints = {
     MARK_AS_SEEN: '/api/v1/notifications/{id}/seen'
   },
   provider: {
-    GET_CASH_PROVIDER_BY_MUNICIPALITY: '/api/v1/providers/cash-providers/{municipalityId}'
+    GET_CASH_PROVIDER_BY_MUNICIPALITY: '/api/v1/providers/cash-providers/{municipalityId}',
+    LINK_PROVIDER_MUNICIPALITY: '/api/v1/providers/link-provider-municipality'
+  },
+  location:{
+    GET_PROVIDER_COVERAGE: '/api/v1/location/providers/{providerId}/coverage'
   }
 };
 

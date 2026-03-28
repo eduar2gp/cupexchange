@@ -83,6 +83,7 @@ export const routes: Routes = [
     path: 'cash-orders',
     component: CashOrdersListComponent,
     canActivate: [roleGuard],    
+    data: { roles: [Role.Admin, Role.Provider, Role.StoreManager] }
   },
   {
     path: 'wallet',
@@ -133,13 +134,13 @@ export const routes: Routes = [
     path: 'provider-dashboard',
     component: ProviderDashboardComponent,
     canActivate: [roleGuard],
-    data: { roles: [Role.Provider] }
+    data: { roles: [Role.Admin, Role.Provider, Role.StoreManager] }
   },
   {
     path: 'provider-orders',
     component: ProviderOrdersListComponent,
     canActivate: [roleGuard],
-    data: { roles: [Role.Provider] }
+    data: { roles: [Role.Provider, Role.StoreManager] }
   },
   {
     path: 'ecommerce-dashboard',
@@ -164,7 +165,7 @@ export const routes: Routes = [
     path: 'merchant-order-details',
     component: ProviderOrderDetailsComponent,
     canActivate: [roleGuard],
-    data: { roles: [Role.Provider] }
+    data: { roles: [Role.Admin, Role.Provider, Role.StoreManager] }
   },
   {
     path: 'add-account',

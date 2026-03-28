@@ -89,7 +89,7 @@ export class WalletComponent implements OnInit, OnDestroy {
       // Switch the User Observable to the Wallet[] Observable
       switchMap(user => {
         // 'user' here is the actual User object, not the Observable
-        if (user!.userId) {
+        if (user!.id) {
           return this.walletService.getWallets();
         }
         // If no userId, return an empty Observable stream to avoid errors
