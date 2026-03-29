@@ -35,7 +35,7 @@ import { DialogMessageComponent } from '../../shared/dialog-message/dialog-messa
     FormsModule
   ],
   templateUrl: './orders-list.component.html',
-  styleUrls: ['./orders-list.component.css']
+  styleUrls: ['./orders-list.component.scss']
 })
 export class OrdersListComponent implements OnInit {
   private ordersService = inject(OrdersService);

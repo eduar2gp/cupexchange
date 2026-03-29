@@ -1,0 +1,291 @@
+.orders-container {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+.orders-header-row {
+  display: flex;
+  flex-wrap: wrap; // Responsive wrapping
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+}
+
+/* =========================================================
+   States (Loading, Error, Empty)
+   ========================================================= */
+.centered-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: var(--color-surface);
+  border: 1px border var(--color-border);
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  &.error {
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+  }
+}
+
+/* =========================================================
+   Orders List & Items
+   ========================================================= */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* =========================================================
+   Compact Order Item Refactor
+   ========================================================= */
+.order-item {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0.75rem !important;
+  height: auto !important;
+  transition: background-color 0.15s ease;
+  margin-bottom: 0.5rem !important;
+
+  /* 1. Reset Material's internal padding on the host container */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface)) !important;
+  }
+
+  /* 2. Target the content wrapper specifically */
+  ::ng-deep {
+    .mdc-list-item__content {
+      padding: 0.75rem 1rem !important; // Balanced 1rem on both sides
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%; // Ensure it fills the card
+    }
+
+    /* 3. Remove default Material ripple/state padding that causes shifts */
+    .mat-mdc-list-item-inner-control {
+      padding: 0 !important;
+    }
+  }
+}
+
+/* Row 1: Asset, Side, and Status Actions */
+.order-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0 !important;
+
+  .base-currency {
+    font-size: 0.95rem;
+    font-weight: 700;
+    min-width: 60px; // Keeps alignment consistent
+  }
+
+  .side-wrapper {
+    flex: 0; // Don't grow, keep it next to currency
+  }
+
+  .side {
+    padding: 2px 8px;
+    font-size: 0.65rem;
+    border-radius: 4px;
+  }
+
+  .status-actions {
+    margin-left: auto; // Push status/cancel to the far right
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+  }
+}
+
+/* Row 2: Combined Details and Date */
+.order-details, .order-date {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  padding: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important; // Remove the top border from the previous design
+}
+
+.order-details {
+  gap: 12px;
+  
+  // Create a separator between details and date
+  &::after {
+    content: "•";
+    color: var(--color-text-muted);
+    margin-left: 4px;
+  }
+}
+
+.order-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-right: 1rem;
+  
+  .filled-icon {
+    font-size: 16px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+/* =========================================================
+   Small Icon Button Adjustment
+   ========================================================= */
+button[mat-icon-button] {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+
+  mat-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* =========================================================
+   Mobile Optimization
+   ========================================================= */
+@media (max-width: 480px) {
+  .order-details::after {
+    display: none; // Stack on very small screens if needed
+  }
+  
+  .order-item ::ng-deep .mdc-list-item__content {
+    padding: 0.5rem 0.75rem !important;
+  }
+}
+
+/* Row 1: Asset & Status */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.75rem;
+
+  .base-currency {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+/* Side Badge (BUY/SELL) */
+.side {
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  &.buy {
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
+  }
+  &.sell {
+    background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    color: var(--color-danger);
+  }
+}
+
+/* Row 2: Details */
+.order-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums; // Keeps numbers aligned
+}
+
+/* Row 3: Metadata */
+.order-date {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+
+  .filled-icon {
+    font-size: 1.2rem;
+    color: var(--color-success);
+  }
+}
+
+/* =========================================================
+   Responsive Adjustments
+   ========================================================= */
+@media (max-width: 600px) {
+  .orders-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  mat-button-toggle-group {
+    width: 100%;
+    display: flex;
+    
+    mat-button-toggle {
+      flex: 1;
+    }
+  }
+
+  .order-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+/* Material Override for Paginator */
+mat-paginator {
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  margin-top: 1rem;
+}
