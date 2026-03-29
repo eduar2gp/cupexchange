@@ -31,6 +31,14 @@
         }
       </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" placeholder="Address">
+        @if (nameControl.touched && nameControl.invalid) {
+        <mat-error>Address is required.</mat-error>
+        }
+      </mat-form-field>
+
       <div class="checkbox-section" style="margin-bottom: 20px;">
         <mat-checkbox formControlName="cashProvider" color="primary">
           Is this a Cash Provider?

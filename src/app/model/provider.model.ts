@@ -6,4 +6,5 @@ export interface Provider {
   userId: number;
   profileImageUrl?: string;
   cashProvider?: boolean;
+  address?: string;
 }

@@ -10,8 +10,9 @@
     </mat-card-header>
 
     <mat-card-content>
-      <button class="add-btn" (click)="navigateToNewAccount()">
+      <button mat-raised-button color="primary"  (click)="navigateToNewAccount()">
         +{{ 'ACCOUNTS.ADD_ACCOUNT' | translate }}
+        <mat-icon matListItemIcon>account_balance</mat-icon>
       </button>
 
       @if (errorMessage) {
@@ -43,16 +44,21 @@
           @for (provider of providers; track provider.id) {
           <div class="selection-card gateway-card" [class.selected]="selectedProvider?.id === provider.id"
             (click)="selectProvider(provider)">
+
             <div class="card-icon">
               <img class="gateway-img" [src]="provider.profileImageUrl || 'assets/payment_gateways/default.png'"
                 onerror="this.src='assets/payment_gateways/default.png'" [alt]="provider.name" />
+
               @if (selectedProvider?.id === provider.id) {
-              <div class="selection-overlay"><mat-icon>check_circle</mat-icon></div>
+              <div class="selection-overlay">
+                <mat-icon>check_circle</mat-icon>
+              </div>
               }
             </div>
-            <div class="card-content">
-              <span>{{ provider.name }}</span>
-              <small>{{ provider.phone }}</small>
+
+            <div class="provider-details">
+              <div class="mat-body-2 name-text">{{ provider.name }}</div>
+              <div class="mat-caption address-text">{{ provider.address }}</div>
             </div>
           </div>
           }

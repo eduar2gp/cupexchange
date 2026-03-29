@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cash-orders-list',
@@ -28,7 +29,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './cash-orders-list.component.scss',
 })
 export class CashOrdersListComponent implements OnInit, OnDestroy { // Added OnDestroy
-  displayedColumns: string[] = ['type', 'amount', 'currency', 'status', 'createdAt', 'actions'];
+  displayedColumns: string[] = ['type', 'amount', 'currency', 'status', 'createdAt'];
 
   dataSource: CashOrder[] = [];
   totalElements = 0;
@@ -40,6 +41,7 @@ export class CashOrdersListComponent implements OnInit, OnDestroy { // Added OnD
   private providerId: string | null = null;
 
   private dataService = inject(DataService);
+  private router = inject(Router)
   private merchantOrderService = inject(MerchantOrdersService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -106,6 +108,11 @@ export class CashOrdersListComponent implements OnInit, OnDestroy { // Added OnD
           this.showToast("Status update failed: "+ err.error, 'Error');
         }
       });
+  }
+
+  onClick(cashOrder: CashOrder) {
+    this.dataService.updateCashOrder(cashOrder);
+    this.router.navigate(['cash-order-details']);
   }
 
   onPageChange(event: PageEvent): void {

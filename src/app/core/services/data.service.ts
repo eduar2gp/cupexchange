@@ -7,6 +7,7 @@ import { TransactionRequest } from '../../model/transaction-request.model'
 import { MerchantOrder } from '../../model/merchant-order-reponse.model'
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { CashOrder } from '../../model/cash-order-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,9 @@ export class DataService {
 
   private merchantOrderSubject = new BehaviorSubject<MerchantOrder | null>(null);
   currentMerchantOrder: Observable<MerchantOrder | null> = this.merchantOrderSubject.asObservable();
+
+  private cashOrderSubject = new BehaviorSubject<CashOrder | null>(null);
+  currentCashOrder: Observable<CashOrder | null> = this.cashOrderSubject.asObservable();
 
   // The subject to hold and update the value
   private updateWalletRequiredSubject = new BehaviorSubject<boolean>(false);
@@ -72,6 +76,14 @@ export class DataService {
 
   updateMerchantOrder(merchantOrder: MerchantOrder | null): void {
     this.merchantOrderSubject.next(merchantOrder);
+  }
+
+  updateCashOrder(cashOrder: CashOrder | null): void{
+    this.cashOrderSubject.next(cashOrder)
+  }
+
+  getCashOrder(): CashOrder | null{
+    return this.cashOrderSubject.value
   }
 
   getMerchantOrder(): MerchantOrder | null {

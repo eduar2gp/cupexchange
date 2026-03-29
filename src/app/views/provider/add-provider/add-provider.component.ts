@@ -19,7 +19,7 @@ export class AddProviderComponent implements OnInit {
 
   private providersService = inject(ProvidersService);
 
-  newProvider: Provider = { name: '', email: '', phone: '', userId: 0, cashProvider: true };
+  newProvider: Provider = { name: '', email: '', phone: '', userId: 0, cashProvider: true, address: '' };
 
   selectedFile: File | null = null;
 
@@ -35,6 +35,7 @@ export class AddProviderComponent implements OnInit {
     // Initialization happens here
     this.phoneForm = this.fb.group({
       name: ['', Validators.required],
+      address: ['', Validators.required],
       email: ['', [
         Validators.required,
         Validators.pattern(this.emailPattern)
@@ -51,6 +52,9 @@ export class AddProviderComponent implements OnInit {
 
   get nameControl() {
     return this.phoneForm.get('name')!;
+  }
+  get addressControl() {
+    return this.phoneForm.get('address')!;
   }
   get emailControl() {
     return this.phoneForm.get('email')!;
@@ -72,7 +76,8 @@ export class AddProviderComponent implements OnInit {
         email: formValues.email,
         phone: formValues.phoneNumber,
         cashProvider: formValues.cashProvider,
-        userId: storedUserId ? parseInt(storedUserId, 10) : 0
+        userId: storedUserId ? parseInt(storedUserId, 10) : 0,
+        address: formValues.address
       };
 
       this.providersService.createProvider(this.newProvider).subscribe({

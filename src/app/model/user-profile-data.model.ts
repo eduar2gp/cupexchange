@@ -7,4 +7,5 @@ export interface UserProfileData {
   address?: string;
   municipalityId?: number;
   provinceId?: number;
+  profileImageUrl?: string;
 }

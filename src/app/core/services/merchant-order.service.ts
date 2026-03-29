@@ -52,9 +52,17 @@ export class MerchantOrdersService {
     return this.http.get<Page<CashOrder>>(url, { params });
   }
 
-  getAllMerchantOrdersByProvider(providerId: string): Observable<MerchantOrder[]> {
+  getAllMerchantOrdersByProvider(
+    providerId: string,
+    page: number = 0,
+    size: number = 20,
+    sort: string = 'createdAt,desc'): Observable<Page<MerchantOrder>> {
+      const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS_BY_PROVIDER}${providerId}`;
-    return this.http.get<MerchantOrder[]>(url);
+    return this.http.get<Page<MerchantOrder>>(url, {params});
   }
 
   updateOrderStatus(merchantOrderId: number, status: string): Observable<string> {

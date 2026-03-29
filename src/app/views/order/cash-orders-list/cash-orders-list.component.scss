@@ -1,19 +1,175 @@
+// Variables and Mixins
+$breakpoint-mobile: 768px;
+
 .orders-container {
   position: relative;
-  min-height: 200px;
-  margin: 20px;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin: 1rem;
+  transition: var(--transition);
+  border: 1px solid var(--color-border);
 
-  table {
-    width: 100%;
-  }
-
+  // Loading Shade with Backdrop Filter
   .loading-shade {
     position: absolute;
-    top: 0; left: 0; bottom: 56px; right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 1;
+    top: 0;
+    left: 0;
+    bottom: 56px; // Height of paginator
+    right: 0;
+    background: rgba(var(--color-surface), 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  // Table Styling
+  table {
+    width: 100%;
+    background-color: transparent;
+
+    th.mat-header-cell {
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid var(--color-divider);
+      padding: 16px;
+    }
+
+    td.mat-cell {
+      color: var(--color-text);
+      padding: 16px;
+      border-bottom: 1px solid var(--color-divider);
+    }
+  }
+
+  // Row Interactions
+  .clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--color-surface-elevated) !important;
+    }
+
+    &:active {
+      background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+    }
+  }
+
+  // Type Badges
+  [class^='badge-'] {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    text-transform: capitalize;
+  }
+
+  .badge-buy, .badge-deposit {
+    background-color: var(--color-buy-surface-light);
+    color: var(--color-buy-text-accent);
+    border: 1px solid var(--color-buy-base);
+  }
+
+  .badge-sell, .badge-withdrawal {
+    background-color: var(--color-sell-surface-light);
+    color: var(--color-sell-text-accent);
+    border: 1px solid var(--color-sell-base);
+  }
+
+  // Responsive Layout Logic
+  @media (max-width: $breakpoint-mobile) {
+    margin: 0.5rem;
+    border-radius: 8px;
+
+    // Hide less critical columns on small screens
+    .mat-column-createdAt, 
+    .mat-column-currency {
+      display: none;
+    }
+
+    table td.mat-cell {
+      padding: 12px 8px;
+      font-size: 0.85rem;
+    }
+  }
+
+  // Material Paginator Customization
+  mat-paginator {
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-divider);
+
+    ::ng-deep .mat-mdc-paginator-range-label {
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: var(--transition);
+
+  // Default / Unknown State
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+
+  // Status Mapping Logic
+  &[data-status="completed"],
+  &[data-status="processed"],
+  &[data-status="paid"] {
+    background-color: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+  }
+
+  &[data-status="pending"],
+  &[data-status="process"] {
+    background-color: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
+    color: var(--color-warning);
+    border-color: color-mix(in srgb, var(--color-warning) 20%, transparent);
+  }
+
+  &[data-status="canceled"],
+  &[data-status="failed"],
+  &[data-status="rejected"] {
+    background-color: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
+  }
+
+  &[data-status="active"],
+  &[data-status="shipping"] {
+    background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+    color: var(--color-primary);
+    border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+}
+
+// Dark Theme Refinement
+// If the background is dark, we increase the background opacity for better contrast
+:host-context(.dark-theme) {
+  .status-pill {
+    &[data-status] {
+      background-opacity: 0.2; // Overriding the mix ratio slightly for dark mode
+      border-width: 1px;
+    }
   }
 }

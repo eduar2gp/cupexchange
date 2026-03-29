@@ -5,63 +5,84 @@
   </header>
 
   @if (isLoading()) {
-  <div class="loading-shade">
-    <mat-spinner diameter="40"></mat-spinner>
-  </div>
-  } @else if (errorMessage()) {
-  <div class="error-container">
-    <p>{{ errorMessage() }}</p>
-  </div>
+    <div class="loading-shade">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } 
+
+  @if (errorMessage()) {
+    <div class="error-container">
+      <p>{{ errorMessage() }}</p>
+    </div>
   } @else {
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="orders()">
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="orders()">
 
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> Order ID </th>
-        <td mat-cell *matCellDef="let order"> #{{order.merchantOrderId}} </td>
-      </ng-container>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> Order ID </th>
+          <td mat-cell *matCellDef="let order"> #{{order.merchantOrderId}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="customerId">
-        <th mat-header-cell *matHeaderCellDef> Customer ID </th>
-        <td mat-cell *matCellDef="let order"> {{order.customerId}} </td>
-      </ng-container>
+        <ng-container matColumnDef="customerId">
+          <th mat-header-cell *matHeaderCellDef> Customer ID </th>
+          <td mat-cell *matCellDef="let order"> {{order.customerId}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Status </th>
-        <td mat-cell *matCellDef="let order">
-          <mat-chip-set>
-            <mat-chip [class]="'status-chip ' + order.status">
-              {{order.status | uppercase}}
-            </mat-chip>
-          </mat-chip-set>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let order">
+            <mat-chip-set>
+              <mat-chip [class]="'status-chip ' + order.status">
+                {{order.status | uppercase}}
+              </mat-chip>
+            </mat-chip-set>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="total">
-        <th mat-header-cell *matHeaderCellDef> Revenue </th>
-        <td mat-cell *matCellDef="let order"> {{order.totalPrice | currency}} </td>
-      </ng-container>
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef> Revenue </th>
+          <td mat-cell *matCellDef="let order"> {{order.totalPrice | currency}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="paid">
-        <th mat-header-cell *matHeaderCellDef> Payment </th>
-        <td mat-cell *matCellDef="let order">
-          <span [class.paid-text]="order.paid" [class.unpaid-text]="!order.paid">
-            {{ order.paid ? 'Settled' : 'Action Required' }}
-          </span>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="paid">
+          <th mat-header-cell *matHeaderCellDef> Payment </th>
+          <td mat-cell *matCellDef="let order">
+            <span [class.paid-text]="order.paid" [class.unpaid-text]="!order.paid">
+              {{ order.paid ? 'Settled' : 'Action Required' }}
+            </span>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row
-          *matRowDef="let row; columns: displayedColumns;"
-          (click)="onClick(row)"
-          class="clickable-row">
-      </tr>
-    </table>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let order">
+            <button mat-icon-button (click)="onClick(order); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-    @if (orders().length === 0) {
-    <div class="empty-state">No orders have been placed with your provider yet.</div>
-    }
-  </div>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"
+            (click)="onClick(row)"
+            class="clickable-row">
+        </tr>
+      </table>
+
+      @if (!isLoading() && orders().length === 0) {
+        <div class="empty-state">No orders have been placed with your provider yet.</div>
+      }
+
+      <mat-paginator
+        [length]="totalElements()"
+        [pageSize]="pageSize()"
+        [pageIndex]="currentPage()"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+        aria-label="Select page of orders">
+      </mat-paginator>
+    </div>
   }
 </div>

@@ -1,0 +1,106 @@
+<div class="details-container">
+  @if (cashOrder(); as orderData) {
+  <mat-card class="main-card">
+    <mat-card-header class="custom-header">
+      <div class="header-content">
+        <mat-card-title>Cash Order #{{ orderData.orderId }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ (userProfile()?.firstName || 'User') }}'s Request
+          — <small>{{ orderData.createdAt | date:'medium' }}</small>
+        </mat-card-subtitle>
+      </div>
+
+      <mat-form-field class="status-pill" appearance="outline" [attr.data-status]="orderData.status">
+        <mat-label>Status</mat-label>
+        <mat-select [value]="orderData.status" (selectionChange)="onStatusChange($event.value)">
+          @for (s of statuses; track s.value) {
+          <mat-option [value]="s.value">
+            {{ s.label }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="responsive-grid mb-2">
+        <div class="info-group">
+          <span class="label">Transaction Type</span>
+          <span class="value type-tag">
+            <mat-icon>payments</mat-icon>
+            {{ orderData.type | titlecase }}
+          </span>
+        </div>
+        <div class="info-group">
+          <span class="label">Amount to Collect</span>
+          <span class="value total-amount">
+            {{ orderData.amount | currency: orderData.currencyCode }}
+          </span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <section class="section">
+        <h3><mat-icon>person</mat-icon> User Information</h3>
+
+        @if (userProfile(); as profile) {
+        <div class="responsive-grid">
+          <div *ngIf="profile?.profileImageUrl" class="profile-picture-container">
+            <img class="profile-picture" [src]="profile?.profileImageUrl" referrerpolicy="no-referrer"
+              alt="Profile Picture">
+          </div>
+          <div class="info-group">
+            <span class="label">Full Name</span>
+            <span class="value">{{ profile.firstName }} {{ profile.middleName }} {{ profile.lastName }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Email Address</span>
+            <a [href]="'mailto:' + profile.email" class="value link">{{ profile.email || '—' }}</a>
+          </div>
+          <div class="info-group">
+            <span class="label">Phone</span>
+            <span class="value">{{ profile.phone || '—' }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Address</span>
+            <span class="value">{{ profile.address || '—' }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Province</span>
+            <span class="value">{{ getProvinceName() }}</span>
+          </div>
+          <div class="info-group">
+            <span class="label">Municipality</span>
+            <span class="value">{{ getMunicipalityName() }}</span>
+          </div>
+        </div>
+        } @else {
+        <div class="loading-inline">
+          <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+          <span>Fetching user details...</span>
+        </div>
+        }
+      </section>
+
+      <mat-divider></mat-divider>
+
+      <section class="section summary-footer">
+        <div class="summary-box">
+          <p>This is a <strong>{{ orderData.type }}</strong> request. Please ensure the amount of
+            <strong>{{ orderData.amount | currency: orderData.currencyCode }}</strong> is handled according to the
+            status above.
+          </p>
+        </div>
+      </section>
+
+    </mat-card-content>
+  </mat-card>
+  } @else {
+  <div class="empty-state">
+    <mat-icon>money_off</mat-icon>
+    <p>No cash order data found.</p>
+    <button mat-stroked-button color="primary" (click)="cashOrder.set(null)">Back</button>
+  </div>
+  }
+</div>
