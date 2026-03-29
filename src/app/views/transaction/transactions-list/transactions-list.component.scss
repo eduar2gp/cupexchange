@@ -1,21 +1,42 @@
 .transactions-card {
-  margin: 16px;
   background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  overflow: hidden;
+  padding: 0.5rem;
+}
+
+/* tighten card content spacing */
+.transactions-card mat-card-content {
+  padding: 8px 8px 0 8px !important;
 }
 
 .transactions-title {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text);
+  margin-bottom: 4px;
+  padding-left: 8px;
 }
 
-.transactions-list { padding: 0; }
+/* REMOVE list spacing */
+.transactions-list {
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
+/* remove Angular Material internal spacing */
+.transactions-card ::ng-deep .mat-mdc-list-item {
+  padding: 0 !important;
+}
+
+.transactions-card ::ng-deep .mat-mdc-list-item-content {
+  padding: 0 !important;
+}
+
+/* compact list item */
 .transaction-item {
-  padding: 12px 16px;
+  padding: 8px 8px !important;
+  margin: 0 !important;
   border-bottom: 1px solid var(--color-surface-elevated);
   display: flex;
   align-items: center;
@@ -27,26 +48,32 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  gap: 6px;
 }
 
 .transaction-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 .type-icon {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-surface-elevated);
   color: var(--color-text-secondary);
+  flex-shrink: 0;
 }
 
-.type-icon mat-icon { font-size: 20px; }
+.type-icon mat-icon {
+  font-size: 20px;
+}
 
 /* Type color mapping */
 .type-icon.deposit { color: var(--color-success); background: rgba(56, 142, 60, 0.06); }
@@ -55,77 +82,148 @@
 .type-icon.fee { color: var(--color-danger); background: rgba(207, 34, 46, 0.06); }
 .type-icon.neutral { color: var(--color-text-secondary); background: var(--color-surface-elevated); }
 
-.transaction-info { display:flex; flex-direction: column; }
-.type-header { display:flex; align-items:center; gap:8px; }
-.type-name { font-weight:500; color: var(--color-text); }
-.date { font-size: 0.8rem; color: var(--color-text-muted); }
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.type-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.type-name {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
 
 /* Status chips */
-.mat-chip { font-weight:700; text-transform:uppercase; font-size: 10px; height: 22px; padding: 0 6px; }
+.mat-chip {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  height: 20px;
+  padding: 0 6px;
+}
+
 .status-completed { background: rgba(31,136,61,0.1); color: var(--color-success); }
 .status-pending { background: rgba(154,103,0,0.1); color: var(--color-warning); }
 .status-cancelled { background: rgba(207,34,46,0.1); color: var(--color-danger); }
 
-.amount { font-weight:600; font-family: monospace; display:flex; align-items:center; gap:6px; }
-.amount .sign { font-weight:700; }
-.amount.positive { color: var(--color-success); }
-.amount.negative { color: var(--color-danger); }
+/* amount */
+.amount {
+  font-weight: 600;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
 
-/* State containers */
-.state-container { padding: 40px 20px; text-align:center; color: var(--color-text-secondary); }
-.state-icon { font-size:48px; color: var(--color-text-muted); margin-bottom:12px; }
+.amount .sign {
+  font-weight: 700;
+}
 
-/* paginator tweaks */
-mat-paginator { width: 100%; border-top: 1px solid var(--color-surface-elevated); }
-::ng-deep .mat-mdc-paginator-range-label,
-::ng-deep .mat-mdc-paginator-page-size-label { color: var(--color-text-muted) !important; }
+.amount.positive {
+  color: var(--color-success);
+}
 
-/* Mobile Optimizations */
+.amount.negative {
+  color: var(--color-danger);
+}
+
+/* states */
+.state-container {
+  padding: 20px 10px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.state-icon {
+  font-size: 40px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+/* paginator */
+mat-paginator {
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  margin-top: 8px;
+}
+
+/* align paginator right */
+.paginator-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.paginator-wrapper mat-paginator {
+  width: auto;
+}
+
+.paginator-wrapper ::ng-deep .mat-mdc-paginator-container {
+  justify-content: flex-end !important;
+  padding: 0;
+}
+
+/* MOBILE */
 @media (max-width: 600px) {
   .transactions-card {
-    margin: 0; /* Remove outside margins to use full screen width */
-    border-radius: 0; /* Optional: square edges look cleaner on mobile */
+    margin: 0;
+    border-radius: 0;
     box-shadow: none;
     border-bottom: 1px solid var(--color-surface-elevated);
   }
 
+  .transactions-card mat-card-content {
+    padding: 6px !important;
+  }
+
   .transaction-item {
-    padding: 12px 8px; /* Reduce horizontal padding */
+    padding: 8px 4px !important;
   }
 
   .transaction-main {
-    gap: 8px; /* Ensure there is a gap between left info and right amount */
+    gap: 6px;
   }
 
   .transaction-left {
-    gap: 8px; /* Tighten gap between icon and text */
-    flex: 1;  /* Allow this section to grow/shrink */
-    min-width: 0; /* Critical for text-overflow to work */
+    gap: 8px;
   }
 
   .type-icon {
-    width: 36px;  /* Slightly smaller icon */
-    height: 36px;
-    flex-shrink: 0; /* Prevent icon from squishing */
+    width: 34px;
+    height: 34px;
   }
 
   .type-name {
-    font-size: 0.9rem; /* Smaller text for mobile */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.85rem;
   }
 
   .amount {
-    font-size: 0.9rem;
-    flex-shrink: 0; /* Ensure the price never wraps or squishes */
+    font-size: 0.85rem;
     text-align: right;
   }
 
-  /* Adjust paginator for mobile */
+  /* center paginator on mobile */
+  .paginator-wrapper {
+    justify-content: center;
+  }
+
   ::ng-deep .mat-mdc-paginator-container {
     padding: 0 4px !important;
-    justify-content: center !important;
     flex-wrap: wrap;
   }
 }

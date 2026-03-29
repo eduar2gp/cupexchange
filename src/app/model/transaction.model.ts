@@ -14,4 +14,5 @@ export interface Transaction {
   type: TransactionType;
   createdAt: string;  
   status?: 'COMPLETED' | 'PENDING' | 'FAILED' | 'REJECT';
+  direction?: string;
 }

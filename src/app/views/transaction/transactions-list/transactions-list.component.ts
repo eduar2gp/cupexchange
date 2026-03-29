@@ -128,8 +128,9 @@ export class TransactionsListComponent {
     return t === 'DEPOSIT' || t === 'WITHDRAWAL';
   }
 
-  isWithdrawal(type?: string): boolean {
-    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'TRADE_CREDIT' || (type || '').toUpperCase() === 'FEE_PAYMENT';
+  isWithdrawal(type?: string, direction?: string): boolean {
+    if((type || '').toUpperCase() === 'DEPOSIT') return false;
+    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'FEE_PAYMENT' || (direction || '').toUpperCase() === 'DEBIT';
   }
 
   refresh(): void {
