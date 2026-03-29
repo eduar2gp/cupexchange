@@ -1,22 +1,49 @@
 <div class="list-container">
-  <div class="header-actions" *appHasRole="[Role.Admin, Role.Provider]">
+  <div class="header-actions">
     <button mat-flat-button color="primary" (click)="addProvider()">
       <mat-icon>add</mat-icon>
       Add Provider
     </button>
   </div>
 
+  @if (loading()) {
+    <div class="loading-shade">
+      <span>Loading providers...</span>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-message">
+      <mat-icon>error</mat-icon>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
   <mat-nav-list class="provider-list">
-    @for (provider of providers(); track provider.id) {
+    @for (provider of providers(); track trackById($index, provider)) {
       <mat-list-item (click)="onClick(provider)" class="provider-item">
-        <img matListItemAvatar [src]="provider.profileImageUrl" [alt]="provider.name">
+        <img matListItemAvatar [src]="provider.profileImageUrl || 'assets/default-avatar.png'" [alt]="provider.name">
         
         <span matListItemTitle class="provider-name">{{provider.name}}</span>
         <span matListItemLine class="provider-email">{{provider.email}}</span>
         
-        <!-- <mat-icon matListItemMeta class="chevron">chevron_right</mat-icon> -->
+        <mat-icon matListItemMeta class="chevron">chevron_right</mat-icon>
       </mat-list-item>
       <mat-divider></mat-divider>
+    } @empty {
+      @if (!loading()) {
+        <div class="empty-state">No providers found.</div>
+      }
     }
   </mat-nav-list>
+
+  <mat-paginator
+    [length]="totalElements()"
+    [pageSize]="pageSize()"
+    [pageIndex]="currentPage()"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="handlePageEvent($event)"
+    showFirstLastButtons
+    aria-label="Select page of providers">
+  </mat-paginator>
 </div>

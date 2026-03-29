@@ -19,15 +19,13 @@ export class TransactionService {
   private readonly http = inject(HttpClient);
   
   getTransactionsByUserIdPaginated(
-    userId: string | number,
     page: number = 0,
     size: number = 20
   ): Observable<Page<Transaction>> {
-    const url = build(ApiEndpoints.transaction.USER_TRANSACTIONS_ENDPOINT) + `/${userId}/paged`;
+    const url = build(ApiEndpoints.transaction.USER_TRANSACTIONS_ENDPOINT)
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
     return this.http.get<Page<Transaction>>(url, { params });
   }
 

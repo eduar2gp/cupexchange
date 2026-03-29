@@ -63,7 +63,6 @@ export class TransactionsListComponent {
       }),
       switchMap(p => 
         this.transactionService.getTransactionsByUserIdPaginated(
-          p.user.userId, 
           p.page, 
           p.size
         ).pipe(

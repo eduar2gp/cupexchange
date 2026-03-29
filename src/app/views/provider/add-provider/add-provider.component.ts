@@ -6,11 +6,12 @@ import { Provider } from '../../../model/provider.model'
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   standalone: true,
   selector: 'app-add-provider.component',
-  imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule],
+  imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, MatCheckboxModule],
   templateUrl: './add-provider.component.html',
   styleUrl: './add-provider.component.scss'
 })
@@ -18,7 +19,7 @@ export class AddProviderComponent implements OnInit {
 
   private providersService = inject(ProvidersService);
 
-  newProvider: Provider = { name: '', email: '', phone: '', userId: 0 };
+  newProvider: Provider = { name: '', email: '', phone: '', userId: 0, cashProvider: true };
 
   selectedFile: File | null = null;
 
@@ -29,23 +30,24 @@ export class AddProviderComponent implements OnInit {
 
   constructor(private fb: FormBuilder) { }
 
-  
-    ngOnInit() {
-      // Initialization happens here
-      this.phoneForm = this.fb.group({
-        name: ['', Validators.required],
-        email: ['', [
-          Validators.required,
-          Validators.pattern(this.emailPattern)
-        ]],
-        phoneNumber: ['', [
-          Validators.required,
-          Validators.pattern(this.phonePattern)
-        ]],
-        providerImage: [null] // Include the file control
-      });
-    }
-  
+
+  ngOnInit() {
+    // Initialization happens here
+    this.phoneForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [
+        Validators.required,
+        Validators.pattern(this.emailPattern)
+      ]],
+      phoneNumber: ['', [
+        Validators.required,
+        Validators.pattern(this.phonePattern)
+      ]],
+      cashProvider: [true],
+      providerImage: [null] // Include the file control
+    });
+  }
+
 
   get nameControl() {
     return this.phoneForm.get('name')!;
@@ -57,39 +59,40 @@ export class AddProviderComponent implements OnInit {
     return this.phoneForm.get('phoneNumber')!;
   }
 
-  saveProvider() {    
-  if (this.phoneForm.valid) {
-    // 1. Sync form values to the model
-    const formValues = this.phoneForm.value;
-    
-    const storedUserId = localStorage.getItem("userId");
+  saveProvider() {
+    if (this.phoneForm.valid) {
+      // 1. Sync form values to the model
+      const formValues = this.phoneForm.value;
 
-this.newProvider = {
-  ...this.newProvider,
-  name: formValues.name,
-  email: formValues.email,
-  phone: formValues.phoneNumber,
-  userId: storedUserId ? parseInt(storedUserId, 10) : 0
-};
+      const storedUserId = localStorage.getItem("userId");
 
-    this.providersService.createProvider(this.newProvider).subscribe({
-      next: (response) => {          
-        if (this.selectedFile) {
-          const formData = new FormData();
-          formData.append('file', this.selectedFile, this.selectedFile.name);
-          this.providersService.updateProviderImage(response.id!, formData).subscribe({
-            next: (updatedProduct: any) => {
-              console.log('Provider image saved successfully!', updatedProduct);
-              this.phoneForm.reset(); // Clear form on success
-            },
-            error: (err: any) => console.error('Error saving image:', err)
-          });
-        }
-      },
-      error: (err) => console.error('Error saving provider:', err)
-    });
+      this.newProvider = {
+        ...this.newProvider,
+        name: formValues.name,
+        email: formValues.email,
+        phone: formValues.phoneNumber,
+        cashProvider: formValues.cashProvider,
+        userId: storedUserId ? parseInt(storedUserId, 10) : 0
+      };
+
+      this.providersService.createProvider(this.newProvider).subscribe({
+        next: (response) => {
+          if (this.selectedFile) {
+            const formData = new FormData();
+            formData.append('file', this.selectedFile, this.selectedFile.name);
+            this.providersService.updateProviderImage(response.id!, formData).subscribe({
+              next: (updatedProduct: any) => {
+                console.log('Provider image saved successfully!', updatedProduct);
+                this.phoneForm.reset(); // Clear form on success
+              },
+              error: (err: any) => console.error('Error saving image:', err)
+            });
+          }
+        },
+        error: (err) => console.error('Error saving provider:', err)
+      });
+    }
   }
-}
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];

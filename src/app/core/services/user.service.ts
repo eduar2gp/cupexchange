@@ -53,18 +53,33 @@ export class UserService {
     return this.http.patch<User>(fullUrl, {}, { params });
   }
 
+  addUserRole(userId: number, roleName: string): Observable<string> {
+    const fullUrl = build(ApiEndpoints.auth.ADD_USER_ROLE, { userId });
+    // Set the query parameters
+    const params = new HttpParams().set('roleName', roleName);
+    // Add responseType: 'text' to prevent JSON parsing errors
+    return this.http.patch(fullUrl, {}, { 
+        params, 
+        responseType: 'text' 
+    });
+}
+
   getUsersWithoutProvider(page: number = 0, size: number = 10, searchTerm: string): Observable<Page<User>> {
-
     const fullUrl = build(ApiEndpoints.auth.GET_USERS_WITHOUT_PROVIDER)
-
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
     if (searchTerm) params = params.set('searchTerm', searchTerm);
-
     return this.http.get<Page<User>>(fullUrl, { params });
+  }
 
+  getAllMatchingUsers(page: number = 0, size: number = 10, searchTerm: string): Observable<Page<User>> {
+    const fullUrl = build(ApiEndpoints.auth.GET_ALL_USERS)
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    if (searchTerm) params = params.set('searchTerm', searchTerm);
+    return this.http.get<Page<User>>(fullUrl, { params });
   }
 
   updateUserProfile(user: UserProfileData): Observable<User> {

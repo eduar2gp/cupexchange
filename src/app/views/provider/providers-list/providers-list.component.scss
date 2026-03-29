@@ -63,3 +63,27 @@ mat-divider {
     display: none; // Remove the last divider for a cleaner look
   }
 }
+
+.list-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0; left: 0; bottom: 56px; right: 0; // stop above paginator
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.provider-item {
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}

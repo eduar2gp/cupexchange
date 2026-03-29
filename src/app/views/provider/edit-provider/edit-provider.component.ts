@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { Provider } from '../../../model/provider.model';
 import { Product } from '../../../model/product.model'
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProvidersService } from '../../../core/services/providers.service';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { environment } from '../../../../environments/environment'
 import { ProductsService } from '../../../core/services/products.service';
 import { Subject, switchMap, filter, Subscription, Observable, combineLatest, startWith, forkJoin } from 'rxjs';
 import { Province } from '../../../model/province.model'
@@ -23,17 +22,20 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../model/user.model';
-import { Page } from '../../../model/page.model'
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Role } from '../../../model/roles.enum';
+import { error } from 'console';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 
 @Component({
   standalone: true,
   selector: 'app-edit-provider.component',
-  imports: [AsyncPipe, FormsModule, MatFormFieldModule, MatInputModule,
+  imports: [FormsModule, MatFormFieldModule, MatInputModule,
     MatIconModule, MatCardModule, TranslateModule,
     CommonModule, MatSelectModule,
     MatProgressSpinnerModule, MatChipsModule,
@@ -64,7 +66,8 @@ export class EditProviderComponent implements OnInit {
   filteredMunicipalities = signal<Municipality[]>([]);
 
   // Add this to your class properties
-  providerCoverage = signal<ProviderCoveragePayload | null>(null);
+  // providerCoverage = signal<ProviderCoveragePayload | null>(null);
+  providerCoverage = signal<any | undefined>(undefined);
 
   // Properties to add to your class
   public searchResults = signal<User[]>([]);
@@ -78,8 +81,45 @@ export class EditProviderComponent implements OnInit {
   lastSearchTerm = signal<string>('');
 
   provider = toSignal(this.dataService.currentProvider);
+  // Ensure 'role' is in this array!
+  displayedColumns: string[] = ['name', 'contact', 'role', 'actions'];
+
+  public roles = [
+    { value: 'ROLE_STORE_MANAGER', label: 'Administrador de Tienda' },
+  ];
 
   constructor(private snackBar: MatSnackBar) {
+  }
+
+  // 2. Variable to hold the selected role name
+  selectedRoleName = Role.StoreManager; // Default value
+
+  // 3. A Map to store the selected role for each user ID
+  userRolesMap = new Map<string, string>();
+
+  onRoleChange(roleName: string, userId: number) {
+    const id = String(userId);
+    this.userRolesMap.set(id, roleName);
+    console.log(`Map updated: User ${id} -> ${roleName}`);
+  }
+
+  // 4. Update your link function to use the Map
+  onLinkUser(user: User) {
+    const currentProvider = this.provider();
+    // Get the specific role for THIS user, or default to Store Manager
+    const roleName = this.userRolesMap.get(String(user.id)) || 'ROLE_STORE_MANAGER';
+
+    if (!user?.id || !currentProvider?.id) return;
+
+    this.userService.linkUserToProvider(user.id, currentProvider.id, roleName).subscribe({
+      next: () => {
+        this.snackBar.open(`User linked successfully`, 'Close', { duration: 3000 });
+        this.searchResults.update(users => users.filter(u => u.id !== user.id));
+      },
+      error: (err: Error) => {
+        this.snackBar.open(err.message, 'Error', { duration: 3000 })
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -98,8 +138,10 @@ export class EditProviderComponent implements OnInit {
       switchMap(([provider]) => {
         // Use forkJoin to fetch Products AND Coverage at the same time
         return forkJoin({
-          products: this.productsService.getProductsByProvider(provider.id!),
-          coverage: this.providersService.getProvidersCoverage(provider.id!)
+
+
+          products: this.productsService.getProductsByProvider(provider.id!).pipe(catchError(() => of([]))),
+          coverage: this.providersService.getProvidersCoverage(provider.id!).pipe(catchError(() => of({ activeMunicipalities: [] })))
         });
       })
     ).subscribe({
@@ -283,29 +325,5 @@ export class EditProviderComponent implements OnInit {
 
   private showToast(message: string, type: 'Success' | 'Error'): void {
     this.snackBar.open(message, 'Close', { duration: 5000, panelClass: type === 'Success' ? ['snackbar-success'] : ['snackbar-error'] });
-  }
-
-  onLinkUser(user: User) {
-    const currentProvider = this.provider();
-    const roleName = 'ROLE_STORE_MANAGER';
-    // 2. Debugging: Check if these exist
-    console.log('User object received from template:', user);
-    console.log('Linking User:', user.id, 'to Provider:', currentProvider?.id);
-    // 3. Validation to prevent the .toString() error
-    if (!user?.id || !currentProvider?.id) {
-        this.snackBar.open('Missing User ID or Provider ID', 'Close');
-        return;
-    }
-    // Ensure you use user.id (matching your Backend Entity)
-    this.userService.linkUserToProvider(user.id, currentProvider.id, roleName).subscribe({
-      next: () => {
-        this.snackBar.open(`User linked successfully`, 'Close', { duration: 3000 });
-        this.searchResults.update(users => users.filter(u => u.id !== user.id));
-      },
-      error: (err) => {
-        const message = err.status === 403 ? 'Admin role required' : 'Action failed';
-        this.snackBar.open(message, 'Close', { duration: 5000 });
-      }
-    });
   }
 }

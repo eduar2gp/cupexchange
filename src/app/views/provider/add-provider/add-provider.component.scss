@@ -3,25 +3,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100%;
-  padding: 2rem;
-  background-color: var(--color-background);
+  min-height: 100vh; /* Changed to vh for better centering on all screens */
+  padding: 1rem;     /* Smaller padding for mobile */
+  background-color: var(--color-background, #f8f9fa);
+  transition: background-color 0.3s ease;
 
   .provider-card {
     width: 100%;
     max-width: 480px;
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    padding: 40px;
-    border-radius: 12px;
-    border: 1px solid var(--color-surface-elevated);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    background-color: var(--color-surface, #ffffff);
+    color: var(--color-text, #212529);
+    padding: 24px;   /* Responsive padding */
+    border-radius: 16px;
+    border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 
     h3 {
       color: var(--color-primary);
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 24px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 20px;
       text-align: center;
       letter-spacing: -0.5px;
     }
@@ -32,81 +34,86 @@
 .provider-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 
-  /* Overriding Material Outline Colors */
   mat-form-field {
     width: 100%;
     
-   
-    ::v-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch {
-       border-color: var(--color-text-muted);
-    }
-
-    mat-label {
-      color: var(--color-text-secondary);
-    }
-
+    /* Ensure internal Material text inherits theme colors */
     input {
       color: var(--color-text);
     }
+    mat-label {
+      color: var(--color-text-secondary);
+    }
   }
 
-  /* File Upload Styling */
+  .checkbox-section {
+    margin: 4px 0 12px 0;
+    color: var(--color-text);
+  }
+
+  /* File Upload Styling - Improved for Dark Mode */
   .file-upload-section {
     margin: 8px 0;
-    padding: 16px;
-    border: 2px dashed var(--color-surface-elevated);
+    padding: 12px;
+    border: 2px dashed var(--color-border, #ccc);
     border-radius: 8px;
+    background-color: var(--color-background-subtle, rgba(0,0,0,0.02));
     transition: border-color 0.2s;
 
     &:hover {
-      border-color: var(--color-accent);
+      border-color: var(--color-primary);
     }
 
     input[type="file"] {
       color: var(--color-text-muted);
-      font-size: 0.9rem;
-      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
       
       &::file-selector-button {
-        background: var(--color-surface-elevated);
+        background: var(--color-surface-elevated, #e0e0e0);
         color: var(--color-text);
         border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        margin-right: 12px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        margin-right: 8px;
         cursor: pointer;
-        transition: 0.2s;
+        font-weight: 500;
 
         &:hover {
           background: var(--color-primary);
+          color: white;
         }
       }
     }
   }
 
-  /* Submit Button styling using your primary vars */
   .save-btn {
-    margin-top: 12px;
+    margin-top: 16px;
     background-color: var(--color-primary) !important;
     color: #ffffff !important; 
     font-weight: 600;
-    height: 48px;
-
-    &:hover:not(:disabled) {
-      background-color: var(--color-primary-hover) !important;
-    }
+    height: 52px; /* Slightly taller for better mobile tap target */
+    border-radius: 8px;
 
     &:disabled {
       opacity: 0.5;
-      background-color: var(--color-text-muted) !important;
+      background-color: var(--color-text-muted, #999) !important;
     }
   }
 }
 
-/* Material Error Text Override */
-mat-error {
-  color: var(--color-danger) !important;
-  font-size: 0.8rem;
+/* Media Query for Desktop */
+@media (min-width: 768px) {
+  .form-container {
+    padding: 2rem;
+  }
+  
+  .provider-card {
+    padding: 40px;
+    h3 {
+      font-size: 1.5rem;
+    }
+  }
 }

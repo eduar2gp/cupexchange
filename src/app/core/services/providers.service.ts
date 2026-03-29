@@ -27,9 +27,17 @@ export class ProvidersService {
    * The Authorization header is now automatically added by the AuthInterceptor.
    * @returns An Observable array of Product objects.
    */
-  getProviders(): Observable<Provider[]> {
+  getProvidersPaginated(
+    page: number = 0,
+    size: number = 10,
+    sort: string = 'name,asc'
+  ): Observable<Page<Provider>> {
     const fullUrl = `${this.BASE_API_URL}${this.PROVIDERS_ENDPOINT}`;
-    return this.http.get<Provider[]>(fullUrl);
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
+    return this.http.get<Page<Provider>>(fullUrl, { params });
   }
 
   getProvidersByMunicipalityId(

@@ -10,7 +10,9 @@ export const ApiEndpoints = {
     getUserProfile: '/api/v1/auth/user/profile?userId=',
     getUserOrders: '/api/v1/auth/user/orders?userId=',
     GET_USERS_WITHOUT_PROVIDER: '/api/v1/auth/users/provider-is-null',
-    LINK_USER_PROVIDER: '/api/v1/auth/{userId}/link-provider/{providerId}'
+    GET_ALL_USERS: '/api/v1/auth/users',
+    LINK_USER_PROVIDER: '/api/v1/auth/{userId}/link-provider/{providerId}',
+    ADD_USER_ROLE: '/api/v1/auth/{userId}/add-role'
   },
   merchant: {
     MERCHANT_ADD_ORDERS_ENDPOINT: '/api/v1/merchant/add-order',
@@ -22,7 +24,7 @@ export const ApiEndpoints = {
     MERCHANT_UPDATE_CASH_ORDER_STATUS: '/api/v1/merchant/cash-orders/update-status'
   },
   transaction: {
-    USER_TRANSACTIONS_ENDPOINT: '/api/v1/transaction/user',
+    USER_TRANSACTIONS_ENDPOINT: '/api/v1/transaction/user/paged',
     DEPOSIT_ENDPOINT: '/api/v1/transaction/deposit',
     WITHDRAWAL_ENDPOINT: '/api/v1/transaction/withdraw',
     PAYMENT_GATEWAYS_ENDPOINT: '/api/v1/payment/gateways?currency=',

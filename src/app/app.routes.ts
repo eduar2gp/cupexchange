@@ -31,6 +31,7 @@ import { NotificationsComponent } from './views/notification/notifications.compo
 import { AccountsListComponent } from './views/account/accounts-list/accounts-list.component';
 import { WhoWeAreComponent } from './views/shared/whoweare/who-we-are.component';
 import { CashOrdersListComponent } from './views/order/cash-orders-list/cash-orders-list.component';
+import { AdminDashboardComponent } from './views/admin/dashboard/admin-dashboard.component';
 
 
 export const routes: Routes = [
@@ -193,5 +194,11 @@ export const routes: Routes = [
     path: 'notifications',
     component: NotificationsComponent,
     canActivate: [roleGuard]
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin]}
   }
 ];

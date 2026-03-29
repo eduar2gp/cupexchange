@@ -5,6 +5,10 @@
       <h3>Menu</h3>
     </div>
     <mat-nav-list>
+       <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/admin-dashboard" routerLinkActive="active">
+        <mat-icon matListItemIcon>business</mat-icon>
+        <span matListItemTitle>{{ 'ADMIN_DASHBOARD' | translate }}</span>
+      </a>
       <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/account-provider-balances" routerLinkActive="active">
         <mat-icon matListItemIcon>savings</mat-icon>
         <span matListItemTitle>{{ 'ACCOUNTS.ACCOUNT_PROVIDER_BALANCES' | translate }}</span>
