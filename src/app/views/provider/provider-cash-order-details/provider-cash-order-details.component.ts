@@ -63,7 +63,7 @@ export class ProviderCashOrderDetailsComponent implements OnInit {
   );
 
   statuses: { value: CashOrder['status']; label: string }[] = [
-    { value: 'COMPLETED', label: 'Completeda' },
+    { value: 'COMPLETED', label: 'Completada' },
     { value: 'REJECTED', label: 'Rechazada' },
   ];
 
