@@ -67,14 +67,9 @@
 
   @if (totalElements() > 0) {
   <div class="paginator-wrapper">
-    <mat-paginator 
-      [length]="totalElements()" 
-      [pageSize]="pageSize()" 
-      [pageIndex]="currentPage()"
-      [pageSizeOptions]="[5, 10, 25, 50]" 
-      (page)="handlePageEvent($event)" 
-      showFirstLastButtons>
+    <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="currentPage()"
+      [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)" showFirstLastButtons>
     </mat-paginator>
   </div>
-}
+  }
 </mat-card>

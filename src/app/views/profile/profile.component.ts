@@ -33,8 +33,13 @@ export class ProfileComponent implements OnInit {
   public profileForm!: FormGroup;
   public isEditing: boolean = false;
 
-  // Selection Data
-  public provinces: Province[] = [];
+  public countries = [
+    { name: 'Cuba', code: 'CU' },
+    { name: 'USA', code: 'USA' }
+  ];
+
+  public allProvinces: Province[] = [];
+  public filteredProvinces: Province[] = [];
   public allMunicipalities: Municipality[] = [];
   public filteredMunicipalities: Municipality[] = [];
 
@@ -46,12 +51,16 @@ export class ProfileComponent implements OnInit {
   ) {
     this.setupForm();
   }
-
   ngOnInit() {
     this.loadLocationData();
     this.loadUserProfile();
 
-    // Listen for Province changes to filter Municipalities
+    // 1. Listen for Country changes to filter Provinces
+    this.profileForm.get('countryCode')?.valueChanges.subscribe(code => {
+      this.filterProvinces(code);
+    });
+
+    // 2. Listen for Province changes to filter Municipalities
     this.profileForm.get('provinceId')?.valueChanges.subscribe(provinceId => {
       this.filterMunicipalities(provinceId);
     });
@@ -61,14 +70,28 @@ export class ProfileComponent implements OnInit {
     const provJson = localStorage.getItem('PROVINCES');
     const muniJson = localStorage.getItem('MUNICIPALITIES');
 
-    this.provinces = provJson ? JSON.parse(provJson) : [];
+    this.allProvinces = provJson ? JSON.parse(provJson) : [];
     this.allMunicipalities = muniJson ? JSON.parse(muniJson) : [];
+  }
+
+  private filterProvinces(countryCode: string): void {
+    // Update the list of provinces available in the dropdown
+    this.filteredProvinces = this.allProvinces.filter(p => p.countryCode === countryCode);
+
+    // Only reset children if the form is currently being edited by the user
+    // This prevents the data from being cleared during the initial loadUserProfile()
+    if (this.isEditing) {
+      const currentProvId = this.profileForm.get('provinceId')?.value;
+      if (currentProvId && !this.filteredProvinces.find(p => p.id === currentProvId)) {
+        this.profileForm.get('provinceId')?.setValue(null);
+        this.profileForm.get('municipalityId')?.setValue(null);
+      }
+    }
   }
 
   private filterMunicipalities(provinceId: number): void {
     this.filteredMunicipalities = this.allMunicipalities.filter(m => m.provinceId === provinceId);
 
-    // Reset municipality if current selection doesn't belong to the new province
     const currentMuniId = this.profileForm.get('municipalityId')?.value;
     if (currentMuniId && !this.filteredMunicipalities.find(m => m.id === currentMuniId)) {
       this.profileForm.get('municipalityId')?.setValue(null);
@@ -77,26 +100,41 @@ export class ProfileComponent implements OnInit {
 
   private setupForm(): void {
     this.profileForm = this.fb.group({
-      firstName: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      middleName: new FormControl({ value: '', disabled: true }),
-      lastName: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      phone: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      address: new FormControl({ value: '', disabled: true }, [Validators.required]),
-      municipalityId: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      provinceId: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      firstName: [{ value: '', disabled: true }, [Validators.required]],
+      middleName: [{ value: '', disabled: true }],
+      lastName: [{ value: '', disabled: true }, [Validators.required]],
+      phone: [{ value: '', disabled: true }, [Validators.required]],
+      address: [{ value: '', disabled: true }, [Validators.required]],
+      countryCode: [{ value: null, disabled: true }, [Validators.required]], // New Field
+      provinceId: [{ value: null, disabled: true }, [Validators.required]],
+      municipalityId: [{ value: null, disabled: true }, [Validators.required]],
     });
   }
 
   private loadUserProfile(): void {
     const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+
     if (savedProfileJson) {
       this.loggedInUser = JSON.parse(savedProfileJson) as User;
 
-      // Patch values and trigger municipality filtering
-      this.profileForm.patchValue(this.loggedInUser);
+      // 1. If user has a provinceId, find the corresponding Province object
       if (this.loggedInUser.provinceId) {
+        const userProvince = this.allProvinces.find(p => p.id === this.loggedInUser?.provinceId);
+
+        if (userProvince) {
+          // 2. Filter the provinces list based on the found countryCode
+          this.filterProvinces(userProvince.countryCode);
+
+          // 3. Manually set the countryCode in the form so the UI shows the correct Country
+          this.profileForm.get('countryCode')?.setValue(userProvince.countryCode, { emitEvent: false });
+        }
+
+        // 4. Filter municipalities based on the provinceId
         this.filterMunicipalities(this.loggedInUser.provinceId);
       }
+
+      // 5. Patch the rest of the user data into the form
+      this.profileForm.patchValue(this.loggedInUser);
     }
   }
 

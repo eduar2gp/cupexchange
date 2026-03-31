@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { Provider } from '../../../model/provider.model';
@@ -12,11 +12,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ProductsService } from '../../../core/services/products.service';
-import { Subject, switchMap, filter, Subscription, Observable, combineLatest, startWith, forkJoin } from 'rxjs';
+import { Subject, switchMap, filter, Subscription, combineLatest, startWith, forkJoin } from 'rxjs';
 import { Province } from '../../../model/province.model'
 import { Municipality } from '../../../model/muncipality.model'
 import { MatSelectModule } from '@angular/material/select';
-import { ProviderCoveragePayload } from '../../../model/provider-coverage-response.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -27,9 +26,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Role } from '../../../model/roles.enum';
-import { error } from 'console';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { NgForm } from '@angular/forms';
 
 
 @Component({
@@ -46,6 +45,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class EditProviderComponent implements OnInit {
 
+  @ViewChild('productForm') productForm!: NgForm;
+
   private reloadTrigger = new Subject<void>();
   private productsSubscription: Subscription | undefined;
 
@@ -58,12 +59,6 @@ export class EditProviderComponent implements OnInit {
   private router = inject(Router);
   productsList = signal<Product[]>([]);
 
-  public provinces: Province[] = [];
-  public allMunicipalities: Municipality[] = [];
-
-  selectedProvinceId = signal<number | null>(null);
-  selectedMunicipalityId = signal<number | null>(null);
-  filteredMunicipalities = signal<Municipality[]>([]);
 
   // Add this to your class properties
   // providerCoverage = signal<ProviderCoveragePayload | null>(null);
@@ -87,6 +82,21 @@ export class EditProviderComponent implements OnInit {
   public roles = [
     { value: 'ROLE_STORE_MANAGER', label: 'Administrador de Tienda' },
   ];
+
+  public countries = [
+    { name: 'Cuba', code: 'CU' },
+    { name: 'USA', code: 'USA' }
+  ];
+  public allProvinces: Province[] = [];
+  public allMunicipalities: Municipality[] = [];
+
+  // Signals for cascading selection
+  selectedCountryCode = signal<string>('');
+  selectedProvinceId = signal<number | null>(null);
+  selectedMunicipalityId = signal<number | null>(null);
+
+  filteredProvinces = signal<Province[]>([]);
+  filteredMunicipalities = signal<Municipality[]>([]);
 
   constructor(private snackBar: MatSnackBar) {
   }
@@ -138,8 +148,6 @@ export class EditProviderComponent implements OnInit {
       switchMap(([provider]) => {
         // Use forkJoin to fetch Products AND Coverage at the same time
         return forkJoin({
-
-
           products: this.productsService.getProductsByProvider(provider.id!).pipe(catchError(() => of([]))),
           coverage: this.providersService.getProvidersCoverage(provider.id!).pipe(catchError(() => of({ activeMunicipalities: [] })))
         });
@@ -155,7 +163,6 @@ export class EditProviderComponent implements OnInit {
         this.productsList.set([]);
       }
     });
-
   }
 
   onSearchUsers(term: string) {
@@ -191,16 +198,32 @@ export class EditProviderComponent implements OnInit {
     const provJson = localStorage.getItem('PROVINCES');
     const muniJson = localStorage.getItem('MUNICIPALITIES');
 
-    this.provinces = provJson ? JSON.parse(provJson) : [];
+    this.allProvinces = provJson ? JSON.parse(provJson) : [];
     this.allMunicipalities = muniJson ? JSON.parse(muniJson) : [];
   }
 
-  // Filter municipalities when province changes
+onCountryChange(countryCode: string): void {
+  // Update the signal so the UI knows which country is active
+  this.selectedCountryCode.set(countryCode); 
+
+  // Filter provinces as you were doing before
+  const filtered = this.allProvinces.filter(p => p.countryCode === countryCode);
+  this.filteredProvinces.set(filtered);
+
+  // Reset dependent selections
+  this.selectedProvinceId.set(null);
+  this.selectedMunicipalityId.set(null);
+}
+
+  // Updated: Triggered when Province changes
   onProvinceChange(provinceId: number): void {
     this.selectedProvinceId.set(provinceId);
+
     const filtered = this.allMunicipalities.filter(m => m.provinceId === provinceId);
     this.filteredMunicipalities.set(filtered);
-    this.selectedMunicipalityId.set(null); // Reset selection
+
+    // Reset municipality selection
+    this.selectedMunicipalityId.set(null);
   }
 
   onLinkMunicipality(): void {

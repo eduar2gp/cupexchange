@@ -1,17 +1,15 @@
 <div class="profile-container">
 
   <h2>My Profile</h2>
-  
+
   <div class="user-info-section">
     <div class="user-info-details">
       <p><strong>Username:</strong> {{ loggedInUser?.username }}</p>
       <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
     </div>
     <div *ngIf="loggedInUser?.profileImageUrl" class="profile-picture-container">
-      <img class="profile-picture"
-           [src]="loggedInUser?.profileImageUrl"
-           referrerpolicy="no-referrer"
-           alt="Profile Picture">
+      <img class="profile-picture" [src]="loggedInUser?.profileImageUrl" referrerpolicy="no-referrer"
+        alt="Profile Picture">
     </div>
   </div>
 
@@ -49,17 +47,27 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Province</mat-label>
+        <mat-label>Country</mat-label>
+        <mat-icon matIconPrefix>public</mat-icon>
+        <mat-select formControlName="countryCode">
+          <mat-option *ngFor="let country of countries" [value]="country.code">
+            {{ country.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+         <mat-label>{{ profileForm.get('countryCode')?.value === 'USA' ? 'State' : 'Province' }}</mat-label>
         <mat-icon matIconPrefix>map</mat-icon>
         <mat-select formControlName="provinceId">
-          <mat-option *ngFor="let prov of provinces" [value]="prov.id">
+          <mat-option *ngFor="let prov of filteredProvinces" [value]="prov.id">
             {{ prov.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Municipality</mat-label>
+        <mat-label>{{ profileForm.get('countryCode')?.value === 'USA' ? 'City' : 'Municipality' }}</mat-label>
         <mat-icon matIconPrefix>location_city</mat-icon>
         <mat-select formControlName="municipalityId">
           <mat-option *ngFor="let muni of filteredMunicipalities" [value]="muni.id">
