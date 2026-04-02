@@ -1,0 +1,90 @@
+<div class="transaction-container">
+  @if (transaction(); as tx) {
+  <mat-card class="transaction-card">
+    
+    <mat-card-header>
+      <div mat-card-avatar class="transaction-icon" [class.deposit]="tx.type === 'DEPOSIT'">
+        <mat-icon>{{ tx.type === 'DEPOSIT' ? 'south_west' : 'north_east' }}</mat-icon>
+      </div>
+      <mat-card-title>Transaction #{{ tx.referenceId }}</mat-card-title>
+      <mat-card-subtitle>{{ tx.timestamp | date:'medium' }}</mat-card-subtitle>
+      <div class="header-actions">
+        <mat-chip-set>
+          <mat-chip [ngClass]="tx.status.toLowerCase()" class="status-chip">
+            {{ tx.status }}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="responsive-grid">
+        <div class="detail-item">
+          <span class="label">Amount</span>
+          <span class="value amount" [class.credit]="tx.type === 'DEPOSIT'">
+            {{ tx.amount | currency }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Payment Method</span>
+          <span class="value">{{ tx.method }}</span>
+        </div>
+      </div>
+
+      @if (tx.method === 'CASH') {
+      <div class="management-info shadow-sm">
+        <h4 class="section-title">
+          <mat-icon>admin_panel_settings</mat-icon> 
+          Management Info
+        </h4>
+        
+        <div class="responsive-grid small-gap">
+          <div class="detail-item">
+            <span class="label">Approved At</span>
+            <span class="value">{{ tx.createdAt | date:'medium' }}</span>
+          </div>
+
+          @if (userProfile(); as profile) {
+          <div class="manager-profile">
+            <div class="profile-info">
+              <span class="label">Managed By</span>
+              <span class="value">{{ profile.firstName }} {{ profile.lastName }}</span>
+              <span class="email-text">{{ profile.email }}</span>
+            </div>
+            @if (profile.profileImageUrl) {
+              <img class="profile-avatar" [src]="profile.profileImageUrl" alt="Manager">
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-actions align="end">
+      @if (tx.receiptPaymentUrl) {
+      <a mat-button color="primary" [href]="tx.receiptPaymentUrl" target="_blank">
+        <mat-icon>receipt</mat-icon> VIEW RECEIPT
+      </a>
+      }
+      @if (tx.status === 'PENDING') {
+      <button mat-flat-button color="accent" [disabled]="isLoading()" (click)="onStatusChanged()">
+        @if (isLoading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          UPDATE STATUS
+        }
+      </button>
+      }
+    </mat-card-actions>
+  </mat-card>
+
+  } @else {
+  <div class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Fetching transaction details...</p>
+  </div>
+  }
+</div>

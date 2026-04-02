@@ -13,7 +13,9 @@ import { MatSelectModule } from '@angular/material/select'; // Added
 
 import { TransactionService } from '../../../core/services/transaction.service';
 import { TransactionManagerResponse } from '../../../model/transaction-manager.model';
-import { TransactionConfirmDialogComponent } from '../../../views/shared/confirm-transaction-dialog/transaction-confirm-dialog.component';
+
+import { Router } from '@angular/router';
+import { DataService } from '../../../core/services/data.service';
 
 @Component({
   selector: 'app-account-manager-dashboard',
@@ -30,6 +32,8 @@ export class AccountManagerDashboardComponent implements OnInit {
   private readonly transactionService = inject(TransactionService);
   private readonly dialog = inject(MatDialog);
   private readonly platformId = inject(PLATFORM_ID);
+  private dataService = inject(DataService)
+  private router = inject(Router)
 
   displayedColumns: string[] = ['type', 'amount', 'actions', 'status', 'timestamp'];
   transactions = signal<TransactionManagerResponse[]>([]);
@@ -76,45 +80,10 @@ export class AccountManagerDashboardComponent implements OnInit {
   }
 
   onSelectTransaction(tx: TransactionManagerResponse): void {
-    const dialogRef = this.dialog.open(TransactionConfirmDialogComponent, {
-      width: '400px',
-      data: { id: tx.id, type: tx.type },
-      autoFocus: false
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      // Result is now an object: { action: 'CONFIRM' | 'CANCEL', reason?: string }
-      if (result && result.action) {
-        this.processAction(tx, result.action, result.reason);
-      }
-    });
+    this.dataService.updateTransaction(tx)
+    this.router.navigate(['transaction-details'])
+
   }
 
-  private processAction(tx: TransactionManagerResponse, action: 'CONFIRM' | 'REJECT', reason?: string): void {
-    let actionString: string;
-
-    if (action === 'CONFIRM') {
-      // Map to the type-specific backend action
-      actionString = tx.type === 'DEPOSIT' ? 'CONFIRM_DEPOSIT' : 'CONFIRM_WITHDRAWAL';
-    } else {
-      // Map REJECT from UI to CANCEL for the backend
-      actionString = 'REJECT';
-    }
-
-    this.isLoading.set(true);
-    this.transactionService.processTransactionAction({
-      transactionId: tx.id,
-      action: actionString as any,
-      reason: reason || '' // Pass the failure reason from the dialog
-    }).subscribe({
-      next: () => {
-        this.loadData(); // Refresh list to see updated status
-      },
-      error: (err) => {
-        console.error('Action failed', err);
-        this.isLoading.set(false);
-        // Optional: Add a snackbar/toast here to show the error to the admin
-      }
-    });
-  }
 }

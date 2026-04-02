@@ -1,0 +1,162 @@
+.transaction-container {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-background);
+  min-height: 100%;
+}
+
+.transaction-card {
+  width: 100%;
+  max-width: 650px;
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  ::ng-deep .mat-mdc-card-header {
+    padding: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .mat-mdc-card-header-text { margin: 0; }
+    .mat-mdc-card-title { font-size: 1.25rem; font-weight: 700; color: var(--color-text); }
+    .mat-mdc-card-subtitle { color: var(--color-text-secondary); margin-top: 4px; }
+  }
+
+  .transaction-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-sell-surface-light);
+    color: var(--color-sell-base);
+    border-radius: 10px;
+    
+    &.deposit {
+      background: var(--color-buy-surface-light);
+      color: var(--color-buy-base);
+    }
+  }
+
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 16px 0;
+
+    &.small-gap { gap: 16px; }
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--color-text);
+      
+      &.amount {
+        font-size: 1.5rem;
+        color: var(--color-danger); // Default for withdrawal
+        &.credit { color: var(--color-success); }
+      }
+    }
+  }
+
+  .management-info {
+    margin-top: 24px;
+    padding: 20px;
+    background-color: var(--color-surface-elevated);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      
+      mat-icon { font-size: 18px; width: 18px; height: 18px; }
+    }
+  }
+
+  .manager-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      .email-text { font-size: 0.85rem; color: var(--color-text-muted); }
+    }
+
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-surface);
+    }
+  }
+
+  mat-card-actions {
+    padding: 12px 20px !important;
+    background-color: var(--color-surface);
+    gap: 8px;
+  }
+}
+
+mat-card-content{
+    margin-bottom: 1rem;;
+}
+
+// Status Colors via Theme Variables
+.status-chip {
+  &.pending { background-color: var(--color-warning) !important; color: white !important; }
+  &.completed { background-color: var(--color-success) !important; color: white !important; }
+  &.rejected { background-color: var(--color-danger) !important; color: white !important; }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 100px;
+  color: var(--color-text-muted);
+}
+
+// Mobile Adjustments
+@media (max-width: 480px) {
+  .transaction-card {
+    border-radius: 0; // Full width on tiny screens
+    border-left: none;
+    border-right: none;
+  }
+  
+  .responsive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    width: 100%;
+    margin-top: 8px;
+  }
+}

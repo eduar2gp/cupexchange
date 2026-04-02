@@ -33,6 +33,7 @@ import { WhoWeAreComponent } from './views/shared/whoweare/who-we-are.component'
 import { CashOrdersListComponent } from './views/order/cash-orders-list/cash-orders-list.component';
 import { AdminDashboardComponent } from './views/admin/dashboard/admin-dashboard.component';
 import { ProviderCashOrderDetailsComponent } from './views/provider/provider-cash-order-details/provider-cash-order-details.component';
+import { TransactionDetailsComponent } from './views/transaction/transaction-details/transaction-details.component';
 
 
 export const routes: Routes = [
@@ -207,5 +208,11 @@ export const routes: Routes = [
     component: ProviderCashOrderDetailsComponent,
     canActivate: [roleGuard],
     data: { roles: [Role.Admin, Role.Provider, Role.StoreManager]}
+  },
+  {
+    path: 'transaction-details',
+    component: TransactionDetailsComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.AccountManager]}
   }
 ];
