@@ -80,10 +80,8 @@ export class AccountManagerDashboardComponent implements OnInit {
   }
 
   onSelectTransaction(tx: TransactionManagerResponse): void {
-
     this.dataService.updateTransaction(tx)
     this.router.navigate(['transaction-details'])
-
   }
 
 }
