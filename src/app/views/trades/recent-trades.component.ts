@@ -51,6 +51,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
     effect(() => {
       const pair: TradingPair | null = this.pairSelectionService.selectedPair();
       if (!pair) return;
@@ -61,6 +62,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
         this.currentPairSignal.set(pair);
         this.tradesSignal.set([]);
 
+        // 🟢 FIX: Only interact with WS and API if we are in the browser
         if (this.isBrowser) {
           this.loadRecentTrades();
           this.wsService.subscribeToPublicTrades(pair.value);
@@ -70,6 +72,8 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (!this.isBrowser) return;
+    
     // 1️⃣ Initialize current pair from computed signal
     const pair = this.pairSelectionService.selectedPair();
     if (pair) {
@@ -77,7 +81,7 @@ export class RecentTradesComponent implements OnInit, OnDestroy {
       this.currentPairSignal.set(pair);
     }
 
-    if (!this.isBrowser) return;
+    
 
     setTimeout(() => {
       this.loadRecentTrades();

@@ -59,26 +59,31 @@ export class OrderBookComponent implements OnInit, OnDestroy {
 
   private isBrowser: boolean;
 
-  constructor(
-    private wsService: WebSocketService,
-    private pairSelectionService: PairSelectionService,
-    private orderService: OrdersService,
-    private ngZone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
+ constructor(
+  private wsService: WebSocketService,
+  private pairSelectionService: PairSelectionService,
+  private orderService: OrdersService,
+  private ngZone: NgZone,
+  @Inject(PLATFORM_ID) private platformId: Object
+) {
+  this.isBrowser = isPlatformBrowser(this.platformId);
 
-    effect(() => {
-      const pair = this.pairSelectionService.selectedPair();
-      if (!pair) return;
-      const current = this.currentPairSignal();
-      if (!current || current.value !== pair.value) {
-        this.currentPairSignal.set(pair);
+  effect(() => {
+    const pair = this.pairSelectionService.selectedPair();
+    if (!pair) return;
+
+    const current = this.currentPairSignal();
+    if (!current || current.value !== pair.value) {
+      this.currentPairSignal.set(pair);
+      
+      // 🟢 FIX: Wrap server-incompatible calls in a browser check
+      if (this.isBrowser) {
         this.loadInitialOrders(pair.value);
         this.wsService.subscribeToRecentOrders(pair.value);
       }
-    });
-  }
+    }
+  });
+}
 
   ngOnInit(): void {
     if (this.isBrowser) {

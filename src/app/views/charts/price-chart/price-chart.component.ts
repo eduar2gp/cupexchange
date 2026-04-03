@@ -107,7 +107,7 @@ export class PriceChartComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor(
+constructor(
     private wsService: WebSocketService,
     private pairSelectionService: PairSelectionService,
     private ngZone: NgZone,
@@ -116,57 +116,42 @@ export class PriceChartComponent implements OnInit, OnDestroy {
     private tradeService: TradeService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    // 🟢 MOVE EFFECT HERE: Keep it in the constructor
+    effect(() => {
+      const pair = this.pairSelectionService.selectedPair();
+      if (!pair) return;
+      if (this.currentPair?.value === pair.value) return;
+
+      this.currentPair = pair;
+      this.resetChartData();
+
+      // 🟢 SSR GUARD: Only run browser-specific logic
+      if (this.isBrowser) {
+        // Cleanup old stream before starting new one
+        this.wsService.unsubscribeFromPublicTrades();
+        this.wsService.subscribeToPublicTrades(pair.value);
+        
+        this.loadRecentTrades();
+        this.loadTradeVolume();
+      }
+    });
   }
 
 
   ngOnInit(): void {
-
-  // ✅ EFFECT (NO subscriptions.add)
-  effect(() => {
-    const pair = this.pairSelectionService.selectedPair();
-
-    if (!pair) return;
-
-    // Prevent duplicate work
-    if (this.currentPair?.value === pair.value) return;
-
-    this.currentPair = pair;
-
-    console.log('Chart pair changed:', pair.value);
-
-    this.resetChartData();
-
+    // 🟢 WebSocket listener setup
     if (this.isBrowser) {
-      // ✅ unsubscribe previous stream
-      this.wsService.unsubscribeFromPublicTrades();
-
-      this.wsService.subscribeToPublicTrades(pair.value);
-
-      this.loadRecentTrades();
-      this.loadTradeVolume();
-    }
-  });
-
-
-  // ✅ SOCKET SUBSCRIPTION (still valid)
-  if (this.isBrowser) {
-    this.subscriptions.add(
-      this.wsService.publicTrades$.subscribe((trades: PublicTradeDto[]) => {
-
-        this.ngZone.run(() => {
-
-          trades.forEach(trade => {
-            this.addTradeToChart(trade);
+      this.subscriptions.add(
+        this.wsService.publicTrades$.subscribe((trades: PublicTradeDto[]) => {
+          this.ngZone.run(() => {
+            trades.forEach(trade => this.addTradeToChart(trade));
+            this.cdr.detectChanges();
           });
-
-          // ⚠️ Optional: only if chart lib needs it
-          this.cdr.detectChanges();
-        });
-
-      })
-    );
+        })
+      );
+    }
   }
-}
 
   // Set the chart label using the current pair value (Fix for [object Object] error)
   private setChartLabel(pair: TradingPair): void {
@@ -224,7 +209,8 @@ export class PriceChartComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-    if (this.isBrowser && this.currentPair.value !== 'N/A') {
+    // 🟢 Guard the cleanup
+    if (this.isBrowser && this.wsService) {
       this.wsService.unsubscribeFromPublicTrades();
     }
   }
