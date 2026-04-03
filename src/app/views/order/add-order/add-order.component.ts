@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
@@ -108,6 +108,8 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
+  
+
   ngOnInit(): void {
     const initialPair = this.pairSelectionService.getCurrentPair();
     if (initialPair) {
@@ -119,13 +121,20 @@ export class AddOrderComponent implements OnInit, OnDestroy {
       this.sliderReady.set(true);
     }, 100);
 
-    this.pairSub = this.pairSelectionService.selectedPair$.subscribe((pair: TradingPair | null) => {
-      if (pair) {
-        this.sliderReady.set(false); // Hide
-        this.applyPairUpdate(pair);
-        setTimeout(() => this.sliderReady.set(true), 0); // Show next tick
-      }
-    });
+    effect(() => {
+  const pair = this.pairSelectionService.selectedPair();
+
+  if (!pair) return;
+
+  // Hide the slider before updating
+  this.sliderReady.set(false);
+
+  // Apply the pair change logic
+  this.applyPairUpdate(pair);
+
+  // Show slider on next tick
+  setTimeout(() => this.sliderReady.set(true), 0);
+});
   }
 
   // 3. Extract the logic to a reusable helper to avoid duplication

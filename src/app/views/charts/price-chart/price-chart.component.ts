@@ -8,7 +8,7 @@ import {
   Inject,
   ViewChild,
   signal,
-  WritableSignal
+  WritableSignal, effect
 } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, ChartData } from 'chart.js';
@@ -120,37 +120,53 @@ export class PriceChartComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    // 1. Subscribe to pair selection changes (Runs AFTER dependency injection)
-    this.subscriptions.add(
-      this.pairSelectionService.selectedPair$.subscribe(pair => {
-        if (pair && pair.value && pair.value !== this.currentPair.value) {
-          this.currentPair = pair;
-          this.resetChartData(); // Clear chart and set new label
 
-          if (this.isBrowser) {
-            this.wsService.subscribeToPublicTrades(pair.value);
-            this.loadRecentTrades();
-            this.loadTradeVolume();
-          }
-        }
+  // ✅ EFFECT (NO subscriptions.add)
+  effect(() => {
+    const pair = this.pairSelectionService.selectedPair();
+
+    if (!pair) return;
+
+    // Prevent duplicate work
+    if (this.currentPair?.value === pair.value) return;
+
+    this.currentPair = pair;
+
+    console.log('Chart pair changed:', pair.value);
+
+    this.resetChartData();
+
+    if (this.isBrowser) {
+      // ✅ unsubscribe previous stream
+      this.wsService.unsubscribeFromPublicTrades();
+
+      this.wsService.subscribeToPublicTrades(pair.value);
+
+      this.loadRecentTrades();
+      this.loadTradeVolume();
+    }
+  });
+
+
+  // ✅ SOCKET SUBSCRIPTION (still valid)
+  if (this.isBrowser) {
+    this.subscriptions.add(
+      this.wsService.publicTrades$.subscribe((trades: PublicTradeDto[]) => {
+
+        this.ngZone.run(() => {
+
+          trades.forEach(trade => {
+            this.addTradeToChart(trade);
+          });
+
+          // ⚠️ Optional: only if chart lib needs it
+          this.cdr.detectChanges();
+        });
+
       })
     );
-
-    // 2. Subscribe to new trade data (must run in browser)
-    if (this.isBrowser) {
-      this.subscriptions.add(
-        this.wsService.publicTrades$.subscribe((trades: PublicTradeDto[]) => {
-          // Re-enter Angular's zone for change detection
-          this.ngZone.run(() => {
-            trades.forEach(trade => {
-              this.addTradeToChart(trade);
-            });
-            this.cdr.detectChanges(); // Ensures UI updates correctly
-          });
-        })
-      );
-    }
   }
+}
 
   // Set the chart label using the current pair value (Fix for [object Object] error)
   private setChartLabel(pair: TradingPair): void {

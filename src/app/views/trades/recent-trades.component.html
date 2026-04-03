@@ -7,10 +7,10 @@
         <span class="time-col">{{ 'TIME' | translate }}</span>
       </div>
       <div class="scrollable-list">
-        @for (trade of trades; track trackByTimestamp($index, trade)) {
+       @for (trade of trades(); track trackByTrade($index, trade)) {
         <div class="order-item" [ngClass]="trade.side === 'BUY' ? 'buy-item' : 'sell-item'">
           <span class="price-col font-mono" [ngClass]="trade.side === 'BUY' ? 'buy-price' : 'sell-price'">
-            {{ trade.price | number:priceFormat() }}
+            {{ trade.price | number: priceFormat() }}
           </span>
           <span class="volume-col font-mono">
             {{ trade.volume | number:'1.0-2' }}
@@ -19,11 +19,8 @@
             {{ formatTime(trade.timestamp) }}
           </span>
         </div>
-        }
-        @empty {
-        <div class="no-data">
-          <!--{{ 'WAITING_FOR_TRADES' | translate }}-->
-        </div>
+        } @empty {
+        <div class="no-data"></div>
         }
       </div>
     </mat-card-content>

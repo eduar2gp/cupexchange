@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal, Input, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectionStrategy, Inject, signal, WritableSignal, computed, Signal, Input, PLATFORM_ID, effect } from '@angular/core';
 import { CommonModule, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { WebSocketService } from '../../../core/services/websocket.service';
@@ -67,6 +67,17 @@ export class OrderBookComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    effect(() => {
+      const pair = this.pairSelectionService.selectedPair();
+      if (!pair) return;
+      const current = this.currentPairSignal();
+      if (!current || current.value !== pair.value) {
+        this.currentPairSignal.set(pair);
+        this.loadInitialOrders(pair.value);
+        this.wsService.subscribeToRecentOrders(pair.value);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -78,15 +89,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
         this.wsService.subscribeToRecentOrders(startingPair.value);
       }
 
-      this.pairSub = this.pairSelectionService.selectedPair$.subscribe(pair => {
-        if (!pair) return;
-        const current = this.currentPairSignal();
-        if (!current || current.value !== pair.value) {
-          this.currentPairSignal.set(pair);
-          this.loadInitialOrders(pair.value);
-          this.wsService.subscribeToRecentOrders(pair.value);
-        }
-      });
+
 
       this.wsService.recentOrders$.subscribe((order: PublicOrderDTO) => {
         // Only run UI updates inside NgZone in the browser

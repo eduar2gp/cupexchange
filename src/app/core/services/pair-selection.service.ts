@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, WritableSignal, computed } from '@angular/core';
 import { TradingPair } from '../../model/trading_pair';
 
 @Injectable({
@@ -7,45 +6,48 @@ import { TradingPair } from '../../model/trading_pair';
 })
 export class PairSelectionService {
 
-  // Private BehaviorSubject holding the current TradingPair (or null if none selected)
-  private selectedPairSubject = new BehaviorSubject<TradingPair | null>({ value: 'USDCUP', viewValue: 'USD', imageUrl: 'assets/currencies/usd.png' });
+  // ✅ DEFAULT VALUE (same as before)
+  private readonly defaultPair: TradingPair = {
+    value: 'USDCUP',
+    viewValue: 'USD',
+    imageUrl: 'assets/currencies/usd.png'
+  };
 
-  // Public observable that components can subscribe to
-  selectedPair$ = this.selectedPairSubject.asObservable();
+  // ✅ SIGNAL STATE (initialized like BehaviorSubject)
+  private selectedPairSignal: WritableSignal<TradingPair | null> =
+    signal(this.defaultPair);
 
-  /**
- * Sets the currently selected trading pair
- * @param pair The full TradingPair object (or null to clear selection)
- */
+  // ✅ PUBLIC READ
+  public selectedPair = computed(() => this.selectedPairSignal());
+
+  // =========================
+  // SETTER (WITH SAME LOGIC)
+  // =========================
   setSelectedPair(pair: TradingPair | null): void {
-    const current = this.selectedPairSubject.getValue();
+    const current = this.selectedPairSignal();
     const currentCode = current?.value ?? null;
     const newCode = pair?.value ?? null;
 
-    // Helpful debug logs
     console.log(`[PairSelectionService] Attempting to set pair:`, pair);
     console.log(`[PairSelectionService] Current pair code: ${currentCode}, New pair code: ${newCode}`);
 
-    // Only emit if the pair actually changed
+    // ✅ SAME GUARD AS BEFORE
     if (newCode !== currentCode) {
-      console.log(`[PairSelectionService] Pair changed → emitting new pair:`, pair);
-      this.selectedPairSubject.next(pair);
+      console.log(`[PairSelectionService] Pair changed → updating signal`, pair);
+      this.selectedPairSignal.set(pair);
     } else {
-      console.log(`[PairSelectionService] No change → same pair or both null, skipping emission`);
+      console.log(`[PairSelectionService] No change → skipping`);
     }
   }
 
-  /**
-   * Optional: Get current pair synchronously
-   */
+  // =========================
+  // OPTIONAL HELPERS (KEEP)
+  // =========================
   getCurrentPair(): TradingPair | null {
-    return this.selectedPairSubject.getValue();
+    return this.selectedPairSignal();
   }
 
-  /**
-   * Optional: Get just the current pair code (useful for localStorage)
-   */
   getCurrentPairCode(): string | null {
-    return this.selectedPairSubject.getValue()?.value ?? null;
+    return this.selectedPairSignal()?.value ?? null;
   }
 }

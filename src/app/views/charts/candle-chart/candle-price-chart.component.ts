@@ -6,7 +6,7 @@ import {
   inject,
   signal,
   PLATFORM_ID,
-  Inject
+  Inject, effect
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription, of } from 'rxjs';
@@ -117,6 +117,20 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    effect(() => {
+      const pair = this.pairSelectionService.selectedPair();
+
+      if (!pair) return;
+
+      if (pair.value === this.currentPairCode) return;
+
+      this.currentPairCode = pair.value;
+
+      console.log('Pair changed:', pair.value);
+
+      this.updateChartDataFlow();
+    });
   }
 
   ngOnInit(): void {
@@ -130,15 +144,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       this.updateChartDataFlow();
     }
 
-    this.pairSubscription = this.pairSelectionService.selectedPair$.subscribe(
-      (pair: TradingPair | null) => {
-        if (!pair) return;
-        if (pair.value !== this.currentPairCode) {
-          this.currentPairCode = pair.value;
-          this.updateChartDataFlow();
-        }
-      }
-    );
+    
   }
 
   ngOnDestroy(): void {
@@ -281,7 +287,7 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
         datasets: [{
           label: `${this.currentPairCode} Close`,
           type: 'line',
-          fill: true, 
+          fill: true,
           data: this.rawChartDataPoints.map(p => ({
             x: p.x,
             y: p.c * this.SCALE
