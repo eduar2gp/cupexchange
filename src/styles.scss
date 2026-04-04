@@ -239,3 +239,9 @@ mat-form-field {
 .introjs-tooltip {
   color: #000 !important;
 }
+
+mat-paginator {
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  margin-top: 1rem;
+}

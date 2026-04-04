@@ -280,7 +280,7 @@ export class AddTransactionComponent implements OnInit {
   private handleCashOrder(): void {
     // Safety check: Ensure the user object exists to get the ID
     const currentUser = this.dataService.getCurrentUserValue();
-    
+
     if (!currentUser || !this.selectedProvider) {
       this.showToast('Missing user or provider information.', 'Error');
       this.isLoading = false;
@@ -289,11 +289,11 @@ export class AddTransactionComponent implements OnInit {
 
     const cashOrderPayload: CashOrderRequestDTO = {
       // Use the actual user ID from the user session/service
-      userId: this.user!.id, 
+      userId: this.user!.id,
       providerId: this.selectedProvider.id!,
       amount: this.transactionAmount!,
       currencyCode: this.transactionRequest!.currencyCode!,
-      type: this.transactionRequest!.type! 
+      type: this.transactionRequest!.type!
     };
 
     this.merchantOrderService.createCashOrder(cashOrderPayload)
@@ -311,7 +311,9 @@ export class AddTransactionComponent implements OnInit {
         this.isLoading = false;
         if (response) {
           this.showToast('Cash order created successfully!', 'Success');
-          this.router.navigate(['/transactions']);
+          this.router.navigate(['/orders'], {
+            queryParams: { tab: 1 }
+          });
         }
       });
   }

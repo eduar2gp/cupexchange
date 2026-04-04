@@ -37,7 +37,7 @@ export class NotificationService {
      */
     getNotifications(userId: number, page: number = 0, size: number = 10): void {
         const url = build(ApiEndpoints.notification.GET_ALL_NOTIFICATIONS, { userId });
-        
+
         // Use HttpParams for cleaner query string management
         const params = new HttpParams()
             .set('page', page.toString())
@@ -53,22 +53,19 @@ export class NotificationService {
         });
     }
 
-    /**
-     * Optimistically updates the UI state before the server responds
-     */
-    private applyOptimisticRead(notificationId: number): void {
-        // 1. Update the numeric badge count locally
-        const currentCount = this.unreadNotificationsSubject.value;
-        if (currentCount > 0) {
-            this.unreadNotificationsSubject.next(currentCount - 1);
-        }
 
-        // 2. Update the notification list item state
-        const currentNotifications = this.notificationsSubject.value;
-        const updatedNotifications = currentNotifications.map(n =>
-            n.id === notificationId ? { ...n, isSeen: true } : n
+
+
+    private applyOptimisticRead(notificationId: number): void {
+        const currentNotifications = this.notificationsSubject.value || [];   // assuming you have a BehaviorSubject<Notification[]>
+
+        const updatedNotifications = currentNotifications.map(notification =>
+            notification.id === notificationId
+                ? { ...notification, seen: true }   // ← new object
+                : notification
         );
-        this.notificationsSubject.next(updatedNotifications);
+
+        this.notificationsSubject.next(updatedNotifications);   // ← new array reference
     }
 
     /**
@@ -79,7 +76,7 @@ export class NotificationService {
         this.applyOptimisticRead(notificationId);
 
         const url = build(ApiEndpoints.notification.MARK_AS_SEEN, { id: notificationId });
-        
+
         this.http.patch<void>(url, {}).subscribe({
             next: () => {
                 // Stay synced with the real database count
@@ -88,7 +85,7 @@ export class NotificationService {
             error: (err) => {
                 console.error('Server sync failed, rolling back UI state', err);
                 // Rollback: re-fetch the current page to restore original state
-                this.getNotifications(userId); 
+                this.getNotifications(userId);
                 this.refreshUnreadCount(userId);
             }
         });

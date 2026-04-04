@@ -1,0 +1,47 @@
+<div class="orders-container">
+  @if (isLoading()) {
+  <mat-spinner diameter="40"></mat-spinner>
+  } @else {
+  <table mat-table [dataSource]="dataSource()" class="mat-elevation-z2 orders-table">
+    <!-- Amount Column -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef class="header-cell">Amount</th>
+      <td mat-cell *matCellDef="let order">
+        {{ order.amount | number:'1.2-2' }}-{{order.currencyCode}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef class="header-cell"> Status </th>
+      <td mat-cell *matCellDef="let order">
+        <mat-chip-set>
+          <mat-chip [class]="'status-chip ' + order.status?.toLowerCase()">
+            {{ order.status | uppercase }}
+          </mat-chip>
+        </mat-chip-set>
+      </td>
+    </ng-container>
+
+    <!-- Created At Column -->
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef class="header-cell">Created At</th>
+      <td mat-cell *matCellDef="let order">
+        {{ order.createdAt | date:'medium' }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- No data row -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No cash orders found.</td>
+    </tr>
+  </table>
+
+  <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="currentPage()"
+    [pageSizeOptions]="[5, 10, 20, 50]" (page)="handlePageEvent($event)" showFirstLastButtons
+    aria-label="Select page of orders">
+  </mat-paginator>
+  }
+</div>

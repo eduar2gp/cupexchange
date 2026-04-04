@@ -13,7 +13,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   
   h2 {
     margin: 0;
@@ -257,35 +257,4 @@ button[mat-icon-button] {
     font-size: 1.2rem;
     color: var(--color-success);
   }
-}
-
-/* =========================================================
-   Responsive Adjustments
-   ========================================================= */
-@media (max-width: 600px) {
-  .orders-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  mat-button-toggle-group {
-    width: 100%;
-    display: flex;
-    
-    mat-button-toggle {
-      flex: 1;
-    }
-  }
-
-  .order-header {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-}
-
-/* Material Override for Paginator */
-mat-paginator {
-  background: transparent !important;
-  color: var(--color-text-secondary) !important;
-  margin-top: 1rem;
 }

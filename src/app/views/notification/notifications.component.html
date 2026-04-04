@@ -1,19 +1,15 @@
 <div class="notifications-wrapper">
-  <div class="header">
-    <h2>Notifications</h2>
-  </div>
-
   <div *ngIf="notifications$ | async as notifications; else loading">
     
     <div class="list-container">
-      <mat-card *ngFor="let n of notifications" 
-                [class.unread-card]="!n.isSeen" 
-                class="notification-card">
+      <mat-card *ngFor="let n of notifications; trackBy: trackByNotificationId" 
+          [class.unread-card]="!n.seen" 
+          class="notification-card">
         
         <mat-card-content>
           <div class="card-layout">
             <div class="status-indicator">
-              <mat-icon *ngIf="!n.isSeen" color="primary">fiber_manual_record</mat-icon>
+              <mat-icon *ngIf="!n.seen" color="primary">fiber_manual_record</mat-icon>
             </div>
             
             <div class="text-content">
@@ -27,7 +23,7 @@
             <div class="actions">
               <button mat-stroked-button 
                       color="primary" 
-                      *ngIf="!n.isSeen" 
+                      *ngIf="!n.seen" 
                       (click)="markAsRead(n.id)">
                 Mark as Read
               </button>

@@ -13,11 +13,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-notifications',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatPaginatorModule, 
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './notifications.component.html',
@@ -49,7 +49,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     if (userData) {
       const user = JSON.parse(userData);
       this.userId = user.id || user.userId;
-      
       if (this.userId) {
         this.loadNotifications();
       }
@@ -62,13 +61,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   loadNotifications(): void {
     if (this.userId) {
       this.notificationService.getNotifications(
-        this.userId, 
-        this.currentPage, 
+        this.userId,
+        this.currentPage,
         this.pageSize
       );
     }
   }
-
   /**
    * Handles pagination changes from the MatPaginator UI
    */
@@ -77,7 +75,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.pageSize = e.pageSize;
     this.loadNotifications();
   }
-
   /**
    * Marks a single notification as read and triggers optimistic UI updates
    */
@@ -85,6 +82,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     if (this.userId) {
       this.notificationService.markAsSeen(notificationId, this.userId);
     }
+  }
+
+  trackByNotificationId(index: number, notification: Notification): number {
+    return notification.id;   // or notification.id ?? index
   }
 
   ngOnDestroy(): void {

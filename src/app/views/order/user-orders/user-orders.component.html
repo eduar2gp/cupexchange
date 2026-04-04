@@ -1,0 +1,23 @@
+<div class="orders-container">
+  <mat-tab-group [selectedIndex]="selectedIndex">
+
+    <mat-tab label="{{ 'EXCHANGE' | translate }}">
+      <ng-template matTabContent>
+        <app-orders-list></app-orders-list>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="{{ 'CASH' | translate }}">
+      <ng-template matTabContent>
+        <app-user-cash-orders-list></app-user-cash-orders-list>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="{{ 'PRODUCTS' | translate }}">
+      <ng-template matTabContent>
+        <app-ecommerce-orders-list></app-ecommerce-orders-list>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

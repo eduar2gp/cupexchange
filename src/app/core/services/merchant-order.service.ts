@@ -30,20 +30,41 @@ export class MerchantOrdersService {
     return this.http.post(fullUrl, order);
   }
 
-  getAllMerchantOrdersByCustomer(): Observable<MerchantOrder[]> {
+  getAllMerchantOrdersByCustomer(page: number = 0,
+    size: number = 10,
+    sort: string = 'createdAt,desc'
+  ): Observable<Page<MerchantOrder>> {
     const url = `${environment.baseApiUrl}${this.MERCHANT_GET_ORDERS}`;
-    return this.http.get<MerchantOrder[]>(url);
+     const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
+    return this.http.get<Page<MerchantOrder>>(url, { params });
   }
 
   getCashMerchantOrdersByProviderId(
     providerId: string,
     page: number = 0,
-    size: number = 20,
+    size: number = 10,
     sort: string = 'createdAt,desc'
   ): Observable<Page<CashOrder>> {
     const url = build(ApiEndpoints.merchant.MERCHANT_GET_CASH_ORDERS_BY_PROVIDER, {
       providerId: providerId
     });
+    // Set up the query parameters for Spring Pageable
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort);
+    return this.http.get<Page<CashOrder>>(url, { params });
+  }
+
+  getCashMerchantOrdersByUserId(
+    page: number = 0,
+    size: number = 20,
+    sort: string = 'createdAt,desc'
+  ): Observable<Page<CashOrder>> {
+    const url = build(ApiEndpoints.merchant.MERCHANT_GET_CASH_ORDERS_BY_USER);
     // Set up the query parameters for Spring Pageable
     const params = new HttpParams()
       .set('page', page.toString())

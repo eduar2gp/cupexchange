@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './views/login/login.component';
 import { ExchangeDashboardComponent } from './views/dashboard/exchange-dashboard/exchange-dashboard.component'
 import { AddOrderComponent } from '../app/views/order/add-order/add-order.component'
-import { OrdersListComponent } from './views/order/exchange-orders-list/orders-list.component'
 import { roleGuard } from '../app/core/guards/role.guard';
 import { WalletComponent } from '../app/views/wallet/wallet.component'
 import { TransactionsListComponent } from '../app/views/transaction/transactions-list/transactions-list.component'
@@ -34,6 +33,7 @@ import { CashOrdersListComponent } from './views/order/cash-orders-list/cash-ord
 import { AdminDashboardComponent } from './views/admin/dashboard/admin-dashboard.component';
 import { ProviderCashOrderDetailsComponent } from './views/provider/provider-cash-order-details/provider-cash-order-details.component';
 import { TransactionDetailsComponent } from './views/transaction/transaction-details/transaction-details.component';
+import { UserOrdersComponent } from './views/order/user-orders/user-orders.component';
 
 
 export const routes: Routes = [
@@ -79,7 +79,7 @@ export const routes: Routes = [
   },
   {
     path: 'orders',
-    component: OrdersListComponent,
+    component: UserOrdersComponent,
     canActivate: [roleGuard],    
   },
   {
