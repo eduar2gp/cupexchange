@@ -1,32 +1,31 @@
 <div class="trade-dashboard">
 
   @if (tradeVolumeData(); as data) {
-  <div class="trade-volume-info">
-    <div class="info-group">
-      <span class="info-label">Volume:</span>
-      <span class="info-value">{{ data.totalOpenVolume | number:'1.2-2' }}</span>
-    </div>
+    <div class="trade-volume-info">
+      <div class="info-group">
+        <span class="info-label">Volume:</span>
+        <span class="info-value">{{ data.totalOpenVolume | number:'1.2-2' }}</span>
+      </div>
 
-    <div class="info-group">
-      <span class="info-label">Traded (24h):</span>
-      <span class="info-value highlight">{{ data.tradedVolume24H | number:'1.2-2' }}</span>
+      <div class="info-group">
+        <span class="info-label">Traded (24h):</span>
+        <span class="info-value highlight">{{ data.tradedVolume24H | number:'1.2-2' }}</span>
+      </div>
     </div>
-  </div>
   } @else {
-  <div class="loading-volume">Loading volume data...</div>
+    <div class="loading-volume">Loading volume data...</div>
   }
 
   <div class="interval-selection-bar">
     @for (interval of availableIntervals; track interval) {
-    <button type="button"
-            [class.active]="interval === currentInterval"
-            (click)="selectInterval(interval)">
-      {{ interval }}
-    </button>
+      <button type="button"
+              [class.active]="interval === currentInterval"
+              (click)="selectInterval(interval)">
+        {{ interval }}
+      </button>
     }
   </div>
 
-  <!-- Chart type toggle -->
   <div class="chart-type-toggle" role="tablist" aria-label="Chart type">
     <button type="button"
             role="tab"
@@ -44,20 +43,19 @@
       Line
     </button>
   </div>
+
   @if (isBrowser) {
-  <div class="chart-wrapper">
-    <canvas baseChart
-            *ngIf="chartData"
-            [data]="chartData"
-            [options]="chartOptions"
-            [type]="chartType"
-            [plugins]="[watermarkPlugin]">
-    </canvas>
-  </div>
-  }
-  @else {
-  <div class="chart-placeholder">
-    Loading Chart...
-  </div>
+    <div class="chart-wrapper">
+      <canvas baseChart
+              [data]="chartData"
+              [options]="chartOptions"
+              [type]="chartType"
+              [plugins]="[watermarkPlugin]">
+      </canvas>
+    </div>
+  } @else {
+    <div class="chart-placeholder">
+      Loading Chart...
+    </div>
   }
 </div>

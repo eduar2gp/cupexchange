@@ -9,8 +9,9 @@ import { Page } from '../../model/page.model';
 
 export interface UserRegister {
   username: string;
-  email: string;
   password: string;
+  email?: string; // Optional if phone is used
+  phone?: string; // Optional if email is used
 }
 
 @Injectable({

@@ -53,8 +53,8 @@
   "LOGIN_NO_ACCOUNT": "Don't have an account yet?",
   "LOGIN_REGISTER": "Register",
   "VERIFY": {
-    "TITLE": "Verify Your Email",
-    "INSTRUCTIONS": "Enter the verification code sent to your email.",
+    "TITLE": "Verify Your Phone or Email",
+    "INSTRUCTIONS": "Enter the verification code sent to your phone or email.",
     "CODE_LABEL": "Verification Code",
     "CODE_PLACEHOLDER": "e.g. ABC123",
     "CODE_REQUIRED": "Verification code is required",

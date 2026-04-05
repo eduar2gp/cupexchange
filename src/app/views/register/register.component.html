@@ -1,110 +1,96 @@
 <div class="register-container">
-  <h2>{{ 'REGISTER.TITLE' | translate }}</h2>
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <mat-card-title>{{ 'REGISTER.TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate
-        *ngIf="verificationSuccess !== true">
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" *ngIf="!verificationSuccess">
 
-    <div class="form-group">
-      <label for="username">{{ 'REGISTER.USERNAME_LABEL' | translate }}</label>
-      <input type="text"
-                    id="username"
-                    formControlName="username"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['username'].errors" />
-      <div class="invalid-feedback" *ngIf="submitted && f['username'].errors">
-        <div *ngIf="f['username'].errors['required']">
-          {{ 'REGISTER.USERNAME_REQUIRED' | translate }}
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'REGISTER.USERNAME_LABEL' | translate }}</mat-label>
+          <input matInput formControlName="username" />
+          <mat-error *ngIf="f['username'].errors?.['required']">{{ 'REGISTER.USERNAME_REQUIRED' | translate
+            }}</mat-error>
+          <mat-error *ngIf="f['username'].errors?.['minlength']">{{ 'REGISTER.USERNAME_MINLENGTH' | translate
+            }}</mat-error>
+        </mat-form-field>
+
+        <div class="method-toggle">
+          <mat-button-toggle-group [value]="registrationMethod" (change)="setRegistrationMethod($event.value)">
+            <mat-button-toggle value="email">Email</mat-button-toggle>
+            <mat-button-toggle value="phone">Phone</mat-button-toggle>
+          </mat-button-toggle-group>
         </div>
-        <div *ngIf="f['username'].errors['minlength']">
-          {{ 'REGISTER.USERNAME_MINLENGTH' | translate }}
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="registrationMethod === 'email'">
+          <mat-label>{{ 'REGISTER.EMAIL_LABEL' | translate }}</mat-label>
+          <input matInput type="email" formControlName="email" />
+          <mat-error *ngIf="f['email'].errors?.['email']">{{ 'REGISTER.EMAIL_INVALID' | translate }}</mat-error>
+          <mat-error *ngIf="f['email'].errors?.['required']">{{ 'REGISTER.EMAIL_REQUIRED' | translate }}</mat-error>
+        </mat-form-field>
+
+        <div class="phone-group" *ngIf="registrationMethod === 'phone'">
+          <mat-form-field appearance="outline" class="country-code">
+            <mat-label>Code</mat-label>
+            <span matPrefix>+&nbsp;</span>
+            <input matInput type="number" formControlName="countryCode" placeholder="1" />
+            <mat-error *ngIf="f['countryCode'].errors?.['required']">Req.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="phone-number">
+            <mat-label>Phone Number</mat-label>
+            <input matInput type="tel" formControlName="phone" placeholder="1234567890" />
+            <mat-error *ngIf="f['phone'].errors?.['required']">Required</mat-error>
+            <mat-error *ngIf="f['phone'].errors?.['pattern']">Invalid digits</mat-error>
+          </mat-form-field>
         </div>
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label for="email">{{ 'REGISTER.EMAIL_LABEL' | translate }}</label>
-      <input type="email"
-                    id="email"
-                    formControlName="email"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['email'].errors" />
-      <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-        <div *ngIf="f['email'].errors['required']">
-          {{ 'REGISTER.EMAIL_REQUIRED' | translate }}
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'REGISTER.PASSWORD_LABEL' | translate }}</mat-label>
+          <input matInput type="password" formControlName="password" />
+          <mat-error *ngIf="f['password'].errors?.['required']">{{ 'REGISTER.PASSWORD_REQUIRED' | translate
+            }}</mat-error>
+          <mat-error *ngIf="f['password'].errors?.['minlength']">{{ 'REGISTER.PASSWORD_MINLENGTH' | translate
+            }}</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="full-width submit-btn">
+          <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+          <span *ngIf="!loading">{{ (loading ? 'REGISTER.SUBMITTING' : 'REGISTER.SUBMIT') | translate }}</span>
+        </button>
+      </form>
+
+      <div class="alert-container">
+        <div class="alert success" *ngIf="success || verificationSuccess === true">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ (verificationSuccessMessage || success) | translate }}</span>
         </div>
-        <div *ngIf="f['email'].errors['email']">
-          {{ 'REGISTER.EMAIL_INVALID' | translate }}
-        </div>
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label for="password">{{ 'REGISTER.PASSWORD_LABEL' | translate }}</label>
-      <input type="password"
-                    id="password"
-                    formControlName="password"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['password'].errors" />
-      <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
-        <div *ngIf="f['password'].errors['required']">
-          {{ 'REGISTER.PASSWORD_REQUIRED' | translate }}
-        </div>
-        <div *ngIf="f['password'].errors['minlength']">
-          {{ 'REGISTER.PASSWORD_MINLENGTH' | translate }}
-        </div>
-      </div>
-    </div>
-
-    <button type="submit" [disabled]="loading">
-      {{ (loading ? 'REGISTER.SUBMITTING' : 'REGISTER.SUBMIT') | translate }}
-    </button>
-  </form>
-
-  <div class="alert alert-success mt-3" *ngIf="success">
-    {{ success | translate }}
-  </div>
-
-  <div class="alert alert-danger mt-3" *ngIf="error">
-    {{ error | translate }}
-  </div>
-
-  <div class="verification-section" *ngIf="showVerificationInput && verificationSuccess !== true">
-    <h3>{{ 'VERIFY.TITLE' | translate }}</h3>
-    <p>{{ 'VERIFY.INSTRUCTIONS' | translate }}</p>
-
-    <form [formGroup]="verifyForm" (ngSubmit)="onVerifySubmit()">
-      <div class="form-group">
-        <label>{{ 'VERIFY.CODE_LABEL' | translate }}</label>
-        <input type="text" formControlName="code" class="form-control"
-                       placeholder="{{ 'VERIFY.CODE_PLACEHOLDER' | translate }}"
-                       [class.is-invalid]="vf['code'].errors" />
-        <div class="invalid-feedback" *ngIf="vf['code'].errors?.['required']">
-          {{ 'VERIFY.CODE_REQUIRED' | translate }}
+        <div class="alert error" *ngIf="error || verificationError">
+          <mat-icon>error</mat-icon>
+          <span>{{ error || verificationError }}</span>
         </div>
       </div>
 
-      <button type="submit"
-                     class="submit-button"
-                     [disabled]="verifying || verifyForm.invalid">
-        <span *ngIf="!verifying">
-          {{ 'VERIFY.SUBMIT' | translate }}
-        </span>
-        <span *ngIf="verifying">
-          <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
-          {{ 'VERIFY.VERIFYING' | translate }}
-        </span>
-      </button>
-    </form>
+      <div *ngIf="showVerificationInput && !verificationSuccess" class="verification-section">
+        <h3>{{ 'VERIFY.TITLE' | translate }}</h3>
+        <p class="text-muted">{{ 'VERIFY.INSTRUCTIONS' | translate }}</p>
 
-    <div class="alert alert-danger mt-3" *ngIf="verificationSuccess === false && verificationError">
-      {{ verificationError }}
-    </div>
-  </div>
+        <form [formGroup]="verifyForm" (ngSubmit)="onVerifySubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'VERIFY.CODE_LABEL' | translate }}</mat-label>
+            <input matInput formControlName="code" />
+            <mat-error *ngIf="vf['code'].errors?.['required']">{{ 'VERIFY.CODE_REQUIRED' | translate }}</mat-error>
+          </mat-form-field>
 
-  <div class="alert alert-success text-center" *ngIf="verificationSuccess === true">
-    <strong>{{ 'VERIFY.SUCCESS_TITLE' | translate }}</strong>
-    <p>{{ verificationSuccessMessage || ('VERIFY.SUCCESS_MESSAGE' | translate) }}</p>
-    <p class="text-muted mt-3">{{ 'VERIFY.REDIRECTING' | translate }}</p>
-  </div>
-
+          <button mat-raised-button color="primary" type="submit" [disabled]="verifying || verifyForm.invalid"
+            class="full-width submit-btn">
+            <mat-spinner diameter="20" *ngIf="verifying"></mat-spinner>
+            <span *ngIf="!verifying">{{ 'VERIFY.SUBMIT' | translate }}</span>
+          </button>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

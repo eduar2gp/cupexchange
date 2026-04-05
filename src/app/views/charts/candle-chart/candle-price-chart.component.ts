@@ -6,7 +6,10 @@ import {
   inject,
   signal,
   PLATFORM_ID,
-  Inject, effect
+  Inject,
+  effect,
+  NgZone,
+  ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription, of } from 'rxjs';
@@ -33,7 +36,6 @@ import 'chartjs-adapter-luxon';
 import { TradeService } from '../../../../app/core/services/trade.service';
 import { PairSelectionService } from '../../../../app/core/services/pair-selection.service';
 import { WebSocketService } from '../../../core/services/websocket.service';
-import { TradingPair } from '../../../model/trading_pair';
 import { TradeVolumeDTO } from '../../../model/trade-volume.model';
 
 /* ---------------- CHART REGISTER ---------------- */
@@ -64,41 +66,32 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
   private pairSelectionService = inject(PairSelectionService);
   private webSocketService = inject(WebSocketService);
 
-  private pairSubscription!: Subscription;
-  private candleSubscription!: Subscription;
+  private candleSubscription?: Subscription; // Changed to optional for safe cleanup
 
   public availableIntervals = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
-  public currentPairCode = 'USDCUP';
+  public currentPairCode = '';
   public currentInterval = '5m';
   public chartType: 'candlestick' | 'line' = 'line';
   public tradeVolumeData = signal<TradeVolumeDTO | null>(null);
 
   private rawChartDataPoints: any[] = [];
   private SCALE = 10000;
-
-  // 🔥 HARD LIMIT to avoid Chart.js crashes
   private readonly MAX_POINTS = 300;
 
   public chartData: ChartData<any> = { datasets: [] };
+  isBrowser: boolean;
 
   public chartOptions: ChartOptions<any> = {
     responsive: true,
     maintainAspectRatio: false,
     animation: false,
-    parsing: false, // performance boost
-    plugins: {
-      legend: { display: true }
-    },
+    parsing: false,
+    plugins: { legend: { display: true } },
     scales: {
       x: {
         type: 'time',
-        time: {
-          tooltipFormat: 'll HH:mm'
-        },
-        ticks: {
-          autoSkip: true,
-          maxTicksLimit: 10
-        }
+        time: { tooltipFormat: 'll HH:mm' },
+        ticks: { autoSkip: true, maxTicksLimit: 10 }
       },
       y: {
         type: 'linear',
@@ -113,58 +106,45 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     }
   };
 
-  isBrowser: boolean;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
+    // Reactive Effect for Pair Changes
     effect(() => {
       const pair = this.pairSelectionService.selectedPair();
-
-      if (!pair) return;
-
-      if (pair.value === this.currentPairCode) return;
+      if (!pair || pair.value === this.currentPairCode) return;
 
       this.currentPairCode = pair.value;
 
-      console.log('Pair changed:', pair.value);
-
-      this.updateChartDataFlow();
+      if (this.isBrowser) {
+        this.cleanupAndReset();
+        this.updateChartDataFlow();
+        this.subscribeToCandleUpdates();
+      }
     });
   }
 
   ngOnInit(): void {
-    if (!this.isBrowser) return;
-
-    this.subscribeToCandleUpdates();
-
-    const startingPair = this.pairSelectionService.getCurrentPair();
-    if (startingPair) {
-      this.currentPairCode = startingPair.value;
-      this.updateChartDataFlow();
-    }
-
-    
+    // Logic handled by constructor effect on init
   }
 
   ngOnDestroy(): void {
-    this.pairSubscription?.unsubscribe();
+    this.cleanupAndReset();
+  }
+
+  /**
+   * Cleans up subscriptions and resets local data to prevent "ghosting"
+   */
+  private cleanupAndReset(): void {
     this.candleSubscription?.unsubscribe();
     this.webSocketService.unsubscribeFromCandles();
-  }
-
-  /* ---------------- INTERVAL + TYPE ---------------- */
-
-  public selectInterval(interval: string): void {
-    if (interval === this.currentInterval) return;
-    this.currentInterval = interval;
-    this.updateChartDataFlow();
-  }
-
-  public selectChartType(type: 'candlestick' | 'line'): void {
-    if (type === this.chartType) return;
-    this.chartType = type;
-    this.renderForCurrentChartType();
+    this.rawChartDataPoints = [];
+    this.chartData.datasets = [];
+    this.chart?.update();
   }
 
   /* ---------------- CORE FLOW ---------------- */
@@ -173,45 +153,8 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
     this.fetchHistoricalData();
     this.connectToLiveFeed();
     this.loadTradeVolume();
-    this.updateTimeScale(); // 🔥 critical fix
+    this.updateTimeScale();
   }
-
-  /* ---------------- TIME SCALE FIX ---------------- */
-
-  private getTimeUnit(): 'minute' | 'hour' | 'day' {
-    switch (this.currentInterval) {
-      case '1m':
-      case '5m':
-      case '15m':
-      case '30m':
-        return 'minute';
-      case '1h':
-      case '4h':
-        return 'hour';
-      case '1d':
-        return 'day';
-      default:
-        return 'minute';
-    }
-  }
-
-  private updateTimeScale(): void {
-    if (!this.chartOptions.scales) return;
-
-    this.chartOptions.scales['x'] = {
-      type: 'time',
-      time: {
-        unit: this.getTimeUnit(),
-        tooltipFormat: 'll HH:mm'
-      },
-      ticks: {
-        autoSkip: true,
-        maxTicksLimit: 10
-      }
-    };
-  }
-
-  /* ---------------- DATA ---------------- */
 
   private fetchHistoricalData(): void {
     this.tradeService
@@ -219,46 +162,60 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(candles => {
         let data = this.tradeService.mapToChartDataPoints(candles) || [];
-
-        // 🔥 LIMIT DATA SIZE
         if (data.length > this.MAX_POINTS) {
           data = data.slice(-this.MAX_POINTS);
         }
-
         this.rawChartDataPoints = data;
         this.renderForCurrentChartType();
       });
   }
 
-  private computeScale(data: any[]): number {
-    const values = data.map(p => Number(p.c)).filter(v => v > 0);
-    if (!values.length) return 100000;
-    const min = Math.min(...values);
-    return Math.pow(10, Math.ceil(Math.log10(1 / min)) + 2);
+  /* ---------------- LIVE & PERFORMANCE ---------------- */
+
+  private connectToLiveFeed(): void {
+    this.webSocketService.subscribeToCandles(this.currentPairCode, this.currentInterval);
   }
 
-  private computeYRange(data: any[]) {
-    const values = data.map(p => Number(p.c)).filter(v => v > 0);
-    if (!values.length) return { min: 0, max: 1 };
+  private subscribeToCandleUpdates(): void {
+    // Unsubscribe from previous pair listener if it exists
+    this.candleSubscription?.unsubscribe();
 
-    let min = Math.min(...values);
-    let max = Math.max(...values);
-
-    const padding = (max - min) * 0.15;
-    return {
-      min: Math.max(0, min - padding),
-      max: max + padding
-    };
+    this.candleSubscription = this.webSocketService.candleUpdates$
+      .pipe(
+        filter(c => c.pair === this.currentPairCode && c.interval === this.currentInterval)
+      )
+      .subscribe(candle => {
+        // PERFORMANCE: Process data calculations outside of Angular's Zone
+        this.zone.runOutsideAngular(() => {
+          this.updateWithLiveCandle(candle);
+        });
+      });
   }
 
-  /* ---------------- RENDER ---------------- */
+  private updateWithLiveCandle(candle: any): void {
+    const newPoint = this.tradeService.mapToChartDataPoints([candle])[0];
+    const last = this.rawChartDataPoints[this.rawChartDataPoints.length - 1];
+
+    if (last?.x === newPoint.x) {
+      this.rawChartDataPoints[this.rawChartDataPoints.length - 1] = newPoint;
+    } else {
+      this.rawChartDataPoints.push(newPoint);
+      if (this.rawChartDataPoints.length > this.MAX_POINTS) {
+        this.rawChartDataPoints.shift();
+      }
+    }
+
+    // PERFORMANCE: Re-enter the zone only to update the UI
+    this.zone.run(() => {
+      this.renderForCurrentChartType();
+      this.cdr.markForCheck();
+    });
+  }
+
+  /* ---------------- RENDER LOGIC ---------------- */
 
   private renderForCurrentChartType(): void {
-    if (!this.rawChartDataPoints.length) {
-      this.chartData.datasets = [];
-      this.chart?.update();
-      return;
-    }
+    if (!this.rawChartDataPoints.length) return;
 
     this.SCALE = this.computeScale(this.rawChartDataPoints);
     const range = this.computeYRange(this.rawChartDataPoints);
@@ -298,40 +255,54 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       };
     }
 
+    // Use requestAnimationFrame or small timeout for smooth DOM updates
     setTimeout(() => this.chart?.update('none'), 0);
   }
 
-  /* ---------------- LIVE ---------------- */
+  /* ---------------- HELPERS ---------------- */
 
-  private subscribeToCandleUpdates(): void {
-    this.candleSubscription = this.webSocketService.candleUpdates$
-      .pipe(
-        filter(c =>
-          c.pair === this.currentPairCode &&
-          c.interval === this.currentInterval
-        )
-      )
-      .subscribe(candle => this.updateWithLiveCandle(candle));
+  public selectInterval(interval: string): void {
+    if (interval === this.currentInterval) return;
+    this.currentInterval = interval;
+    this.cleanupAndReset(); // Reset for new interval
+    this.updateChartDataFlow();
+    this.subscribeToCandleUpdates();
   }
 
-  private updateWithLiveCandle(candle: any): void {
-    if (!this.rawChartDataPoints.length) return;
+  private updateTimeScale(): void {
+    if (!this.chartOptions.scales) return;
+    this.chartOptions.scales['x'] = {
+      type: 'time',
+      time: {
+        unit: this.getTimeUnit(),
+        tooltipFormat: 'll HH:mm'
+      },
+      ticks: { autoSkip: true, maxTicksLimit: 10 }
+    };
+  }
 
-    const newPoint = this.tradeService.mapToChartDataPoints([candle])[0];
-    const last = this.rawChartDataPoints[this.rawChartDataPoints.length - 1];
+  private getTimeUnit(): 'minute' | 'hour' | 'day' {
+    const units: Record<string, 'minute' | 'hour' | 'day'> = {
+      '1m': 'minute', '5m': 'minute', '15m': 'minute', '30m': 'minute',
+      '1h': 'hour', '4h': 'hour', '1d': 'day'
+    };
+    return units[this.currentInterval] || 'minute';
+  }
 
-    if (last?.x === newPoint.x) {
-      this.rawChartDataPoints[this.rawChartDataPoints.length - 1] = newPoint;
-    } else if (newPoint.x > last?.x) {
-      this.rawChartDataPoints.push(newPoint);
+  private computeScale(data: any[]): number {
+    const values = data.map(p => Number(p.c)).filter(v => v > 0);
+    if (!values.length) return 100000;
+    const min = Math.min(...values);
+    return Math.pow(10, Math.ceil(Math.log10(1 / min)) + 2);
+  }
 
-      // 🔥 enforce limit in real-time too
-      if (this.rawChartDataPoints.length > this.MAX_POINTS) {
-        this.rawChartDataPoints.shift();
-      }
-    }
-
-    this.renderForCurrentChartType();
+  private computeYRange(data: any[]) {
+    const values = data.map(p => Number(p.c)).filter(v => v > 0);
+    if (!values.length) return { min: 0, max: 1 };
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = (max - min) * 0.15;
+    return { min: Math.max(0, min - padding), max: max + padding };
   }
 
   private loadTradeVolume(): void {
@@ -340,15 +311,25 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       .pipe(catchError(() => of(null)))
       .subscribe(v => v && this.tradeVolumeData.set(v));
   }
+  /* ---------------- CHART TYPE TOGGLE ---------------- */
 
-  private connectToLiveFeed(): void {
-    this.webSocketService.subscribeToCandles(
-      this.currentPairCode,
-      this.currentInterval
-    );
+  public selectChartType(type: 'candlestick' | 'line'): void {
+    if (type === this.chartType) return;
+    
+    this.chartType = type;
+    
+    // We need to re-render because the data structure 
+    // changes from {x, y} for line to {x, o, h, l, c} for candlestick
+    this.renderForCurrentChartType();
+    
+    // Force a chart update to swap the internal Chart.js controller
+    setTimeout(() => {
+      this.chart?.update();
+      this.cdr.detectChanges();
+    }, 0);
   }
 
-  public watermarkPlugin = {
+    public watermarkPlugin = {
     id: 'watermark',
     beforeDraw: (chart: any) => {
       const {

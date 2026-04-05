@@ -1,18 +1,19 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy, // 👈 Import ChangeDetectionStrategy
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService, UserRegister } from '../../../app/core/services/user.service';
-import { HttpErrorResponse } from '@angular/common/http';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogMessageComponent } from '../../../app/views/shared/dialog-message/dialog-message.component'
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-register',
@@ -21,40 +22,51 @@ import { DialogMessageComponent } from '../../../app/views/shared/dialog-message
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatCardModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush, // 👈 SET TO OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   verifyForm: FormGroup;
 
-  submitted = false;
   loading = false;
   verifying = false;
-
   showVerificationInput = true;
-  verificationSuccess: boolean | null = null;
+  registrationMethod: 'email' | 'phone' = 'email';
 
+  verificationSuccess: boolean | null = null;
   error: string | null = null;
   success: string | null = null;
   verificationError: string | null = null;
   verificationSuccessMessage: string | null = null;
 
+  private readonly phoneDigitsRegex = /^\d{7,10}$/;
 
   constructor(
     private fb: FormBuilder,
     private registerService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
+      // Email is default: start with validators
       email: ['', [Validators.required, Validators.email]],
+      // Phone is NOT default: start with NO required validators
+      countryCode: ['1', [Validators.pattern(/^\d{1,4}$/)]],
+      phone: ['', [Validators.pattern(this.phoneDigitsRegex)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
 
@@ -71,31 +83,66 @@ export class RegisterComponent implements OnInit {
         this.verifyForm.patchValue({ code });
         this.verifyCode(code);
       }
-
-      // Since all code changes above are asynchronous, we mark for check here
-      this.cdr.markForCheck(); // 👈 Mark for check after async subscription runs
+      this.cdr.markForCheck();
     });
   }
 
   get f() { return this.registerForm.controls; }
   get vf() { return this.verifyForm.controls; }
 
-  onSubmit() {
-    this.submitted = true;
-    this.error = null;
-    this.success = null;
+  setRegistrationMethod(method: 'email' | 'phone') {
+    this.registrationMethod = method;
+    const emailControl = this.registerForm.get('email');
+    const phoneControl = this.registerForm.get('phone');
+    const countryControl = this.registerForm.get('countryCode');
 
-    if (this.registerForm.invalid) {
-      this.cdr.markForCheck(); // 👈 Check to update validation errors
-      return;
+    if (method === 'email') {
+      // Enable Email, Disable Phone requirements
+      emailControl?.setValidators([Validators.required, Validators.email]);
+      phoneControl?.setValidators([Validators.pattern(this.phoneDigitsRegex)]);
+      countryControl?.setValidators([Validators.pattern(/^\d{1,4}$/)]);
+    } else {
+      // Enable Phone requirements, Disable Email
+      emailControl?.clearValidators();
+      phoneControl?.setValidators([Validators.required, Validators.pattern(this.phoneDigitsRegex)]);
+      countryControl?.setValidators([Validators.required, Validators.pattern(/^\d{1,4}$/)]);
     }
 
+    // CRITICAL: Refresh the validation state for all controls
+    emailControl?.updateValueAndValidity();
+    phoneControl?.updateValueAndValidity();
+    countryControl?.updateValueAndValidity();
+
+    this.cdr.markForCheck();
+  }
+
+  onVerifySubmit() {
+    if (this.verifyForm.valid) {
+      this.verifyCode();
+    }
+  }
+
+  onSubmit() {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      console.warn("Form is invalid. Check these fields:", this.registerForm.value);
+      return;
+    }
+    if (this.registerForm.invalid) return;
+
     this.loading = true;
-    this.cdr.markForCheck(); // 👈 Check to update the loading button state
+    this.error = null;
+    this.success = null;
+    this.cdr.markForCheck(); // 1. Show spinner immediately
 
-    const user: UserRegister = this.registerForm.value;
-
-    this.registerService.register(user).subscribe({
+    const formValue = this.registerForm.value;
+    const fullPhoneNumber = `+${formValue.countryCode}${formValue.phone}`;
+    const payload: UserRegister = {
+      username: formValue.username,
+      password: formValue.password,
+      ...(this.registrationMethod === 'email' ? { email: formValue.email } : { phone: fullPhoneNumber })
+    };
+    this.registerService.register(payload).subscribe({
       next: (response: any) => {
         // Registration success
         this.success = response?.message || response?.msg || 'REGISTER.SUCCESS_MESSAGE';
@@ -103,8 +150,6 @@ export class RegisterComponent implements OnInit {
         this.loading = false;
         this.showVerificationInput = true;
         this.registerForm.reset();
-        this.submitted = false;
-
         this.cdr.markForCheck(); // 👈 Mark for check after state updates
       },
       error: (err) => {
@@ -112,92 +157,40 @@ export class RegisterComponent implements OnInit {
         this.error = err?.error || 'REGISTER.ERROR_GENERIC';
         this.success = null;
         this.loading = false; // <<< RE-ENABLES THE BUTTON
-
         this.cdr.markForCheck(); // 👈 Mark for check after state updates (loading/error)
       }
     });
   }
 
-
   verifyCode(code?: string) {
-    const verificationCode = code || this.verifyForm.get('code')?.value?.trim();
-
-    if (!verificationCode) {
-      this.verificationError = 'VERIFY.CODE_REQUIRED';
-      this.verificationSuccess = false;
-      this.cdr.markForCheck(); // 👈 Mark for check to show error immediately
-      return;
-    }
+    const vCode = code || this.verifyForm.get('code')?.value?.trim();
+    if (!vCode) return;
 
     this.verifying = true;
     this.verificationError = null;
-    this.verificationSuccessMessage = null;
-    this.verificationSuccess = null;
-    this.cdr.markForCheck(); // 👈 Mark for check to show spinner
+    this.cdr.markForCheck(); // 4. Show verifying spinner
 
-    this.registerService.verify(verificationCode).subscribe({
+    this.registerService.verify(vCode).subscribe({
       next: (response: string) => {
         this.verifying = false;
-
-        // The server message is directly in the 'response' variable (e.g., "Email verification successful")
-        const serverMessage = response || 'VERIFY.SUCCESS_MESSAGE';
-
-        this.verificationSuccessMessage = serverMessage;
         this.verificationSuccess = true;
-        this.showVerificationInput = true;
+        this.verificationSuccessMessage = 'VERIFY.SUCCESS_MESSAGE';
+        this.cdr.markForCheck(); // 5. Show success state
 
-        this.cdr.markForCheck(); // 👈 Mark for check after successful state updates
-
-        // Open success dialog and redirect logic (no change needed here)
-        /*this.dialog.open(DialogMessageComponent, {
-          width: '400px',
-          data: {
-            title: 'Success',
-            message: serverMessage
-          }
-        });*/
-
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 3000);
+        setTimeout(() => this.router.navigate(['/login']), 3000);
       },
-      error: (err: HttpErrorResponse) => {
-        let serverMessage = 'VERIFY.ERROR_INVALID_CODE';
-
-        // Error message extraction logic
-        if (err.error) {
-          if (typeof err.error === 'string') {
-            serverMessage = err.error;
-          } else if (err.error.message) {
-            serverMessage = err.error.message;
-          } else if (err.error.msg) {
-            serverMessage = err.error.msg;
-          } else if (err.error.error) {
-            serverMessage = err.error.error;
-          }
-        }
-
-        /*this.dialog.open(DialogMessageComponent, {
-          width: '400px',
-          data: {
-            title: 'Error',
-            message: serverMessage
-          }
-        });*/
-
-        this.verificationError = serverMessage;
+      error: (err) => {
+        this.verificationError = this.extractErrorMessage(err);
         this.verifying = false;
-        this.showVerificationInput = true;
         this.verificationSuccess = false;
-
-        this.cdr.markForCheck(); // 👈 Mark for check after error state updates
+        this.cdr.markForCheck(); // 6. CRITICAL: Update UI to show verification error
       }
     });
   }
 
-  onVerifySubmit() {
-    if (this.verifyForm.invalid) return;
-    this.verifyCode();
+  private extractErrorMessage(err: any): string {
+    if (!err?.error) return 'API_ERROR_GENERIC';
+    if (typeof err.error === 'string') return err.error;
+    return err.error.message || err.error.msg || err.error.error || 'API_ERROR_GENERIC';
   }
-
 }
