@@ -5,7 +5,7 @@
       <h3>Menu</h3>
     </div>
     <mat-nav-list>
-       <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/admin-dashboard" routerLinkActive="active">
+      <a *appHasRole="[Role.Admin]" mat-list-item routerLink="/admin-dashboard" routerLinkActive="active">
         <mat-icon matListItemIcon>business</mat-icon>
         <span matListItemTitle>{{ 'ADMIN_DASHBOARD' | translate }}</span>
       </a>
@@ -22,7 +22,8 @@
         <mat-icon matListItemIcon>assured_workload</mat-icon>
         <span matListItemTitle>{{ 'ACCOUNTS.ACCOUNT_MANAGER' | translate }}</span>
       </a>
-      <a *appHasRole="[Role.Provider, Role.StoreManager]" mat-list-item routerLink="/provider-dashboard" routerLinkActive="active">
+      <a *appHasRole="[Role.Provider, Role.StoreManager]" mat-list-item routerLink="/provider-dashboard"
+        routerLinkActive="active">
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'MY_STORE' | translate }}</span>
       </a>
@@ -56,7 +57,6 @@
   </mat-sidenav>
   <!-- Main content -->
   <mat-sidenav-content class="sidenav-content">
-    <!--@if (authService.isAuthenticated()) {-->
     <!-- Top toolbar -->
     <mat-toolbar class="app-toolbar">
       <div class="toolbar-left-controls">
@@ -84,11 +84,6 @@
       </div>
       <div class="toolbar-right-controls">
         <span class="toolbar-title">{{ title() }}</span>
-        <!-- <mat-slide-toggle [checked]="isEcommerceView$ | async"
-                          (change)="toggleDashboard($event)"
-                          color="primary">
-          <mat-icon>{{ (dataService.isEcommerce$ | async) ? 'autorenew' : 'store' }}</mat-icon>
-        </mat-slide-toggle> -->
         <button mat-icon-button routerLink="/notifications" routerLinkActive="active"
           [matBadge]="notificationCount$ | async" [matBadgeHidden]="(notificationCount$ | async) === 0"
           matBadgeColor="warn" aria-label="View notifications"
@@ -97,58 +92,36 @@
         </button>
       </div>
     </mat-toolbar>
-    <!--}-->
     <!-- Page content -->
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
-    <!-- Bottom navigation (only when authenticated) -->
-    <!--@if (authService.isAuthenticated()) {-->
     <mat-toolbar class="bottom-nav">
-      @if (dataService.isEcommerce$ | async; as isEco) {
+      <a mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.DASHBOARD' | translate" data-step="5">
+        <mat-icon>show_chart</mat-icon>
+        <span matListItemTitle>{{ 'CHARTS' | translate }}</span>
+      </a>
       <a mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
         [routerLinkActiveOptions]="{exact: true}" class="nav-item">
         <mat-icon>shopping_basket</mat-icon>
-        <span matListItemTitle>{{ 'HOME' | translate }}</span>
+        <span matListItemTitle>{{ 'STORE' | translate }}</span>
       </a>
-      }@else{
-      <a mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item"
-      [attr.data-intro]="'LOGIN_TUTORIAL.DASHBOARD' | translate" data-step="5">
-        <mat-icon>show_chart</mat-icon>
-        <span matListItemTitle>{{ 'HOME' | translate }}</span>
-      </a>
-      }
-      <a mat-button routerLink="/wallet" routerLinkActive="active" class="nav-item"
-        [attr.data-intro]="'LOGIN_TUTORIAL.WALLETS' | translate" data-step="1">
-        <mat-icon>account_balance_wallet</mat-icon>
-        <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
-      </a>
-      @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button routerLink="/ecommerce-orders" routerLinkActive="active" class="nav-item">
-        <mat-icon>poll</mat-icon>
-        <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
-      </a>
-      }@else{
       <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item"
         [attr.data-intro]="'LOGIN_TUTORIAL.ORDERS' | translate" data-step="4">
         <mat-icon>poll</mat-icon>
         <span matListItemTitle>{{ 'ORDERS' | translate }}</span>
       </a>
-      }
-      @if (dataService.isEcommerce$ | async; as isEco) {
-      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
-        matBadgeHidden="{{ (cartCount$ | async) === 0 }}" matBadgeColor="warn">
-        <mat-icon>add_shopping_cart</mat-icon>
-        <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
-      </a>
-      }@else{
       <a mat-button routerLink="/transactions" routerLinkActive="active" class="nav-item"
         [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="2">
         <mat-icon>compare_arrows</mat-icon>
         <span matListItemTitle>{{ 'TRANSACTIONS' | translate }}</span>
       </a>
-      }
+      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
+        matBadgeHidden="{{ (cartCount$ | async) === 0 }}" matBadgeColor="warn">
+        <mat-icon>add_shopping_cart</mat-icon>
+        <span matListItemTitle>{{ 'MY_CART' | translate }}</span>
+      </a>
     </mat-toolbar>
-    <!--}-->
   </mat-sidenav-content>
 </mat-sidenav-container>
