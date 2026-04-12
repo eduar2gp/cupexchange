@@ -28,7 +28,6 @@
           </button>
         </div>
       </form>
-
       <div class="view-toggle">
         <button mat-icon-button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'">
           <mat-icon>grid_view</mat-icon>
@@ -40,8 +39,14 @@
     </div>
   </mat-toolbar>
 
+  @if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  }
+
   @if (filteredProducts().length > 0) {
-  <div class="product-grid" [class.list-mode]="viewMode === 'list'">
+  <div class="product-grid" [class.list-mode]="viewMode === 'list'" [class.loading-fade]="loading()">
     @for (product of filteredProducts(); track product.id) {
     <mat-card class="product-card" [class.not-available]="!product.available">
       <div class="image-container">
@@ -51,9 +56,15 @@
         }
       </div>
       <mat-card-content>
-        <h2 class="product-name">{{ product.name }}</h2>
-        <p class="product-price">{{ product.price | currency }}</p>
-        <p class="product-description">{{ product.description | slice:0:60 }}...</p>
+        <div class="product-header">
+          <h2 class="product-name">{{ product.name }}</h2>
+          <p class="product-price">{{ product.price | currency }}</p>
+        </div>
+
+        <p class="product-description">
+          {{ product.description | slice:0:60 }}...
+        </p>
+
         <mat-card-actions>
           <button mat-flat-button color="primary" (click)="addProduct(product)" [disabled]="!product.available">
             <mat-icon>shopping_cart</mat-icon>
@@ -64,7 +75,13 @@
     </mat-card>
     }
   </div>
-  } @else {
+
+  <mat-paginator class="product-paginator" [length]="totalElements()" [pageSize]="pageSize()"
+    [pageIndex]="currentPage()" [pageSizeOptions]="[5, 10, 25, 50]" (page)="onPageChange($event)" showFirstLastButtons
+    aria-label="Select page">
+  </mat-paginator>
+
+  } @else if (!loading()) {
   <div class="empty-state">
     <mat-icon>search_off</mat-icon>
     <p>No products found matching filters</p>

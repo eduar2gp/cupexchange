@@ -1,224 +1,278 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  width: 100%;
+}
 
-/* 1. Reset and Toolbar Base */
+/* =========================================
+   COMPACT HEADER & FILTER FORM
+========================================= */
 .dashboard-header {
-  height: auto !important;
-  padding: 8px 12px !important;
+  padding: 8px 16px !important;
   background: var(--color-surface) !important;
   border-bottom: 1px solid var(--color-border);
+  height: var(--header-height) !important;
 
   .header-container {
     display: flex;
     flex-direction: column;
+    gap: 12px;
     width: 100%;
-    gap: 8px;
   }
 }
 
-/* 2. The Filter Form - The Fix is Here */
 .filter-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-  // Group wrappers
+
   .location-group, .search-group {
     display: flex;
-    flex-direction: row; // FORCE single line
-    align-items: center; // Vertical center
     gap: 8px;
-    width: 100%;
+    align-items: center;
   }
-  // FORCE inputs and buttons to align perfectly
+
   mat-form-field {
     flex: 1;
-    min-width: 0; // Allows shrinking
-
+    min-width: 0;
+    
     ::ng-deep {
-      // This is the "ghost" space causing the misalignment
+      /* Remove the extra space reserved for hints/errors */
       .mat-mdc-form-field-subscript-wrapper {
         display: none !important;
       }
-
+      /* Ensure consistent height with button */
       .mat-mdc-text-field-wrapper {
-        height: 48px !important; // Fixed height for alignment
-        background-color: transparent !important;
+        height: 44px !important;
       }
-
       .mat-mdc-form-field-infix {
-        padding-top: 12px !important;
-        padding-bottom: 12px !important;
-        min-height: 48px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        min-height: 44px !important;
       }
     }
   }
 
   .search-btn {
-    height: 48px; // MUST match the form field height exactly
-    flex-shrink: 0; // Prevent button from squishing
-    white-space: nowrap;
+    height: 44px;
+    padding: 0 20px;
     border-radius: 8px;
+    font-weight: 500;
   }
 }
 
-/* 3. Toggle Alignment */
-.view-toggle {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-}
-
-/* 4. DESKTOP: One Single Clean Row */
-@media (min-width: 960px) {
-  .dashboard-header .header-container {
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-  }
-
-  .filter-form {
-    flex-direction: row;
-    flex: 1;
-    justify-content: space-between;
-
-    .search-group {
-      order: 1; // Search on LEFT
-      width: auto;
-      flex: 0 1 450px;
-    }
-
-    .location-group {
-      order: 2; // Selects on RIGHT
-      width: auto;
-      flex: 0 0 380px;
-    }
-  }
-
-  .view-toggle {
-    order: 3;
-    border-left: 1px solid var(--color-border);
-    padding-left: 12px;
-  }
-}
-
-/* 5. Desktop Layout Override (One Row) */
-@media (min-width: 960px) {
-  .filter-form {
-    flex-direction: row; /* Single row */
-    align-items: center;
-    justify-content: space-between;
-
-    .search-group {
-      order: 1; /* Search on the LEFT */
-      width: auto;
-      flex: 0 1 500px; /* Search gets priority width */
-    }
-
-    .location-group {
-      order: 2; /* Location on the RIGHT */
-      width: auto;
-      flex: 0 0 400px;
-    }
-  }
-}
-
-/* 6. Product Grid (List and Grid Mode) */
+/* =========================================
+   PRODUCT GRID (LIST & GRID)
+========================================= */
 .product-grid {
   display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  grid-template-columns: repeat(2, 1fr);
+  gap: 3px; // Slightly larger gap for better separation
+  padding: 3px; // Consistent gutter from screen edges
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box; // Ensures padding doesn't cause horizontal overflow
+  grid-template-columns: repeat(2, 1fr); 
 
+  /* LIST MODE LAYOUT */
   &.list-mode {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    max-width: none; // Remove any 1000px restrictions
+    margin: 0;
+    width: 100%;
 
     .product-card {
-      display: flex;
       flex-direction: row;
       height: 140px;
+      width: 100%; // Take whole width
       margin-bottom: 8px;
-      position: relative;
 
       .image-container {
-        flex: 0 0 150px;
+        flex: 0 0 160px;
         height: 100%;
       }
 
       mat-card-content {
         flex: 1;
-        padding: 12px 16px;
-        display: flex;
-        flex-direction: column;
-
-        .product-name {
-          font-size: 1.1rem;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .product-price {
-          font-weight: 700;
-          color: var(--color-primary);
-        }
-
-        .product-description {
-          font-size: 0.85rem;
-          color: var(--color-text-secondary);
-        }
+        padding: 12px 20px;
+        display: flex; // Changed to flex for better bottom-alignment control
+        flex-direction: column; 
+        justify-content: space-between;
       }
-      /* Button Pinned to Lower Right */
-      mat-card-actions {
-        position: absolute;
-        bottom: 12px;
-        right: 12px;
-        padding: 0;
-        margin: 0;
-        width: auto;
 
-        button {
-          width: auto;
-          min-width: 110px;
-        }
+      /* In list mode, button on the right */
+      mat-card-actions {
+        margin: 0;
+        align-self: flex-end;
+        
+        button { width: 160px; }
       }
     }
   }
 }
 
-/* 7. Enhanced Product Card */
+/* =========================================
+   PRODUCT CARD & PRICE ALIGNMENT
+========================================= */
 .product-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
 
-  &:not(.list-mode) mat-card-actions button {
-    width: 100%;
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
   .image-container {
-    height: 160px;
+    width: 50%;
+    aspect-ratio: 16 / 9;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
 
-    img {
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    flex: 1; /* Grows to fill the card height */
+  }
+
+  /* Right-Aligned Price Logic */
+  .product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+
+    .product-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+      /* Truncate long titles to keep price visible */
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #059669; // Greenish for visibility
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+
+  .product-description {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .product-info {
+    /* Holds the name and description at the top */
+    flex: 0 0 auto;
+  }
+
+  mat-card-actions {
+    margin-top: auto; /* Pushes the actions to the bottom of the flex container */
+    padding: 12px 0 0 0; /* Adjust padding since it's now inside mat-card-content */
+    
+    button {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
   }
 }
 
-/* Grid Breakpoints */
-@media (min-width: 768px) {
+/* =========================================
+   RESPONSIVE OVERRIDES
+========================================= */
+
+/* Desktop Single Row Filter */
+@media (min-width: 960px) {
+  .dashboard-header .header-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .filter-form {
+    flex-direction: row;
+    flex: 1;
+
+    .search-group { flex: 2; }
+    .location-group { flex: 1; }
+  }
+
+  .product-grid:not(.list-mode) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablet / Large Phone */
+@media (min-width: 640px) and (max-width: 959px) {
   .product-grid:not(.list-mode) {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
+/* =========================================
+   MOBILE LIST ADJUSTMENTS (FIXED)
+========================================= */
+@media (max-width: 429px) {
+  .product-grid {
+    padding: 8px; // Smaller gutter on mobile to maximize space
+    gap: 8px;
+  }
+
+  .product-grid.list-mode {
+    .product-card {
+      flex-direction: column; // Stack vertically on mobile
+      height: auto;
+      
+      // .image-container {
+     
+       
+      // }
+
+      mat-card-content {
+        padding: 12px;
+        
+        /* Ensure button stays at bottom on mobile stack */
+        mat-card-actions {
+          margin-top: 3px;
+          width: 100%;
+          button { width: 100%; }
+        }
+      }
+    }
+  }
+}
+
 @media (min-width: 1200px) {
   .product-grid:not(.list-mode) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr); // More columns for ultra-wide
+  }
+}
+
+/* Availability Overlay */
+.not-available {
+  opacity: 0.7;
+  filter: grayscale(0.6);
+  .availability-overlay {
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px;
+    text-align: center;
+    font-size: 0.75rem;
   }
 }

@@ -7,7 +7,7 @@ import { Product } from '../../../model/product.model';
 import { CartService } from '../../../core/services/cart.service';
 import { DataService } from '../../../core/services/data.service';
 import { ProductSearchRequestDTO } from '../../../model/product-search-request-dto.model';
-import { Province  } from '../../../model/province.model';
+import { Province } from '../../../model/province.model';
 import { Municipality } from '../../../model/muncipality.model'
 
 // Angular Material Imports
@@ -20,6 +20,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { User } from '../../../model/user.model';
 import { isPlatformBrowser } from '@angular/common';
+import { Page } from '../../../model/page.model';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap, tap, catchError, of } from 'rxjs';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { untracked } from '@angular/core';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -33,7 +39,9 @@ import { isPlatformBrowser } from '@angular/common';
     MatToolbarModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './ecommerce-dashboard.component.html',
   styleUrl: './ecommerce-dashboard.component.scss',
@@ -65,9 +73,78 @@ export class EcommerceDashboardComponent implements OnInit {
     municipalityId: [null]
   });
 
+  pageSize = signal(10);
+  currentPage = signal(0);
+  loading = signal(false);
+  private searchTrigger = signal(0);
+  error = signal<string | null>(null);
+
+  private searchParams = computed(() => {
+    this.searchTrigger(); // Dependency: triggers re-evaluation on performSearch()
+
+    const page = this.currentPage();
+    const size = this.pageSize();
+    const formValues = this.searchForm.getRawValue();
+    const currentQuery = untracked(() => this.searchQuery());
+
+    return {
+      request: {
+        userMunicipalityId: this.loggedInUser?.municipalityId || null,
+        userProvinceId: this.loggedInUser?.provinceId || null,
+        selectedProvinceId: formValues.provinceId,
+        selectedMunicipalityId: formValues.municipalityId,
+        categoryIds: [],
+        // Include the search text from your signal
+        searchQuery: currentQuery
+      } as ProductSearchRequestDTO,
+      page,
+      size
+    };
+  });
+
+  // 3. The Reactive Resource
+  private productsResource = toSignal(
+    toObservable(this.searchParams).pipe(
+      tap(() => {
+        this.loading.set(true);
+        this.error.set(null);
+      }),
+      switchMap(({ request, page, size }) =>
+        this.productsService.postSearchProducts(request, page, size).pipe(
+          catchError((err) => {
+            console.error(err);
+            this.error.set('Failed to load products');
+            return of(null);
+          }),
+          tap(() => this.loading.set(false))
+        )
+      )
+    ),
+    { initialValue: null }
+  );
+
+  // 4. Selectors for the Template
+  // Replace your old 'filteredProducts' with this
+  products = computed(() => this.productsResource()?.content ?? []);
+  totalElements = computed(() => this.productsResource()?.totalElements ?? 0);
+
+  // Helper to change page
+  onPageChange(event: { pageIndex: number, pageSize: number }) {
+    this.pageSize.set(event.pageSize);
+    this.currentPage.set(event.pageIndex);
+  }
+
   filteredProducts = computed(() => {
+    // 1. React to the keystroke signal
     const query = this.searchQuery().toLowerCase();
-    return this.allProducts().filter(product =>
+
+    // 2. React to the API data signal
+    const products = this.productsResource()?.content ?? [];
+
+    if (!query) return products;
+
+    // 3. Perform local filtering on the array
+    return products.filter(product =>
       product.name.toLowerCase().includes(query) ||
       product.description?.toLowerCase().includes(query)
     );
@@ -106,28 +183,20 @@ export class EcommerceDashboardComponent implements OnInit {
   }
 
   performSearch() {
-    const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
-    if (savedProfileJson) {
-      this.loggedInUser = JSON.parse(savedProfileJson) as User;
+    // 1. Refresh user data from localStorage (Standard practice for your app)
+    if (isPlatformBrowser(this.platformId)) {
+      const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+      if (savedProfileJson) {
+        this.loggedInUser = JSON.parse(savedProfileJson) as User;
+      }
     }
-    const formValues = this.searchForm.value;
 
-    const request: ProductSearchRequestDTO = {
-      // User's home location (for availability flag)
-      userMunicipalityId: this.loggedInUser?.municipalityId || null,
-      userProvinceId: this.loggedInUser?.provinceId || null,
+    // 2. Reset pagination to the first page for a new search
+    this.currentPage.set(0);
 
-      // Filter selection
-      selectedProvinceId: formValues.provinceId,
-      selectedMunicipalityId: formValues.municipalityId,
-
-      categoryIds: [] // Can be linked to a category selector later
-    };
-
-    this.productsService.postSearchProducts(request, 0, 50).subscribe(page => {
-      // Assuming getProducts returns Page<Product>, we extract the content array
-      this.allProducts.set(page.content);
-    });
+    // 3. Increment the trigger. 
+    // Because searchParams() depends on this, the API call will fire.
+    this.searchTrigger.update(v => v + 1);
   }
 
   addProduct(product: Product) {
