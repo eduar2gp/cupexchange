@@ -129,8 +129,10 @@
     "WALLETS": "Crea billeteras y agrega fondos",
     "TRANSACTIONS": "Revisa todas tus transacciones",
     "NOTIFICATIONS": "Las actualizaciones del estado de los depósitos aparecerán en la página de notificaciones",
-    "ORDERS": "Después de que se apruebe tu depósito, procede a crear tu primera orden",
-    "DASHBOARD": "En el tablero se muestran los gráficos de precios, órdenes abiertas y transacciones en tiempo real"
+    "ORDERS": "Encuentra tus órdenes y conoce sus estados y actualizaciones",
+    "DASHBOARD": "En el tablero se muestran los gráficos de precios, órdenes abiertas y transacciones en tiempo real",
+    "STORE": "En el buscador de productos aplica filtros para tu búsqueda",
+    "SHOPPING_CART": "Agrega productos al carro y crea tus órdenes"
   },
   "EXCHANGE": "Intercambio",
   "PRODUCTS": "Productos"

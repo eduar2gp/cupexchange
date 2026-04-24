@@ -4,7 +4,7 @@ import { Provider } from '../../model/provider.model'
 import { Product } from '../../model/product.model'
 import { User } from '../../model/user.model'
 import { TransactionRequest } from '../../model/transaction-request.model'
-import { MerchantOrder } from '../../model/merchant-order-reponse.model'
+import { MerchantOrder } from '../../model/merchant-order-response.model'
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { CashOrder } from '../../model/cash-order-response.model';

@@ -21,7 +21,7 @@ export function buildOrdersFromCart(
     const orderProducts = items.map(i => ({
       productId: i.productId,
       quantity: i.quantity,
-      priceAtPurchase: i.unitPrice
+      priceAtPurchase: i.unitPrice, // Capture price at time of order
     }));
 
     const totalPrice = items.reduce(
@@ -35,7 +35,7 @@ export function buildOrdersFromCart(
       paid: false,
       totalPrice,
       orderProducts
-    });
+    } as any); // Type cast if your CreateOrderRequest interface is strict
   });
 
   return orders;

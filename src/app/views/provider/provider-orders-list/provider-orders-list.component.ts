@@ -7,7 +7,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
-import { MerchantOrder } from '../../../model/merchant-order-reponse.model';
+import { MerchantOrder } from '../../../model/merchant-order-response.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { DataService } from '../../../core/services/data.service'
 import { Router } from '@angular/router';

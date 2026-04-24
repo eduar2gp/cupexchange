@@ -130,7 +130,9 @@
     "TRANSACTIONS": "Check all your transactions",
     "NOTIFICATIONS": "Deposit status updates will show up in the notifications page",
     "ORDERS": "After your deposit is approved proceed to create your first order",
-    "DASHBOARD": "Price charts open orders and real time transactions are shown in the dashboard page"
+    "DASHBOARD": "Price charts open orders and real time transactions are shown in the dashboard page",
+    "STORE": "Browse products and apply filters for search",
+    "SHOPPING_CART": "Add products to your cart and create orders"
   },
   "EXCHANGE": "Exchange",
   "PRODUCTS": "Products"

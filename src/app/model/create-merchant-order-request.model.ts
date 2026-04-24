@@ -1,9 +1,9 @@
-import { OrderProductRequest } from './order-product-request.model'
+import { OrderProductResponse } from './order-product-response.model'
 export interface CreateOrderRequest {
   providerId: number;
   customerId: number;
   status: 'pending' | 'process' | 'completed' | 'canceled';
   paid: boolean;
   totalPrice: number;
-  orderProducts: OrderProductRequest[];
+  orderProducts: OrderProductResponse[];
 }

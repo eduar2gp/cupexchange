@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CreateOrderRequest } from '../../model/create-merchant-order-request.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'
-import { MerchantOrder } from '../../model/merchant-order-reponse.model'
+import { MerchantOrder } from '../../model/merchant-order-response.model'
 import { build, ApiEndpoints } from '../../../app/core/api/endpoints';
 import { CashOrder } from '../../model/cash-order-response.model';
 import { Page } from '../../model/page.model';

@@ -16,7 +16,7 @@ mat-sidenav-container[fullscreen] mat-sidenav-content {
   overflow-y: auto;
   overflow-x: hidden;
   /* Add this line below to fix the surrounding color */
-  background-color: var(--color-background); 
+  background-color: var(--color-background);
 }
 
 mat-sidenav {
@@ -50,8 +50,10 @@ mat-sidenav {
       border-radius: 8px;
       margin: 4px 10px;
       transition: background-color 0.2s ease;
+
       // --- Default Title Color ---
-      .mat-mdc-list-item-title, [matListItemTitle] {
+      .mat-mdc-list-item-title,
+      [matListItemTitle] {
         color: var(--color-text) !important;
         transition: color 0.2s ease;
       }
@@ -63,9 +65,14 @@ mat-sidenav {
       &:hover {
         background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
       }
+
       // --- Sidenav Active State ---
-      &.active, &.mat-list-item-active, &.router-link-active {
-        .mat-mdc-list-item-title, [matListItemTitle] {
+      &.active,
+      &.mat-list-item-active,
+      &.router-link-active {
+
+        .mat-mdc-list-item-title,
+        [matListItemTitle] {
           color: var(--color-primary) !important;
           font-weight: 600;
         }
@@ -133,21 +140,21 @@ mat-sidenav {
 */
 .main-content {
   /* 1. Ensure padding doesn't push width over 100% */
-  box-sizing: border-box; 
-  
+  box-sizing: border-box;
+
   flex: 1 1 auto;
   overflow-y: auto;
-  
+
   /* 2. Reset padding to be consistent */
-  padding: 5px; 
-  
+  padding: 5px;
+
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
   padding-bottom: calc(20px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom));
 
   /* 3. Mobile First: Take full space without forcing margins */
   width: 100%;
-  margin: 0; 
+  margin: 0;
   display: block;
 }
 
@@ -155,7 +162,8 @@ mat-sidenav {
 @media (min-width: 768px) {
   .main-content {
     width: 85%;
-    margin: 0 auto; /* Center only on larger screens */
+    margin: 0 auto;
+    /* Center only on larger screens */
     /* Add a border to define the template if the background is the same color */
     border-left: 1px solid var(--color-border);
     border-right: 1px solid var(--color-border);
@@ -164,8 +172,9 @@ mat-sidenav {
 
 @media (min-width: 1200px) {
   .main-content {
-    width: 66.66%; /* 2/3 of the space */
-    max-width: 1200px; 
+    width: 66.66%;
+    /* 2/3 of the space */
+    max-width: 1200px;
   }
 }
 
@@ -270,7 +279,8 @@ mat-sidenav {
     transition: all 0.2s ease-in-out;
     color: var(--color-text);
 
-    span[matListItemTitle], .mat-mdc-list-item-title {
+    span[matListItemTitle],
+    .mat-mdc-list-item-title {
       font-weight: 500;
       color: inherit !important; // Follows .nav-item color
     }
@@ -287,7 +297,11 @@ mat-sidenav {
     mat-icon {
       margin: 0 !important;
       color: inherit;
+      height: 24px !important;
+      width: 24px !important;
+      font-size: 24px !important;
     }
+
     // --- Bottom Nav Active State ---
     &.active {
       background-color: color-mix(in srgb, var(--color-surface-elevated) 100%, transparent);
@@ -297,7 +311,8 @@ mat-sidenav {
         filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-primary), transparent 50%));
       }
 
-      span[matListItemTitle], .mat-mdc-list-item-title {
+      span[matListItemTitle],
+      .mat-mdc-list-item-title {
         color: var(--color-primary) !important;
       }
 
@@ -365,9 +380,11 @@ mat-sidenav {
 .toolbar-center-controls {
   flex: 1;
   display: flex;
-  align-items: center;    /* Forces children to middle */
+  align-items: center;
+  /* Forces children to middle */
   justify-content: center;
-  height: 46px;           /* Match toolbar height exactly */
+  height: 46px;
+  /* Match toolbar height exactly */
   overflow: hidden;
 }
 
@@ -375,16 +392,18 @@ mat-sidenav {
 .compact-select-clean {
   display: flex;
   align-items: center;
-  height: 32px;           /* Total height of the visible box */
+  height: 32px;
+  /* Total height of the visible box */
   margin: 0;
   padding: 0;
 
   ::ng-deep {
+
     /* REMOVE ALL MATERIAL RESERVED SPACES */
-    .mat-mdc-form-field-subscript-wrapper, 
+    .mat-mdc-form-field-subscript-wrapper,
     .mat-mdc-form-field-bottom-align,
     .mat-mdc-floating-label {
-      display: none !important; 
+      display: none !important;
     }
 
     /* THE KEY FIX: Reset the text field wrapper */
@@ -392,14 +411,16 @@ mat-sidenav {
       padding: 0 12px !important;
       height: 32px !important;
       display: flex !important;
-      align-items: center !important; /* Centering icons and text */
+      align-items: center !important;
+      /* Centering icons and text */
       background-color: transparent;
       border-radius: 8px;
     }
 
     /* Remove the 'Infix' padding that reserves space for the label */
     .mat-mdc-form-field-infix {
-      padding: 0 !important;      /* Removes the top/bottom gap */
+      padding: 0 !important;
+      /* Removes the top/bottom gap */
       min-height: auto !important;
       display: flex !important;
       align-items: center !important;
@@ -412,7 +433,7 @@ mat-sidenav {
       align-items: center !important;
       height: 100% !important;
     }
-    
+
     /* Prefix Icon Alignment */
     .mat-mdc-form-field-icon-prefix {
       padding: 0 4px 0 0 !important;

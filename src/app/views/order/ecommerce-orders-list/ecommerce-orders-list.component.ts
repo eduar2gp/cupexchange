@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { MerchantOrder } from '../../../model/merchant-order-reponse.model';
+import { MerchantOrder } from '../../../model/merchant-order-response.model';
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';

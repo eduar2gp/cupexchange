@@ -11,6 +11,7 @@ import { CreateOrderRequest } from '../../model/create-merchant-order-request.mo
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderPayload } from '../../model/merchant-order-payload.model'
 import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -30,6 +31,8 @@ export class CheckoutComponent {
 
   private cartService = inject(CartService);
   private authService = inject(AuthService);
+  private router = inject(Router)
+
   cartItems$ = this.cartService.cartItems$;
   isSubmitting = false;
   errorMessage = '';
@@ -76,7 +79,7 @@ export class CheckoutComponent {
       return;
     }
 
-    const payload: OrderPayload = {
+    const payload: CreateOrderRequest = {
       providerId: orderGroup.providerId,
       customerId: currentUser.id,
       status: 'pending',
@@ -95,6 +98,9 @@ export class CheckoutComponent {
         this.cartService.removeByProvider(orderGroup.providerId);
         // rebuild view
         this.buildOrders();
+        this.router.navigate(['/orders'], {
+            queryParams: { tab: 2 }
+          });
       },
       error: err => console.error('Order failed', err)
     });

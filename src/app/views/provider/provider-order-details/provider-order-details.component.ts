@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DataService } from '../../../core/services/data.service';
 import { UserService } from '../../../core/services/user.service';
 import { UserProfileData } from '../../../model/user-profile-data.model';
-import { MerchantOrder } from '../../../model/merchant-order-reponse.model';
+import { MerchantOrder } from '../../../model/merchant-order-response.model';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,7 +54,8 @@ export class ProviderOrderDetailsComponent implements OnInit {
   public provinces: Province[] = [];
   public allMunicipalities: Municipality[] = [];
 
-  displayedColumns: string[] = ['productId', 'quantity', 'priceAtPurchase', 'subtotal'];
+  // Inside your component.ts
+  displayedColumns: string[] = ['product', 'productId', 'quantity', 'priceAtPurchase', 'subtotal'];
 
   // Status options (matches model: 'pending' | 'process' | 'completed' | 'canceled')
   statuses: { value: MerchantOrder['status']; label: string }[] = [
