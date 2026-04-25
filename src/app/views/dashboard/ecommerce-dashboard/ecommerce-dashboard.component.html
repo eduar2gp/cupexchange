@@ -49,20 +49,24 @@
   <div class="product-grid" [class.list-mode]="viewMode === 'list'" [class.loading-fade]="loading()">
     @for (product of filteredProducts(); track product.id) {
     <mat-card class="product-card" [class.not-available]="!product.available">
-      <div class="image-container">
-        <img mat-card-image [src]="product.productImageUrl || 'assets/placeholder.png'" [alt]="product.name">
-        @if (!product.available) {
-        <div class="availability-overlay">Not available in your area</div>
-        }
-      </div>
-      <mat-card-content>
+
+      <div class="card-top-layout">
+        <div class="image-container">
+          <img mat-card-image [src]="product.productImageUrl || 'assets/placeholder.png'" [alt]="product.name">
+          @if (!product.available) {
+          <div class="availability-overlay">Not available</div>
+          }
+        </div>
+
         <div class="product-header">
           <h2 class="product-name">{{ product.name }}</h2>
           <p class="product-price">{{ product.price | currency }}</p>
         </div>
+      </div>
 
+      <mat-card-content>
         <p class="product-description">
-          {{ product.description | slice:0:60 }}...
+          {{ product.description }}
         </p>
 
         <mat-card-actions>

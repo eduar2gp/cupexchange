@@ -1,3 +1,6 @@
+/* =========================================
+   CORE LAYOUT
+========================================= */
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -6,273 +9,171 @@
   width: 100%;
 }
 
-/* =========================================
-   COMPACT HEADER & FILTER FORM
-========================================= */
 .dashboard-header {
   padding: 8px 16px !important;
   background: var(--color-surface) !important;
   border-bottom: 1px solid var(--color-border);
-  height: var(--header-height) !important;
+  height: auto !important; // Allow height to adjust to content
 
   .header-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    @media (min-width: 960px) { flex-direction: row; justify-content: space-between; }
   }
 }
 
+/* =========================================
+   FILTER FORM
+========================================= */
 .filter-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 100%;
+  flex: 1;
 
-  .location-group, .search-group {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  .location-group, .search-group { display: flex; gap: 8px; align-items: center; }
+  
+  @media (min-width: 960px) { 
+    flex-direction: row; 
+    .search-group { flex: 2; }
+    .location-group { flex: 1; }
   }
 
   mat-form-field {
     flex: 1;
     min-width: 0;
-    
     ::ng-deep {
-      /* Remove the extra space reserved for hints/errors */
-      .mat-mdc-form-field-subscript-wrapper {
-        display: none !important;
-      }
-      /* Ensure consistent height with button */
-      .mat-mdc-text-field-wrapper {
-        height: 44px !important;
-      }
-      .mat-mdc-form-field-infix {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-        min-height: 44px !important;
-      }
+      .mat-mdc-form-field-subscript-wrapper { display: none !important; }
+      .mat-mdc-text-field-wrapper { height: 44px !important; }
+      .mat-mdc-form-field-infix { padding: 8px 0 !important; min-height: 44px !important; }
     }
   }
 
-  .search-btn {
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 8px;
-    font-weight: 500;
-  }
+  .search-btn { height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 500; }
 }
 
 /* =========================================
-   PRODUCT GRID (LIST & GRID)
+   PRODUCT GRID & CARD BASE
 ========================================= */
 .product-grid {
   display: grid;
-  gap: 3px; // Slightly larger gap for better separation
-  padding: 3px; // Consistent gutter from screen edges
-  width: 100%;
-  box-sizing: border-box; // Ensures padding doesn't cause horizontal overflow
-  grid-template-columns: repeat(2, 1fr); 
+  gap: 12px;
+  padding: 12px;
+  grid-template-columns: repeat(2, 1fr);
 
-  /* LIST MODE LAYOUT */
+  /* Responsive Grid Columns */
+  @media (min-width: 640px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 960px) { grid-template-columns: repeat(4, 1fr); }
+  @media (min-width: 1200px) { grid-template-columns: repeat(5, 1fr); }
+
   &.list-mode {
     display: flex;
     flex-direction: column;
-    max-width: none; // Remove any 1000px restrictions
-    margin: 0;
-    width: 100%;
-
+    grid-template-columns: none;
+    
     .product-card {
       flex-direction: row;
-      height: 140px;
-      width: 100%; // Take whole width
-      margin-bottom: 8px;
-
-      .image-container {
-        flex: 0 0 160px;
-        height: 100%;
-      }
-
-      mat-card-content {
-        flex: 1;
-        padding: 12px 20px;
-        display: flex; // Changed to flex for better bottom-alignment control
-        flex-direction: column; 
-        justify-content: space-between;
-      }
-
-      /* In list mode, button on the right */
-      mat-card-actions {
-        margin: 0;
-        align-self: flex-end;
-        
+      min-height: 160px;
+      
+      .card-top-layout { flex: 0 0 250px; border-right: 1px solid var(--color-border); }
+      mat-card-content { flex-direction: row; justify-content: space-between; }
+      .product-description { -webkit-line-clamp: 4; margin-bottom: 0; padding-right: 20px; }
+      
+      mat-card-actions { 
+        align-self: flex-end; 
+        width: auto; 
         button { width: 160px; }
+      }
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        .card-top-layout { flex: 0 0 auto; border-right: none; border-bottom: 1px solid var(--color-border); }
+        mat-card-content { flex-direction: column; }
+        mat-card-actions { width: 100%; button { width: 100%; } }
       }
     }
   }
 }
 
 /* =========================================
-   PRODUCT CARD & PRICE ALIGNMENT
+   PRODUCT CARD INTERNAL
 ========================================= */
 .product-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s, box-shadow 0.2s;
   height: 100%;
+  overflow: hidden;
 
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  &:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+  .card-top-layout {
+    display: flex;
+    padding: 12px;
+    gap: 12px;
+    align-items: center;
   }
 
   .image-container {
-    width: 50%;
-    aspect-ratio: 16 / 9;
+    flex: 0 0 45%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
     img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  .product-header {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    .product-name { font-size: 0.95rem; font-weight: 600; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price { font-size: 1.1rem; font-weight: 700; color: #059669; margin: 0; }
   }
 
   mat-card-content {
     display: flex;
     flex-direction: column;
-    padding: 12px;
-    flex: 1; /* Grows to fill the card height */
-  }
-
-  /* Right-Aligned Price Logic */
-  .product-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 4px;
-
-    .product-name {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--color-text);
-      margin: 0;
-      /* Truncate long titles to keep price visible */
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .product-price {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #059669; // Greenish for visibility
-      margin: 0;
-      white-space: nowrap;
-    }
+    padding: 0 12px 12px;
+    flex: 1;
   }
 
   .product-description {
     font-size: 0.85rem;
     color: var(--color-text-secondary);
-    margin-bottom: 12px;
     line-height: 1.4;
-  }
-
-  .product-info {
-    /* Holds the name and description at the top */
-    flex: 0 0 auto;
+    margin-bottom: 12px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   mat-card-actions {
-    margin-top: auto; /* Pushes the actions to the bottom of the flex container */
-    padding: 12px 0 0 0; /* Adjust padding since it's now inside mat-card-content */
-    
-    button {
-      width: 100%;
-    }
+    margin-top: auto;
+    padding: 0;
+    button { width: 100%; }
   }
 }
 
-/* =========================================
-   RESPONSIVE OVERRIDES
-========================================= */
-
-/* Desktop Single Row Filter */
-@media (min-width: 960px) {
-  .dashboard-header .header-container {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .filter-form {
-    flex-direction: row;
-    flex: 1;
-
-    .search-group { flex: 2; }
-    .location-group { flex: 1; }
-  }
-
-  .product-grid:not(.list-mode) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* Tablet / Large Phone */
-@media (min-width: 640px) and (max-width: 959px) {
-  .product-grid:not(.list-mode) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* =========================================
-   MOBILE LIST ADJUSTMENTS (FIXED)
-========================================= */
-@media (max-width: 429px) {
-  .product-grid {
-    padding: 8px; // Smaller gutter on mobile to maximize space
-    gap: 8px;
-  }
-
-  .product-grid.list-mode {
-    .product-card {
-      flex-direction: column; // Stack vertically on mobile
-      height: auto;
-      
-      // .image-container {
-     
-       
-      // }
-
-      mat-card-content {
-        padding: 12px;
-        
-        /* Ensure button stays at bottom on mobile stack */
-        mat-card-actions {
-          margin-top: 3px;
-          width: 100%;
-          button { width: 100%; }
-        }
-      }
-    }
-  }
-}
-
-@media (min-width: 1200px) {
-  .product-grid:not(.list-mode) {
-    grid-template-columns: repeat(5, 1fr); // More columns for ultra-wide
-  }
-}
-
-/* Availability Overlay */
+/* Status Classes */
 .not-available {
   opacity: 0.7;
   filter: grayscale(0.6);
   .availability-overlay {
+    position: absolute;
+    bottom: 0; width: 100%;
     background: rgba(0,0,0,0.7);
     color: white;
     padding: 4px;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 }
