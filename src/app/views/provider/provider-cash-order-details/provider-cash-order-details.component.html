@@ -34,7 +34,9 @@
         <div class="info-group">
           <span class="label">Amount to Collect</span>
           <span class="value total-amount">
-            {{ orderData.amount | currency: orderData.currencyCode }}
+            <span>{{ orderData.currencyCode }}</span>
+            &nbsp;
+            <span>{{ orderData.amount | number: '1.2-2' }}</span>
           </span>
         </div>
       </div>
@@ -88,7 +90,11 @@
       <section class="section summary-footer">
         <div class="summary-box">
           <p>This is a <strong>{{ orderData.type }}</strong> request. Please ensure the amount of
-            <strong>{{ orderData.amount | currency: orderData.currencyCode }}</strong> is handled according to the
+            <strong><span class="value total-amount">
+                <span>{{ orderData.currencyCode }}</span>
+                &nbsp;
+                <span>{{ orderData.amount | number: '1.2-2' }}</span>
+              </span></strong> is handled according to the
             status above.
           </p>
         </div>

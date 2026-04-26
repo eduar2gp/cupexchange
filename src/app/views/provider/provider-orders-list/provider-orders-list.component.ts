@@ -49,7 +49,7 @@ export class ProviderOrdersListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   // Table configuration
-  displayedColumns: string[] = ['id', 'customerId', 'status', 'total', 'paid', 'actions'];
+  displayedColumns: string[] = ['id', 'status', 'total', 'paid', 'actions', 'createdAt'];
 
   ngOnInit() {
     this.loadProviderOrders();

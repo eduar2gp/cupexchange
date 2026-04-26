@@ -4,7 +4,7 @@
     <mat-card-header class="custom-header">
       <div class="header-content">
         <mat-card-title>Order #{{ orderData.merchantOrderId }}</mat-card-title>
-        <mat-card-subtitle>{{ (userProfile()?.firstName || 'Customer') }}'s Purchase</mat-card-subtitle>
+        <mat-card-subtitle>{{ (userProfile()?.firstName || 'Customer') }}'s Purchase - <small>{{ orderData.createdAt | date:'medium' }}</small></mat-card-subtitle>
       </div>
       <mat-form-field class="status-pill" appearance="outline" [attr.data-status]="orderData.status">
         <mat-label>Status</mat-label>
