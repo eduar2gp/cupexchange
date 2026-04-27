@@ -120,10 +120,10 @@
   "LOGIN_WHO_WE_ARE": "About us",
   "WHO_WE_ARE": {
     "TITLE": "Who We Are",
-    "MISSION": "We are a team with the mission of simplifying the exchange of Cuban pesos with foreign currencies.",
-    "SYSTEM": "Our platform uses the peer-to-peer payment system and a distributed network of holding accounts to enable secure and automated currency exchange.",
-    "MARKET": "We aim to reflect real market supply and demand to provide fair exchange rates.",
-    "GOAL": "Our goal is to offer a secure, fast, and convenient platform that makes currency exchange easier and more transparent for everyone."
+    "MISSION": "We are a fintech focused on transforming how Cuban pesos (CUP) are exchanged with foreign currencies. We were created to address a simple reality: official exchange rates do not reflect the market, and millions of people rely on informal solutions to meet their financial needs. We bring that dynamic into a digital, secure, and transparent platform.",
+    "SYSTEM": "We build a peer-to-peer (P2P) infrastructure combined with distributed custody accounts that enables automated, reliable, and frictionless currency exchanges.",
+    "MARKET": "We understand the current environment has limitations: restricted bank transfers, insufficient financial infrastructure, and heavy reliance on cash. That’s why we combine borderless digital transfers with cash operations through a verified provider network across municipalities, provinces, and cities in Cuba, as well as states and cities in the United States. Our approach reflects real supply and demand to offer fairer exchange rates, reducing distortions and minimizing speculation.",
+    "GOAL": "We are building a platform that is transparent in every operation, fast in execution, secure by design, and accessible to real users under real conditions. We don’t reinvent the market — we make it visible, efficient, and reliable."
   },
   "LOGIN_TUTORIAL": {
     "WALLETS": "Create wallets and add funds",

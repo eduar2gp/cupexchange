@@ -120,10 +120,10 @@
   "LOGIN_WHO_WE_ARE": "Quiénes somos?",
   "WHO_WE_ARE": {
     "TITLE": "Quiénes Somos",
-    "MISSION": "Somos un equipo con la misión de simplificar el intercambio de pesos cubanos con monedas extranjeras.",
-    "SYSTEM": "Nuestra plataforma utiliza el sistema de pago peer-to-peer y una red distribuida de cuentas de retención para permitir un intercambio de divisas seguro y automatizado.",
-    "MARKET": "Buscamos reflejar la oferta y la demanda reales del mercado para ofrecer tasas de cambio más justas.",
-    "GOAL": "Nuestro objetivo es brindar una plataforma segura, rápida y conveniente que haga el intercambio de monedas más fácil y transparente para todos."
+    "MISSION": "Somos una fintech enfocada en transformar cómo se intercambia el peso cubano (CUP) con monedas extranjeras. Nacimos para resolver una realidad: las tasas oficiales no reflejan el mercado, y millones de personas dependen de soluciones informales para cubrir sus necesidades. Nosotros llevamos esa dinámica a una plataforma digital, segura y transparente.",
+    "SYSTEM": "Construimos una infraestructura basada en peer-to-peer (P2P) y cuentas de retención distribuidas que permite ejecutar intercambios de forma automática, confiable y sin fricciones innecesarias.",
+    "MARKET": "Sabemos que el entorno actual tiene limitaciones: transferencias con restricciones, infraestructura bancaria insuficiente y una alta dependencia del efectivo. Por eso combinamos transferencias digitales sin barreras geográficas con operaciones en efectivo mediante una red de proveedores verificados en municipios, provincias y ciudades, tanto en Cuba como en Estados Unidos. Nuestro enfoque es reflejar la oferta y la demanda real para ofrecer tasas más justas, eliminando distorsiones y reduciendo la especulación.",
+    "GOAL": "Estamos construyendo una plataforma transparente en cada operación, rápida en ejecución, segura por diseño y accesible para usuarios reales en condiciones reales. No reinventamos el mercado, lo hacemos visible, eficiente y confiable."
   },
   "LOGIN_TUTORIAL": {
     "WALLETS": "Crea billeteras y agrega fondos",
