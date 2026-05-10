@@ -242,6 +242,9 @@ mat-form-field {
 
 mat-paginator {
   background: transparent !important;
-  color: var(--color-text-secondary) !important;
-  margin-top: 1rem;
+  color: var(--color-text) !important;
 }
+
+span{
+    color: var(--color-text);
+  }

@@ -135,3 +135,15 @@
     box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
   }
 }
+
+input{
+  color: var(--color-text) !important;
+}
+
+mat-icon{
+  color: var(--color-text) !important;
+}
+
+mat-label{
+  color: var(--color-text-secondary) !important;
+}

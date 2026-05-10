@@ -133,7 +133,16 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    .product-name { font-size: 0.95rem; font-weight: 600; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-name { 
+      font-size: 0.95rem; 
+      font-weight: 600; 
+      color: var(--color-text);
+      margin: 0; 
+      display: -webkit-box; 
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical; 
+      overflow: hidden; 
+    }
     .product-price { font-size: 1.1rem; font-weight: 700; color: #059669; margin: 0; }
   }
 
@@ -176,4 +185,8 @@
     text-align: center;
     font-size: 0.7rem;
   }
+}
+
+mat-icon{
+  color: var(--color-text) !important;
 }
