@@ -8,6 +8,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { WalletService } from '../../../core/services/wallet.service';
+import { Wallet } from '../../../model/wallet.model';
 
 @Component({
   selector: 'app-account-provider-balance',
@@ -25,12 +27,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class AccountProviderBalanceComponent implements OnInit {
 
   private accountService = inject(AccountService);
+  private walletService = inject(WalletService);
 
   providerData = signal<ProviderBalance[]>([]);
+  systemWallets = signal<Wallet[]>([]);
   totalElements = signal(0);
   currentPage = signal(0);
   pageSize = signal(10);
   isLoading = signal(false);
+  isLoadingWallets = signal(false);
 
   displayedColumns = ['accountName','gatewayId','currency','balance'];
 
@@ -40,6 +45,7 @@ export class AccountProviderBalanceComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBalances();
+    this.loadSystemWallets();
   }
 
   loadBalances(page: number = 0): void {
@@ -64,5 +70,19 @@ export class AccountProviderBalanceComponent implements OnInit {
   onPageChange(event: PageEvent): void {
     this.pageSize.set(event.pageSize);
     this.loadBalances(event.pageIndex);
+  }
+
+  loadSystemWallets(): void {
+    this.isLoadingWallets.set(true);
+    this.walletService.getSystemWallets().subscribe({
+      next: (wallets: Wallet[]) => {
+        this.systemWallets.set(wallets);
+        this.isLoadingWallets.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching system wallets', err);
+        this.isLoadingWallets.set(false);
+      }
+    });
   }
 }

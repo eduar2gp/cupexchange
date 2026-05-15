@@ -25,6 +25,7 @@ export class WalletService {
   //user = this.authService.currentUserValue;
 
   private WALLETS_ENDPOINT = '/api/v1/wallet/balance';
+   private SYSTEM_WALLETS_ENDPOINT = '/api/v1/wallet/system-wallets';
   private CURRENCIES_PAIRS = '/api/v1/trade/currencies/pairs';
   private ADD_WALLET = '/api/v1/wallet/add'
   constructor() {
@@ -32,6 +33,11 @@ export class WalletService {
 
   getWallets(): Observable<Wallet[]> {
     const fullUrl = `${environment.baseApiUrl}${this.WALLETS_ENDPOINT}`;
+    return this.http.get<Wallet[]>(fullUrl);
+  }
+
+  getSystemWallets(): Observable<Wallet[]> {
+    const fullUrl = `${environment.baseApiUrl}${this.SYSTEM_WALLETS_ENDPOINT}`;
     return this.http.get<Wallet[]>(fullUrl);
   }
 

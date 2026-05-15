@@ -13,6 +13,28 @@
       </mat-progress-spinner>
     </div>
 
+    <!-- System Wallets Section -->
+    <div class="system-wallets-section" *ngIf="!isLoadingWallets()">
+      <h3>System Wallets</h3>
+      <div class="loader" *ngIf="isLoadingWallets()">
+        <mat-progress-spinner
+          diameter="40"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+      <div class="wallets-container" *ngIf="!isLoadingWallets()">
+        <div class="wallet-item" *ngFor="let wallet of systemWallets()">
+          <div class="wallet-currency">{{ wallet.currencyCode }}</div>
+          <div class="wallet-balance">
+            <strong>Balance:</strong> {{ wallet.availableBalance | number:'1.2-8' }}
+          </div>
+          <div class="wallet-locked">
+            <strong>Locked:</strong> {{ wallet.lockedBalance | number:'1.2-8' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <table
       mat-table
       [dataSource]="providerData()"

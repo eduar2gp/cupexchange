@@ -139,3 +139,61 @@ mat-paginator {
   }
 
 }
+
+/* System Wallets Section */
+
+.system-wallets-section {
+  margin-bottom: 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-surface-elevated);
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+}
+
+.wallets-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.wallet-item {
+  background: var(--color-background);
+  border: 1px solid var(--color-surface-elevated);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(130, 80, 223, 0.12);
+  }
+
+  .wallet-currency {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 12px;
+  }
+
+  .wallet-balance,
+  .wallet-locked {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+
+    strong {
+      color: var(--color-text);
+      display: inline-block;
+      min-width: 60px;
+    }
+  }
+
+  .wallet-balance {
+    margin-bottom: 12px;
+  }
+}
