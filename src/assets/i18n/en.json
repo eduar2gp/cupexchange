@@ -117,6 +117,36 @@
     "ID_INFO": "Account IDs",
     "ACCOUNT_PROVIDER_BALANCES": "Provider Account Balances"
   },
+  "ACCOUNT_PROVIDER_BALANCE": {
+    "TITLE": "Provider Liquidity Overview",
+    "SYSTEM_WALLETS": "System Wallets",
+    "TRADE_FEE": "Trade Fee",
+    "WITHDRAWAL_FEE": "Withdrawal Fee",
+    "BALANCE": "Balance",
+    "LOCKED": "Locked",
+    "PROVIDER": "Provider",
+    "GATEWAY": "Gateway",
+    "CURRENCY": "Currency",
+    "AVAILABLE_BALANCE": "Available Balance",
+    "ACTIONS": "Actions",
+    "VIEW_TRANSACTIONS": "View Transactions"
+  },
+  "ACCOUNT_MANAGER": {
+    "TITLE": "Account Manager History",
+    "SUBTITLE": "Click a row to process pending deposits or withdrawals",
+    "FILTER_STATUS": "Filter by Status",
+    "ALL_TRANSACTIONS": "All Transactions",
+    "PENDING": "Pending",
+    "COMPLETED": "Completed",
+    "REJECTED": "Rejected",
+    "TYPE": "Type",
+    "AMOUNT": "Amount",
+    "RECEIPT": "Receipt",
+    "VIEW_RECEIPT": "View Receipt",
+    "STATUS": "Status",
+    "DATE": "Date",
+    "NO_TRANSACTIONS": "No transactions found for the selected status."
+  },
   "LOGIN_WHO_WE_ARE": "About us",
   "WHO_WE_ARE": {
     "TITLE": "Who We Are",

@@ -104,7 +104,7 @@
     }
   }
 
-  // --- CHIP STYLING: THE "FIX ALL" VERSION ---
+  // --- CHIP STYLING: THEME-AWARE VERSION ---
   mat-chip-set {
     display: flex;
   }
@@ -115,22 +115,33 @@
     font-weight: 600 !important;
     min-height: 24px !important;
     
-    // Pierce the Shadow DOM to force text color
+    // Explicitly set text color in shadow DOM
     ::ng-deep .mdc-evolution-chip__text-label {
       color: inherit !important;
+      font-weight: 600 !important;
     }
 
     // 1. TYPE COLORS
     &.chip-withdrawal {
-      background-color: #fce8e8 !important; // Fallback
+      background-color: #fce8e8 !important;
       --mdc-chip-elevated-container-color: #fce8e8 !important;
+      --mdc-chip-label-text-color: var(--color-danger) !important;
       color: var(--color-danger) !important;
+      
+      ::ng-deep .mdc-evolution-chip__text-label {
+        color: var(--color-danger) !important;
+      }
     }
 
     &.chip-deposit {
       background-color: #e8f5e9 !important;
       --mdc-chip-elevated-container-color: #e8f5e9 !important;
+      --mdc-chip-label-text-color: var(--color-success) !important;
       color: var(--color-success) !important;
+      
+      ::ng-deep .mdc-evolution-chip__text-label {
+        color: var(--color-success) !important;
+      }
     }
 
     // 2. STATUS COLORS (Targeting class + attribute)
@@ -138,22 +149,37 @@
       &[data-status="PENDING"] {
         background-color: #fff8e1 !important;
         --mdc-chip-elevated-container-color: #fff8e1 !important;
+        --mdc-chip-label-text-color: var(--color-warning) !important;
         color: var(--color-warning) !important;
         border: 1px solid rgba(154, 103, 0, 0.2) !important;
+        
+        ::ng-deep .mdc-evolution-chip__text-label {
+          color: var(--color-warning) !important;
+        }
       }
 
       &[data-status="COMPLETED"] {
         background-color: #e8f5e9 !important;
         --mdc-chip-elevated-container-color: #e8f5e9 !important;
+        --mdc-chip-label-text-color: var(--color-success) !important;
         color: var(--color-success) !important;
         border: 1px solid rgba(31, 136, 61, 0.2) !important;
+        
+        ::ng-deep .mdc-evolution-chip__text-label {
+          color: var(--color-success) !important;
+        }
       }
 
       &[data-status="REJECTED"] {
         background-color: #fce8e8 !important;
         --mdc-chip-elevated-container-color: #fce8e8 !important;
+        --mdc-chip-label-text-color: var(--color-danger) !important;
         color: var(--color-danger) !important;
         border: 1px solid rgba(207, 34, 46, 0.2) !important;
+        
+        ::ng-deep .mdc-evolution-chip__text-label {
+          color: var(--color-danger) !important;
+        }
       }
     }
   }

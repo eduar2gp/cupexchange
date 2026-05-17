@@ -117,6 +117,36 @@
     "ID_INFO": "Identificadores de la cuenta",
     "ACCOUNT_PROVIDER_BALANCES": "Balance Cuentas Proveedor"
   },
+  "ACCOUNT_PROVIDER_BALANCE": {
+    "TITLE": "Visión General de Liquidez del Proveedor",
+    "SYSTEM_WALLETS": "Billeteras del Sistema",
+    "TRADE_FEE": "Tarifa de Comercio",
+    "WITHDRAWAL_FEE": "Tarifa de Retiro",
+    "BALANCE": "Saldo",
+    "LOCKED": "Bloqueado",
+    "PROVIDER": "Proveedor",
+    "GATEWAY": "Pasarela",
+    "CURRENCY": "Moneda",
+    "AVAILABLE_BALANCE": "Saldo Disponible",
+    "ACTIONS": "Acciones",
+    "VIEW_TRANSACTIONS": "Ver Transacciones"
+  },
+  "ACCOUNT_MANAGER": {
+    "TITLE": "Historial del Gestor de Cuentas",
+    "SUBTITLE": "Haz clic en una fila para procesar depósitos o retiros pendientes",
+    "FILTER_STATUS": "Filtrar por estado",
+    "ALL_TRANSACTIONS": "Todas las transacciones",
+    "PENDING": "Pendiente",
+    "COMPLETED": "Completado",
+    "REJECTED": "Rechazado",
+    "TYPE": "Tipo",
+    "AMOUNT": "Monto",
+    "RECEIPT": "Comprobante",
+    "VIEW_RECEIPT": "Ver comprobante",
+    "STATUS": "Estado",
+    "DATE": "Fecha",
+    "NO_TRANSACTIONS": "No se encontraron transacciones para el estado seleccionado."
+  },
   "LOGIN_WHO_WE_ARE": "Quiénes somos?",
   "WHO_WE_ARE": {
     "TITLE": "Quiénes Somos",

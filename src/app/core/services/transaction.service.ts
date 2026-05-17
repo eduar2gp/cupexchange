@@ -29,6 +29,18 @@ export class TransactionService {
     return this.http.get<Page<Transaction>>(url, { params });
   }
 
+  getTransactionsByAccountIdPaginated(
+    accountId: number,
+    page: number = 0,
+    size: number = 20
+  ): Observable<Page<Transaction>> {
+    const url = build(ApiEndpoints.transaction.ACCOUNT_TRANSACTIONS_ENDPOINT, { accountId });
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<Transaction>>(url, { params });
+  }
+
   deposit(deposit: TransactionRequest): Observable<string> {   
     const fullUrl = build(ApiEndpoints.transaction.DEPOSIT_ENDPOINT);
     return this.http.post(fullUrl, deposit, {

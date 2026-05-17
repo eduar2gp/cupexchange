@@ -97,6 +97,26 @@
         </button>
       </div>
     </mat-toolbar>
+    <!-- SECONDARY QUICK ACCESS TOOLBAR -->
+    <mat-toolbar class="quick-access-toolbar" *ngIf="authService.isAuthenticated()">
+      <a *appHasRole="[Role.Admin]" mat-button routerLink="/account-provider-balances" routerLinkActive="active-link" class="quick-link">
+        <mat-icon>savings</mat-icon>
+        <span>{{ 'ACCOUNTS.ACCOUNT_PROVIDER_BALANCES' | translate }}</span>
+      </a>
+      <a mat-button routerLink="/wallet" routerLinkActive="active-link" class="quick-link">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <span>{{ 'WALLETS' | translate }}</span>
+      </a>
+      <a mat-button routerLink="/transactions" routerLinkActive="active-link" class="quick-link"
+        [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="5">
+        <mat-icon>compare_arrows</mat-icon>
+        <span>{{ 'TRANSACTIONS' | translate }}</span>
+      </a>
+      <a mat-button routerLink="/accounts-list" routerLinkActive="active-link" class="quick-link">
+        <mat-icon>account_balance</mat-icon>
+        <span>{{ 'ACCOUNTS.ACCOUNTS' | translate }}</span>
+      </a>
+    </mat-toolbar>
     <!-- Page content -->
     <main class="main-content">
       <router-outlet></router-outlet>

@@ -4,4 +4,5 @@ export interface ProviderBalance {
   paymentGatewayId: number;
   currencyCode: string;
   calculatedBalance: number;
+  id: number;
 }

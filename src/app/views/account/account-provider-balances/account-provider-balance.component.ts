@@ -1,5 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AccountService } from '../../../core/services/account.service';
 import { ProviderBalance } from '../../../model/provider-balance.model';
 import { Page } from '../../../model/page.model';
@@ -8,6 +10,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { WalletService } from '../../../core/services/wallet.service';
 import { Wallet } from '../../../model/wallet.model';
 
@@ -16,10 +20,14 @@ import { Wallet } from '../../../model/wallet.model';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     MatTableModule,
     MatPaginatorModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './account-provider-balance.component.html',
   styleUrl: './account-provider-balance.component.scss',
@@ -37,7 +45,7 @@ export class AccountProviderBalanceComponent implements OnInit {
   isLoading = signal(false);
   isLoadingWallets = signal(false);
 
-  displayedColumns = ['accountName','gatewayId','currency','balance'];
+  displayedColumns = ['accountName','gatewayId','currency','balance','actions'];
 
   totalPages = computed(() =>
     Math.ceil(this.totalElements() / this.pageSize())

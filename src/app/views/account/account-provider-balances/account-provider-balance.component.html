@@ -1,7 +1,7 @@
 <mat-card class="provider-card">
 
   <mat-card-header>
-    <mat-card-title>Provider Liquidity Overview</mat-card-title>
+    <mat-card-title>{{ 'ACCOUNT_PROVIDER_BALANCE.TITLE' | translate }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
@@ -15,7 +15,7 @@
 
     <!-- System Wallets Section -->
     <div class="system-wallets-section" *ngIf="!isLoadingWallets()">
-      <h3>System Wallets</h3>
+      <h3>{{ 'ACCOUNT_PROVIDER_BALANCE.SYSTEM_WALLETS' | translate }}</h3>
       <div class="loader" *ngIf="isLoadingWallets()">
         <mat-progress-spinner
           diameter="40"
@@ -23,14 +23,15 @@
         </mat-progress-spinner>
       </div>
       <div class="wallets-container" *ngIf="!isLoadingWallets()">
-        <div class="wallet-item" *ngFor="let wallet of systemWallets()">
+        <div class="wallet-item" *ngFor="let wallet of systemWallets(); let i = index" [ngClass]="i < 2 ? 'wallet-trade-fee' : 'wallet-withdrawal-fee'">
+          <div class="wallet-label">{{ i < 2 ? ('ACCOUNT_PROVIDER_BALANCE.TRADE_FEE' | translate) : ('ACCOUNT_PROVIDER_BALANCE.WITHDRAWAL_FEE' | translate) }}</div>
           <div class="wallet-currency">{{ wallet.currencyCode }}</div>
           <div class="wallet-balance">
-            <strong>Balance:</strong> {{ wallet.availableBalance | number:'1.2-8' }}
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.BALANCE' | translate }}:</strong> {{ wallet.availableBalance | number:'1.2-8' }}
           </div>
-          <div class="wallet-locked">
-            <strong>Locked:</strong> {{ wallet.lockedBalance | number:'1.2-8' }}
-          </div>
+          <!-- <div class="wallet-locked">
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.LOCKED' | translate }}:</strong> {{ wallet.lockedBalance | number:'1.2-8' }}
+          </div> -->
         </div>
       </div>
     </div>
@@ -43,7 +44,7 @@
 
       <!-- Provider -->
       <ng-container matColumnDef="accountName">
-        <th mat-header-cell *matHeaderCellDef>Provider</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           {{ row.accountName }}
         </td>
@@ -51,7 +52,7 @@
 
       <!-- Gateway -->
       <ng-container matColumnDef="gatewayId">
-        <th mat-header-cell *matHeaderCellDef>Gateway</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.GATEWAY' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           #{{ row.paymentGatewayId }}
         </td>
@@ -59,7 +60,7 @@
 
       <!-- Currency -->
       <ng-container matColumnDef="currency">
-        <th mat-header-cell *matHeaderCellDef>Currency</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <strong class="currency">{{ row.currencyCode }}</strong>
         </td>
@@ -67,7 +68,7 @@
 
       <!-- Balance -->
       <ng-container matColumnDef="balance">
-        <th mat-header-cell *matHeaderCellDef>Available Balance</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.AVAILABLE_BALANCE' | translate }}</th>
         <td
           mat-cell
           *matCellDef="let row"
@@ -75,6 +76,16 @@
 
           {{ row.calculatedBalance | number:'1.2-8' }}
 
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.ACTIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          <a [routerLink]="['/transactions']" [queryParams]="{accountId: row.id}" mat-icon-button [matTooltip]="'ACCOUNT_PROVIDER_BALANCE.VIEW_TRANSACTIONS' | translate">
+            <mat-icon>visibility</mat-icon>
+          </a>
         </td>
       </ng-container>
 

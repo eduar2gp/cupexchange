@@ -26,6 +26,7 @@ export const ApiEndpoints = {
   },
   transaction: {
     USER_TRANSACTIONS_ENDPOINT: '/api/v1/transaction/user/paged',
+    ACCOUNT_TRANSACTIONS_ENDPOINT: '/api/v1/transaction/account/{accountId}/paged',
     DEPOSIT_ENDPOINT: '/api/v1/transaction/deposit',
     WITHDRAWAL_ENDPOINT: '/api/v1/transaction/withdraw',
     PAYMENT_GATEWAYS_ENDPOINT: '/api/v1/payment/gateways?currency=',

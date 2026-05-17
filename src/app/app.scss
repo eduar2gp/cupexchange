@@ -443,3 +443,109 @@ mat-sidenav {
     }
   }
 }
+
+.quick-access-toolbar {
+  height: 52px !important;
+  min-height: 52px !important;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  padding: 0 12px;
+
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  position: sticky;
+  top: 64px; /* same height as main toolbar */
+  z-index: 998;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark mode support */
+.dark-theme .quick-access-toolbar {
+  background: rgba(25, 25, 25, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.quick-link {
+  flex: 1;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  height: 40px;
+
+  margin: 0 6px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.quick-link mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover */
+.quick-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Active route */
+.quick-link.active-link {
+  background: rgba(63, 81, 181, 0.12);
+  color: var(--mat-sys-primary, #3f51b5);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+
+  .quick-access-toolbar {
+    height: 48px !important;
+    min-height: 48px !important;
+
+    padding: 0 4px;
+  }
+
+  .quick-link {
+    margin: 0 2px;
+    gap: 4px;
+
+    font-size: 11px;
+    border-radius: 10px;
+  }
+
+  .quick-link mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+
+  .quick-link span {
+    font-size: 10px;
+  }
+
+  .quick-link {
+    padding: 0 4px;
+  }
+}

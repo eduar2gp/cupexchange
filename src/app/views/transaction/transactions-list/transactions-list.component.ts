@@ -1,8 +1,9 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap, catchError, filter } from 'rxjs/operators'; 
+import { switchMap, tap, catchError, filter, map } from 'rxjs/operators'; 
 import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
@@ -34,20 +35,31 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './transactions-list.component.html',
   styleUrls: ['./transactions-list.component.scss'],
 })
-export class TransactionsListComponent {
+export class TransactionsListComponent implements OnInit {
   private transactionService = inject(TransactionService);
   private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
 
   // State Signals
   pageSize = signal(10);
   currentPage = signal(0);
   loading = signal(false);
   error = signal<string | null>(null);
+  accountId = signal<number | null>(null);
+
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      const accountIdParam = params.get('accountId');
+      this.accountId.set(accountIdParam ? parseInt(accountIdParam, 10) : null);
+      this.currentPage.set(0); // Reset to first page when switching filters
+    });
+  }
 
   // 1. Create a computed object for our parameters
   // We define the type explicitly so 'p' isn't unknown in the pipe
   private paramsSignal = computed(() => ({
-    user: this.authService.currentUser$(), // Ensure this is a signal in your service
+    user: this.authService.currentUser$(),
+    accountId: this.accountId(),
     page: this.currentPage(),
     size: this.pageSize()
   }));
@@ -56,23 +68,31 @@ export class TransactionsListComponent {
   private transactionsResource = toSignal(
     toObservable(this.paramsSignal).pipe(
       // The filter prevents the API call if user is null
-      filter((p): p is { user: any; page: number; size: number } => !!p.user),
+      filter((p): p is { user: any; accountId: number | null; page: number; size: number } => !!p.user),
       tap(() => {
         this.loading.set(true);
         this.error.set(null);
       }),
-      switchMap(p => 
-        this.transactionService.getTransactionsByUserIdPaginated(
-          p.page, 
+      switchMap(p => {
+        // Call getTransactionsByAccountIdPaginated if accountId is provided
+        if (p.accountId) {
+          return this.transactionService.getTransactionsByAccountIdPaginated(
+            p.accountId,
+            p.page,
+            p.size
+          );
+        }
+        // Otherwise, call getTransactionsByUserIdPaginated
+        return this.transactionService.getTransactionsByUserIdPaginated(
+          p.page,
           p.size
-        ).pipe(
-          catchError(() => {
-            this.error.set('Failed to load transactions');
-            return of(null);
-          }),
-          tap(() => this.loading.set(false))
-        )
-      )
+        );
+      }),
+      catchError(() => {
+        this.error.set('Failed to load transactions');
+        return of(null);
+      }),
+      tap(() => this.loading.set(false))
     ),
     { initialValue: null }
   );

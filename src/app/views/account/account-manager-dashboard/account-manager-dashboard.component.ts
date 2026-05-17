@@ -10,6 +10,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field'; // Added
 import { MatSelectModule } from '@angular/material/select'; // Added
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TransactionService } from '../../../core/services/transaction.service';
 import { TransactionManagerResponse } from '../../../model/transaction-manager.model';
@@ -23,7 +25,8 @@ import { DataService } from '../../../core/services/data.service';
   imports: [
     CommonModule, FormsModule, MatTableModule, MatPaginatorModule,
     MatProgressSpinnerModule, MatButtonModule, MatIconModule,
-    MatChipsModule, MatDialogModule, MatFormFieldModule, MatSelectModule
+    MatChipsModule, MatDialogModule, MatFormFieldModule, MatSelectModule,
+    MatTooltipModule, TranslateModule
   ],
   templateUrl: './account-manager-dashboard.component.html',
   styleUrl: './account-manager-dashboard.component.scss',
