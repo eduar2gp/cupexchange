@@ -545,11 +545,13 @@ mat-sidenav {
   }
 }
 
-.truncate-text {
-  white-space: nowrap;      /* Prevents text from wrapping to a second line */
-  overflow: hidden;         /* Hides the text that overflows the container */
-  text-overflow: ellipsis;  /* Adds the '...' */
-  display: block;           /* Block display works with flex */
-  min-width: 0;             /* Allow flex child to shrink below content size */
-  flex: 1 1 0;              /* Shrink as needed, flex-basis 0 for equal distribution */
+/* Target Material's internal button label structure, truncate text */
+a[mat-button].quick-link {
+  ::ng-deep .mdc-button__label {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    gap: 8px !important;
+  }
 }
