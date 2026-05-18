@@ -454,7 +454,7 @@ mat-sidenav {
 
   padding: 0 12px;
 
-  background: rgba(255, 255, 255, 0.96);
+  background-color: var(--color-surface-elevated);
   backdrop-filter: blur(10px);
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -467,15 +467,9 @@ mat-sidenav {
     0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-/* Dark mode support */
-.dark-theme .quick-access-toolbar {
-  background: rgba(25, 25, 25, 0.96);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
 .quick-link {
   flex: 1;
-
+  max-width: 100%;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -519,7 +513,6 @@ mat-sidenav {
   .quick-access-toolbar {
     height: 48px !important;
     min-height: 48px !important;
-
     padding: 0 4px;
   }
 
@@ -547,5 +540,16 @@ mat-sidenav {
 
   .quick-link {
     padding: 0 4px;
+    justify-content: flex-start;
+    gap: 4px;
   }
+}
+
+.truncate-text {
+  white-space: nowrap;      /* Prevents text from wrapping to a second line */
+  overflow: hidden;         /* Hides the text that overflows the container */
+  text-overflow: ellipsis;  /* Adds the '...' */
+  display: block;           /* Block display works with flex */
+  min-width: 0;             /* Allow flex child to shrink below content size */
+  flex: 1 1 0;              /* Shrink as needed, flex-basis 0 for equal distribution */
 }

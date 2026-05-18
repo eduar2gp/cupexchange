@@ -115,7 +115,7 @@
     "ACCOUNT_MANAGER": "Accounts Dashboard",
     "ACCOUNTS": "Accounts",
     "ID_INFO": "Account IDs",
-    "ACCOUNT_PROVIDER_BALANCES": "Provider Account Balances"
+    "ACCOUNT_PROVIDER_BALANCES": "Account Balances"
   },
   "ACCOUNT_PROVIDER_BALANCE": {
     "TITLE": "Provider Liquidity Overview",

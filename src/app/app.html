@@ -101,7 +101,7 @@
     <mat-toolbar class="quick-access-toolbar" *ngIf="authService.isAuthenticated()">
       <a *appHasRole="[Role.Admin]" mat-button routerLink="/account-provider-balances" routerLinkActive="active-link" class="quick-link">
         <mat-icon>savings</mat-icon>
-        <span>{{ 'ACCOUNTS.ACCOUNT_PROVIDER_BALANCES' | translate }}</span>
+        <span class="truncate-text">{{ 'ACCOUNTS.ACCOUNT_PROVIDER_BALANCES' | translate }}</span>
       </a>
       <a mat-button routerLink="/wallet" routerLinkActive="active-link" class="quick-link">
         <mat-icon>account_balance_wallet</mat-icon>
