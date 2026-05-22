@@ -129,7 +129,12 @@
     "CURRENCY": "Currency",
     "AVAILABLE_BALANCE": "Available Balance",
     "ACTIONS": "Actions",
-    "VIEW_TRANSACTIONS": "View Transactions"
+    "VIEW_TRANSACTIONS": "View Transactions",
+    "WALLET_BALANCE": "Wallets Balance",
+    "PROVIDER_BALANCE": "Providers Balance",
+    "PROVIDER_ACCOUNT_COUNT": "Number of Provider Accounts",
+    "LAST_REFRESHED": "Last Refreshed",
+    "CURRENCY_SUMMARY": "Currency Summary"
   },
   "ACCOUNT_MANAGER": {
     "TITLE": "Account Manager History",

@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { WalletService } from '../../../core/services/wallet.service';
 import { Wallet } from '../../../model/wallet.model';
+import { CurrencySummary } from '../../../model/currency-summary.model';
 
 @Component({
   selector: 'app-account-provider-balance',
@@ -39,11 +40,13 @@ export class AccountProviderBalanceComponent implements OnInit {
 
   providerData = signal<ProviderBalance[]>([]);
   systemWallets = signal<Wallet[]>([]);
+  currencySummary = signal<CurrencySummary[]>([]);
   totalElements = signal(0);
   currentPage = signal(0);
   pageSize = signal(10);
   isLoading = signal(false);
   isLoadingWallets = signal(false);
+  isLoadingCurrencySummary = signal(false);
 
   displayedColumns = ['accountName','gatewayId','currency','balance','actions'];
 
@@ -54,6 +57,7 @@ export class AccountProviderBalanceComponent implements OnInit {
   ngOnInit(): void {
     this.loadBalances();
     this.loadSystemWallets();
+    this.loadCurrencySummary();
   }
 
   loadBalances(page: number = 0): void {
@@ -90,6 +94,20 @@ export class AccountProviderBalanceComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching system wallets', err);
         this.isLoadingWallets.set(false);
+      }
+    });
+  }
+
+  loadCurrencySummary(): void {
+    this.isLoadingCurrencySummary.set(true);
+    this.walletService.getCurrencySummary().subscribe({
+      next: (summary: CurrencySummary[]) => {
+        this.currencySummary.set(summary);
+        this.isLoadingCurrencySummary.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching currency summary', err);
+        this.isLoadingCurrencySummary.set(false);
       }
     });
   }

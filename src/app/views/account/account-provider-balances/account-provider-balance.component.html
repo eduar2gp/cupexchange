@@ -13,6 +13,34 @@
       </mat-progress-spinner>
     </div>
 
+    <!-- Currency Summary Section -->
+    <div class="currency-summary-section" *ngIf="!isLoadingCurrencySummary()">
+      <h3>{{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY_SUMMARY' | translate }}</h3>
+      <div class="loader" *ngIf="isLoadingCurrencySummary()">
+        <mat-progress-spinner
+          diameter="40"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+      <div class="currency-container" *ngIf="!isLoadingCurrencySummary()">
+        <div class="currency-item" *ngFor="let summary of currencySummary()">
+          <div class="currency-code">{{ summary.currencyCode }}</div>
+          <div class="currency-wallet-balance">
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.WALLET_BALANCE' | translate }}:</strong> {{ summary.totalWalletBalance | number:'1.2-8' }}
+          </div>
+          <div class="currency-provider-balance">
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER_BALANCE' | translate }}:</strong> {{ summary.totalProviderBalance | number:'1.2-8' }}
+          </div>
+          <div class="currency-provider-count">
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER_ACCOUNT_COUNT' | translate }}:</strong> {{ summary.providerAccountCount }}
+          </div>
+          <div class="currency-last-refreshed" *ngIf="summary.lastRefreshedAt">
+            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.LAST_REFRESHED' | translate }}:</strong> {{ summary.lastRefreshedAt | date:'medium' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- System Wallets Section -->
     <div class="system-wallets-section" *ngIf="!isLoadingWallets()">
       <h3>{{ 'ACCOUNT_PROVIDER_BALANCE.SYSTEM_WALLETS' | translate }}</h3>

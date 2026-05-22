@@ -58,6 +58,9 @@ export const ApiEndpoints = {
   },
   location:{
     GET_PROVIDER_COVERAGE: '/api/v1/location/providers/{providerId}/coverage'
+  },
+  wallet:{
+    CURRENCY_SUMMARY: '/api/v1/wallet/currency-summary'
   }
 };
 

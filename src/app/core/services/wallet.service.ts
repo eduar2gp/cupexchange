@@ -7,6 +7,8 @@ import { TradingPair } from '../../../app/model/trading_pair';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { ApiEndpoints , build } from '../api/endpoints';
+import { CurrencySummaryResponse, CurrencySummary } from '../../model/currency-summary.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +36,11 @@ export class WalletService {
   getWallets(): Observable<Wallet[]> {
     const fullUrl = `${environment.baseApiUrl}${this.WALLETS_ENDPOINT}`;
     return this.http.get<Wallet[]>(fullUrl);
+  }
+
+  getCurrencySummary(): Observable<CurrencySummary[]> {
+    const fullUrl = build(ApiEndpoints.wallet.CURRENCY_SUMMARY)
+    return this.http.get<CurrencySummary[]>(fullUrl);
   }
 
   getSystemWallets(): Observable<Wallet[]> {

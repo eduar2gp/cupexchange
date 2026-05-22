@@ -129,7 +129,12 @@
     "CURRENCY": "Moneda",
     "AVAILABLE_BALANCE": "Saldo Disponible",
     "ACTIONS": "Acciones",
-    "VIEW_TRANSACTIONS": "Ver Transacciones"
+    "VIEW_TRANSACTIONS": "Ver Transacciones",
+    "WALLET_BALANCE": "Balance de Billeteras",
+    "PROVIDER_BALANCE": "Balance de Proveedores",
+    "PROVIDER_ACCOUNT_COUNT": "Número de Cuentas de Proveedores",
+    "LAST_REFRESHED": "Última Actualización",
+    "CURRENCY_SUMMARY": "Estado de Monedas"
   },
   "ACCOUNT_MANAGER": {
     "TITLE": "Historial del Gestor de Cuentas",
