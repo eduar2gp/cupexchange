@@ -24,7 +24,10 @@
       </div>
       <div class="currency-container" *ngIf="!isLoadingCurrencySummary()">
         <div class="currency-item" *ngFor="let summary of currencySummary()">
-          <div class="currency-code">{{ summary.currencyCode }}</div>
+          <div class="currency-code">
+            <img [src]="getCurrencyImage(summary.currencyCode)" class="currency-logo" [alt]="summary.currencyCode">
+            <span>{{ summary.currencyCode }}</span>
+          </div>
           <div class="currency-wallet-balance">
             <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.WALLET_BALANCE' | translate }}:</strong> {{ summary.totalWalletBalance | number:'1.2-8' }}
           </div>
@@ -52,8 +55,11 @@
       </div>
       <div class="wallets-container" *ngIf="!isLoadingWallets()">
         <div class="wallet-item" *ngFor="let wallet of systemWallets(); let i = index" [ngClass]="i < 2 ? 'wallet-trade-fee' : 'wallet-withdrawal-fee'">
+          <div class="currency-code">
+            <img [src]="getCurrencyImage(wallet.currencyCode)" class="currency-logo" [alt]="wallet.currencyCode">
+            <span>{{ wallet.currencyCode }}</span>
+          </div>
           <div class="wallet-label">{{ i < 2 ? ('ACCOUNT_PROVIDER_BALANCE.TRADE_FEE' | translate) : ('ACCOUNT_PROVIDER_BALANCE.WITHDRAWAL_FEE' | translate) }}</div>
-          <div class="wallet-currency">{{ wallet.currencyCode }}</div>
           <div class="wallet-balance">
             <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.BALANCE' | translate }}:</strong> {{ wallet.availableBalance | number:'1.2-8' }}
           </div>

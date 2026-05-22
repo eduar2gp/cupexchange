@@ -41,8 +41,7 @@
         <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
         <span matListItemTitle>{{ 'WALLETS' | translate }}</span>
       </a>
-      <a mat-list-item routerLink="/transactions" routerLinkActive="active"
-        [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="5">
+      <a mat-list-item routerLink="/transactions" routerLinkActive="active">
         <mat-icon matListItemIcon>compare_arrows</mat-icon>
         <span matListItemTitle>{{ 'TRANSACTIONS' | translate }}</span>
       </a>
@@ -65,7 +64,8 @@
     <!-- Top toolbar -->
     <mat-toolbar class="app-toolbar">
       <div class="toolbar-left-controls">
-        <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav">
+        <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav" [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="5"
+          matBadge matBadgeHidden="true">
           <mat-icon>menu</mat-icon>
         </button>
       </div>

@@ -261,15 +261,6 @@ mat-paginator {
     box-shadow: 0 2px 8px rgba(130, 80, 223, 0.12);
   }
 
-  .currency-code {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-accent);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-  }
-
   .currency-wallet-balance,
   .currency-provider-balance,
   .currency-provider-count,
@@ -298,3 +289,20 @@ mat-paginator {
     margin-bottom: 0;
   }
 }
+
+.currency-code {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .currency-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }

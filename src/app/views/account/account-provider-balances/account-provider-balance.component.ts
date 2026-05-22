@@ -111,4 +111,12 @@ export class AccountProviderBalanceComponent implements OnInit {
       }
     });
   }
+
+  getCurrencyImage(currencyCode: string | undefined): string {
+    if (!currencyCode) {
+      return 'assets/currencies/default.png';
+    }
+    const currency = currencyCode.toLowerCase();
+    return `assets/currencies/${currency}.png`;
+  }
 }
