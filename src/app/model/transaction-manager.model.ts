@@ -25,4 +25,5 @@ export interface TransactionManagerResponse {
   method: string;
   fromAccount: Account;
   toAccount: Account;
+  currencyCode: string;
 }
