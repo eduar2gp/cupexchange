@@ -42,14 +42,14 @@
           <div class="account-section">
             <div class="section-header">
               <h5 class="account-label">From</h5>
-              @if (tx.fromAccount.gatewayName) {
+              @if (tx.fromAccount.gatewayName || tx.method === 'CASH') {
               <span class="gateway-badge">
-                {{ tx.fromAccount.gatewayName }}
+                {{ tx.fromAccount.gatewayName || 'CASH' }}
               </span>
               <div class="currency-code">
-                <img [src]="getCurrencyImage(tx.fromAccount.baseCurrency)" class="currency-logo"
-                  [alt]="tx.fromAccount.baseCurrency">
-                <span>{{ tx.fromAccount.baseCurrency }}</span>
+                <img [src]="getCurrencyImage(tx.fromAccount.baseCurrency || tx.currencyCode)" class="currency-logo"
+                  [alt]="tx.fromAccount.baseCurrency || tx.currencyCode">
+                <span>{{ tx.fromAccount.baseCurrency || tx.currencyCode }}</span>
               </div>
               }
             </div>
@@ -96,14 +96,14 @@
           <div class="account-section">
             <div class="section-header">
               <h3 class="account-label">To</h3>
-              @if (tx.toAccount.gatewayName) {
+              @if (tx.toAccount.gatewayName || tx.method === 'CASH') {
               <span class="gateway-badge">
-                {{ tx.toAccount.gatewayName }}
+                {{ tx.toAccount.gatewayName || 'CASH' }}
               </span>
                <div class="currency-code">
-                <img [src]="getCurrencyImage(tx.toAccount.baseCurrency)" class="currency-logo"
-                  [alt]="tx.toAccount.baseCurrency">
-                <span>{{ tx.toAccount.baseCurrency }}</span>
+                <img [src]="getCurrencyImage(tx.toAccount.baseCurrency || tx.currencyCode)" class="currency-logo"
+                  [alt]="tx.toAccount.baseCurrency || tx.currencyCode">
+                <span>{{ tx.toAccount.baseCurrency || tx.currencyCode }}</span>
               </div>
               }
             </div>
