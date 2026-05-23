@@ -38,7 +38,7 @@ export class AccountManagerDashboardComponent implements OnInit {
   private dataService = inject(DataService)
   private router = inject(Router)
 
-  displayedColumns: string[] = ['type', 'amount', 'actions', 'status', 'timestamp'];
+  displayedColumns: string[] = ['type', 'amount', 'baseCurrency', 'gatewayCode', 'actions', 'status', 'timestamp'];
   transactions = signal<TransactionManagerResponse[]>([]);
   isLoading = signal<boolean>(false);
   
@@ -85,6 +85,14 @@ export class AccountManagerDashboardComponent implements OnInit {
   onSelectTransaction(tx: TransactionManagerResponse): void {
     this.dataService.updateTransaction(tx)
     this.router.navigate(['transaction-details'])
+  }
+
+  getCurrencyImage(currencyCode: string | null): string {
+    if (!currencyCode) {
+      return 'assets/currencies/default.png';
+    }
+    const currency = currencyCode.toLowerCase();
+    return `assets/currencies/${currency}.png`;
   }
 
 }

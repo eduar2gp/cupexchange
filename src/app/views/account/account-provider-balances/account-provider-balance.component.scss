@@ -6,303 +6,246 @@
   color: var(--color-text);
 }
 
-/* Card container */
-
-.provider-card {
-  background: var(--color-surface);
-  border-radius: 12px;
-  border: 1px solid var(--color-surface-elevated);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  overflow: hidden;
-
-  mat-card-header {
-    border-bottom: 1px solid var(--color-surface-elevated);
-    padding-bottom: 12px;
-  }
-
-  mat-card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-}
-
-/* Loader */
-
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 0;
-}
-
-/* Table */
-
-.balance-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-/* Header */
-
-.mat-mdc-header-row {
-  background: var(--color-surface-elevated);
-}
-
-.mat-mdc-header-cell {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--color-surface-elevated);
-}
-
-/* Rows */
-
-.mat-mdc-row {
-  transition: background 0.15s ease;
-}
-
-.mat-mdc-row:hover {
-  background: var(--color-background);
-}
-
-/* Cells */
-
-.mat-mdc-cell {
-  padding: 14px 16px;
-  font-size: 0.9rem;
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-surface-elevated);
-}
-
-/* Currency badge */
-
-.currency {
-  font-weight: 600;
-  color: var(--color-accent);
-  background: rgba(130, 80, 223, 0.12);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-}
-
-/* Balance */
-
-.balance-value {
-  font-family: monospace;
-  font-weight: 500;
-}
-
-/* Liquidity states */
-
-.low-liquidity {
-  color: var(--color-danger);
-  font-weight: 600;
-}
-
-.low-liquidity::before {
-  content: "⚠ ";
-  font-size: 0.8rem;
-}
-
-.good-liquidity {
-  color: var(--color-success);
-}
-
-/* Paginator */
-
-mat-paginator {
-  border-top: 1px solid var(--color-surface-elevated);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-}
-
-/* Mobile responsiveness */
-
-@media (max-width: 768px) {
-
-  :host {
-    padding: 12px;
-  }
-
-  .mat-mdc-header-cell,
-  .mat-mdc-cell {
-    padding: 10px;
-    font-size: 0.8rem;
-  }
-
-  mat-card-title {
-    font-size: 1rem;
-  }
-
-}
-
-/* System Wallets Section */
-
-.system-wallets-section {
-  margin-bottom: 32px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--color-surface-elevated);
-
-  h3 {
-    margin: 0 0 16px 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-}
-
-.wallets-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.wallet-item {
-  border: 1px solid var(--color-surface-elevated);
-  border-radius: 8px;
-  padding: 16px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Trade Fee Wallets - Blue/Purple theme */
-  &.wallet-trade-fee {
-    background: rgba(130, 80, 223, 0.08);
-    border-color: rgba(130, 80, 223, 0.2);
-
-    &:hover {
-      border-color: rgba(130, 80, 223, 0.4);
-      box-shadow: 0 2px 8px rgba(130, 80, 223, 0.15);
-    }
-  }
-
-  /* Withdrawal Fee Wallets - Green/Teal theme */
-  &.wallet-withdrawal-fee {
-    background: rgba(31, 136, 61, 0.08);
-    border-color: rgba(31, 136, 61, 0.2);
-
-    &:hover {
-      border-color: rgba(31, 136, 61, 0.4);
-      box-shadow: 0 2px 8px rgba(31, 136, 61, 0.15);
-    }
-  }
-
-  .wallet-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-  }
-
-  .wallet-currency {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-accent);
-    margin-bottom: 12px;
-  }
-
-  .wallet-balance,
-  .wallet-locked {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-
-    strong {
-      color: var(--color-text);
-      display: inline-block;
-      min-width: 60px;
-    }
-  }
-
-  .wallet-balance {
-    margin-bottom: 12px;
-  }
-}
-
-/* Currency Summary Section */
-
-.currency-summary-section {
-  margin-bottom: 32px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--color-surface-elevated);
-
-  h3 {
-    margin: 0 0 16px 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-}
-
-.currency-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-.currency-item {
-  border: 1px solid var(--color-surface-elevated);
-  border-radius: 8px;
-  padding: 16px;
-  background: rgba(130, 80, 223, 0.06);
-  border-color: rgba(130, 80, 223, 0.15);
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: rgba(130, 80, 223, 0.35);
-    box-shadow: 0 2px 8px rgba(130, 80, 223, 0.12);
-  }
-
-  .currency-wallet-balance,
-  .currency-provider-balance,
-  .currency-provider-count,
-  .currency-last-refreshed {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-
-    strong {
-      color: var(--color-text);
-      display: inline-block;
-      min-width: 140px;
-      font-weight: 600;
-    }
-  }
-
-  .currency-wallet-balance {
-    margin-bottom: 12px;
-  }
-
-  .currency-provider-balance {
-    margin-bottom: 12px;
-  }
-
-  .currency-last-refreshed {
-    margin-bottom: 0;
-  }
-}
-
-.currency-code {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-accent);
-    margin-bottom: 12px;
+// Layout Containers
+.header-row {
+  margin-bottom: 24px;
+  
+  .refresh-text {
     display: flex;
     align-items: center;
     gap: 8px;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+}
 
-    .currency-logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      object-fit: cover;
+// Shared Section Styling
+.summary-section, .wallets-section {
+  background: var(--color-surface);
+  border-radius: 12px;
+  border: 1px solid var(--color-surface-elevated);
+  margin-bottom: 32px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--color-surface-elevated);
+  
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  mat-icon { color: var(--color-accent); }
+}
+
+// Progress Bar Integration
+mat-progress-bar {
+  height: 2px;
+}
+
+// Table Styling
+.mat-mdc-table {
+  width: 100%;
+  background: transparent;
+
+  .mat-mdc-header-cell {
+    background: var(--color-surface-elevated);
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px 20px;
+  }
+
+  .mat-mdc-cell {
+    padding: 12px 20px;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-surface-elevated);
+  }
+
+  .mat-mdc-row:hover {
+    background: var(--color-background);
+  }
+}
+
+// Visual Elements
+.currency-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  .coin-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-background);
+  }
+  
+  .code-text {
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+}
+
+.numeric-cell {
+  font-family: 'Roboto Mono', monospace;
+  text-align: right;
+  font-weight: 500;
+}
+
+.highlight-value {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.count-badge {
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+// Wallet Cards Grid
+.wallet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.mini-wallet-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-elevated);
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0; width: 4px;
+    
+    &.trade { background: var(--color-accent); } // Purple/Blue
+    &.withdrawal { background: var(--color-success); } // Green
+  }
+
+  .wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--color-surface-elevated);
+      color: var(--color-text-secondary);
     }
   }
+
+  .balance-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .currency-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  :host { padding: 12px; }
+  .wallet-grid { grid-template-columns: 1fr; }
+  .numeric-cell { font-size: 0.8rem; }
+}
+
+/* 1. Small Icon Images for Wallets */
+.coin-icon-sm {
+  width: 30px;   /* Controlled size for cards */
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-background);
+  border: 1px solid var(--color-surface-elevated);
+}
+
+/* 2. Table Alignment & Header Centering */
+.mat-mdc-table {
+  width: 100%;
+  
+  /* Standardizing header and cell alignment */
+  .mat-mdc-header-cell {
+    text-align: center; /* Center labels by default */
+    vertical-align: middle;
+    
+    /* Target the Mat-Icons inside headers to align center */
+    mat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      margin-bottom: 2px;
+    }
+  }
+
+  .mat-mdc-cell {
+    border-bottom: 1px solid var(--color-surface-elevated);
+  }
+
+  /* Specific column alignments */
+  .currency-column {
+    text-align: left !important;
+    .currency-cell {
+      justify-content: flex-start;
+    }
+  }
+
+  .numeric-cell {
+    text-align: center !important; /* Totals align center relative to column */
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+  }
+
+  .center-cell {
+    text-align: center !important;
+  }
+}
+
+/* 3. Refined Currency Cell for Table */
+.currency-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .coin-icon {
+    width: 34px;  /* Slightly smaller for table rows */
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}

@@ -13,62 +13,93 @@
       </mat-progress-spinner>
     </div>
 
-    <!-- Currency Summary Section -->
-    <div class="currency-summary-section" *ngIf="!isLoadingCurrencySummary()">
-      <h3>{{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY_SUMMARY' | translate }}</h3>
-      <div class="loader" *ngIf="isLoadingCurrencySummary()">
-        <mat-progress-spinner
-          diameter="40"
-          mode="indeterminate">
-        </mat-progress-spinner>
-      </div>
-      <div class="currency-container" *ngIf="!isLoadingCurrencySummary()">
-        <div class="currency-item" *ngFor="let summary of currencySummary()">
-          <div class="currency-code">
-            <img [src]="getCurrencyImage(summary.currencyCode)" class="currency-logo" [alt]="summary.currencyCode">
-            <span>{{ summary.currencyCode }}</span>
-          </div>
-          <div class="currency-wallet-balance">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.WALLET_BALANCE' | translate }}:</strong> {{ summary.totalWalletBalance | number:'1.2-8' }}
-          </div>
-          <div class="currency-provider-balance">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER_BALANCE' | translate }}:</strong> {{ summary.totalProviderBalance | number:'1.2-8' }}
-          </div>
-          <div class="currency-provider-count">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER_ACCOUNT_COUNT' | translate }}:</strong> {{ summary.providerAccountCount }}
-          </div>
-          <div class="currency-last-refreshed" *ngIf="summary.lastRefreshedAt">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.LAST_REFRESHED' | translate }}:</strong> {{ summary.lastRefreshedAt | date:'medium' }}
-          </div>
-        </div>
-      </div>
+    <div class="dashboard-container">
+  <!-- Header with Single Refresh Timestamp -->
+  <div class="header-row" *ngIf="currencySummary().length > 0">
+    <div class="title-group">
+      <p class="refresh-text" *ngIf="currencySummary()[1].lastRefreshedAt">
+        <mat-icon>update</mat-icon>
+        {{ 'ACCOUNT_PROVIDER_BALANCE.LAST_REFRESHED' | translate }}: {{ currencySummary()[1].lastRefreshedAt | date:'medium' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Currency Summary Table -->
+  <section class="summary-section mat-elevation-z2">
+    <div class="section-header">
+      <mat-icon>summarize</mat-icon>
+      <h2>{{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY_SUMMARY' | translate }}</h2>
     </div>
 
-    <!-- System Wallets Section -->
-    <div class="system-wallets-section" *ngIf="!isLoadingWallets()">
-      <h3>{{ 'ACCOUNT_PROVIDER_BALANCE.SYSTEM_WALLETS' | translate }}</h3>
-      <div class="loader" *ngIf="isLoadingWallets()">
-        <mat-progress-spinner
-          diameter="40"
-          mode="indeterminate">
-        </mat-progress-spinner>
-      </div>
-      <div class="wallets-container" *ngIf="!isLoadingWallets()">
-        <div class="wallet-item" *ngFor="let wallet of systemWallets(); let i = index" [ngClass]="i < 2 ? 'wallet-trade-fee' : 'wallet-withdrawal-fee'">
-          <div class="currency-code">
-            <img [src]="getCurrencyImage(wallet.currencyCode)" class="currency-logo" [alt]="wallet.currencyCode">
-            <span>{{ wallet.currencyCode }}</span>
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoadingCurrencySummary()"></mat-progress-bar>
+
+    <table mat-table [dataSource]="currencySummary()" *ngIf="!isLoadingCurrencySummary()">
+      <!-- Currency Column -->
+      <ng-container matColumnDef="currency">
+        <th mat-header-cell *matHeaderCellDef> {{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY' | translate }} </th>
+        <td mat-cell *matCellDef="let s">
+          <div class="currency-cell">
+            <img [src]="getCurrencyImage(s.currencyCode)" class="coin-icon" [alt]="s.currencyCode">
+            <span class="code-text">{{ s.currencyCode }}</span>
           </div>
-          <div class="wallet-label">{{ i < 2 ? ('ACCOUNT_PROVIDER_BALANCE.TRADE_FEE' | translate) : ('ACCOUNT_PROVIDER_BALANCE.WITHDRAWAL_FEE' | translate) }}</div>
-          <div class="wallet-balance">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.BALANCE' | translate }}:</strong> {{ wallet.availableBalance | number:'1.2-8' }}
-          </div>
-          <!-- <div class="wallet-locked">
-            <strong>{{ 'ACCOUNT_PROVIDER_BALANCE.LOCKED' | translate }}:</strong> {{ wallet.lockedBalance | number:'1.2-8' }}
-          </div> -->
-        </div>
-      </div>
+        </td>
+      </ng-container>
+
+      <!-- Wallet Balance -->
+      <ng-container matColumnDef="wallet">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-icon matTooltip="Wallet Balance">account_balance_wallet</mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let s" class="numeric-cell">
+          {{ s.totalWalletBalance | number:'1.2-8' }}
+        </td>
+      </ng-container>
+
+      <!-- Provider Balance -->
+      <ng-container matColumnDef="provider">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-icon matTooltip="Provider Balance">hub</mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let s" class="numeric-cell highlight-cell">
+          {{ s.totalProviderBalance | number:'1.2-8' }}
+        </td>
+      </ng-container>
+
+      <!-- Accounts Count -->
+      <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER' | translate }}</th>
+        <td mat-cell *matCellDef="let s" class="center-cell">
+          <span class="count-badge">{{ s.providerAccountCount }}</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['currency', 'wallet', 'provider', 'count']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['currency', 'wallet', 'provider', 'count'];"></tr>
+    </table>
+  </section>
+
+  <!-- System Wallets (Refined Grid) -->
+  <section class="wallets-section">
+    <div class="section-header">
+      <mat-icon>account_balance</mat-icon>
+      <h2>{{ 'ACCOUNT_PROVIDER_BALANCE.SYSTEM_WALLETS' | translate }}</h2>
     </div>
+
+    <div class="wallet-grid" *ngIf="!isLoadingWallets()">
+      <mat-card class="mini-wallet-card" *ngFor="let wallet of systemWallets(); let i = index">
+        <div class="card-accent" [class.trade]="i < 2" [class.withdrawal]="i >= 2"></div>
+        <mat-card-content>
+          <div class="wallet-header">
+            <img [src]="getCurrencyImage(wallet.currencyCode)" class="coin-icon-sm">
+            <span class="tag">{{ i < 2 ? 'TRADE' : 'FEE' }}</span>
+          </div>
+          <div class="balance-val">{{ wallet.availableBalance | number:'1.2-2' }}</div>
+          <div class="currency-label">{{ wallet.currencyCode }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</div>
 
     <table
       mat-table

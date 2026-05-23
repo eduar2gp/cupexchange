@@ -103,4 +103,12 @@ export class TransactionDetailsComponent implements OnInit {
       }
     });
   }
+
+  getCurrencyImage(currencyCode: string | null): string {
+    if (!currencyCode) {
+      return 'assets/currencies/default.png';
+    }
+    const currency = currencyCode.toLowerCase();
+    return `assets/currencies/${currency}.png`;
+  }
 }

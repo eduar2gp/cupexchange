@@ -1,8 +1,8 @@
 <div class="dashboard-wrapper mat-elevation-z8">
   <div class="header-container">
     <div class="title-section">
-        <h1>{{ 'ACCOUNT_MANAGER.TITLE' | translate }}</h1>
-        <p class="subtitle">{{ 'ACCOUNT_MANAGER.SUBTITLE' | translate }}</p>
+      <h1>{{ 'ACCOUNT_MANAGER.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'ACCOUNT_MANAGER.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="filter-section">
@@ -24,13 +24,12 @@
 
   <div class="table-container">
     <table mat-table [dataSource]="transactions()">
-      
+
       <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_MANAGER.TYPE' | translate }}</th>
         <td mat-cell *matCellDef="let tx">
           <mat-chip-set>
-            <mat-chip [class.chip-withdrawal]="tx.type === 'WITHDRAWAL'" 
-                      [class.chip-deposit]="tx.type === 'DEPOSIT'">
+            <mat-chip [class.chip-withdrawal]="tx.type === 'WITHDRAWAL'" [class.chip-deposit]="tx.type === 'DEPOSIT'">
               {{tx.type}}
             </mat-chip>
           </mat-chip-set>
@@ -39,21 +38,37 @@
 
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_MANAGER.AMOUNT' | translate }}</th>
-        <td mat-cell *matCellDef="let tx" class="font-bold"> 
-          {{tx.amount | currency}} 
+        <td mat-cell *matCellDef="let tx" class="font-bold">
+          {{tx.amount | currency}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="baseCurrency">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.CURRENCY' | translate }}</th>
+        <td mat-cell *matCellDef="let tx">    
+          <div class="currency-code">
+                <img [src]="getCurrencyImage(tx.fromAccount.baseCurrency)" class="currency-logo"
+                  [alt]="tx.fromAccount.baseCurrency">
+                <span>{{ tx.fromAccount.baseCurrency }}</span>
+              </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gatewayCode">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.GATEWAY' | translate }}</th>
+        <td mat-cell *matCellDef="let tx">
+          <div class="gateway-cell" [matTooltip]="tx.toAccount?.gatewayName || tx.fromAccount?.gatewayName">
+            <mat-icon class="tiny-icon">payments</mat-icon>
+            {{ tx.toAccount?.gatewayCode || tx.fromAccount?.gatewayCode || 'N/A' }}
+          </div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_MANAGER.RECEIPT' | translate }}</th>
         <td mat-cell *matCellDef="let tx">
-          <a mat-icon-button 
-             color="primary" 
-             *ngIf="tx.receiptPaymentUrl" 
-             [href]="tx.receiptPaymentUrl" 
-             target="_blank"
-             (click)="$event.stopPropagation()"
-             [matTooltip]="'ACCOUNT_MANAGER.VIEW_RECEIPT' | translate">
+          <a mat-icon-button color="primary" *ngIf="tx.receiptPaymentUrl" [href]="tx.receiptPaymentUrl" target="_blank"
+            (click)="$event.stopPropagation()" [matTooltip]="'ACCOUNT_MANAGER.VIEW_RECEIPT' | translate">
             <mat-icon>receipt_long</mat-icon>
           </a>
         </td>
@@ -61,12 +76,12 @@
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_MANAGER.STATUS' | translate }}</th>
-        <td mat-cell *matCellDef="let tx"> 
-            <mat-chip-set>
-                <mat-chip class="status-chip" [attr.data-status]="tx.status">
-                  {{tx.status}}
-                </mat-chip>
-            </mat-chip-set>
+        <td mat-cell *matCellDef="let tx">
+          <mat-chip-set>
+            <mat-chip class="status-chip" [attr.data-status]="tx.status">
+              {{tx.status}}
+            </mat-chip>
+          </mat-chip-set>
         </td>
       </ng-container>
 
@@ -76,10 +91,8 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row 
-          *matRowDef="let row; columns: displayedColumns;" 
-          (click)="onSelectTransaction(row)"
-          class="interactive-row">
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelectTransaction(row)"
+        class="interactive-row">
       </tr>
 
       <tr class="mat-row" *matNoDataRow>
@@ -90,10 +103,7 @@
     </table>
   </div>
 
-  <mat-paginator [length]="totalElements"
-                 [pageSize]="pageSize"
-                 [pageSizeOptions]="[5, 10, 25, 50]"
-                 (page)="handlePageEvent($event)"
-                 showFirstLastButtons>
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50]"
+    (page)="handlePageEvent($event)" showFirstLastButtons>
   </mat-paginator>
 </div>

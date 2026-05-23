@@ -210,3 +210,20 @@
   align-items: center;
   justify-content: center;
 }
+
+.currency-code {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .currency-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }

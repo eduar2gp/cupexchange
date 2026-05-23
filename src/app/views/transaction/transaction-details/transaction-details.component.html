@@ -1,7 +1,7 @@
 <div class="transaction-container">
   @if (transaction(); as tx) {
   <mat-card class="transaction-card">
-    
+
     <mat-card-header>
       <div mat-card-avatar class="transaction-icon" [class.deposit]="tx.type === 'DEPOSIT'">
         <mat-icon>{{ tx.type === 'DEPOSIT' ? 'south_west' : 'north_east' }}</mat-icon>
@@ -31,13 +31,130 @@
         </div>
       </div>
 
+      <div class="account-info shadow-sm">
+        <h4 class="section-title">
+          <mat-icon>account_balance</mat-icon>
+          Account & Gateway Details
+        </h4>
+
+        <div class="accounts-grid">
+          <!-- FROM ACCOUNT -->
+          <div class="account-section">
+            <div class="section-header">
+              <h5 class="account-label">From</h5>
+              @if (tx.fromAccount.gatewayName) {
+              <span class="gateway-badge">
+                {{ tx.fromAccount.gatewayName }}
+              </span>
+              <div class="currency-code">
+                <img [src]="getCurrencyImage(tx.fromAccount.baseCurrency)" class="currency-logo"
+                  [alt]="tx.fromAccount.baseCurrency">
+                <span>{{ tx.fromAccount.baseCurrency }}</span>
+              </div>
+              }
+            </div>
+
+            @if (tx.fromAccount) {
+            <div class="account-details">
+              <div class="detail-item">
+                <span class="label">Account Name</span>
+                <span class="value">{{ tx.fromAccount.accountName }}</span>
+              </div>
+              @if (tx.fromAccount.accountId) {
+              <div class="detail-item">
+                <span class="label">Account ID</span>
+                <span class="value">{{ tx.fromAccount.accountId }}</span>
+              </div>
+              }
+              @if (tx.fromAccount.email) {
+              <div class="detail-item">
+                <span class="label">Email</span>
+                <span class="value">{{ tx.fromAccount.email }}</span>
+              </div>
+              }
+              @if (tx.fromAccount.cardNumber) {
+              <div class="detail-item">
+                <span class="label">Card</span>
+                <span class="value">{{ tx.fromAccount.cardNumber }}</span>
+              </div>
+              }
+              @if (tx.fromAccount.phoneNumber) {
+              <div class="detail-item">
+                <span class="label">Phone Number</span>
+                <span class="value">{{ tx.fromAccount.phoneNumber }}</span>
+              </div>
+              }
+              <div class="detail-item">
+                <span class="label">Provider</span>
+                <span class="value">{{ tx.fromAccount.provider ? 'Yes' : 'No' }}</span>
+              </div>
+            </div>
+            }
+          </div>
+
+          <!-- TO ACCOUNT -->
+          <div class="account-section">
+            <div class="section-header">
+              <h3 class="account-label">To</h3>
+              @if (tx.toAccount.gatewayName) {
+              <span class="gateway-badge">
+                {{ tx.toAccount.gatewayName }}
+              </span>
+               <div class="currency-code">
+                <img [src]="getCurrencyImage(tx.toAccount.baseCurrency)" class="currency-logo"
+                  [alt]="tx.toAccount.baseCurrency">
+                <span>{{ tx.toAccount.baseCurrency }}</span>
+              </div>
+              }
+            </div>
+
+            @if (tx.toAccount) {
+            <div class="account-details">
+              <div class="detail-item">
+                <span class="label">Account Name</span>
+                <span class="value">{{ tx.toAccount.accountName }}</span>
+              </div>
+              @if (tx.toAccount.accountId) {
+              <div class="detail-item">
+                <span class="label">Account ID</span>
+                <span class="value">{{ tx.toAccount.accountId }}</span>
+              </div>
+              }
+              @if (tx.toAccount.email) {
+              <div class="detail-item">
+                <span class="label">Email</span>
+                <span class="value">{{ tx.toAccount.email }}</span>
+              </div>
+              }
+              @if (tx.toAccount.cardNumber) {
+              <div class="detail-item">
+                <span class="label">Card</span>
+                <span class="value">{{ tx.toAccount.cardNumber }}</span>
+              </div>
+              }
+              @if (tx.toAccount.phoneNumber) {
+              <div class="detail-item">
+                <span class="label">Phone Number</span>
+                <span class="value">{{ tx.toAccount.phoneNumber }}</span>
+              </div>
+              }
+              <div class="detail-item">
+                <span class="label">Provider</span>
+                <span class="value">{{ tx.toAccount.provider ? 'Yes' : 'No' }}</span>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
       @if (tx.method === 'CASH') {
       <div class="management-info shadow-sm">
         <h4 class="section-title">
-          <mat-icon>admin_panel_settings</mat-icon> 
+          <mat-icon>admin_panel_settings</mat-icon>
           Management Info
         </h4>
-        
+
         <div class="responsive-grid small-gap">
           <div class="detail-item">
             <span class="label">Created At</span>
@@ -52,7 +169,7 @@
               <span class="email-text">{{ profile.email }}</span>
             </div>
             @if (profile.profileImageUrl) {
-              <img class="profile-avatar" [src]="profile.profileImageUrl" alt="Manager">
+            <img class="profile-avatar" [src]="profile.profileImageUrl" alt="Manager">
             }
           </div>
           }
@@ -72,9 +189,9 @@
       @if (tx.status === 'PENDING') {
       <button mat-flat-button color="accent" [disabled]="isLoading()" (click)="onStatusChanged()">
         @if (isLoading()) {
-          <mat-spinner diameter="20"></mat-spinner>
+        <mat-spinner diameter="20"></mat-spinner>
         } @else {
-          UPDATE STATUS
+        UPDATE STATUS
         }
       </button>
       }

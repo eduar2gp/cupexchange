@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { WalletService } from '../../../core/services/wallet.service';
 import { Wallet } from '../../../model/wallet.model';
 import { CurrencySummary } from '../../../model/currency-summary.model';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-account-provider-balance',
@@ -28,7 +29,8 @@ import { CurrencySummary } from '../../../model/currency-summary.model';
     MatProgressSpinnerModule,
     MatIconModule,
     MatTooltipModule,
-    TranslateModule
+    TranslateModule,
+    MatProgressBarModule
   ],
   templateUrl: './account-provider-balance.component.html',
   styleUrl: './account-provider-balance.component.scss',
