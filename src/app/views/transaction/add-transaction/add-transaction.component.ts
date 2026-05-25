@@ -347,6 +347,16 @@ export class AddTransactionComponent implements OnInit {
     if (walletsJson) this.wallets = JSON.parse(walletsJson);
   }
 
+  getWithdrawalFeeForProvider(provider: Provider): number | undefined {
+    if (!provider.cashAccounts || !this.transactionRequest?.currencyCode) {
+      return undefined;
+    }
+    const matchingCashAccount = provider.cashAccounts.find(
+      ca => ca.currencyCode === this.transactionRequest?.currencyCode
+    );
+    return matchingCashAccount?.withdrawalPercentageFee;
+  }
+
   private verifyAvailableBalance(): boolean {
     if (this.transactionRequest?.type !== 'WITHDRAWAL') return true;
     const wallet = this.wallets.find(w => w.currencyCode === this.transactionRequest?.currencyCode);
