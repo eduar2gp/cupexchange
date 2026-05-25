@@ -6,6 +6,7 @@ import { build, ApiEndpoints } from '../api/endpoints';
 import { ProviderBalance } from '../../model/provider-balance.model';
 import { Page } from '../../model/page.model';
 import { User } from '../../model/user.model';
+import { UpdateWithdrawalFeeModel } from '../../model/update-withdrawal-fee.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,11 @@ export class AccountService {
 
   addAccount(account: Partial<Account>): Observable<Account> {
     const url = build(ApiEndpoints.account.ADD_ACCOUNT);
+    return this.http.post<Account>(url, account);
+  }
+
+  updateWithdrawalFee(account: Partial<UpdateWithdrawalFeeModel>): Observable<Account> {
+    const url = build(ApiEndpoints.account.UPDATE_WITHDRAWAL_FEE);
     return this.http.post<Account>(url, account);
   }
 

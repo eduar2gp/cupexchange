@@ -19,7 +19,7 @@
 
         <div class="card-header">
           <div class="gateway-badge">
-            {{ account?.gatewayName || 'Unknown Gateway' }}
+            {{ account?.gatewayName || '' }}
           </div>
 
           <div class="header-right">
@@ -53,6 +53,42 @@
           <p *ngIf="account.phone" class="meta-item">
             <i class="icon-phone"></i> {{ account.phone }}
           </p>
+        </div>
+
+        <div class="withdrawal-fee-info" *ngIf="account.accountType === 'PROVIDER_CASH'">
+          <div class="fee-display" *ngIf="editingAccountId !== account.id">
+            <p class="meta-item">
+              <i class="icon-percentage"></i>
+              <strong>{{ 'TRANSACTION.WITHDRAWAL_FEE' | translate }}:</strong>
+              {{ account.withdrawalPercentageFee }}%
+            </p>
+            <button class="edit-btn" (click)="startEdit(account)" [disabled]="isSaving">
+              Edit
+            </button>
+          </div>
+
+          <div class="fee-edit" *ngIf="editingAccountId === account.id">
+            <div class="fee-input-group">
+              <input
+                type="number"
+                class="fee-input"
+                [(ngModel)]="editingFeeValue"
+                placeholder="Enter withdrawal fee %"
+                min="0"
+                step="0.01"
+                [disabled]="isSaving"
+              />
+              <span class="fee-percent">%</span>
+            </div>
+            <div class="fee-actions">
+              <button class="save-btn" (click)="saveWithdrawalFee(account)" [disabled]="isSaving">
+                {{ isSaving ? 'Saving...' : 'Save' }}
+              </button>
+              <button class="cancel-btn" (click)="cancelEdit()" [disabled]="isSaving">
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="card-footer">
