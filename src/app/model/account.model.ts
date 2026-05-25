@@ -8,7 +8,7 @@ export interface Account {
   accountName: string;
   email: string | null;
   phone: string | null;
-  cardNumber: string | null;            // Updated to allow null
+  cardNumber: string;            // Updated to allow null
   provider: boolean;
   
   // --- New Fields Added Below ---
