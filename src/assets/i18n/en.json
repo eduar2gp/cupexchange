@@ -108,7 +108,10 @@
     "NO_TRANSACTIONS_FOUND": "No transactions found",
     "SELECT_CASH_PROVIDER": "Select cash provider",
     "SELECT_BANK_ACCOUNT": "Select Bank Account",
-    "SELECT_WALLET_ACCOUNT": "Select Wallet"
+    "SELECT_WALLET_ACCOUNT": "Select Wallet",
+    "AVAILABLE_CASH_ACCOUNTS": "Available Cash Accounts",
+    "CURRENCY": "Currency",
+    "WITHDRAWAL_FEE": "Withdrawal Fee"
   },
   "ACCOUNTS": {
     "ADD_ACCOUNT": "Add account",

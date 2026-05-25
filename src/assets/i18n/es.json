@@ -108,7 +108,10 @@
     "NO_TRANSACTIONS_FOUND": "No se encuentran transacciones",
     "SELECT_CASH_PROVIDER": "Selecciona proveedor de efectivo",
     "SELECT_BANK_ACCOUNT": "Selecciona Cuenta de Banco",
-    "SELECT_WALLET_ACCOUNT": "Selecciona Billetera"
+    "SELECT_WALLET_ACCOUNT": "Selecciona Billetera",
+    "AVAILABLE_CASH_ACCOUNTS": "Cuentas de Efectivo Disponibles",
+    "CURRENCY": "Moneda",
+    "WITHDRAWAL_FEE": "Tarifa de Retiro"
   },
   "ACCOUNTS": {
     "ADD_ACCOUNT": "Agregar cuenta",

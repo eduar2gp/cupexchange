@@ -1,10 +1,16 @@
+export interface CashAccount {
+  currencyCode: string;
+  withdrawalPercentageFee: number;
+}
+
 export interface Provider {
   id?: number;
   name: string;
   email: string;
   phone: string;
-  userId: number;
+  userId?: number; // Kept from your original interface
   profileImageUrl?: string;
-  cashProvider?: boolean;
   address?: string;
+  cashAccounts?: CashAccount[]; // Added to match the nested array
+  cashProvider?: boolean;
 }

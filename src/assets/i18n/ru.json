@@ -100,7 +100,13 @@
     "CONFIRM_ACTION": "Подтвердить {{type}}",
     "PROCESSING": "Обработка...",
     "SELECT_CURRENCY": "Выберите валюту",
-    "NO_TRANSACTIONS_FOUND": "Транзакции не найдены"
+    "NO_TRANSACTIONS_FOUND": "Транзакции не найдены",
+    "SELECT_CASH_PROVIDER": "Выберите поставщика наличных",
+    "SELECT_BANK_ACCOUNT": "Выберите банковский счет",
+    "SELECT_WALLET_ACCOUNT": "Выберите счет кошелька",
+    "AVAILABLE_CASH_ACCOUNTS": "Доступные счета наличных",
+    "CURRENCY": "Валюта",
+    "WITHDRAWAL_FEE": "Комиссия за вывод"
   },
   "LOGIN_WHO_WE_ARE": "Кто мы",
   "WHO_WE_ARE": {

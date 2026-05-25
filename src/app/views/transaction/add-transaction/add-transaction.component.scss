@@ -27,23 +27,13 @@ mat-card {
 }
 
 // --- Grid Systems ---
-.gateway-grid, .accounts-grid {
+.gateway-grid {
   display: grid;
   gap: 12px;
   margin-bottom: 24px;
-  
-  // 2 columns on mobile
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr; // Stack cards cleanly on very narrow mobile screens
 
-  // 3-4 columns on tablet/desktop
-  @media (min-width: 600px) {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-}
-
-.accounts-grid {
-  // Accounts need more horizontal space for details
-  grid-template-columns: 1fr;
+  // 2-column or fluid grid on tablets/desktop
   @media (min-width: 600px) {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
@@ -58,9 +48,8 @@ mat-card {
   cursor: pointer;
   transition: var(--transition);
   display: flex;
-  flex-direction: column;
+  flex-direction: row; // Changed to row format to gracefully integrate fees and text
   align-items: center;
-  text-align: center;
   position: relative;
   overflow: hidden;
 
@@ -72,39 +61,87 @@ mat-card {
   &.selected {
     border-color: var(--color-primary);
     background-color: var(--color-primary-faded);
-    
-    &::after { // Subtle corner fold or indicator
-      content: '';
+  }
+
+  // Gateway wrapper and avatar handling
+  .card-icon {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    margin-right: 12px;
+    flex-shrink: 0;
+
+    .gateway-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .selection-overlay {
       position: absolute;
-      top: 0;
-      right: 0;
-      border: 12px solid transparent;
-      border-top-color: var(--color-primary);
-      border-right-color: var(--color-primary);
+      top: -6px;
+      right: -6px;
+      color: var(--color-primary);
+      background: var(--color-surface);
+      border-radius: 50%;
+      display: flex;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 
-  // Gateway specific icons
-  .gateway-img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    border-radius: 15px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-  }
-
-  // Account specific details
-  .detail-row {
-    width: 100%;
+  // Text details block
+  .provider-details {
     display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--color-border);
-    &:last-child { border-bottom: none; }
-    
-    .label { color: var(--color-text-secondary); }
-    .value { font-weight: 600; color: var(--color-text); }
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+
+    .name-text {
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .address-text {
+      color: var(--color-text-secondary);
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    // New inline styling format for the consolidated withdrawal percentage fee
+    .fee-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: var(--color-text);
+      background-color: var(--color-border); // Uses existing border/divider variable as a subtle pill tag color
+      padding: 2px 8px;
+      border-radius: 4px;
+      width: fit-content;
+
+      .label {
+        color: var(--color-text-secondary);
+      }
+
+      .fee {
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+    }
   }
 }
 
@@ -116,7 +153,7 @@ mat-card {
   letter-spacing: 0.05rem;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin: 24px 0 1px;
+  margin: 24px 0 12px;
 }
 
 .amount-field {
@@ -135,5 +172,21 @@ mat-card {
     padding: 0 32px;
     height: 48px;
     font-weight: 600;
+  }
+}
+
+// --- Animations ---
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

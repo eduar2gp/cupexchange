@@ -59,6 +59,13 @@
             <div class="provider-details">
               <div class="mat-body-2 name-text">{{ provider.name }}</div>
               <div class="mat-caption address-text">{{ provider.address }}</div>
+
+              @if (provider.cashAccounts?.[0]?.withdrawalPercentageFee !== undefined) {
+              <div class="mat-caption fee-text">
+                <span class="label">{{ 'TRANSACTION.WITHDRAWAL_FEE' | translate }}:</span>
+                <span class="value fee">{{ provider?.cashAccounts?.[0]?.withdrawalPercentageFee }}%</span>
+              </div>
+              }
             </div>
           </div>
           }

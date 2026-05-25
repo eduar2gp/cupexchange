@@ -22,7 +22,7 @@ import { Wallet } from '../../../model/wallet.model';
 import { TransactionRequest } from '../../../model/transaction-request.model';
 import { PaymentGateway } from '../../../model/payment-gateway.model';
 import { Account } from '../../../model/account.model';
-import { Provider } from '../../../model/provider.model';
+import { Provider, CashAccount } from '../../../model/provider.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
 import { CashOrderRequestDTO } from '../../../model/cash-order-request.model';
@@ -69,6 +69,7 @@ export class AddTransactionComponent implements OnInit {
   // Provider (Cash) Logic
   providers: Provider[] = [];
   selectedProvider: Provider | null = null;
+  selectedCashAccounts: CashAccount[] = []; // Cash accounts filtered by currency
 
   // Account logic (Bank/Wallet)
   userAccounts: Account[] = [];
@@ -161,6 +162,7 @@ export class AddTransactionComponent implements OnInit {
     this.selectedGatewayCode = null;
     this.selectedGatewayMethod = null;
     this.selectedProvider = null;
+    this.selectedCashAccounts = [];
     this.selectedUserAccount = null;
     this.selectedProviderAccount = null;
     this.userAccounts = [];
@@ -180,7 +182,14 @@ export class AddTransactionComponent implements OnInit {
 
   selectProvider(provider: Provider): void {
     this.selectedProvider = provider;
-    // For now, cash providers don't require account selection logic
+    // Filter cash accounts by the current currency
+    if (provider.cashAccounts && this.transactionRequest?.currencyCode) {
+      this.selectedCashAccounts = provider.cashAccounts.filter(
+        ca => ca.currencyCode === this.transactionRequest?.currencyCode
+      );
+    } else {
+      this.selectedCashAccounts = [];
+    }
     this.cdr.detectChanges();
   }
 
