@@ -1,4 +1,4 @@
-<div class="cart-container mat-app-background">
+<div class="cart-container">
   <h2 class="mat-headline-5">{{ 'MY_CART' | translate }}</h2>
 
   @if (cartItems$ | async; as items) {
@@ -7,8 +7,8 @@
     <mat-card-content>
       <mat-icon color="disabled">shopping_cart</mat-icon>
       <p class="mat-body-large">{{ 'CART_EMPTY' | translate }}</p>
-      <button mat-button color="primary" routerLink="/products">
-        {{ 'CONTINUE_SHOPPING' | translate }}
+      <button mat-button color="primary" routerLink="/ecommerce-dashboard">
+        {{ 'SEARCH_PRODUCTS' | translate }}
       </button>
     </mat-card-content>
   </mat-card>

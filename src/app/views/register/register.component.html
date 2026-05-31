@@ -46,13 +46,22 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width custom-form-field">
           <mat-label>{{ 'REGISTER.PASSWORD_LABEL' | translate }}</mat-label>
-          <input matInput type="password" formControlName="password" />
-          <mat-error *ngIf="f['password'].errors?.['required']">{{ 'REGISTER.PASSWORD_REQUIRED' | translate
-            }}</mat-error>
-          <mat-error *ngIf="f['password'].errors?.['minlength']">{{ 'REGISTER.PASSWORD_MINLENGTH' | translate
-            }}</mat-error>
+
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+
+          <mat-error *ngIf="f['password'].errors?.['required']">
+            {{ 'REGISTER.PASSWORD_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="f['password'].errors?.['minlength']">
+            {{ 'REGISTER.PASSWORD_MINLENGTH' | translate }}
+          </mat-error>
         </mat-form-field>
 
         <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="full-width submit-btn">

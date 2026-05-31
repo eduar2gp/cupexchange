@@ -98,7 +98,10 @@
 
         @if (selectedGatewayCode && selectedMethod !== 'CASH') {
         <div class="account-selection-container animate-fade-in">
-          <label class="section-label">{{ 'TRANSACTION.SELECT_USER_ACCOUNT' | translate }}</label>
+          <label class="section-label">
+            <mat-icon style="vertical-align: middle; margin-right: 4px; font-size: 16px;">person</mat-icon>
+            {{ 'TRANSACTION.SELECT_USER_ACCOUNT' | translate }}
+          </label>
           <div class="accounts-grid">
             @for (account of userAccounts; track account.id) {
             <div class="selection-card account-card" [class.selected]="selectedUserAccount?.id === account.id"
@@ -110,8 +113,29 @@
               <div class="card-body">
                 @for (detail of getAccountDetails(account); track detail.label) {
                 <div class="detail-row">
-                  <span class="label">{{ detail.label }}:</span>
-                  <span class="value">{{ detail.value }}</span>
+                  <span class="label">
+                    @switch(detail.label) {
+                      @case('Name') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">person</mat-icon>{{ detail.label }}
+                      }
+                      @case('Email') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">email</mat-icon>{{ detail.label }}
+                      }
+                      @case('Phone') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">phone</mat-icon>{{ detail.label }}
+                      }
+                      @case('Card') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">credit_card</mat-icon>{{ detail.label }}
+                      }
+                      @case('Id') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">fingerprint</mat-icon>{{ detail.label }}
+                      }
+                      @default {
+                        {{ detail.label }}
+                      }
+                    }
+                  </span>
+                  <span class="value" [title]="detail.value">{{ detail.value }}</span>
                 </div>
                 }
               </div>
@@ -120,21 +144,44 @@
           </div>
 
           @if (transactionRequest.type === 'DEPOSIT') {
-          <label class="section-label">{{ 'TRANSACTION.SELECT_PROVIDER_RECEIVING_ACCOUNT' | translate }}</label>
+          <label class="section-label">
+            <mat-icon style="vertical-align: middle; margin-right: 4px; font-size: 16px;">account_balance_wallet</mat-icon>
+            {{ 'TRANSACTION.SELECT_PROVIDER_RECEIVING_ACCOUNT' | translate }}
+          </label>
           <div class="accounts-grid">
             @for (account of providerAccounts; track account.id) {
             <div class="selection-card account-card provider-variant"
               [class.selected]="selectedProviderAccount?.id === account.id" (click)="selectProviderAccount(account)">
               <div class="card-header">
-                <mat-icon>{{ selectedProviderAccount?.id === account.id ? 'check_circle' : 'account_balance'
-                  }}</mat-icon>
+                <mat-icon>{{ selectedProviderAccount?.id === account.id ? 'check_circle' : 'account_balance' }}</mat-icon>
                 <span>{{ account.gatewayName }}</span>
               </div>
               <div class="card-body">
                 @for (detail of getAccountDetails(account); track detail.label) {
                 <div class="detail-row">
-                  <span class="label">{{ detail.label }}:</span>
-                  <span class="value">{{ detail.value }}</span>
+                  <span class="label">
+                    @switch(detail.label) {
+                      @case('Name') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">person</mat-icon>{{ detail.label }}
+                      }
+                      @case('Email') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">email</mat-icon>{{ detail.label }}
+                      }
+                      @case('Phone') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">phone</mat-icon>{{ detail.label }}
+                      }
+                      @case('Card') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">credit_card</mat-icon>{{ detail.label }}
+                      }
+                      @case('Id') {
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px; vertical-align: text-bottom;">fingerprint</mat-icon>{{ detail.label }}
+                      }
+                      @default {
+                        {{ detail.label }}
+                      }
+                    }
+                  </span>
+                  <span class="value" [title]="detail.value">{{ detail.value }}</span>
                 </div>
                 }
               </div>

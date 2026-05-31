@@ -6,6 +6,10 @@
   color: var(--color-text);
 }
 
+.provider-card{
+  background: var(--color-surface);
+}
+
 // Layout Containers
 .header-row {
   margin-bottom: 24px;
@@ -57,7 +61,7 @@ mat-progress-bar {
 // Table Styling
 .mat-mdc-table {
   width: 100%;
-  background: transparent;
+  background: var(--color-surface);
 
   .mat-mdc-header-cell {
     background: var(--color-surface-elevated);
@@ -66,16 +70,57 @@ mat-progress-bar {
     font-weight: 700;
     text-transform: uppercase;
     padding: 12px 20px;
+    border-bottom: 2px solid var(--color-border);
   }
 
   .mat-mdc-cell {
     padding: 12px 20px;
     color: var(--color-text);
-    border-bottom: 1px solid var(--color-surface-elevated);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .mat-mdc-row:hover {
-    background: var(--color-background);
+  .mat-mdc-row {
+    background-color: var(--color-surface) !important;
+    border-bottom: 1px solid var(--color-border);
+
+    &:hover {
+      background-color: var(--color-surface-elevated) !important;
+    }
+
+    &:active {
+      background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+    }
+  }
+}
+
+// Balance Table Specific Styling
+.balance-table {
+  width: 100%;
+  background-color: var(--color-surface) !important;
+
+  thead {
+    background-color: var(--color-surface-elevated) !important;
+  }
+
+  tbody {
+    background-color: var(--color-surface) !important;
+
+    tr {
+      background-color: var(--color-surface) !important;
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color 0.2s ease-in-out;
+
+      &:hover {
+        background-color: var(--color-surface-elevated) !important;
+      }
+
+      td {
+        background-color: var(--color-surface) !important;
+        color: var(--color-text);
+        border-bottom: 1px solid var(--color-border);
+      }
+    }
   }
 }
 

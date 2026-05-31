@@ -27,7 +27,8 @@ mat-card {
 }
 
 // --- Grid Systems ---
-.gateway-grid {
+.gateway-grid,
+.accounts-grid {
   display: grid;
   gap: 12px;
   margin-bottom: 24px;
@@ -118,6 +119,7 @@ mat-card {
       display: -webkit-box;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
+      line-clamp: 1;
       overflow: hidden;
     }
 
@@ -145,6 +147,150 @@ mat-card {
   }
 }
 
+// --- Account Card Specific Styles ---
+.account-card {
+  flex-direction: column;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--color-surface) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &.selected {
+    box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    width: 100%;
+
+    mat-icon {
+      color: var(--color-primary);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background-color: rgba(var(--color-text-rgb), 0.02);
+      border-radius: 6px;
+      font-size: 0.85rem;
+
+      .label {
+        font-weight: 600;
+        color: var(--color-text-secondary);
+        flex: 0 0 auto;
+        min-width: 60px;
+      }
+
+      .value {
+        text-align: right;
+        color: var(--color-text);
+        font-family: 'Courier New', monospace;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  &.provider-variant {
+    background: linear-gradient(135deg, rgba(var(--color-success-rgb), 0.05) 0%, rgba(var(--color-success-rgb), 0.02) 100%);
+
+    .card-header {
+      mat-icon {
+        color: var(--color-success);
+      }
+    }
+
+    &.selected {
+      background: linear-gradient(135deg, rgba(var(--color-success-rgb), 0.15) 0%, rgba(var(--color-success-rgb), 0.08) 100%);
+      border-color: var(--color-success);
+    }
+  }
+}
+
+// --- Account Selection Container ---
+.account-selection-container {
+  margin-top: 24px;
+  padding: 20px;
+  background-color: rgba(var(--color-text-rgb), 0.02);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+// --- Method & Gateway Cards ---
+.method-card {
+  flex-direction: column;
+  padding: 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: var(--color-text-secondary);
+    }
+
+    span {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--color-text);
+    }
+  }
+
+  &.selected {
+    .card-content {
+      mat-icon,
+      span {
+        color: var(--color-primary);
+      }
+    }
+  }
+}
+
+.gateway-card {
+  flex-direction: column;
+  padding: 12px;
+}
+
 // --- Inputs & Buttons ---
 .section-label {
   display: block;
@@ -154,6 +300,12 @@ mat-card {
   text-transform: uppercase;
   color: var(--color-text-secondary);
   margin: 24px 0 12px;
+
+  mat-icon {
+    font-size: inherit;
+    width: auto;
+    height: auto;
+  }
 }
 
 .amount-field {

@@ -87,6 +87,7 @@
   "CLEAR_CART": "Vaciar Carro",
   "CHECKOUT": "Pagar",
   "CART_EMPTY": "No hay productos",
+  "SEARCH_PRODUCTS": "Buscar productos",
   "CREATE_ORDER": "Crear Orden",
   "SUBMIT_ORDER": "Enviar Orden",
   "BUY_ORDERS": "Offertas de Compra",

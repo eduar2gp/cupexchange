@@ -1,0 +1,244 @@
+:host {
+  display: block;
+}
+
+// --- Card Wrapper ---
+mat-card {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  mat-card-header {
+    background-color: var(--color-surface-elevated);
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 20px;
+    margin: 0;
+
+    [mat-card-avatar] {
+      background-color: transparent;
+      margin-right: 12px;
+
+      mat-icon {
+        color: var(--color-primary);
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    mat-card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    mat-card-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+  }
+
+  mat-card-content {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    padding-top: 20px;
+  }
+}
+
+// --- Search Container ---
+.search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  mat-form-field {
+    flex: 1;
+    min-width: 200px;
+
+    @media (max-width: 600px) {
+      min-width: 100%;
+    }
+  }
+
+  button {
+    white-space: nowrap;
+  }
+}
+
+// --- Progress Bar ---
+mat-progress-bar {
+  height: 3px;
+  margin-bottom: 16px;
+}
+
+// --- Table Container ---
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+// --- Table Styling ---
+table.full-width-table {
+  width: 100%;
+  background-color: var(--color-surface);
+
+  thead {
+    background-color: var(--color-surface-elevated);
+  }
+
+  th.mat-mdc-header-cell {
+    background-color: var(--color-surface-elevated) !important;
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  td.mat-cell {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
+
+  tr.mat-row {
+    background-color: var(--color-surface) !important;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-surface-elevated) !important;
+    }
+
+    &:active {
+      background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+    }
+  }
+
+  tr.mat-header-row {
+    background-color: var(--color-surface-elevated) !important;
+  }
+
+  tr.mat-row.result-row {
+    &:hover td {
+      background-color: var(--color-surface-elevated) !important;
+    }
+  }
+}
+
+// --- Contact Info Cell ---
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--color-primary);
+    }
+
+    &.phone {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+// --- Role Selection ---
+.role-select {
+  width: 180px;
+  margin-top: 8px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+// --- Action Buttons ---
+.action-cell {
+  text-align: right;
+
+  @media (max-width: 600px) {
+    text-align: left;
+  }
+
+  button {
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+// --- No Data Row ---
+.no-data-cell {
+  padding: 40px 16px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    margin: 0 auto 8px;
+    display: block;
+  }
+
+  p {
+    color: var(--color-text-secondary);
+    margin: 8px 0 0;
+    font-size: 0.9rem;
+  }
+}
+
+// --- Paginator ---
+mat-paginator {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+}
+
+// --- Responsive Adjustments ---
+@media (max-width: 600px) {
+  mat-card mat-card-content {
+    padding: 12px;
+  }
+
+  table.full-width-table {
+    font-size: 0.85rem;
+
+    th.mat-mdc-header-cell {
+      padding: 8px 12px;
+    }
+
+    td.mat-cell {
+      padding: 8px 12px;
+    }
+  }
+}

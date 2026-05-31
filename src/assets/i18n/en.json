@@ -87,6 +87,7 @@
   "CLEAR_CART": "Empty Cart",
   "CHECKOUT": "Checkout",
   "CART_EMPTY": "Cart is empty",
+  "SEARCH_PRODUCTS": "Search products",
   "CREATE_ORDER": "Create Order",
   "SUBMIT_ORDER": "Submit Order",
   "BUY_ORDERS": "Buy Orders",

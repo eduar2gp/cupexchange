@@ -1,32 +1,143 @@
+:host {
+  display: block;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+.cart-container {
+  padding: 20px;
+  background-color: var(--color-background);
+  min-height: 100vh;
+
+  h2 {
+    color: var(--color-text);
+    margin-bottom: 20px;
+  }
+}
+
+// --- Empty Cart Card ---
+.empty-cart-card {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 40px auto;
+  max-width: 500px;
+
+  mat-card-content {
+    background-color: var(--color-surface) !important;
+    text-align: center;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: var(--color-text-secondary);
+      opacity: 0.6;
+    }
+
+    p {
+      color: var(--color-text-secondary);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    button {
+      margin-top: 8px;
+      font-weight: 600;
+      min-width: 160px;
+
+      &[mat-button],
+      &[mat-raised-button],
+      &[mat-flat-button] {
+        // text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &[color="primary"] {
+          background-color: var(--color-primary) !important;
+          color: #ffffff !important;
+
+          ::ng-deep .mdc-button__label {
+            color: #ffffff !important;
+          }
+
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+      }
+    }
+  }
+}
+
+// --- Cart Layout ---
 .cart-layout {
   display: flex;
   gap: 24px;
   margin: 10px;
-  //align-items: flex-start;
 
   @media (max-width: 768px) {
     flex-direction: column;
   }
 }
 
+// --- Cart Items List ---
 .cart-list {
-  flex: 2; // Takes up more space
+  flex: 2;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.cart-summary-card {
-  flex: 1; // Sidebar style
-  position: sticky;
-  top: 20px;
+// --- Cart Item Card ---
+.cart-item-card {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text);
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-card-content {
+    background-color: var(--color-surface) !important;
+    padding: 0;
+  }
 }
 
 .card-content-wrapper {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 8px;
+  padding: 12px;
+  background-color: var(--color-surface);
+
+  @media (max-width: 600px) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  button[mat-icon-button] {
+    color: var(--color-danger) !important;
+
+    mat-icon {
+      color: var(--color-danger) !important;
+    }
+
+    &:hover {
+      background-color: rgba(var(--color-danger-rgb), 0.08) !important;
+    }
+  }
 }
 
 .product-img {
@@ -34,26 +145,178 @@
   height: 80px;
   object-fit: cover;
   border-radius: 4px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .item-details {
   flex: 2;
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+
+  span {
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.mat-body-medium {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
 }
 
 .item-quantity {
   flex: 1;
   text-align: center;
+  min-width: 80px;
+  color: var(--color-text-secondary);
+
+  @media (max-width: 600px) {
+    flex-basis: 100%;
+    min-width: auto;
+  }
 }
 
 .item-total {
   flex: 1;
   text-align: right;
+  min-width: 100px;
+  color: var(--color-text);
+  font-weight: 600;
+
+  @media (max-width: 600px) {
+    flex-basis: 100%;
+    text-align: left;
+    min-width: auto;
+  }
+}
+
+// --- Summary Card ---
+.cart-summary-card {
+  flex: 1;
+  position: sticky;
+  top: 20px;
+  background-color: var(--color-surface-elevated) !important;
+  color: var(--color-text);
+  border: 1px solid var(--color-border) !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  mat-card-header {
+    background-color: var(--color-surface-elevated) !important;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 20px;
+
+    mat-card-title {
+      color: var(--color-text);
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  mat-card-content {
+    background-color: var(--color-surface-elevated) !important;
+    color: var(--color-text);
+    padding: 20px;
+  }
+
+  mat-divider {
+    border-color: var(--color-border) !important;
+    margin: 16px 0;
+  }
+
+  mat-card-actions {
+    background-color: var(--color-surface-elevated) !important;
+    border-top: 1px solid var(--color-border);
+    padding: 16px;
+    gap: 8px;
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      font-weight: 600;
+      min-width: 120px;
+
+      // Ensure text is always readable
+      &[mat-button],
+      &[mat-raised-button],
+      &[mat-flat-button] {
+        color: inherit;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        // Force text color for primary buttons
+        &[color="primary"] {
+          background-color: var(--color-primary) !important;
+          color: #ffffff !important;
+
+          ::ng-deep .mdc-button__label {
+            color: #ffffff !important;
+          }
+
+          &:hover {
+            background-color: var(--color-primary) !important;
+            opacity: 0.9;
+          }
+        }
+
+        // Ensure warn/danger buttons are readable
+        &[color="warn"] {
+          color: var(--color-danger) !important;
+          border-color: var(--color-danger) !important;
+
+          ::ng-deep .mdc-button__label {
+            color: var(--color-danger) !important;
+          }
+
+          &:hover {
+            background-color: rgba(var(--color-danger-rgb), 0.08) !important;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    top: 0;
+  }
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
-  padding: 25px 0;
+  align-items: center;
+  padding: 20px 0;
+
+  span {
+    color: var(--color-text);
+    font-weight: 700;
+  }
 }
+
+// --- Responsive Adjustments ---
+@media (max-width: 600px) {
+  .cart-container {
+    padding: 12px;
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+    }
+  }
+
+  .cart-item-card {
+    margin: 0;
+  }
+
+  .card-content-wrapper {
+    flex-wrap: wrap;
+  }
+}
+

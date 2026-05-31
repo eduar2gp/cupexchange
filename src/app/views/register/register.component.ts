@@ -53,6 +53,8 @@ export class RegisterComponent implements OnInit {
 
   private readonly phoneDigitsRegex = /^\d{7,10}$/;
 
+  hidePassword = true;
+
   constructor(
     private fb: FormBuilder,
     private registerService: UserService,

@@ -52,6 +52,12 @@ html {
   --bottom-toolbar-height: 64px;
   --border-radius: 12px;
   --transition: all 0.3s ease;
+
+ --color-text-input: #000000;
+  --color-text-label: #555555;
+  --color-text-placeholder: #757575;
+  --color-accent: #3f51b5;
+  --color-outline: #e0e0e0;
 }
 
 
@@ -89,6 +95,12 @@ html {
   --color-sell-surface-light: color-mix(in srgb, var(--color-sell-base) 8%, var(--color-surface, #ffffff));
   --color-buy-text-accent: var(--color-buy-base);
   --color-sell-text-accent: var(--color-sell-base);
+
+  --color-text-input: #ffffff;      // Crisp white for typed text
+    --color-text-label: #8b949e;
+    --color-text-placeholder: #6e7681;
+    --color-accent: #58a6ff;
+    --color-outline: #30363d;
 }
 
 
@@ -286,3 +298,44 @@ span {
     background-color: var(--color-primary-hover);
   }
 }
+
+// Global class helper that Android Chrome cannot ignore
+.custom-form-field {
+  // Target the input element directly with a high-specificity selector
+  .mat-mdc-input-element {
+    color: var(--color-text-input) !important;
+    -webkit-text-fill-color: var(--color-text-input) !important;
+    caret-color: var(--color-accent) !important;
+  }
+
+  // Target the placeholder
+  .mat-mdc-input-element::placeholder {
+    color: var(--color-text-placeholder) !important;
+    opacity: 1 !important;
+  }
+
+  // Target the label
+  .mat-mdc-form-field-label mat-label {
+    color: var(--color-text-label) !important;
+  }
+
+  // Target the outline border
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: var(--color-outline) !important;
+  }
+
+  // Target focused state
+  &.mat-focused {
+    .mat-mdc-form-field-label mat-label {
+      color: var(--color-accent) !important;
+    }
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-accent) !important;
+    }
+  }
+}
+

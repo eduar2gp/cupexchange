@@ -3,6 +3,28 @@
   gap: 1rem;
 }
 
+.send {
+  background-color: var(--color-primary);
+  color: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  // Force text color for primary buttons
+  &[color="primary"] {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+
+    ::ng-deep .mdc-button__label {
+      color: #ffffff !important;
+    }
+
+    &:hover {
+      background-color: var(--color-primary) !important;
+      opacity: 0.9;
+    }
+  }
+}
+
 .order-card {
   background: var(--color-surface);
   color: var(--color-text);

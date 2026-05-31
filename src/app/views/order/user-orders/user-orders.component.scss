@@ -1,0 +1,36 @@
+.orders-container {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+
+  ::ng-deep {
+  
+    .mat-mdc-tab-header {
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    // Individual tab adjustments for mobile/Android viewports
+    .mat-mdc-tab {
+      font-weight: 700; // Slightly bolder for better mobile readability
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      
+      // Target the internal label container to ensure total opacity override
+      .mdc-tab__text-label {
+        color: var(--color-text-muted) !important;
+        opacity: 1 !important; // Eliminates Android's native opacity wash
+      }
+
+      // Selected active tab state
+      &.mdc-tab--active {
+        .mdc-tab__text-label {
+          color: var(--color-text-primary) !important; 
+        }
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+}
