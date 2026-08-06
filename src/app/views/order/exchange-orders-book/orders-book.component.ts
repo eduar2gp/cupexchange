@@ -38,14 +38,12 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   // 2. COMPUTED: Derived signals for the template
   public buyOrders = computed(() => {
     return this.ordersSignalBuy()
-      .filter(o => o.type !== 'MARKET')
       .sort((a, b) => this.parsePrice(b.price) - this.parsePrice(a.price)) // Descending
       .slice(0, this.MAX_ORDERS_ITEMS);
   });
 
   public sellOrders = computed(() => {
     return this.ordersSignalSell()
-      .filter(o => o.type !== 'MARKET')
       .sort((a, b) => this.parsePrice(a.price) - this.parsePrice(b.price)) // Ascending
       .slice(0, this.MAX_ORDERS_ITEMS);
   });
