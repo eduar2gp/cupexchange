@@ -339,3 +339,25 @@ span {
   }
 }
 
+mat-sidenav-content,
+.mat-drawer-content {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important; // Prevents outer scrolling so .main-content handles it
+}
+
+// Ensure main-content handles flex bounds & WebKit iOS scroll spacing
+.main-content {
+  flex: 1 1 auto;
+  min-height: 0 !important; // CRITICAL for iOS WebKit flex shrinking
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  /* Reserves scroll space at the bottom on iOS Safari without breaking scroll-height */
+  &::after {
+    content: '';
+    display: block;
+    height: calc(20px + var(--bottom-toolbar-height, 64px) + env(safe-area-inset-bottom, 0px));
+  }
+}
