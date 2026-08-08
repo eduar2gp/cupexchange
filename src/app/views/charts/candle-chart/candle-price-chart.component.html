@@ -1,6 +1,7 @@
 <div class="trade-dashboard">
 
-  @if (tradeVolumeData(); as data) {
+  <div class="top-bar">
+    @if (tradeVolumeData(); as data) {
     <div class="trade-volume-info">
       <div class="info-group">
         <span class="info-label">Volume:</span>
@@ -9,53 +10,49 @@
 
       <div class="info-group">
         <span class="info-label">Traded (24h):</span>
-        <span class="info-value highlight">{{ data.tradedVolume24H | number:'1.2-2' }}</span>
+        <span class="info-value">{{ data.tradedVolume24H | number:'1.2-2' }}</span>
       </div>
-    </div>
-  } @else {
-    <div class="loading-volume">Loading volume data...</div>
-  }
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button type="button" class="btn btn-sell" routerLink="/add-order">{{ 'SELL' | translate }}</button>
+        <button type="button" class="btn btn-buy" routerLink="/add-order">{{ 'BUY' | translate }}</button>
+      </div>
 
-  <div class="interval-selection-bar">
-    @for (interval of availableIntervals; track interval) {
-      <button type="button"
-              [class.active]="interval === currentInterval"
-              (click)="selectInterval(interval)">
+    </div>
+    } @else {
+    <div class="loading-volume">Loading volume data...</div>
+    }
+
+
+
+    <div class="interval-selection-bar">
+      @for (interval of availableIntervals; track interval) {
+      <button type="button" [class.active]="interval === currentInterval" (click)="selectInterval(interval)">
         {{ interval }}
       </button>
-    }
-  </div>
+      }
+    </div>
 
-  <div class="chart-type-toggle" role="tablist" aria-label="Chart type">
-    <button type="button"
-            role="tab"
-            [attr.aria-selected]="chartType === 'candlestick'"
-            [class.active]="chartType === 'candlestick'"
-            (click)="selectChartType('candlestick')">
-      Candlestick
-    </button>
+    <div class="chart-type-toggle" role="tablist" aria-label="Chart type">
+      <button type="button" role="tab" [attr.aria-selected]="chartType === 'candlestick'"
+        [class.active]="chartType === 'candlestick'" (click)="selectChartType('candlestick')">
+        Candlestick
+      </button>
 
-    <button type="button"
-            role="tab"
-            [attr.aria-selected]="chartType === 'line'"
-            [class.active]="chartType === 'line'"
-            (click)="selectChartType('line')">
-      Line
-    </button>
-  </div>
+      <button type="button" role="tab" [attr.aria-selected]="chartType === 'line'" [class.active]="chartType === 'line'"
+        (click)="selectChartType('line')">
+        Line
+      </button>
+    </div>
 
-  @if (isBrowser) {
+    @if (isBrowser) {
     <div class="chart-wrapper">
-      <canvas baseChart
-              [data]="chartData"
-              [options]="chartOptions"
-              [type]="chartType"
-              [plugins]="[watermarkPlugin]">
+      <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="chartType" [plugins]="[watermarkPlugin]">
       </canvas>
     </div>
-  } @else {
+    } @else {
     <div class="chart-placeholder">
       Loading Chart...
     </div>
-  }
-</div>
+    }
+  </div>

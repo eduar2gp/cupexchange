@@ -111,15 +111,15 @@
       <ng-container matColumnDef="accountName">
         <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER' | translate }}</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.accountName }}
+          {{ row.providerName }}
         </td>
       </ng-container>
 
       <!-- Gateway -->
       <ng-container matColumnDef="gatewayId">
-        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.GATEWAY' | translate }}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNTS.ACCOUNTS' | translate }}</th>
         <td mat-cell *matCellDef="let row">
-          #{{ row.paymentGatewayId }}
+          {{ row.accountName }}
         </td>
       </ng-container>
 

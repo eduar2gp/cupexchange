@@ -12,15 +12,17 @@
 
 .trade-volume-info {
   display: flex;
+  align-items: center; /* Aligns labels and buttons vertically */
   gap: 16px;
   margin-bottom: 12px;
   padding: 8px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
-  /* Mobile: Stack the volume labels vertically to save width */
+
+  /* Mobile adjustment */
   @media (max-width: 600px) {
-    flex-direction: column;
-    gap: 4px;
+    flex-wrap: wrap; /* Allows buttons to drop neatly below if space is tight */
+    gap: 8px;
   }
 
   .info-group {
@@ -42,9 +44,48 @@
   }
 
   .highlight {
-    color: #00ffad;
+    color: #00ffad; /* Green highlight for 24h volume */
   }
-  // Green highlight for 24h volume
+
+  /* Action Buttons Styling */
+  .action-buttons {
+    margin-left: auto; /* Pushes the buttons to the far right */
+    display: flex;
+    gap: 8px;
+
+    .btn {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .btn-sell {
+      background-color: #f6465d; /* Red trading color */
+      color: #ffffff;
+
+      &:hover {
+        background-color: #ff5268;
+      }
+    }
+
+    .btn-buy {
+      background-color: #0ecb81; /* Green trading color */
+      color: #ffffff;
+
+      &:hover {
+        background-color: #00f090;
+      }
+    }
+  }
 }
 
 .interval-selection-bar {
@@ -84,6 +125,6 @@
      the footer off-screen */
   @media (max-width: 600px) {
     min-height: 250px;
-    height: 50vh; // Occupy 30% of the screen height on small devices
+    height: 50vh; // Occupy 50% of the screen height on small devices
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { environment } from '../../../environments/environment'
 import { Wallet } from '../../model/wallet.model'
 import { TradingPair } from '../../../app/model/trading_pair';
@@ -33,9 +33,31 @@ export class WalletService {
   constructor() {
   }
 
+  // Key constant to avoid typos
+  private readonly LAST_WALLETS_FETCH_KEY = 'lastWalletsCallTime';
+
   getWallets(): Observable<Wallet[]> {
     const fullUrl = `${environment.baseApiUrl}${this.WALLETS_ENDPOINT}`;
-    return this.http.get<Wallet[]>(fullUrl);
+    
+    return this.http.get<Wallet[]>(fullUrl).pipe(
+      tap(() => {
+        // Save the current local date and time when the API call succeeds
+        const now = new Date();
+        const formattedDate = now.toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'medium'
+        });
+
+        localStorage.setItem(this.LAST_WALLETS_FETCH_KEY, formattedDate);
+      })
+    );
+  }
+
+  /**
+   * Helper method to retrieve the saved timestamp for the UI
+   */
+  getLastWalletsCallTime(): string | null {
+    return localStorage.getItem(this.LAST_WALLETS_FETCH_KEY);
   }
 
   getCurrencySummary(): Observable<CurrencySummary[]> {

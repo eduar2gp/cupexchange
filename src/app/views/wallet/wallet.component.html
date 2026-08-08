@@ -2,10 +2,15 @@
   <header class="wallets-header">
     <h1>{{ 'WALLETS' | translate }}</h1>
     <div class="header-actions">
+      @if (lastWalletsCallTime) {
+      <span class="last-updated" title="Last fetched time">
+        {{ lastWalletsCallTime }}
+      </span>
+      }
       <button mat-icon-button (click)="fetchWallets()" title="Refresh wallets">
         <mat-icon>refresh</mat-icon>
       </button>
-      <button class="add-btn" (click)="navigateToNewWallet()">      
+      <button class="add-btn" (click)="navigateToNewWallet()">
         <mat-icon>wallet</mat-icon>
         {{ 'CREATE_WALLET' | translate }}
       </button>
@@ -76,17 +81,13 @@
 
       <!-- Actions -->
       <div class="wallet-footer">
-        <button mat-stroked-button
-                class="action-btn"
-                (click)="processTransaction(wallet, 'DEPOSIT')">
+        <button mat-stroked-button class="action-btn" (click)="processTransaction(wallet, 'DEPOSIT')">
           <mat-icon>arrow_upward</mat-icon>
           {{ 'DEPOSIT' | translate }}
         </button>
 
-        <button mat-stroked-button
-                (click)="processTransaction(wallet, 'WITHDRAWAL')"
-                class="action-btn"
-                [disabled]="wallet.availableBalance <= 0">
+        <button mat-stroked-button (click)="processTransaction(wallet, 'WITHDRAWAL')" class="action-btn"
+          [disabled]="wallet.availableBalance <= 0">
           <mat-icon>arrow_downward</mat-icon>
           {{ 'WITHDRAW' | translate }}
         </button>
@@ -95,7 +96,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
       </div>
-   
+
       <!-- More Menu -->
       <mat-menu #menu="matMenu">
         <button mat-menu-item>

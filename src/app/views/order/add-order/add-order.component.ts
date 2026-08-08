@@ -106,9 +106,17 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
     private router: Router
-  ) { }
+  ) { 
+    effect(() => {
+      const pair = this.pairSelectionService.selectedPair();
 
-  
+      if (!pair) return;
+
+      this.sliderReady.set(false);
+      this.applyPairUpdate(pair);
+      setTimeout(() => this.sliderReady.set(true), 0);
+    });
+  }
 
   ngOnInit(): void {
     const initialPair = this.pairSelectionService.getCurrentPair();
@@ -116,25 +124,9 @@ export class AddOrderComponent implements OnInit, OnDestroy {
       this.applyPairUpdate(initialPair);
     }
 
-    // 2. Wrap the first-load trigger in a timeout to ensure DOM is ready
     setTimeout(() => {
       this.sliderReady.set(true);
     }, 100);
-
-    effect(() => {
-  const pair = this.pairSelectionService.selectedPair();
-
-  if (!pair) return;
-
-  // Hide the slider before updating
-  this.sliderReady.set(false);
-
-  // Apply the pair change logic
-  this.applyPairUpdate(pair);
-
-  // Show slider on next tick
-  setTimeout(() => this.sliderReady.set(true), 0);
-});
   }
 
   // 3. Extract the logic to a reusable helper to avoid duplication

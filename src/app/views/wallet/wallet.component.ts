@@ -47,6 +47,7 @@ export class WalletComponent implements OnInit, OnDestroy {
   wallets = signal<Wallet[]>([]);
   private router = inject(Router);
   private updateSubscription!: Subscription;
+  lastWalletsCallTime: string | null = null;
   constructor(
     private dataService: DataService,
     private navigationDecisionService: NavigationDecisionService,
@@ -72,6 +73,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     try {
       const loadedWallets = JSON.parse(cachedData) as Wallet[];
       this.wallets.set(loadedWallets);
+      this.lastWalletsCallTime = this.walletService.getLastWalletsCallTime();
     } catch (error) {
       console.error("Error parsing wallets from localStorage", error);
       this.fetchWallets(); // Fallback to fetch if JSON is corrupted
@@ -101,6 +103,7 @@ export class WalletComponent implements OnInit, OnDestroy {
         this.dataService.walletUpdateCompleted()
         this.wallets.set(data);
         localStorage.setItem('WALLETS', JSON.stringify(data));
+        this.lastWalletsCallTime = this.walletService.getLastWalletsCallTime();
       },
       error: (err) => {
         console.error('Error fetching wallets:', err); // Changed 'providers' to 'wallets'

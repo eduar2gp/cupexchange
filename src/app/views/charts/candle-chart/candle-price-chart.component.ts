@@ -37,6 +37,8 @@ import { TradeService } from '../../../../app/core/services/trade.service';
 import { PairSelectionService } from '../../../../app/core/services/pair-selection.service';
 import { WebSocketService } from '../../../core/services/websocket.service';
 import { TradeVolumeDTO } from '../../../model/trade-volume.model';
+import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 /* ---------------- CHART REGISTER ---------------- */
 Chart.register(
@@ -55,7 +57,7 @@ Chart.register(
 @Component({
   selector: 'app-trade-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective,RouterLink,TranslateModule],
   templateUrl: './candle-price-chart.component.html',
   styleUrl: './candle-price-chart.component.scss'
 })
