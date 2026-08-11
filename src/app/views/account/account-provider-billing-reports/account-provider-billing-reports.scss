@@ -1,0 +1,135 @@
+.statements-container {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-background);
+  min-height: 100vh;
+  color: var(--color-text);
+  transition: var(--transition);
+
+  .statements-card {
+    width: 100%;
+    max-width: 1200px;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+    mat-card-title {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    mat-card-subtitle {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .content-wrapper {
+    position: relative;
+    min-height: 250px;
+    padding-top: 16px;
+  }
+
+  .spinner-container, 
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    gap: 16px;
+    color: var(--color-text-secondary);
+
+    .error-text {
+      color: var(--color-danger);
+    }
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-divider);
+
+    table {
+      width: 100%;
+      background-color: var(--color-surface);
+      color: var(--color-text);
+
+      /* Header Styling */
+      th.mat-mdc-header-cell {
+        background-color: var(--color-surface-elevated);
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      /* Body Row Styling */
+      td.mat-mdc-cell {
+        color: var(--color-text);
+        border-bottom: 1px solid var(--color-divider);
+        transition: background-color 0.2s ease;
+      }
+
+      tr.mat-mdc-row:hover {
+        background-color: var(--color-surface-elevated);
+      }
+
+      /* Action PDF Download Button */
+      .pdf-action-btn {
+        color: var(--color-primary);
+
+        &:hover:not([disabled]) {
+          color: var(--color-primary-hover);
+          background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+        }
+
+        &[disabled] {
+          color: var(--color-text-muted);
+        }
+      }
+    }
+  }
+
+  .empty-table-cell {
+    text-align: center;
+    padding: 32px;
+    color: var(--color-text-muted);
+  }
+
+  .balance-before-cell {
+    color: var(--color-text-secondary);
+  }
+
+  .balance-after-cell {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  /* Angular Material Paginator Overrides */
+  mat-paginator {
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-divider);
+
+    ::ng-deep {
+      .mat-mdc-paginator-range-label,
+      .mat-mdc-paginator-page-size-label {
+        color: var(--color-text-secondary);
+      }
+
+      .mat-mdc-select-value {
+        color: var(--color-text);
+      }
+
+      .mat-mdc-icon-button {
+        color: var(--color-text);
+
+        &[disabled] {
+          color: var(--color-text-muted);
+        }
+      }
+    }
+  }
+}

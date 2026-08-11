@@ -62,6 +62,10 @@ export const ApiEndpoints = {
   },
   wallet:{
     CURRENCY_SUMMARY: '/api/v1/wallet/currency-summary'
+  },
+  reports:{
+    GET_ACCOUNT_REPORTS: '/api/admin/reports/{accountId}/monthly-statements',
+    GENERATE_ACCOUNT_REPORT: '/api/admin/reports/{accountId}/monthly-statement'
   }
 };
 

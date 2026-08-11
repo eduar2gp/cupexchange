@@ -34,6 +34,7 @@ import { AdminDashboardComponent } from './views/admin/dashboard/admin-dashboard
 import { ProviderCashOrderDetailsComponent } from './views/provider/provider-cash-order-details/provider-cash-order-details.component';
 import { TransactionDetailsComponent } from './views/transaction/transaction-details/transaction-details.component';
 import { UserOrdersComponent } from './views/order/user-orders/user-orders.component';
+import { AccountProviderBillingReports } from './views/account/account-provider-billing-reports/account-provider-billing-reports';
 
 
 export const routes: Routes = [
@@ -212,6 +213,12 @@ export const routes: Routes = [
   {
     path: 'transaction-details',
     component: TransactionDetailsComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.AccountManager]}
+  },
+  {
+    path: 'reports',
+    component: AccountProviderBillingReports,
     canActivate: [roleGuard],
     data: { roles: [Role.Admin, Role.AccountManager]}
   }

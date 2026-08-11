@@ -178,5 +178,17 @@
     "SHOPPING_CART": "Agrega productos al carro y crea tus órdenes"
   },
   "EXCHANGE": "Intercambio",
-  "PRODUCTS": "Productos"
+  "PRODUCTS": "Productos",
+  "REPORTS": {
+    "REPORTS": "Reportes",
+    "PERIOD": "Período",
+    "DOWNLOAD": "Descargar",
+    "DOWNLOAD_PDF": "Descargar PDF",
+    "BALANCE_BEFORE": "Saldo Antes",
+    "BALANCE_AFTER": "Saldo Después",
+    "GENERATED_AT": "Generado el",
+    "NO_REPORTS_FOUND": "No se encontraron reportes",
+    "VIEW_REPORTS": "Ver Reportes",
+    "ACCOUNT_ID": "ID de la Cuenta"
+  }
 }

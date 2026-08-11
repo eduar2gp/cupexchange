@@ -178,5 +178,17 @@
     "SHOPPING_CART": "Add products to your cart and create orders"
   },
   "EXCHANGE": "Exchange",
-  "PRODUCTS": "Products"
+  "PRODUCTS": "Products",
+  "REPORTS": {
+    "REPORTS": "Reports",
+    "PERIOD": "Period",
+    "DOWNLOAD": "Download",
+    "DOWNLOAD_PDF": "Download PDF",
+    "BALANCE_BEFORE": "Balance Before",
+    "BALANCE_AFTER": "Balance After",
+    "GENERATED_AT": "Generated At",
+    "NO_REPORTS_FOUND": "No reports found",
+    "VIEW_REPORTS": "View Reports",
+    "ACCOUNT_ID": "Account ID"
+  }
 }

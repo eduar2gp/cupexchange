@@ -50,7 +50,7 @@ export class AccountProviderBalanceComponent implements OnInit {
   isLoadingWallets = signal(false);
   isLoadingCurrencySummary = signal(false);
 
-  displayedColumns = ['accountName','gatewayId','currency','balance','actions'];
+  displayedColumns = ['accountName','gatewayId','currency','balance','actions','reports'];
 
   totalPages = computed(() =>
     Math.ceil(this.totalElements() / this.pageSize())
