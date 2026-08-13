@@ -30,6 +30,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OrderBookComponent } from '../exchange-orders-book/orders-book.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 interface Type {
   value: string;
@@ -100,12 +101,14 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   });
 
   loading = signal(false);
+  selectedTabIndex = 0;
 
   constructor(
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { 
     effect(() => {
       const pair = this.pairSelectionService.selectedPair();
@@ -127,6 +130,20 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.sliderReady.set(true);
     }, 100);
+
+    this.route.queryParams.subscribe(params => {
+      const type = params['type']?.toUpperCase();
+      
+      if (type === 'SELL') {
+        this.selectedTabIndex = 1;
+        this.newOrder.side = 'SELL';
+      } else {
+        this.selectedTabIndex = 0; // Default to BUY
+        this.newOrder.side = 'BUY';
+      }
+      
+      this.updateMaxVolumes();
+    });
   }
 
   // 3. Extract the logic to a reusable helper to avoid duplication
@@ -200,6 +217,7 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(event: MatTabChangeEvent): void {
+    this.selectedTabIndex = event.index;
     this.newOrder.side = event.index === 0 ? 'BUY' : 'SELL';
     this.updateMaxVolumes();
   }

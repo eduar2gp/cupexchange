@@ -95,8 +95,16 @@ mat-progress-bar {
 }
 
 // Balance Table Specific Styling
+/* Wrapper handles horizontal scrolling */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
 .balance-table {
   width: 100%;
+  min-width: 600px; /* Keeps column layout intact without squishing text */
   background-color: var(--color-surface) !important;
 
   thead {
@@ -115,10 +123,11 @@ mat-progress-bar {
         background-color: var(--color-surface-elevated) !important;
       }
 
-      td {
+      td, th {
         background-color: var(--color-surface) !important;
         color: var(--color-text);
         border-bottom: 1px solid var(--color-border);
+        white-space: nowrap; /* Prevents text from wrapping awkwardly on smaller screens */
       }
     }
   }

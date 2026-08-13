@@ -14,8 +14,12 @@
       </div>
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button type="button" class="btn btn-sell" routerLink="/add-order">{{ 'SELL' | translate }}</button>
-        <button type="button" class="btn btn-buy" routerLink="/add-order">{{ 'BUY' | translate }}</button>
+        <button type="button" class="btn btn-sell" routerLink="/add-order" [queryParams]="{ type: 'sell' }">
+          {{ 'SELL' | translate }}
+        </button>
+        <button type="button" class="btn btn-buy" routerLink="/add-order" [queryParams]="{ type: 'buy' }">
+          {{ 'BUY' | translate }}
+        </button>
       </div>
 
     </div>

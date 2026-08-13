@@ -256,42 +256,54 @@ mat-sidenav {
 */
 .bottom-nav {
   position: fixed;
-  bottom: 5px;
-  left: 7px;
-  right: 7px;
+  /* Account for iOS safe area (home indicator bar) plus extra floating margin */
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 12px;
+  right: 12px;
   width: auto !important;
+  height: 64px !important; /* Explicit height ensures clean vertical centering */
+  min-height: 64px !important;
   z-index: 1000;
   background-color: color-mix(in srgb, var(--color-surface-elevated) 80%, transparent);
-  border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-around;
-  padding-bottom: env(safe-area-inset-bottom);
-  border-radius: 1rem;
+  align-items: center; /* Center buttons vertically */
+  padding: 0 8px !important; /* Reset default padding */
+  border-radius: 2rem; /* Increased rounding for modern pill aesthetic */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
 
   .nav-item {
     height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 12px !important;
+    min-width: 0 !important;
     transition: all 0.2s ease-in-out;
     color: var(--color-text);
+    border-radius: 1.25rem !important;
 
-    span[matListItemTitle],
-    .mat-mdc-list-item-title {
-      font-weight: 500;
-      color: inherit !important; // Follows .nav-item color
-    }
-
+    /* Override Angular Material button internal wrappers */
     ::ng-deep .mdc-button__label {
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
+      justify-content: center !important;
       gap: 2px;
       font-size: 0.75rem;
       font-weight: 400;
+      line-height: 1 !important;
+      width: 100%;
+    }
+
+    span[matListItemTitle],
+    .mat-mdc-list-item-title {
+      font-weight: 500;
+      color: inherit !important;
     }
 
     mat-icon {
@@ -302,7 +314,7 @@ mat-sidenav {
       font-size: 24px !important;
     }
 
-    // --- Bottom Nav Active State ---
+    /* --- Bottom Nav Active State --- */
     &.active {
       background-color: color-mix(in srgb, var(--color-surface-elevated) 100%, transparent);
       color: var(--color-primary) !important;
@@ -319,7 +331,7 @@ mat-sidenav {
       &::after {
         content: '';
         position: absolute;
-        bottom: 8px;
+        bottom: 6px;
         width: 4px;
         height: 4px;
         background-color: var(--color-primary);

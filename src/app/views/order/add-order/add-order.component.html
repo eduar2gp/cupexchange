@@ -19,6 +19,7 @@
         <mat-tab-group mat-stretch-tabs
                        class="trade-tabs"
                        animationDuration="300ms"
+                       [selectedIndex]="selectedTabIndex"
                        (selectedTabChange)="onTabChange($event)">
           <mat-tab label="{{ 'BUY' | translate }}">
             <div class="tab-content">
