@@ -1,11 +1,72 @@
 .statements-container {
   padding: 16px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
   background-color: var(--color-background);
   min-height: 100vh;
   color: var(--color-text);
   transition: var(--transition);
+
+  /* Generate Monthly Statement Card (Centered at Top) */
+  .report-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0;
+
+    mat-card {
+      background-color: var(--color-surface);
+      color: var(--color-text);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+      mat-card-header {
+        margin-bottom: 16px;
+
+        mat-card-title {
+          color: var(--color-text);
+          font-weight: 600;
+          font-size: 1.25rem;
+        }
+      }
+
+      mat-card-content {
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+
+          .form-row {
+            width: 100%;
+
+            .radio-group {
+              display: flex;
+              gap: 24px;
+              color: var(--color-text);
+            }
+
+            mat-form-field {
+              width: 100%;
+            }
+          }
+
+          .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+
+            button {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
 
   .statements-card {
     width: 100%;

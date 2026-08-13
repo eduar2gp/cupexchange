@@ -190,5 +190,20 @@
     "NO_REPORTS_FOUND": "No se encontraron reportes",
     "VIEW_REPORTS": "Ver Reportes",
     "ACCOUNT_ID": "ID de la Cuenta"
+  },
+  "MONTHLY_STATEMENTS": {
+    "GENERATE_TITLE": "Generate Monthly Statement",
+    "DAYS_BACK": "Days Back",
+    "DATE_RANGE": "Date Range",
+    "ENTER_DATE_RANGE": "Enter a date range",
+    "START_DATE": "Start date",
+    "END_DATE": "End date",
+    "REQUIRED_FIELD": "This field is required",
+    "START_DATE_REQUIRED": "Start date is required",
+    "END_DATE_REQUIRED": "End date is required",
+    "GENERATE": "Generate Report",
+    "GENERATING": "Generating...",
+    "ERROR_LOADING": "Failed to load monthly statements.",
+    "ERROR_GENERATING": "Failed to generate monthly statement."
   }
 }

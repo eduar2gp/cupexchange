@@ -1,7 +1,7 @@
 import { build, ApiEndpoints } from '../../../app/core/api/endpoints';
 import { Injectable } from '@angular/core';
 import { Page } from '../../model/page.model';
-import { MonthlyStatement } from '../../model/monthly-statement.model';
+import { MonthlyStatement, MonthlyStatementOptions, ReportResult } from '../../model/monthly-statement.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -23,5 +23,49 @@ export class ReportService {
             .set('sort', sort);
 
         return this.http.get<Page<MonthlyStatement>>(fullUrl, { params });
+    }
+
+
+    postGenerateMonthlyStatement(
+        accountId: number | string,
+        options?: MonthlyStatementOptions
+    ): Observable<ReportResult> {
+        const fullUrl = build(ApiEndpoints.reports.POST_GENERATE_ACCOUNT_REPORT, { accountId: accountId.toString() });
+
+        let params = new HttpParams();
+
+        if (options?.daysBack !== undefined) {
+            params = params.set('daysBack', options.daysBack.toString());
+        } else {
+            if (options?.startDate) {
+                params = params.set('startDate', this.formatToIsoDate(options.startDate));
+            }
+            if (options?.endDate) {
+                params = params.set('endDate', this.formatToIsoDate(options.endDate));
+            }
+        }
+
+        // Updated return type to match controller's ResponseEntity<ReportResult>
+        return this.http.post<ReportResult>(fullUrl, null, { params });
+    }
+
+    /**
+     * Helper to ensure dates are sent in ISO format (YYYY-MM-DD)
+     */
+    private formatToIsoDate(date: Date | string): string {
+        if (date instanceof Date) {
+            return date.toISOString().split('T')[0]; // Converts Date object to YYYY-MM-DD
+        }
+
+        // Handles string input: converts DD/MM/YYYY or MM/DD/YYYY formats if needed
+        if (date.includes('/')) {
+            const parts = date.split('/');
+            if (parts.length === 3) {
+                const [day, month, year] = parts;
+                return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            }
+        }
+
+        return date; // Assumes it's already YYYY-MM-DD
     }
 }

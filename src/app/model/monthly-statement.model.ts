@@ -8,3 +8,14 @@ export interface MonthlyStatement {
   generatedAt: string;          // ISO DateTime string
   pdfUrl: string;
 }
+
+export interface MonthlyStatementOptions {
+    daysBack?: number;
+    startDate?: Date | string; // ISO format: YYYY-MM-DD
+    endDate?: Date | string;   // ISO format: YYYY-MM-DD
+}
+
+export interface ReportResult {
+    rows: number;
+    path: string;
+}

@@ -65,7 +65,7 @@ export const ApiEndpoints = {
   },
   reports:{
     GET_ACCOUNT_REPORTS: '/api/admin/reports/{accountId}/monthly-statements',
-    GENERATE_ACCOUNT_REPORT: '/api/admin/reports/{accountId}/monthly-statement'
+    POST_GENERATE_ACCOUNT_REPORT: '/api/admin/reports/{accountId}/monthly-statement'
   }
 };
 
