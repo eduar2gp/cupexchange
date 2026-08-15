@@ -150,12 +150,20 @@ mat-sidenav {
 
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
-  padding-bottom: calc(50px + var(--bottom-toolbar-height) + env(safe-area-inset-bottom));
+  /* Keep desktop clean; mobile bottom-nav spacing is applied in a mobile media query below. */
+  padding-bottom: 12px;
 
   /* 3. Mobile First: Take full space without forcing margins */
   width: 100%;
   margin: 0;
   display: block;
+}
+
+/* Reserve scroll space for the fixed bottom nav only on smaller screens. */
+@media (max-width: 767.98px) {
+  .main-content {
+    padding-bottom: calc(var(--bottom-toolbar-height, 64px) + 12px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* Tablet and Desktop adjustments */
@@ -256,10 +264,10 @@ mat-sidenav {
 */
 .bottom-nav {
   position: fixed;
-  /* Account for iOS safe area (home indicator bar) plus extra floating margin */
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  left: 12px;
-  right: 12px;
+  /* Keep a subtle floating offset on iPhone PWA screens without creating a large gap from the bottom edge. */
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+  left: 8px;
+  right: 8px;
   width: auto !important;
   height: 64px !important; /* Explicit height ensures clean vertical centering */
   min-height: 64px !important;
