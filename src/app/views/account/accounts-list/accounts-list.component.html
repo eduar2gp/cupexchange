@@ -93,7 +93,11 @@
 
         <div class="card-footer">
           <span class="currency">{{ account?.baseCurrency }}</span>
-          <span class="user">{{ account?.userName }}</span>
+          <!-- <span class="user">{{ account?.userName }}</span> -->
+          <a *ngIf="account.provider" class="balance-btn" [routerLink]="['/reports']" [queryParams]="{ accountId: account.id }">
+            <mat-icon>picture_as_pdf</mat-icon>
+            Reports
+          </a>
           <button *ngIf="account.provider" class="balance-btn" (click)="checkBalance(account.id)">
             Check Balance
           </button>

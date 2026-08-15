@@ -5,16 +5,17 @@ import { AccountService } from '../../../core/services/account.service';
 import { Account } from '../../../model/account.model';
 import { Observable, of } from 'rxjs'; // 'of' is used to return a safe empty array on error
 import { tap, catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogMessageComponent } from '../../shared/dialog-message/dialog-message.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { UpdateWithdrawalFeeModel } from '../../../model/update-withdrawal-fee.model';
 
 @Component({
   selector: 'app-accounts-list',
   standalone: true,
-  imports: [CommonModule, TranslateModule, FormsModule],
+  imports: [CommonModule, TranslateModule, FormsModule, RouterLink, MatIconModule],
   templateUrl: './accounts-list.component.html',
   styleUrl: './accounts-list.component.scss',
 })
