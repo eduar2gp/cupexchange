@@ -1,6 +1,6 @@
-<div class="trade-dashboard" style="display: flex; flex-direction: column; width: 100%; min-height: 0; overflow: hidden;">
+<div class="trade-dashboard">
 
-  <div class="top-bar" style="display: flex; flex-direction: column; width: 100%; min-height: 0; gap: 0.75rem;">
+  <div class="top-bar">
     @if (tradeVolumeData(); as data) {
     <div class="trade-volume-info">
       <div class="info-group">
@@ -50,9 +50,9 @@
     </div>
 
     @if (isBrowser) {
-    <div class="chart-wrapper" style="position: relative; width: 100%; min-height: 320px; height: clamp(320px, 48vh, 620px); min-width: 0; overflow: hidden;">
+    <div class="chart-wrapper">
       <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="chartType" [plugins]="[watermarkPlugin]"
-        style="display: block; width: 100% !important; height: 100% !important;">
+        class="chart-canvas">
       </canvas>
     </div>
     } @else {

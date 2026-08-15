@@ -1,13 +1,26 @@
 .trade-dashboard {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: visible;
   background-color: var(--color-background);
   padding: 12px;
   border-radius: 8px;
-  /* Use vh (viewport height) or a fixed height on mobile 
-     to prevent it from stretching too far */
-  height: 100%;
-  max-height: 50vh;
+  height: auto;
+  max-height: none;
+}
+
+.top-bar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  gap: 0.75rem;
 }
 
 .trade-volume-info {
@@ -117,14 +130,24 @@
 }
 
 .chart-wrapper {
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
-  /* Desktop height */
-  min-height: 300px;
-  /* Mobile height: Reduce min-height so it doesn't push 
-     the footer off-screen */
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 280px;
+  height: clamp(280px, 48vh, 620px);
+  overflow: visible;
+
+  .chart-canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+
   @media (max-width: 600px) {
-    min-height: 250px;
-    height: 50vh; // Occupy 50% of the screen height on small devices
+    min-height: 240px;
+    height: clamp(240px, 44vh, 420px);
   }
 }

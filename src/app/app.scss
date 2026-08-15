@@ -139,30 +139,21 @@ mat-sidenav {
 ==================================================
 */
 .main-content {
-  /* 1. Ensure padding doesn't push width over 100% */
   box-sizing: border-box;
-
   flex: 1 1 auto;
   overflow-y: auto;
-
-  /* 2. Reset padding to be consistent */
+  overflow-x: hidden;
   padding: 5px;
-
   background-color: var(--color-surface);
   transition: background-color 0.3s ease;
-  /* Keep desktop clean; mobile bottom-nav spacing is applied in a mobile media query below. */
-  padding-bottom: 12px;
-
-  /* 3. Mobile First: Take full space without forcing margins */
   width: 100%;
   margin: 0;
   display: block;
 }
 
-/* Reserve scroll space for the fixed bottom nav only on smaller screens. */
 @media (max-width: 767.98px) {
   .main-content {
-    padding-bottom: calc(var(--bottom-toolbar-height, 64px) + 12px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -264,20 +255,21 @@ mat-sidenav {
 */
 .bottom-nav {
   position: fixed;
-  /* Keep a subtle floating offset on iPhone PWA screens without creating a large gap from the bottom edge. */
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+  bottom: 6px;
+  /* In iOS standalone/fullscreen mode, full safe-area inset can push the nav too high. */
+  bottom: max(2px, calc(env(safe-area-inset-bottom, 0px) * 0.35));
   left: 8px;
   right: 8px;
   width: auto !important;
-  height: 64px !important; /* Explicit height ensures clean vertical centering */
-  min-height: 64px !important;
+  height: 56px !important;
+  min-height: 56px !important;
   z-index: 1000;
   background-color: color-mix(in srgb, var(--color-surface-elevated) 80%, transparent);
   display: flex;
   justify-content: space-around;
-  align-items: center; /* Center buttons vertically */
-  padding: 0 8px !important; /* Reset default padding */
-  border-radius: 2rem; /* Increased rounding for modern pill aesthetic */
+  align-items: center;
+  padding: 0 8px !important;
+  border-radius: 1.5rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -401,11 +393,16 @@ mat-sidenav {
   flex: 1;
   display: flex;
   align-items: center;
-  /* Forces children to middle */
   justify-content: center;
   height: 46px;
-  /* Match toolbar height exactly */
   overflow: hidden;
+  min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+  .toolbar-center-controls {
+    max-width: calc(100vw - 160px);
+  }
 }
 
 /* 2. The Form Field Fix */
@@ -413,12 +410,10 @@ mat-sidenav {
   display: flex;
   align-items: center;
   height: 32px;
-  /* Total height of the visible box */
   margin: 0;
   padding: 0;
 
   ::ng-deep {
-
     /* REMOVE ALL MATERIAL RESERVED SPACES */
     .mat-mdc-form-field-subscript-wrapper,
     .mat-mdc-form-field-bottom-align,
@@ -432,7 +427,6 @@ mat-sidenav {
       height: 32px !important;
       display: flex !important;
       align-items: center !important;
-      /* Centering icons and text */
       background-color: transparent;
       border-radius: 8px;
     }
@@ -440,7 +434,6 @@ mat-sidenav {
     /* Remove the 'Infix' padding that reserves space for the label */
     .mat-mdc-form-field-infix {
       padding: 0 !important;
-      /* Removes the top/bottom gap */
       min-height: auto !important;
       display: flex !important;
       align-items: center !important;
@@ -481,7 +474,7 @@ mat-sidenav {
   /* REMOVE position: sticky and top: 64px */
   /* position: sticky; */
   /* top: 64px; */
-  
+
   z-index: 998;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -553,7 +546,6 @@ mat-sidenav {
 
 /* Extra small devices */
 @media (max-width: 480px) {
-
   .quick-link span {
     font-size: 10px;
   }
@@ -575,3 +567,5 @@ a[mat-button].quick-link {
     gap: 8px !important;
   }
 }
+
+
