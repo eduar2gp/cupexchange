@@ -7,9 +7,14 @@
       <p><strong>Username:</strong> {{ loggedInUser?.username }}</p>
       <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
     </div>
-    <div *ngIf="loggedInUser?.profileImageUrl" class="profile-picture-container">
-      <img class="profile-picture" [src]="loggedInUser?.profileImageUrl" referrerpolicy="no-referrer"
-        alt="Profile Picture">
+    <div class="profile-image-and-verification">
+      <div *ngIf="loggedInUser?.profileImageUrl" class="profile-picture-container">
+        <img class="profile-picture" [src]="loggedInUser?.profileImageUrl" referrerpolicy="no-referrer"
+          alt="Profile Picture">
+      </div>
+      <div class="verification-container">
+        <app-id-verification *ngIf="!isVerified"></app-id-verification>
+      </div>
     </div>
   </div>
 

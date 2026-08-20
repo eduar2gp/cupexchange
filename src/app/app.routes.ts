@@ -35,6 +35,7 @@ import { ProviderCashOrderDetailsComponent } from './views/provider/provider-cas
 import { TransactionDetailsComponent } from './views/transaction/transaction-details/transaction-details.component';
 import { UserOrdersComponent } from './views/order/user-orders/user-orders.component';
 import { AccountProviderBillingReports } from './views/account/account-provider-billing-reports/account-provider-billing-reports';
+import { IdVerificationComponent } from './components/id-verification/id-verification.component';
 
 
 export const routes: Routes = [
@@ -67,6 +68,10 @@ export const routes: Routes = [
     path: 'profile',
     component: ProfileComponent,
     canActivate: [roleGuard],
+  },
+  {
+    path: 'id-verification',
+    component: IdVerificationComponent,
   },
   {
     path: 'add-transaction',

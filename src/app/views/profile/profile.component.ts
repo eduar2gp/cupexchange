@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { IdVerificationComponent } from '../../components/id-verification/id-verification.component';
 import { User } from '../../model/user.model';
 import { UserProfileData } from '../../model/user-profile-data.model';
 import { UserService } from '../../core/services/user.service';
@@ -23,7 +25,8 @@ import { DataService } from '../../core/services/data.service'
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    IdVerificationComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -32,6 +35,7 @@ export class ProfileComponent implements OnInit {
   public loggedInUser: User | undefined;
   public profileForm!: FormGroup;
   public isEditing: boolean = false;
+  public isVerified: boolean = false;
 
   public countries = [
     { name: 'Cuba', code: 'CU' },
@@ -47,13 +51,30 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dataService: DataService
+    private dataService: DataService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.setupForm();
   }
   ngOnInit() {
     this.loadLocationData();
     this.loadUserProfile();
+
+    // Check for verification status from query params immediately (passed from ID verification component)
+    const queryParamStatus = this.activatedRoute.snapshot.queryParams['verificationStatus'];
+    if (queryParamStatus) {
+      const status = (queryParamStatus || '').toLowerCase();
+      this.isVerified = status === 'verified' || status === 'approved' || status === 'completed';
+    }
+
+    // Also listen for verification status from dataService (fallback if no query param)
+    this.dataService.verificationStatus$.subscribe(verificationStatus => {
+      // Only update if we haven't already set it from query params
+      if (!queryParamStatus && verificationStatus) {
+        const status = (verificationStatus?.status || '').toLowerCase();
+        this.isVerified = status === 'verified' || status === 'approved' || status === 'completed';
+      }
+    });
 
     // 1. Listen for Country changes to filter Provinces
     this.profileForm.get('countryCode')?.valueChanges.subscribe(code => {

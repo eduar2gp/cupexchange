@@ -9,6 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { CashOrder } from '../../model/cash-order-response.model';
 import { TransactionManagerResponse } from '../../model/transaction-manager.model';
+import { VerificationStatusResponse } from '../../services/identity.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,9 @@ export class DataService {
 
   private transactionSubject = new BehaviorSubject<TransactionManagerResponse | null>(null);
   currentTransaction: Observable<TransactionManagerResponse | null> = this.transactionSubject.asObservable();
+
+  private verificationStatusSubject = new BehaviorSubject<VerificationStatusResponse | null>(null);
+  verificationStatus$: Observable<VerificationStatusResponse | null> = this.verificationStatusSubject.asObservable();
 
   // The subject to hold and update the value
   private updateWalletRequiredSubject = new BehaviorSubject<boolean>(false);
@@ -88,6 +92,14 @@ export class DataService {
 
   updateTransaction(transaction: TransactionManagerResponse | null): void{
     this.transactionSubject.next(transaction)
+  }
+
+  updateVerificationStatus(status: VerificationStatusResponse | null): void {
+    this.verificationStatusSubject.next(status);
+  }
+
+  getVerificationStatus(): VerificationStatusResponse | null {
+    return this.verificationStatusSubject.value;
   }
 
   getCashOrder(): CashOrder | null{

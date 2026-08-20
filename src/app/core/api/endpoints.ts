@@ -66,6 +66,10 @@ export const ApiEndpoints = {
   reports:{
     GET_ACCOUNT_REPORTS: '/api/admin/reports/{accountId}/monthly-statements',
     POST_GENERATE_ACCOUNT_REPORT: '/api/admin/reports/{accountId}/monthly-statement'
+  },
+  identity: {
+    CREATE_SESSION: '/api/v1/identity/session',
+    GET_VERIFICATION_STATUS: '/api/v1/identity/status'
   }
 };
 

@@ -21,6 +21,7 @@ import { Wallet } from '../../model/wallet.model'
 import { DataService } from '../../../app/core/services/data.service'
 import { User } from '../../../app/model/user.model'
 import { NotificationService } from '../../core/services/notification.service';
+import { IdentityService } from '../../services/identity.service';
 
 
 @Component({
@@ -61,7 +62,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   constructor(
     private ngZone: NgZone,
     private walletService: WalletService,
-    private dataService: DataService
+    private dataService: DataService,
+    private identityService: IdentityService
   ) {
   }
 
@@ -176,11 +178,22 @@ private loadGoogleScript(): Promise<void> {
     // 2. Update DataService signal (assuming it handles the current user state)
     this.dataService.updateUser(user);
 
-    // 3. Load Notifications (New Step)
+    // 3. Fetch verification status and cache it in DataService
+    this.identityService.getVerificationStatus().subscribe({
+      next: (verificationStatus) => {
+        this.dataService.updateVerificationStatus(verificationStatus);
+      },
+      error: (err) => {
+        console.warn('Failed to fetch verification status on login', err);
+        this.dataService.updateVerificationStatus(null);
+      }
+    });
+
+    // 4. Load Notifications (New Step)
   // This populates the BehaviorSubject we linked to the Navbar badge
     this.notificationService.refreshUnreadCount(Number(user.id))
 
-    // 3. Fetch wallets and navigate
+    // 5. Fetch wallets and navigate
     this.fetchWallets();
   }
 
