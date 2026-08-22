@@ -8,12 +8,16 @@
       <p><strong>Email:</strong> {{ loggedInUser?.email }}</p>
     </div>
     <div class="profile-image-and-verification">
-      <div *ngIf="loggedInUser?.profileImageUrl" class="profile-picture-container">
-        <img class="profile-picture" [src]="loggedInUser?.profileImageUrl" referrerpolicy="no-referrer"
+      <div class="profile-picture-container" [ngClass]="{'verified': isVerified, 'not-verified': !isVerified}">
+        <img class="profile-picture" [src]="loggedInUser?.profileImageUrl || 'assets/icons/user.jpg'" referrerpolicy="no-referrer"
           alt="Profile Picture">
       </div>
       <div class="verification-container">
         <app-id-verification *ngIf="!isVerified"></app-id-verification>
+        <div *ngIf="isVerified" class="id-verified-label">
+          <mat-icon>verified</mat-icon>
+          <span>ID Verified</span>
+        </div>
       </div>
     </div>
   </div>
