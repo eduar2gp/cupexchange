@@ -201,6 +201,12 @@ export class ProfileComponent implements OnInit {
 
   get controls() { return this.profileForm.controls; }
 
+  get profileImageUrl(): string {
+    return this.loggedInUser?.profileImageUrl && this.loggedInUser.profileImageUrl.trim() 
+      ? this.loggedInUser.profileImageUrl 
+      : 'assets/icons/user.jpg';
+  }
+
   showToast(message: string): void {
     this.snackBar.open(message, 'Close', { duration: 3000 });
   }

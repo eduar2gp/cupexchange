@@ -9,7 +9,7 @@
     </div>
     <div class="profile-image-and-verification">
       <div class="profile-picture-container" [ngClass]="{'verified': isVerified, 'not-verified': !isVerified}">
-        <img class="profile-picture" [src]="loggedInUser?.profileImageUrl || 'assets/icons/user.jpg'" referrerpolicy="no-referrer"
+        <img class="profile-picture" [src]="profileImageUrl" referrerpolicy="no-referrer"
           alt="Profile Picture">
       </div>
       <div class="verification-container">
