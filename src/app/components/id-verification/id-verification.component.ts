@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityService, SessionResponse } from '../../services/identity.service';
+import { DataService } from '../../core/services/data.service';
 
 @Component({
   selector: 'app-id-verification',
@@ -19,6 +20,7 @@ export class IdVerificationComponent implements OnInit {
   constructor(
     private readonly identityService: IdentityService,
     private readonly router: Router,
+    private readonly dataService: DataService,
     @Inject(PLATFORM_ID) private readonly platformId: object
   ) {}
 
@@ -101,6 +103,7 @@ export class IdVerificationComponent implements OnInit {
 
           if (status === 'verified' || status === 'approved' || status === 'completed') {
             console.log('Identity verification complete', statusRes);
+            this.dataService.updateVerificationStatus(statusRes);
             this.handleFlowComplete(statusRes);
             return;
           }
