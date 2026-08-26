@@ -603,6 +603,7 @@ a[mat-button].quick-link {
   white-space: nowrap;
   padding: 0;
   width: 200%;
+  will-change: transform;
 }
 
 .banner-text {
@@ -627,7 +628,7 @@ a[mat-button].quick-link {
   }
   
   .banner-scroll {
-    animation: scrollRight 30s linear infinite;
+    animation: scrollRight 30s linear infinite !important;
   }
 }
 
@@ -642,7 +643,9 @@ a[mat-button].quick-link {
   }
   
   .banner-scroll {
-    animation: scrollRight 25s linear infinite;
+    animation: scrollRight 25s linear infinite !important;
+    width: 200%;
+    will-change: transform;
   }
 }
 
