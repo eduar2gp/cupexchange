@@ -603,7 +603,9 @@ a[mat-button].quick-link {
   white-space: nowrap;
   padding: 0;
   width: 200%;
+  flex-shrink: 0;
   will-change: transform;
+  transform: translateZ(0);
 }
 
 .banner-text {
@@ -614,6 +616,7 @@ a[mat-button].quick-link {
   font-weight: inherit;
   flex: 0 0 50%;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 /* Responsive adjustments */
@@ -629,6 +632,7 @@ a[mat-button].quick-link {
   
   .banner-scroll {
     animation: scrollRight 30s linear infinite !important;
+    animation-play-state: running !important;
   }
 }
 
@@ -640,12 +644,16 @@ a[mat-button].quick-link {
   
   .banner-text {
     padding: 0 10px;
+    flex-shrink: 0;
   }
   
   .banner-scroll {
     animation: scrollRight 25s linear infinite !important;
+    animation-play-state: running !important;
     width: 200%;
     will-change: transform;
+    transform: translateZ(0);
+    flex-shrink: 0;
   }
 }
 
