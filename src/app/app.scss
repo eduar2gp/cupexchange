@@ -568,4 +568,82 @@ a[mat-button].quick-link {
   }
 }
 
+/*
+==================================================
+  ANIMATED BANNER STYLES
+==================================================
+*/
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.banner-container {
+  width: 100%;
+  color: var(--color-text);
+  padding: 6px 0;
+  overflow: hidden;
+  font-weight: 500;
+  font-size: 14px;
+  flex-shrink: 0;
+  z-index: 997;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.banner-scroll {
+  display: flex;
+  animation: scrollRight 60s linear infinite;
+  white-space: nowrap;
+  padding: 0;
+  width: 200%;
+}
+
+.banner-text {
+  padding: 0 40px;
+  display: inline-block;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  flex: 0 0 50%;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .banner-container {
+    padding: 8px 0;
+    font-size: 11px;
+  }
+  
+  .banner-text {
+    padding: 0 15px;
+  }
+  
+  .banner-scroll {
+    animation: scrollRight 30s linear infinite;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-container {
+    padding: 6px 0;
+    font-size: 10px;
+  }
+  
+  .banner-text {
+    padding: 0 10px;
+  }
+  
+  .banner-scroll {
+    animation: scrollRight 25s linear infinite;
+  }
+}
+
 

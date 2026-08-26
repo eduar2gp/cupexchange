@@ -74,10 +74,54 @@
 .wallets-header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   color: var(--color-text);
-  //margin-bottom: 24px;
+  padding: 16px 0;
+  gap: 8px;
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.last-updated {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .currency-info {
@@ -375,6 +419,32 @@ span {
 
   .wallet-action {
     min-width: calc(50% - 8px);
+  }
+
+  .wallets-header {
+    padding: 12px 0;
+  }
+
+  .header-actions {
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .last-updated {
+    font-size: 0.75rem;
+    padding: 0 4px;
+  }
+
+  .add-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    gap: 6px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 }
 
