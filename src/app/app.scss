@@ -576,10 +576,19 @@ a[mat-button].quick-link {
 
 @keyframes scrollRight {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@-webkit-keyframes scrollRight {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -596,17 +605,24 @@ a[mat-button].quick-link {
   align-items: center;
   justify-content: flex-start;
   position: relative;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
 }
 
 .banner-scroll {
   display: flex;
   animation: scrollRight 60s linear infinite;
+  -webkit-animation: scrollRight 60s linear infinite;
   white-space: nowrap;
   padding: 0;
   width: 200%;
   flex-shrink: 0;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
 }
 
 .banner-text {
@@ -618,6 +634,8 @@ a[mat-button].quick-link {
   flex: 0 0 50%;
   box-sizing: border-box;
   flex-shrink: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Responsive adjustments */
@@ -636,6 +654,7 @@ a[mat-button].quick-link {
   .banner-scroll {
     width: 200% !important;
     animation: scrollRight 30s linear infinite !important;
+    -webkit-animation: scrollRight 30s linear infinite !important;
   }
 }
 
@@ -654,6 +673,7 @@ a[mat-button].quick-link {
   .banner-scroll {
     width: 200% !important;
     animation: scrollRight 25s linear infinite !important;
+    -webkit-animation: scrollRight 25s linear infinite !important;
   }
 }
 
