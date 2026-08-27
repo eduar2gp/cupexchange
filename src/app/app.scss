@@ -595,6 +595,7 @@ a[mat-button].quick-link {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  position: relative;
 }
 
 .banner-scroll {
@@ -624,15 +625,17 @@ a[mat-button].quick-link {
   .banner-container {
     padding: 8px 0;
     font-size: 11px;
+    overflow: hidden !important;
   }
   
   .banner-text {
     padding: 0 15px;
+    flex-shrink: 0;
   }
   
   .banner-scroll {
+    width: 200% !important;
     animation: scrollRight 30s linear infinite !important;
-    animation-play-state: running !important;
   }
 }
 
@@ -640,6 +643,7 @@ a[mat-button].quick-link {
   .banner-container {
     padding: 6px 0;
     font-size: 10px;
+    overflow: hidden !important;
   }
   
   .banner-text {
@@ -648,12 +652,8 @@ a[mat-button].quick-link {
   }
   
   .banner-scroll {
+    width: 200% !important;
     animation: scrollRight 25s linear infinite !important;
-    animation-play-state: running !important;
-    width: 200%;
-    will-change: transform;
-    transform: translateZ(0);
-    flex-shrink: 0;
   }
 }
 
