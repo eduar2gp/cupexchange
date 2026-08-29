@@ -1,0 +1,53 @@
+<div class="regional-balance-container">
+  <h3 class="page-title">{{ 'CASH_AVAILABLE' | translate }}</h3>
+
+  <ng-container *ngIf="regionalBalance$ | async as provinces; else loadingTpl">
+    <div class="provinces-wrapper">
+      <div *ngFor="let province of provinces" class="province-section">
+        <h2 class="province-title">{{ province.provinceName }}</h2>
+        <mat-divider></mat-divider>
+
+        <div class="municipalities-wrapper">
+          <mat-card *ngFor="let municipality of municipalityList(province)" class="municipality-card">
+            <mat-card-header>
+              <mat-card-title>{{ municipality.municipalityName }}</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+              <table mat-table [dataSource]="municipality.balances" class="mat-elevation-z0 balances-table">
+                <ng-container matColumnDef="currency">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'TRANSACTION.CURRENCY' | translate }}</th>
+                  <td mat-cell *matCellDef="let balance">{{ balance.currencyCode }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalBalance">
+                  <th mat-header-cell *matHeaderCellDef class="align-right">{{ 'AVAILABLE' | translate }}</th>
+                  <td mat-cell *matCellDef="let balance" class="align-right">
+                    {{ balance.totalBalance | number: '1.2-2' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalAccounts">
+                  <th mat-header-cell *matHeaderCellDef class="align-right">{{ 'ACCOUNTS.ACCOUNTS' | translate }}</th>
+                  <td mat-cell *matCellDef="let balance" class="align-right">
+                    {{ balance.totalAccounts }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Loading regional balance data...</span>
+    </div>
+  </ng-template>
+</div>

@@ -573,22 +573,13 @@ a[mat-button].quick-link {
   ANIMATED BANNER STYLES
 ==================================================
 */
-
-@keyframes scrollRight {
+@keyframes scrollMarquee {
   0% {
     transform: translate3d(0, 0, 0);
   }
   100% {
+    // Exact half-width shift avoids sub-pixel rounding jumps on mobile screens
     transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@-webkit-keyframes scrollRight {
-  0% {
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-  100% {
-    -webkit-transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -598,83 +589,62 @@ a[mat-button].quick-link {
   padding: 6px 0;
   overflow: hidden;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
   flex-shrink: 0;
   z-index: 997;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   position: relative;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
 }
 
 .banner-scroll {
   display: flex;
-  animation: scrollRight 60s linear infinite;
-  -webkit-animation: scrollRight 60s linear infinite;
-  white-space: nowrap;
-  padding: 0;
-  width: 200%;
-  flex-shrink: 0;
+  width: max-content; // Fits exact rendered width of both tracks
+  animation: scrollMarquee 40s linear infinite;
   will-change: transform;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
+  
+  // Mobile GPU layer promotion
   -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.banner-track {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .banner-text {
   padding: 0 40px;
   display: inline-block;
+  white-space: nowrap;
   color: inherit;
   font-size: inherit;
   font-weight: inherit;
-  flex: 0 0 50%;
-  box-sizing: border-box;
   flex-shrink: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .banner-container {
     padding: 8px 0;
-    font-size: 11px;
-    overflow: hidden !important;
+    font-size: 12px;
   }
   
   .banner-text {
-    padding: 0 15px;
-    flex-shrink: 0;
-  }
-  
-  .banner-scroll {
-    width: 200% !important;
-    animation: scrollRight 30s linear infinite !important;
-    -webkit-animation: scrollRight 30s linear infinite !important;
+    padding: 0 20px;
   }
 }
 
 @media (max-width: 480px) {
   .banner-container {
     padding: 6px 0;
-    font-size: 10px;
-    overflow: hidden !important;
+    font-size: 12px;
   }
   
   .banner-text {
-    padding: 0 10px;
-    flex-shrink: 0;
-  }
-  
-  .banner-scroll {
-    width: 200% !important;
-    animation: scrollRight 25s linear infinite !important;
-    -webkit-animation: scrollRight 25s linear infinite !important;
+    padding: 0 12px;
   }
 }
-
-

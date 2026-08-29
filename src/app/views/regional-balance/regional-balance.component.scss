@@ -1,0 +1,126 @@
+.regional-balance-container {
+  padding: 4px;
+  background-color: var(--color-background);
+  color: var(--color-text);
+//   min-height: 100vh;
+  box-sizing: border-box;
+
+  .page-title {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    margin-left: 4px;
+  }
+
+  .provinces-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .province-section {
+    .province-title {
+      color: var(--color-primary);
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+      margin-left: 8px;
+      font-weight: 500;
+    }
+
+    mat-divider {
+      border-top-color: var(--color-border);
+      margin-bottom: 20px;
+    }
+  }
+
+  .municipalities-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    padding: 4px; /* Prevents card outline/shadow from clipping on grid edges */
+
+    @media (min-width: 430px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  .municipality-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: var(--transition);
+    overflow: hidden; /* Contains table boundaries cleanly within rounded corners */
+    padding: 10px; /* Restores standard Angular Material card internal padding */
+
+    &:hover {
+      background-color: var(--color-surface-elevated);
+    }
+
+    mat-card-header {
+      padding: 0 0 12px 0; /* Resets Material default negative margins */
+      margin: 0;
+
+      mat-card-title {
+        color: var(--color-text);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    mat-card-content {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      overflow-x: auto; /* Enables horizontal scroll for tight two-column view */
+    }
+  }
+
+  .balances-table {
+    width: 100%;
+    background-color: transparent;
+
+    th.mat-mdc-header-cell,
+    td.mat-mdc-cell {
+      /* Reduced horizontal cell padding to fit narrow 2-column widths without clipping */
+      padding: 8px 6px;
+      white-space: nowrap;
+    }
+
+    th.mat-mdc-header-cell {
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      border-bottom-color: var(--color-border);
+      background-color: transparent;
+    }
+
+    td.mat-mdc-cell {
+      color: var(--color-text);
+      border-bottom-color: var(--color-divider);
+    }
+
+    tr.mat-mdc-row:last-child td.mat-mdc-cell {
+      border-bottom: none;
+    }
+
+    .align-right {
+      text-align: right;
+    }
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    gap: 16px;
+    color: var(--color-text-muted);
+
+    ::ng-deep .mat-mdc-progress-spinner {
+      --mdc-circular-progress-active-indicator-color: var(--color-primary);
+    }
+  }
+}

@@ -70,6 +70,9 @@ export const ApiEndpoints = {
   identity: {
     CREATE_SESSION: '/api/v1/identity/session',
     GET_VERIFICATION_STATUS: '/api/v1/identity/status'
+  },
+  regionalBalance:{
+    GET_REGIONAL_BALANCE: '/api/v1/balances/regional'
   }
 };
 

@@ -36,6 +36,7 @@
   "LIMIT": "Límite",
   "PRICE": "Precio",
   "VOLUME": "Volumen",
+  "CASH_AVAILABLE": "Efectivo Disponible",
   "REGISTER": {
     "TITLE": "Crea tu cuenta",
     "USERNAME_LABEL": "Nombre de usuario",
