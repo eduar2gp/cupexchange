@@ -578,14 +578,17 @@ a[mat-button].quick-link {
     transform: translate3d(0, 0, 0);
   }
   100% {
-    // Exact half-width shift avoids sub-pixel rounding jumps on mobile screens
     transform: translate3d(-50%, 0, 0);
   }
 }
 
 .banner-container {
   width: 100%;
-  color: var(--color-text);
+  
+  // Theme Fallback Cascade: Ensures text is always visible regardless of active theme state
+  background-color: var(--banner-bg, var(--color-bg-primary, transparent));
+  color: var(--banner-text-color, var(--color-text, currentColor));
+
   padding: 6px 0;
   overflow: hidden;
   font-weight: 500;
@@ -595,19 +598,27 @@ a[mat-button].quick-link {
   display: flex;
   align-items: center;
   position: relative;
+  
+  // Prevent flickering background repaint issues on mobile WebKit/iOS
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate; 
 }
 
 .banner-scroll {
   display: flex;
-  width: max-content; // Fits exact rendered width of both tracks
+  width: max-content;
   animation: scrollMarquee 40s linear infinite;
   will-change: transform;
   
-  // Mobile GPU layer promotion
+  // GPU Acceleration & Hardware Rendering
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
+  
+  // Prevent text anti-aliasing color shifts during mobile scroll
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .banner-track {
@@ -620,17 +631,33 @@ a[mat-button].quick-link {
   padding: 0 40px;
   display: inline-block;
   white-space: nowrap;
-  color: inherit;
+  
+  // Force inheritance without resetting color dynamically
+  color: inherit; 
   font-size: inherit;
   font-weight: inherit;
   flex-shrink: 0;
+  
+  // High-density display rendering fix
+  transform: translateZ(0);
+}
+
+/* Theme Explicit Fixes (Optional overlay for high-contrast safety) */
+[data-theme='dark'] .banner-container,
+.dark-mode .banner-container {
+  color: var(--color-text-dark-mode, #ffffff);
+}
+
+[data-theme='light'] .banner-container,
+.light-mode .banner-container {
+  color: var(--color-text-light-mode, #111111);
 }
 
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .banner-container {
     padding: 8px 0;
-    font-size: 12px;
+    font-size: 11px;
   }
   
   .banner-text {
@@ -641,7 +668,7 @@ a[mat-button].quick-link {
 @media (max-width: 480px) {
   .banner-container {
     padding: 6px 0;
-    font-size: 12px;
+    font-size: 10px;
   }
   
   .banner-text {
