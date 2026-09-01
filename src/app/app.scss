@@ -1,8 +1,4 @@
-/*
-==================================================
-  GLOBAL AND SIDENAV STYLES
-==================================================
-*/
+/* GLOBAL & SIDENAV */
 
 mat-sidenav-container[fullscreen] {
   height: 100dvh;
@@ -15,7 +11,6 @@ mat-sidenav-container[fullscreen] mat-sidenav-content {
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Add this line below to fix the surrounding color */
   background-color: var(--color-background);
 }
 
@@ -51,7 +46,7 @@ mat-sidenav {
       margin: 4px 10px;
       transition: background-color 0.2s ease;
 
-      // --- Default Title Color ---
+      // Default Title Color
       .mat-mdc-list-item-title,
       [matListItemTitle] {
         color: var(--color-text) !important;
@@ -66,7 +61,7 @@ mat-sidenav {
         background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
       }
 
-      // --- Sidenav Active State ---
+      // Active State
       &.active,
       &.mat-list-item-active,
       &.router-link-active {
@@ -85,11 +80,7 @@ mat-sidenav {
   }
 }
 
-/*
-==================================================
-  APP TOOLBAR (HEADER) STYLES
-==================================================
-*/
+/* TOOLBAR */
 .app-toolbar {
   flex: 0 0 auto;
   z-index: 10;
@@ -133,11 +124,7 @@ mat-sidenav {
   }
 }
 
-/*
-==================================================
-  MAIN CONTENT AREA
-==================================================
-*/
+/* MAIN CONTENT */
 .main-content {
   box-sizing: border-box;
   flex: 1 1 auto;
@@ -162,8 +149,6 @@ mat-sidenav {
   .main-content {
     width: 85%;
     margin: 0 auto;
-    /* Center only on larger screens */
-    /* Add a border to define the template if the background is the same color */
     border-left: 1px solid var(--color-border);
     border-right: 1px solid var(--color-border);
   }
@@ -172,16 +157,11 @@ mat-sidenav {
 @media (min-width: 1200px) {
   .main-content {
     width: 66.66%;
-    /* 2/3 of the space */
     max-width: 1200px;
   }
 }
 
-/*
-==================================================
-  TRADE PAGE LAYOUT & SLIDER ANIMATION
-==================================================
-*/
+/* TRADE PAGE */
 .trade-page {
   display: flex;
   width: 100%;
@@ -248,15 +228,10 @@ mat-sidenav {
   color: white;
 }
 
-/*
-==================================================
-  BOTTOM NAVIGATION
-==================================================
-*/
+/* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 6px;
-  /* In iOS standalone/fullscreen mode, full safe-area inset can push the nav too high. */
   bottom: max(2px, calc(env(safe-area-inset-bottom, 0px) * 0.35));
   left: 8px;
   right: 8px;
@@ -271,7 +246,6 @@ mat-sidenav {
   padding: 0 8px !important;
   border-radius: 1.5rem;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
@@ -314,7 +288,7 @@ mat-sidenav {
       font-size: 24px !important;
     }
 
-    /* --- Bottom Nav Active State --- */
+    /* Active State */
     &.active {
       background-color: color-mix(in srgb, var(--color-surface-elevated) 100%, transparent);
       color: var(--color-primary) !important;
@@ -341,11 +315,7 @@ mat-sidenav {
   }
 }
 
-/*
-==================================================
-  CURRENCY LOGOS & HELPERS
-==================================================
-*/
+/* LOGOS & HELPERS */
 .pair-logo {
   width: 24px;
   height: 24px;
@@ -356,39 +326,16 @@ mat-sidenav {
 }
 
 .pair-selector {
-  .pair-logo {
-    width: 20px;
-    height: 20px;
-    margin: 0 4px;
-  }
-
-  .pair-option-content {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .pair-logo { width: 20px; height: 20px; margin: 0 4px; }
+  .pair-option-content { display: flex; align-items: center; gap: 8px; }
 }
 
 .mat-mdc-option {
-  .pair-logo {
-    width: 28px;
-    height: 28px;
-  }
-
-  .pair-text {
-    font-weight: 500;
-    font-size: 14px;
-    flex-grow: 1;
-    text-align: center;
-  }
+  .pair-logo { width: 28px; height: 28px; }
+  .pair-text { font-weight: 500; font-size: 14px; flex-grow: 1; text-align: center; }
 }
 
-.pair-option-content {
-  display: flex;
-  align-items: center;
-}
-
-/* 1. The Container */
+/* Container */
 .toolbar-center-controls {
   flex: 1;
   display: flex;
@@ -400,12 +347,12 @@ mat-sidenav {
 }
 
 @media (max-width: 767.98px) {
-  .toolbar-center-controls {
-    max-width: calc(100vw - 160px);
-  }
+  .toolbar-center-controls { max-width: calc(100vw - 160px); }
+  .banner-container { padding: 8px 0; font-size: 11px; }
+  .banner-text { padding: 0 20px; }
 }
 
-/* 2. The Form Field Fix */
+/* Form Field Fix */
 .compact-select-clean {
   display: flex;
   align-items: center;
@@ -414,14 +361,14 @@ mat-sidenav {
   padding: 0;
 
   ::ng-deep {
-    /* REMOVE ALL MATERIAL RESERVED SPACES */
+    /* Material spacing fixes */
     .mat-mdc-form-field-subscript-wrapper,
     .mat-mdc-form-field-bottom-align,
     .mat-mdc-floating-label {
       display: none !important;
     }
 
-    /* THE KEY FIX: Reset the text field wrapper */
+    /* Text field wrapper */
     .mat-mdc-text-field-wrapper {
       padding: 0 12px !important;
       height: 32px !important;
@@ -431,7 +378,7 @@ mat-sidenav {
       border-radius: 8px;
     }
 
-    /* Remove the 'Infix' padding that reserves space for the label */
+    /* Field infix */
     .mat-mdc-form-field-infix {
       padding: 0 !important;
       min-height: auto !important;
@@ -440,14 +387,14 @@ mat-sidenav {
       width: auto !important;
     }
 
-    /* Ensure the select trigger itself is centered */
+    /* Select trigger */
     .mat-mdc-select-trigger {
       display: inline-flex !important;
       align-items: center !important;
       height: 100% !important;
     }
 
-    /* Prefix Icon Alignment */
+    /* Icon alignment */
     .mat-mdc-form-field-icon-prefix {
       padding: 0 4px 0 0 !important;
       display: flex !important;
@@ -470,11 +417,6 @@ mat-sidenav {
   background-color: var(--color-surface-elevated);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
-  /* REMOVE position: sticky and top: 64px */
-  /* position: sticky; */
-  /* top: 64px; */
-
   z-index: 998;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -486,38 +428,17 @@ mat-sidenav {
   align-items: center;
   justify-content: center;
   gap: 8px;
-
   height: 40px;
-
   margin: 0 6px;
   border-radius: 12px;
-
   font-size: 13px;
   font-weight: 500;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
-.quick-link mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  color: var(--color-text);
-}
-
-/* Hover */
 .quick-link:hover {
   background: rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
-}
-
-/* Active route */
-.quick-link.active-link {
-  background: rgba(63, 81, 181, 0.12);
-  color: var(--mat-sys-primary, #3f51b5);
 }
 
 /* Mobile responsiveness */
@@ -544,17 +465,11 @@ mat-sidenav {
   }
 }
 
-/* Extra small devices */
 @media (max-width: 480px) {
-  .quick-link span {
-    font-size: 10px;
-  }
-
-  .quick-link {
-    padding: 0 4px;
-    justify-content: flex-start;
-    gap: 4px;
-  }
+  .quick-link span { font-size: 10px; }
+  .quick-link { padding: 0 4px; justify-content: flex-start; gap: 4px; }
+  .banner-container { padding: 6px 0; font-size: 10px; }
+  .banner-text { padding: 0 12px; }
 }
 
 /* Target Material's internal button label structure, truncate text */
@@ -568,11 +483,7 @@ a[mat-button].quick-link {
   }
 }
 
-/*
-==================================================
-  ANIMATED BANNER STYLES
-==================================================
-*/
+/* BANNER */
 @keyframes scrollMarquee {
   0% {
     transform: translate3d(0, 0, 0);
@@ -584,11 +495,8 @@ a[mat-button].quick-link {
 
 .banner-container {
   width: 100%;
-  
-  // Theme Fallback Cascade: Ensures text is always visible regardless of active theme state
   background-color: var(--banner-bg, var(--color-bg-primary, transparent));
   color: var(--banner-text-color, var(--color-text, currentColor));
-
   padding: 6px 0;
   overflow: hidden;
   font-weight: 500;
@@ -598,8 +506,6 @@ a[mat-button].quick-link {
   display: flex;
   align-items: center;
   position: relative;
-  
-  // Prevent flickering background repaint issues on mobile WebKit/iOS
   -webkit-tap-highlight-color: transparent;
   isolation: isolate; 
 }
@@ -609,14 +515,10 @@ a[mat-button].quick-link {
   width: max-content;
   animation: scrollMarquee 40s linear infinite;
   will-change: transform;
-  
-  // GPU Acceleration & Hardware Rendering
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  
-  // Prevent text anti-aliasing color shifts during mobile scroll
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -631,18 +533,14 @@ a[mat-button].quick-link {
   padding: 0 40px;
   display: inline-block;
   white-space: nowrap;
-  
-  // Force inheritance without resetting color dynamically
   color: inherit; 
   font-size: inherit;
   font-weight: inherit;
   flex-shrink: 0;
-  
-  // High-density display rendering fix
   transform: translateZ(0);
 }
 
-/* Theme Explicit Fixes (Optional overlay for high-contrast safety) */
+/* Theme Explicit Fixes */
 [data-theme='dark'] .banner-container,
 .dark-mode .banner-container {
   color: var(--color-text-dark-mode, #ffffff);
