@@ -13,7 +13,7 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="{{ 'PRODUCTS' | translate }}">
+    <mat-tab *appFeatureFlag="'ecommerce'"label="{{ 'PRODUCTS' | translate }}">
       <ng-template matTabContent>
         <app-ecommerce-orders-list></app-ecommerce-orders-list>
       </ng-template>

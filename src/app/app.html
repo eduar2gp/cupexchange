@@ -145,7 +145,7 @@
         <mat-icon>show_chart</mat-icon>
         <!-- <span matListItemTitle>{{ 'CHARTS' | translate }}</span> -->
       </a>
-      <a mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
+      <a *appFeatureFlag="'ecommerce'" mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
         [routerLinkActiveOptions]="{exact: true}" class="nav-item"
         [attr.data-intro]="'LOGIN_TUTORIAL.STORE' | translate" data-step="2">
         <mat-icon>shopping_basket</mat-icon>
@@ -156,7 +156,7 @@
         <mat-icon>list</mat-icon>
         <!-- <span matListItemTitle>{{ 'ORDERS' | translate }}</span> -->
       </a>
-      <a mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
+      <a *appFeatureFlag="'ecommerce'" mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
         matBadgeHidden="{{ (cartCount$ | async) === 0 }}" matBadgeColor="warn"
         [attr.data-intro]="'LOGIN_TUTORIAL.SHOPPING_CART' | translate" data-step="4">
         <mat-icon>add_shopping_cart</mat-icon>

@@ -1,40 +1,51 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { 
+  ApplicationConfig, 
+  provideBrowserGlobalErrorListeners, 
+  provideAppInitializer, // <--- Replacement function
+  inject,                // <--- Inject function
+  isDevMode, 
+  importProvidersFrom 
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
+import { provideServiceWorker } from '@angular/service-worker';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-
-import { isDevMode } from '@angular/core';;
-import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
-//import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-//import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
-//import { provideServiceWorker } from '@angular/service-worker';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { authBlockInterceptor } from './core/interceptors/auth-block.interceptor'
-import { importProvidersFrom } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { authBlockInterceptor } from './core/interceptors/auth-block.interceptor';
+import { FeatureFlagService } from './services/feature-flag.service';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
-import { provideServiceWorker } from '@angular/service-worker';
 import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
-
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
 
-    // Router and HTTP/Chart providers from the second config
+    // Router Configuration
     provideRouter(routes),
-    provideCharts(withDefaultRegisterables()),
+
+    // HTTP Configuration
     provideHttpClient(
       withFetch(),
       withInterceptors([AuthInterceptor, authBlockInterceptor])
     ),
+
+    // Feature Flags Initialization (Modern Replacement)
+    provideAppInitializer(() => {
+      const featureFlagService = inject(FeatureFlagService);
+      return featureFlagService.loadFlags();
+    }),
+
+    // Chart Configuration
     provideCharts(withDefaultRegisterables()),
+
+    // Translation Configuration
     {
       provide: TRANSLATE_HTTP_LOADER_CONFIG,
       useValue: {
@@ -51,9 +62,12 @@ export const appConfig: ApplicationConfig = {
       }),
       NgxGoogleAnalyticsModule.forRoot(environment.gaMeasurementId),
       NgxGoogleAnalyticsRouterModule
-    ), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
+    ),
+
+    // Service Worker
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 };

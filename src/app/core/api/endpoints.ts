@@ -73,6 +73,9 @@ export const ApiEndpoints = {
   },
   regionalBalance:{
     GET_REGIONAL_BALANCE: '/api/v1/balances/regional'
+  },
+  config: {
+    GET_FLAGS: '/api/v1/config/flags'
   }
 };
 

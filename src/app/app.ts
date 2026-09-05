@@ -38,6 +38,7 @@ import { Municipality } from './model/muncipality.model';
 import { RouterLinkActive } from '@angular/router';
 import { startWith } from 'rxjs/operators';
 import { NotificationService } from './core/services/notification.service';
+import { FeatureFlagDirective } from '../app/core/directives/feature-flag.directive'
 
 @Component({
   selector: 'app-root',
@@ -58,6 +59,7 @@ import { NotificationService } from './core/services/notification.service';
     MatSlideToggleModule,
     TranslateModule,
     HasRoleDirective,
+    FeatureFlagDirective,
     MatInputModule,
     RouterLinkActive
 

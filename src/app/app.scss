@@ -348,7 +348,7 @@ mat-sidenav {
 
 @media (max-width: 767.98px) {
   .toolbar-center-controls { max-width: calc(100vw - 160px); }
-  .banner-container { padding: 8px 0; font-size: 11px; }
+  .banner-container { padding: 8px 0; font-size: 11px !important; }
   .banner-text { padding: 0 20px; }
 }
 
@@ -507,6 +507,7 @@ a[mat-button].quick-link {
   align-items: center;
   position: relative;
   -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: none;
   isolation: isolate; 
 }
 
@@ -555,7 +556,7 @@ a[mat-button].quick-link {
 @media (max-width: 767.98px) {
   .banner-container {
     padding: 8px 0;
-    font-size: 11px;
+    font-size: 11px !important;
   }
   
   .banner-text {
@@ -566,7 +567,7 @@ a[mat-button].quick-link {
 @media (max-width: 480px) {
   .banner-container {
     padding: 6px 0;
-    font-size: 10px;
+    font-size: 10px !important;
   }
   
   .banner-text {

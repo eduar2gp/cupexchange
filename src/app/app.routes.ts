@@ -3,6 +3,7 @@ import { LoginComponent } from './views/login/login.component';
 import { ExchangeDashboardComponent } from './views/dashboard/exchange-dashboard/exchange-dashboard.component'
 import { AddOrderComponent } from '../app/views/order/add-order/add-order.component'
 import { roleGuard } from '../app/core/guards/role.guard';
+import { featureFlagGuard } from '../app/core/guards/feature-flag.guard';
 import { WalletComponent } from '../app/views/wallet/wallet.component'
 import { TransactionsListComponent } from '../app/views/transaction/transactions-list/transactions-list.component'
 import { SettingsComponent } from '../app/views/settings/settings.component'
@@ -153,7 +154,9 @@ export const routes: Routes = [
   },
   {
     path: 'ecommerce-dashboard',
-    component: EcommerceDashboardComponent
+    component: EcommerceDashboardComponent,
+    canActivate: [featureFlagGuard],
+    data: { requiredFlags: 'ecommerce' }
   },
   {
     path: 'cart',

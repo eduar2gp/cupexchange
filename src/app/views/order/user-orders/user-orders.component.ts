@@ -5,10 +5,11 @@ import { OrdersListComponent } from '../exchange-orders-list/orders-list.compone
 import { UserCashOrdersListComponent } from '../user-cash-orders-list/user-cash-orders-list.component';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { FeatureFlagDirective } from '../../../core/directives/feature-flag.directive';
 
 @Component({
   selector: 'app-user-orders.component',
-  imports: [MatTabsModule, EcommerceOrdersListComponent, UserCashOrdersListComponent, OrdersListComponent, TranslateModule],
+  imports: [MatTabsModule, EcommerceOrdersListComponent, UserCashOrdersListComponent, OrdersListComponent, TranslateModule, FeatureFlagDirective],
   templateUrl: './user-orders.component.html',
   styleUrl: './user-orders.component.scss',
 })
