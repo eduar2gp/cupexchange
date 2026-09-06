@@ -121,4 +121,10 @@ export class AccountProviderBalanceComponent implements OnInit {
     const currency = currencyCode.toLowerCase();
     return `assets/currencies/${currency}.png`;
   }
+
+  getLastRefreshedAt(): string | null {
+    const summary = this.currencySummary();
+    const item = summary.find((entry) => !!entry.lastRefreshedAt);
+    return item?.lastRefreshedAt ?? null;
+  }
 }

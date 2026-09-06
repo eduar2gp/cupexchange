@@ -15,10 +15,10 @@
       <!-- Header with Single Refresh Timestamp -->
       <div class="header-row" *ngIf="currencySummary().length > 0">
         <div class="title-group">
-          <p class="refresh-text" *ngIf="currencySummary()[1].lastRefreshedAt">
+          <p class="refresh-text" *ngIf="getLastRefreshedAt()">
             <mat-icon>update</mat-icon>
             {{ 'ACCOUNT_PROVIDER_BALANCE.LAST_REFRESHED' | translate }}:
-            {{ currencySummary()[1].lastRefreshedAt | date:'MMM d, y • h:mm a' }}
+            {{ getLastRefreshedAt() | date:'MMM d, y • h:mm a' }}
           </p>
         </div>
       </div>
@@ -54,16 +54,83 @@
               </td>
             </ng-container>
 
-            <!-- Provider Balance -->
-            <ng-container matColumnDef="provider">
+            <!-- Completed Deposits -->
+            <ng-container matColumnDef="completedDeposits">
               <th mat-header-cell *matHeaderCellDef>
-                <mat-icon matTooltip="Provider Balance">hub</mat-icon>
+                <span class="status-header status-header--completed">
+                  <mat-icon>check_circle</mat-icon>
+                   {{ 'DEPOSITS' | translate }}
+                </span>
               </th>
-              <td mat-cell *matCellDef="let s" class="numeric-cell highlight-cell">
-                {{ s.totalProviderBalance | number:'1.2-8' }}
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--completed">
+                {{ s.completedDeposits | number:'1.2-8' }}
               </td>
             </ng-container>
 
+            <!-- Completed Withdrawals -->
+            <ng-container matColumnDef="completedWithdrawals">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="status-header status-header--completed">
+                  <mat-icon>check_circle</mat-icon>
+                   {{ 'WITHDRAWALS' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--completed">
+                {{ s.completedWithdrawals | number:'1.2-8' }}
+              </td>
+            </ng-container>
+
+            <!-- Completed Fee Collections -->
+            <ng-container matColumnDef="completedFeeCollections">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="status-header status-header--completed">
+                  <mat-icon>check_circle</mat-icon>
+                   {{ 'FEES' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--completed">
+                {{ s.completedFeeCollections | number:'1.2-8' }}
+              </td>
+            </ng-container>
+
+            <!-- Pending Deposits -->
+            <ng-container matColumnDef="pendingDeposits">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="status-header status-header--pending">
+                  <mat-icon>schedule</mat-icon>
+                   {{ 'DEPOSITS' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--pending">
+                {{ s.pendingDeposits | number:'1.2-8' }}
+              </td>
+            </ng-container>
+
+            <!-- Pending Withdrawals -->
+            <ng-container matColumnDef="pendingWithdrawals">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="status-header status-header--pending">
+                  <mat-icon>schedule</mat-icon>
+                   {{ 'WITHDRAWALS' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--pending">
+                {{ s.pendingWithdrawals | number:'1.2-8' }}
+              </td>
+            </ng-container>
+
+            <!-- Pending Fee Collections -->
+            <ng-container matColumnDef="pendingFeeCollections">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="status-header status-header--pending">
+                  <mat-icon>schedule</mat-icon>
+                   {{ 'FEES' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let s" class="numeric-cell summary-table-cell--pending">
+                {{ s.pendingFeeCollections | number:'1.2-8' }}
+              </td>
+            </ng-container>
             <!-- Accounts Count -->
             <ng-container matColumnDef="count">
               <th mat-header-cell *matHeaderCellDef>{{ 'ACCOUNT_PROVIDER_BALANCE.PROVIDER' | translate }}</th>
@@ -72,8 +139,8 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['currency', 'wallet', 'provider', 'count']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['currency', 'wallet', 'provider', 'count'];"></tr>
+            <tr mat-header-row *matHeaderRowDef="['currency', 'wallet', 'completedDeposits', 'completedWithdrawals', 'completedFeeCollections', 'pendingDeposits', 'pendingWithdrawals', 'pendingFeeCollections', 'count']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['currency', 'wallet', 'completedDeposits', 'completedWithdrawals', 'completedFeeCollections', 'pendingDeposits', 'pendingWithdrawals', 'pendingFeeCollections', 'count'];"></tr>
           </table>
         </div>
       </section>

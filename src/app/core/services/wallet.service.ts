@@ -61,8 +61,10 @@ export class WalletService {
   }
 
   getCurrencySummary(): Observable<CurrencySummary[]> {
-    const fullUrl = build(ApiEndpoints.wallet.CURRENCY_SUMMARY)
-    return this.http.get<CurrencySummary[]>(fullUrl);
+    const fullUrl = build(ApiEndpoints.wallet.CURRENCY_SUMMARY);
+    return this.http.get<CurrencySummary | CurrencySummary[]>(fullUrl).pipe(
+      map((response) => Array.isArray(response) ? response : [response])
+    );
   }
 
   getSystemWallets(): Observable<Wallet[]> {
