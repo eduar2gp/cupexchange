@@ -18,7 +18,7 @@
           <p class="refresh-text" *ngIf="currencySummary()[1].lastRefreshedAt">
             <mat-icon>update</mat-icon>
             {{ 'ACCOUNT_PROVIDER_BALANCE.LAST_REFRESHED' | translate }}:
-            {{ currencySummary()[1].lastRefreshedAt | date:'medium':'UTC' }}
+            {{ currencySummary()[1].lastRefreshedAt | date:'MMM d, y • h:mm a' }}
           </p>
         </div>
       </div>
