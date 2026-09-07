@@ -6,6 +6,7 @@ export interface CashOrder {
   currencyCode: string;
   user: UserReference;
   type: string;
+  withdrawalPercentageFee: number;
 }
 
 export interface UserReference {

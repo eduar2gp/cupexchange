@@ -81,10 +81,30 @@
         color: var(--color-warning);
       }
 
+      &.type-tag {
+        color: var(--color-text);
+      }
+
+      &.type-tag.type-tag-withdrawal {
+        color: var(--color-sell-base);
+      }
+
+      &.type-tag.type-tag-deposit {
+        color: var(--color-buy-base);
+      }
+
       &.total-amount {
         font-size: 1.25rem;
         font-weight: 700;
         color: var(--color-primary);
+      }
+
+      &.total-amount.amount-withdrawal {
+        color: var(--color-sell-base);
+      }
+
+      &.total-amount.amount-deposit {
+        color: var(--color-buy-base);
       }
 
       &.link {

@@ -26,19 +26,34 @@
       <div class="responsive-grid mb-2">
         <div class="info-group">
           <span class="label">Transaction Type</span>
-          <span class="value type-tag">
+          <span class="value type-tag"
+            [class.type-tag-withdrawal]="orderData.type === 'WITHDRAWAL'"
+            [class.type-tag-deposit]="orderData.type !== 'WITHDRAWAL'">
             <mat-icon>payments</mat-icon>
             {{ orderData.type | titlecase }}
           </span>
         </div>
         <div class="info-group">
-          <span class="label">Amount to Collect</span>
-          <span class="value total-amount">
+          <span class="label">{{ orderData.type === 'WITHDRAWAL' ? 'Amount to Deliver' : 'Amount to Collect' }}</span>
+          <span class="value total-amount"
+            [class.amount-withdrawal]="orderData.type === 'WITHDRAWAL'"
+            [class.amount-deposit]="orderData.type !== 'WITHDRAWAL'">
             <span>{{ orderData.currencyCode }}</span>
             &nbsp;
-            <span>{{ orderData.amount | number: '1.2-2' }}</span>
+            <span class="value total-amount"
+            [class.amount-withdrawal]="orderData.type === 'WITHDRAWAL'"
+            [class.amount-deposit]="orderData.type !== 'WITHDRAWAL'">{{ (orderData.type === 'WITHDRAWAL' ? orderData.amount - (orderData.amount * (orderData.withdrawalPercentageFee / 100)) : orderData.amount) | number: '1.2-2' }}</span>
           </span>
         </div>
+
+        @if (orderData.type === 'WITHDRAWAL') {
+        <div class="info-group">
+          <span class="label">Withdrawal Fee</span>
+          <span class="value total-amount">
+            <span>{{ orderData.withdrawalPercentageFee | number: '1.2-2' }}%</span>
+          </span>
+        </div>
+        }
       </div>
 
       <mat-divider></mat-divider>
@@ -89,13 +104,19 @@
 
       <section class="section summary-footer">
         <div class="summary-box">
-          <p>This is a <strong>{{ orderData.type }}</strong> request. Please ensure the amount of
+          <p>This is a <strong>{{ orderData.type }}</strong> request. Please ensure the
+            <strong>{{ orderData.type === 'WITHDRAWAL' ? 'Amount to Deliver' : 'Amount to Collect' }}</strong>
+            of
             <strong><span class="value total-amount">
                 <span>{{ orderData.currencyCode }}</span>
                 &nbsp;
                 <span>{{ orderData.amount | number: '1.2-2' }}</span>
-              </span></strong> is handled according to the
-            status above.
+              </span></strong>
+            and the
+            <strong>{{ orderData.withdrawalPercentageFee | number: '1.2-2' }}%</strong>
+            fee
+            (<strong>{{ (orderData.amount * (orderData.withdrawalPercentageFee / 100)) | number: '1.2-2' }}</strong>)
+            are handled according to the status above.
           </p>
         </div>
       </section>
