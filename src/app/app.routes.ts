@@ -42,7 +42,7 @@ import { IdVerificationComponent } from './components/id-verification/id-verific
 export const routes: Routes = [
    {
     path: '',
-    component: ExchangeDashboardComponent,    
+    component: UserOrdersComponent,
   },
   {
     path: 'login',
@@ -58,7 +58,9 @@ export const routes: Routes = [
   },
    {
     path: 'exchange-dashboard',
-     component: ExchangeDashboardComponent,         
+     component: ExchangeDashboardComponent,      
+     canActivate: [featureFlagGuard],
+     data: { requiredFlags: 'exchange' }
   },
   {
     path: 'add-wallet',

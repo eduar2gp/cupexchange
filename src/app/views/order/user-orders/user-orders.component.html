@@ -1,7 +1,7 @@
 <div class="orders-container">
   <mat-tab-group [selectedIndex]="selectedIndex">
 
-    <mat-tab label="{{ 'EXCHANGE' | translate }}">
+    <mat-tab *appFeatureFlag="'exchange'" label="{{ 'EXCHANGE' | translate }}">
       <ng-template matTabContent>
         <app-orders-list></app-orders-list>
       </ng-template>

@@ -105,7 +105,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   cartCount$ = this.cartService.cartCount$.pipe(startWith(0));
 
   selectedPair: TradingPair | null = this.DEFAULT_PAIRS[0];
-  public isEcommerceView$ = this.dataService.isEcommerce$.pipe(startWith(false));
 
   // Add this to your class properties
   notificationCount$ = this.notificationService.unreadNotificationsCount$;
@@ -294,18 +293,6 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate(['/add-order']);
     } else {
       this.router.navigate(['/add-wallet']);
-    }
-  }
-
-  toggleDashboard(event: any) {
-    const isEcommerce = event.checked;
-    // 1. Update the persistent state
-    this.dataService.setEcommerceMode(isEcommerce);
-    // 2. Navigate based on the new state
-    if (isEcommerce) {
-      this.router.navigate(['/ecommerce-dashboard']);
-    } else {
-      this.router.navigate(['/exchange-dashboard']);
     }
   }
 

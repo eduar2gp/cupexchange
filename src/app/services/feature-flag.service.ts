@@ -20,9 +20,13 @@ export class FeatureFlagService {
       );
       this.flagsSignal.set(config ?? {});
     } catch (error) {
-      console.error('Failed to load feature flags, applying defaults', error);
+      console.error('Failed to load feature flags', error);
       this.flagsSignal.set({});
     }
+  }
+
+  getFlags(): Record<string, boolean> {
+    return this.flagsSignal();
   }
 
   /**

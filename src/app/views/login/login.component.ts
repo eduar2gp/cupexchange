@@ -22,6 +22,7 @@ import { DataService } from '../../../app/core/services/data.service'
 import { User } from '../../../app/model/user.model'
 import { NotificationService } from '../../core/services/notification.service';
 import { IdentityService } from '../../services/identity.service';
+import { FeatureFlagService } from '../../services/feature-flag.service';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private notificationService = inject(NotificationService)
+  private featureFlagService = inject(FeatureFlagService);
 
   private platformId = inject(PLATFORM_ID);  
 
@@ -102,10 +104,19 @@ private loadGoogleScript(): Promise<void> {
     // Optional: Check if already logged in and redirect
     // Check if already logged in and redirect, but only in the browser
     if (isPlatformBrowser(this.platformId) && this.authService.getToken()) {
-      if (localStorage.getItem('IS_ECOMMERCE_MODE') === 'true')
-        this.router.navigate(['/ecommerce-dashboard']);
-      else
-        this.router.navigate(['/exchange-dashboard']);
+      this.redirectByFeatureFlags();
+    }
+  }
+
+  private redirectByFeatureFlags(): void {
+    const flags = this.featureFlagService.getFlags();
+
+    if (flags['ecommerce'] === true) {
+      this.router.navigate(['/ecommerce-dashboard']);
+    } else if (flags['exchange'] === true) {
+      this.router.navigate(['/exchange-dashboard']);
+    } else {
+      this.router.navigate(['/orders']);
     }
   }
 
@@ -203,10 +214,7 @@ private loadGoogleScript(): Promise<void> {
         localStorage.setItem('WALLETS', JSON.stringify(wallets));
         this.dataService.walletUpdateCompleted();
 
-        // 4. Navigate based on mode
-        const isEcommerce = localStorage.getItem('IS_ECOMMERCE_MODE') === 'true';
-        const targetRoute = isEcommerce ? '/ecommerce-dashboard' : '/exchange-dashboard';
-        this.router.navigate([targetRoute]);
+        this.redirectByFeatureFlags();
       },
       error: (err) => {
         console.error('Error loading wallets!.', err);
