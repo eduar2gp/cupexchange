@@ -1,12 +1,14 @@
 import { 
   ApplicationConfig, 
   provideBrowserGlobalErrorListeners, 
-  provideAppInitializer, // <--- Replacement function
-  inject,                // <--- Inject function
+  provideAppInitializer,
+  inject,
   isDevMode, 
-  importProvidersFrom 
+  importProvidersFrom,
+  PLATFORM_ID
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { isPlatformServer } from '@angular/common';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -36,9 +38,16 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([AuthInterceptor, authBlockInterceptor])
     ),
 
-    // Feature Flags Initialization (Modern Replacement)
+    // Feature Flags Initialization (skip during SSR/prerender to avoid route extraction timeout)
     provideAppInitializer(() => {
       const featureFlagService = inject(FeatureFlagService);
+      const platformId = inject(PLATFORM_ID);
+
+      if (isPlatformServer(platformId)) {
+        featureFlagService.setFlags({});
+        return Promise.resolve();
+      }
+
       return featureFlagService.loadFlags();
     }),
 

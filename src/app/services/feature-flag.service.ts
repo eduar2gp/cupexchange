@@ -10,6 +10,10 @@ export class FeatureFlagService {
 
   constructor(private http: HttpClient) {}
 
+  setFlags(flags: Record<string, boolean>): void {
+    this.flagsSignal.set(flags ?? {});
+  }
+
   /**
    * Called on application boot by APP_INITIALIZER
    */
