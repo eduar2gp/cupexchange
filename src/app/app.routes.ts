@@ -42,7 +42,7 @@ import { IdVerificationComponent } from './components/id-verification/id-verific
 export const routes: Routes = [
    {
     path: '',
-    component: UserOrdersComponent,
+    component: LoginComponent,
   },
   {
     path: 'login',

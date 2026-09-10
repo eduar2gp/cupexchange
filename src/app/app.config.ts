@@ -48,7 +48,12 @@ export const appConfig: ApplicationConfig = {
         return Promise.resolve();
       }
 
-      return featureFlagService.loadFlags();
+      // Do not block app bootstrap; load flags in background.
+      void featureFlagService.loadFlags().catch(() => {
+        featureFlagService.setFlags({});
+      });
+
+      return Promise.resolve();
     }),
 
     // Chart Configuration
