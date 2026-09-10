@@ -109,15 +109,17 @@ private loadGoogleScript(): Promise<void> {
   }
 
   private redirectByFeatureFlags(): void {
-    const flags = this.featureFlagService.getFlags();
+    void this.featureFlagService.ensureFlagsLoaded().then(() => {
+      const flags = this.featureFlagService.getFlags();
 
-    if (flags['ecommerce'] === true) {
-      this.router.navigate(['/ecommerce-dashboard']);
-    } else if (flags['exchange'] === true) {
-      this.router.navigate(['/exchange-dashboard']);
-    } else {
-      this.router.navigate(['/orders']);
-    }
+      if (flags['ecommerce'] === true) {
+        this.router.navigate(['/ecommerce-dashboard']);
+      } else if (flags['exchange'] === true) {
+        this.router.navigate(['/exchange-dashboard']);
+      } else {
+        this.router.navigate(['/orders']);
+      }
+    });
   }
 
   onLogin(): void {

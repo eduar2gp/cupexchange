@@ -17,9 +17,17 @@ export const featureFlagGuard: CanActivateFn = (route) => {
   const mode = guardData?.mode ?? 'AND';
   const fallbackUrl = guardData?.redirectTo ?? '/403';
 
-  if (ffService.hasAccess(requiredFlags, mode)) {
-    return true;
+  const evaluateAccess = () => {
+    if (ffService.hasAccess(requiredFlags, mode)) {
+      return true;
+    }
+
+    return router.createUrlTree([fallbackUrl]);
+  };
+
+  if (ffService.flagsLoaded()) {
+    return evaluateAccess();
   }
 
-  return router.createUrlTree([fallbackUrl]);
+  return ffService.ensureFlagsLoaded().then(evaluateAccess);
 };
