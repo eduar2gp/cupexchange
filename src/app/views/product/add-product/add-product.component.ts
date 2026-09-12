@@ -27,9 +27,17 @@ export class AddProductComponent {
   providerData$!: Observable<Provider | null>;
 
   selectedFile: File | null = null;
+  selectedCurrency = (localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD').toUpperCase();
+  productPrice = 0.01;
 
   // Initial form model state
-  newProduct: Product = { name: '', description: '', price: 0.01, stockQuantity: 1, providerId: 0 };
+  newProduct: Product = {
+    name: '',
+    description: '',
+    stockQuantity: 1,
+    providerId: 0,
+    prices: [{ currencyCode: this.selectedCurrency, price: this.productPrice }]
+  };
 
   saving = signal(false);
   statusMessage = signal<string | null>(null);
@@ -37,15 +45,34 @@ export class AddProductComponent {
 
   //@Output() productAdded = new EventEmitter<void>();
 
-  constructor(private dataService: DataService) {    
+  constructor(private dataService: DataService) {
     this.providerData$ = this.dataService.currentProvider;
+  }
+
+  private buildProductPayload(): Product {
+    return {
+      ...this.newProduct,
+      prices: [
+        {
+          currencyCode: this.selectedCurrency.toUpperCase(),
+          price: Number(this.productPrice || 0)
+        }
+      ]
+    };
   }
 
   /**
    * Resets the form after successful submission.
    */
   private resetForm(): void {
-    this.newProduct = { name: '', description: '', price: 0.01, stockQuantity: 1, providerId: 0 };
+    this.newProduct = {
+      name: '',
+      description: '',
+      stockQuantity: 1,
+      providerId: 0,
+      prices: [{ currencyCode: this.selectedCurrency.toUpperCase(), price: 0.01 }]
+    };
+    this.productPrice = 0.01;
     // Clear status message after a short delay
     setTimeout(() => this.statusMessage.set(null), 3000);
   }
@@ -62,16 +89,13 @@ export class AddProductComponent {
 
     this.saving.set(true);
     this.statusMessage.set(null);
-    //this.newProduct.provider = this.providerData$.id;
     this.providerSubscription = this.providerData$.subscribe(
       (provider: Provider | null) => {
-        // 2. The code inside this block runs when the data arrives
         if (provider && provider?.id !== undefined) {
-          // 3. Access the 'id' property on the actual 'provider' object
-          this.newProduct.providerId = provider.id;
-          // Now you can proceed with saving the product
-          // this.productService.addProduct(this.newProduct).subscribe(...);
-          this.productsService.createProduct(this.newProduct).subscribe({
+          const payload = this.buildProductPayload();
+          payload.providerId = provider.id;
+
+          this.productsService.createProduct(payload).subscribe({
             next: (response) => {
               this.statusMessage.set(`Success! Product '${response.name}' created (ID: ${response.id}).`);
 
@@ -81,19 +105,15 @@ export class AddProductComponent {
                 this.productsService.saveProductWithImage(response.id!, formData).subscribe({
                   next: (updatedProduct: any) => {
                     console.log('Provider image saved successfully!', updatedProduct);
-                    // Handle success (e.g., navigate, show notification)
                     this.isSuccess = true;
                     this.saving.set(false);
                     this.resetForm();
                   },
                   error: (err: any) => {
                     console.error('Error saving product:', err);
-                    // Handle error
                   }
                 });
-              }            
-              // Notify the parent component (ProductListComponent) to refresh its list
-              //this.productAdded.emit();
+              }
             },
             error: (err) => {
               console.error('Error saving product:', err);
@@ -103,16 +123,15 @@ export class AddProductComponent {
             }
           });
         } else {
-          // Handle the case where provider is null (or when there's an error)
           console.warn('Provider data is null or loading.');
         }
       },
       (error) => {
         console.error('Error fetching provider data:', error);
       }
-    );  
+    );
   }
-  
+
   ngOnDestroy(): void {
     this.providerSubscription?.unsubscribe();
   }
@@ -121,8 +140,7 @@ export class AddProductComponent {
     const file: File = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      console.log('file selected')
+      console.log('file selected');
     }
   }
-
 }

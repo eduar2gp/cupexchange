@@ -17,6 +17,15 @@
     </mat-select>
   </mat-form-field>
 
+  <mat-form-field appearance="outline" class="settings-field">
+    <mat-label>{{ 'MERCHANT_PRICE_CURRENCY' | translate }}</mat-label>
+    <mat-select [value]="merchantPriceCurrency" (selectionChange)="changeMerchantPriceCurrency($event.value)">
+      @for (currency of availableMerchantCurrencies; track currency.code) {
+        <mat-option [value]="currency.code">{{ currency.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
   <mat-slide-toggle class="theme-toggle"
                     [checked]="notificationsEnabled"
                     (change)="toggleNotifications($event.checked)">

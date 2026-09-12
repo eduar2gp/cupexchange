@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { DataService } from '../../../core/services/data.service';
 import { Observable } from 'rxjs';
-import { Product } from '../../../model/product.model';
+import { Product, ProductPrice } from '../../../model/product.model';
 import { Provider } from '../../../model/provider.model';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +34,14 @@ export class EditProductComponent {
     this.providerData$ = this.dataService.currentProvider;
   }
 
+  addPrice(product: Product): void {
+    product.prices = [...(product.prices ?? []), { currencyCode: 'USD', price: 0.01 }];
+  }
+
+  removePrice(product: Product, index: number): void {
+    product.prices = product.prices?.filter((_, priceIndex) => priceIndex !== index) ?? [];
+  }
+
   // Method to capture the selected file
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -45,9 +53,15 @@ export class EditProductComponent {
 
   // Method called when the form is submitted
   saveProduct(product: Product): void {
-    console.log('Submitting product:', product);
-    // 1. Call the service method, passing the product ID and the entire product object.
-    this.productsService.updateProduct(product.id!, product)
+    const { price: _legacyPrice, ...payload } = product;
+    payload.prices = (product.prices ?? []).map((item: ProductPrice) => ({
+      currencyCode: item.currencyCode.toUpperCase(),
+      price: Number(item.price)
+    }));
+
+    console.log('Submitting product:', payload);
+    // 1. Call the service method with a PriceDTO-compatible prices array.
+    this.productsService.updateProduct(product.id!, payload)
       // 2. Subscribe to the Observable to trigger the HTTP request and handle the result.
       .subscribe({
         next: (updatedProduct: Product) => {

@@ -8,4 +8,5 @@ export interface UserProfileData {
   municipalityId?: number;
   provinceId?: number;
   profileImageUrl?: string;
+  merchantPriceCurrency?: string;
 }

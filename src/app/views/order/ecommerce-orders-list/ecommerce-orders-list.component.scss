@@ -18,6 +18,37 @@
     color: var(--color-text);
   }
 
+  .order-total {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    white-space: nowrap;
+
+    &__amount {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &__currency {
+      color: var(--color-text-secondary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .payment-status {
+    font-weight: 700;
+
+    &--paid {
+      color: var(--color-success, #2da44e);
+    }
+
+    &--unpaid {
+      color: var(--color-error, #cf222e);
+    }
+  }
+
   .status-chip {
     &.pending {
       background-color: #e3b341;

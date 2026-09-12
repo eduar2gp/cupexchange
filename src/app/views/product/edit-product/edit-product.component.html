@@ -40,11 +40,37 @@
               <mat-icon matSuffix>label</mat-icon>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Price</mat-label>
-              <input matInput name="price" [(ngModel)]="product.price" type="number" placeholder="0.00">
-              <span matPrefix>$&nbsp;</span>
-            </mat-form-field>
+            <section class="price-list" aria-label="Product prices">
+              <div class="price-list__header">
+                <span>Prices</span>
+                <button mat-button type="button" color="primary" (click)="addPrice(product)">
+                  <mat-icon>add</mat-icon>
+                  Add price
+                </button>
+              </div>
+
+              @for (price of product.prices ?? []; track $index; let index = $index) {
+              <div class="price-list__row">
+                <mat-form-field appearance="outline" class="price-list__currency">
+                  <mat-label>Currency</mat-label>
+                  <input matInput [name]="'currencyCode-' + index" [(ngModel)]="price.currencyCode" maxlength="3" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="price-list__amount">
+                  <mat-label>Price</mat-label>
+                  <input matInput [name]="'price-' + index" [(ngModel)]="price.price" type="number" placeholder="0.00" min="0.01" step="0.01" required>
+                </mat-form-field>
+
+                <button mat-icon-button type="button" color="warn" (click)="removePrice(product, index)" [disabled]="(product.prices?.length ?? 0) === 1" aria-label="Remove price">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              }
+
+              @if (!(product.prices?.length)) {
+              <p class="price-list__empty">Add at least one currency price.</p>
+              }
+            </section>
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Description</mat-label>

@@ -14,4 +14,5 @@ export interface User {
   municipalityId?: number;
   provinceId?: number;
   profileImageUrl?: string;
+  merchantPriceCurrency?: string;
 }

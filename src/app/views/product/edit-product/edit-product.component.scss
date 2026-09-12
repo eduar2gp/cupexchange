@@ -102,6 +102,53 @@ h2 {
   margin-bottom: 1rem;
 }
 
+.price-list {
+  margin-bottom: 1rem;
+}
+
+.price-list__header,
+.price-list__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.price-list__header {
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.price-list__row {
+  margin-bottom: 0.5rem;
+}
+
+.price-list__currency {
+  width: 8rem;
+}
+
+.price-list__amount {
+  flex: 1;
+}
+
+.price-list__empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 600px) {
+  .price-list__row {
+    flex-wrap: wrap;
+  }
+
+  .price-list__currency,
+  .price-list__amount {
+    flex: 1 1 40%;
+  }
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

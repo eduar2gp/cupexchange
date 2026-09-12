@@ -72,6 +72,25 @@
   font-weight: 500;
 }
 
+.revenue-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.revenue-value__amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.revenue-value__currency {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
 .loading-shade, .empty-state, .error-container {
   padding: 4rem;
   text-align: center;

@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { take } from 'rxjs/operators'; // Added take operator
 import { DataService } from '../../core/services/data.service'
 import { ThemeMode } from '../../../app/core/services/theme-service';
+import { User } from '../../model/user.model';
 
 @Component({
   selector: 'app-settings',
@@ -29,6 +30,12 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
 
   currentLang: string | undefined;
   notificationsEnabled: boolean = false; // Initialized to false
+  merchantPriceCurrency = 'USD';
+  readonly availableMerchantCurrencies = [
+    { code: 'USD', label: 'USD' },
+    { code: 'CUP', label: 'CUP' },
+    { code: 'EUR', label: 'EUR' }
+  ];
 
   constructor(
     private languageService: LanguageService,
@@ -47,12 +54,36 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
     const enabled = localStorage.getItem('NOTIFICATIONS_ENABLED') === 'true';
     this.notificationsEnabled = enabled;
 
+    this.syncMerchantPriceCurrencyFromStorage();
+
     // Optional: Check if permission is denied, and if so, force the toggle OFF
     // since the user cannot re-enable it without browser settings changes.
     if (Notification.permission === 'denied') {
       this.notificationsEnabled = false;
       localStorage.setItem('NOTIFICATIONS_ENABLED', 'false');
     }
+  }
+
+  private syncMerchantPriceCurrencyFromStorage(): void {
+    const savedCurrency = localStorage.getItem('MERCHANT_PRICE_CURRENCY');
+    if (savedCurrency) {
+      this.merchantPriceCurrency = savedCurrency;
+      return;
+    }
+
+    const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+    if (savedProfileJson) {
+      try {
+        const savedUser = JSON.parse(savedProfileJson) as Partial<User>;
+        this.merchantPriceCurrency = savedUser.merchantPriceCurrency || 'USD';
+      } catch (error) {
+        console.warn('Could not parse user profile for merchant price currency', error);
+        this.merchantPriceCurrency = 'USD';
+      }
+      return;
+    }
+
+    this.merchantPriceCurrency = 'USD';
   }
 
   changeLanguage(lang: string) {
@@ -66,6 +97,22 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
 
   changeTheme(mode: ThemeMode): void {
     this.themeService.setThemeMode(mode);
+  }
+
+  changeMerchantPriceCurrency(currency: string): void {
+    const selectedCurrency = currency || 'USD';
+    this.merchantPriceCurrency = selectedCurrency;
+    localStorage.setItem('MERCHANT_PRICE_CURRENCY', selectedCurrency);
+
+    const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+    const savedUser = savedProfileJson ? JSON.parse(savedProfileJson) as Partial<User> : null;
+    const updatedUser = savedUser ? { ...savedUser, merchantPriceCurrency: selectedCurrency } as User : null;
+
+    if (updatedUser) {
+      localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(updatedUser));
+      this.dataService.updateUser(updatedUser);
+    }
+
   }
 
   toggleNotifications(checked: boolean) {

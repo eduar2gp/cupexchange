@@ -27,7 +27,10 @@
         </div>
         <div class="info-group">
           <span class="label">Total Revenue</span>
-          <span class="value total-amount">{{ orderData.totalPrice | currency }}</span>
+          <span class="value total-amount">
+            <span class="total-amount__value">{{ orderData.totalPrice | number:'1.2-2' }}</span>
+            <span class="total-amount__currency">{{ orderData.currencyCode }}</span>
+          </span>
         </div>
       </div>
 
@@ -107,7 +110,7 @@
             <ng-container matColumnDef="subtotal">
               <th mat-header-cell *matHeaderCellDef> Subtotal </th>
               <td mat-cell *matCellDef="let item" class="bold-cell">
-                {{ (item.quantity * item.priceAtPurchase) | currency }}
+                {{ (item.quantity * item.priceAtPurchase) | number:'1.2-2' }} {{ item.currencyCode || orderData.currencyCode }}
               </td>
             </ng-container>
 

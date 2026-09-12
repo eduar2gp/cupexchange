@@ -132,7 +132,8 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+
     .product-name { 
       font-size: 0.95rem; 
       font-weight: 600; 
@@ -143,7 +144,37 @@
       -webkit-box-orient: vertical; 
       overflow: hidden; 
     }
-    .product-price { font-size: 1.1rem; font-weight: 700; color: #059669; margin: 0; }
+
+    .product-price {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #059669;
+      margin: 0;
+      width: 100%;
+    }
+
+    .product-price-value {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      color: #059669;
+      font-size: 0.9rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .product-price-currency {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      text-align: right;
+      white-space: nowrap;
+    }
   }
 
   mat-card-content {

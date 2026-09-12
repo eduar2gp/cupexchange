@@ -82,6 +82,7 @@ export class CheckoutComponent {
     const payload: CreateOrderRequest = {
       providerId: orderGroup.providerId,
       customerId: currentUser.id,
+      currencyCode: (orderGroup.items[0]?.currencyCode || localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD').toUpperCase(),
       status: 'pending',
       paid: false,
       totalPrice: orderGroup.total,

@@ -36,7 +36,12 @@
 
         <ng-container matColumnDef="total">
           <th mat-header-cell *matHeaderCellDef> Revenue </th>
-          <td mat-cell *matCellDef="let order"> {{order.totalPrice | currency}} </td>
+          <td mat-cell *matCellDef="let order">
+            <span class="revenue-value">
+              <span class="revenue-value__amount">{{ order.totalPrice | number:'1.2-2' }}</span>
+              <span class="revenue-value__currency">{{ order.currencyCode }}</span>
+            </span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="paid">

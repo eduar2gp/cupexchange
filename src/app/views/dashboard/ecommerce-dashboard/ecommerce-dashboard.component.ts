@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProductsService } from '../../../core/services/products.service';
 import { SearchService } from '../../../core/services/search.service';
-import { Product } from '../../../model/product.model';
+import { Product, resolveProductPrice } from '../../../model/product.model';
 import { CartService } from '../../../core/services/cart.service';
 import { DataService } from '../../../core/services/data.service';
 import { ProductSearchRequestDTO } from '../../../model/product-search-request-dto.model';
@@ -199,12 +199,27 @@ export class EcommerceDashboardComponent implements OnInit {
     this.searchTrigger.update(v => v + 1);
   }
 
+  getSelectedProductCurrency(product: Product): string {
+    const preferredCurrency = (localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD').toUpperCase();
+    const matchedPrice = product.prices?.find(item => item.currencyCode?.toUpperCase() === preferredCurrency);
+
+    return matchedPrice?.currencyCode || product.prices?.[0]?.currencyCode || 'USD';
+  }
+
+  getProductPrice(product: Product): number {
+    return resolveProductPrice(product, this.getSelectedProductCurrency(product));
+  }
+
   addProduct(product: Product) {
+    const defaultCurrency = localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD';
+    const currencyCode = this.getSelectedProductCurrency(product);
+
     this.cartService.addToCart({
       productId: product.id!,
       name: product.name,
       providerId: product.providerId,
-      unitPrice: product.price,
+      currencyCode,
+      unitPrice: resolveProductPrice(product, defaultCurrency),
       quantity: 1,
       productImgUrl: product.productImageUrl!,
     });

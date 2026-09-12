@@ -31,11 +31,12 @@ export function buildOrdersFromCart(
     orders.push({
       providerId,
       customerId,
+      currencyCode: (items[0]?.currencyCode || 'USD').toUpperCase(),
       status: 'pending',
       paid: false,
       totalPrice,
       orderProducts
-    } as any); // Type cast if your CreateOrderRequest interface is strict
+    });
   });
 
   return orders;

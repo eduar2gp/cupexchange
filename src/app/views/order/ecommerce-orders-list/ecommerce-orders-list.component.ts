@@ -24,7 +24,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // 
 export class EcommerceOrdersListComponent implements OnInit {
   private merchantOrderService = inject(MerchantOrdersService);
 
-  displayedColumns: string[] = ['total', 'status', 'createdAt'];
+  displayedColumns: string[] = ['total', 'status', 'paid', 'createdAt'];
 
   // Signals for Data and Loading
   orders = signal<MerchantOrder[]>([]);

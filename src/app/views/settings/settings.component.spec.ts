@@ -20,4 +20,9 @@ describe('SettingsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should default merchant price currency to USD', () => {
+    expect(component.merchantPriceCurrency).toBe('USD');
+    expect(component.availableMerchantCurrencies).toContain('USD');
+  });
 });

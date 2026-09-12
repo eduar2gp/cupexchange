@@ -60,7 +60,10 @@
 
         <div class="product-header">
           <h2 class="product-name">{{ product.name }}</h2>
-          <p class="product-price">{{ product.price | currency }}</p>
+          <div class="product-price">
+            <span class="product-price-value">{{ getProductPrice(product) | number:'1.2-2' }}</span>
+            <span class="product-price-currency">{{ getSelectedProductCurrency(product) }}</span>
+          </div>
         </div>
       </div>
 
