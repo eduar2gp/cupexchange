@@ -105,4 +105,10 @@ export class MerchantOrdersService {
     // Tell HttpClient to treat the response as plain text
     return this.http.put(url, payload, { responseType: 'text' });
   }
+
+  payMerchantOrder(orderId: number): Observable<string> {
+    const url = build(ApiEndpoints.merchant.MERCHANT_PAY_ORDER, { orderId: orderId });
+    // Tell HttpClient to treat the response as plain text
+    return this.http.post(url, null, { responseType: 'text' });
+  }
 }

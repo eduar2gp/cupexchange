@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CartService } from '../../core/services/cart.service';
 import { MerchantOrdersService } from '../../core/services/merchant-order.service';
 import { CartItem } from '../../model/cart-item.model';
@@ -21,6 +22,7 @@ import { Router } from '@angular/router';
     RouterModule,
     MatButtonModule,
     MatIconModule,
+    MatSnackBarModule,
     TranslateModule,
     MatCardModule
   ],
@@ -31,7 +33,8 @@ export class CheckoutComponent {
 
   private cartService = inject(CartService);
   private authService = inject(AuthService);
-  private router = inject(Router)
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   cartItems$ = this.cartService.cartItems$;
   isSubmitting = false;
@@ -103,7 +106,14 @@ export class CheckoutComponent {
             queryParams: { tab: 2 }
           });
       },
-      error: err => console.error('Order failed', err)
+      error: err => {
+        console.error('Order failed', err);
+        this.snackBar.open(
+          err.error?.message || 'Unable to create the order. Please try again.',
+          'Close',
+          { duration: 5000 }
+        );
+      }
     });
   }
 }

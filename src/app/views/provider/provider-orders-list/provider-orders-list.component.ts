@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal, OnDestroy } from '@angular/core';
-import { CommonModule, CurrencyPipe, UpperCasePipe } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,7 +23,6 @@ import { Subject, takeUntil } from 'rxjs';
     MatTableModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    CurrencyPipe,
     UpperCasePipe,
     MatPaginatorModule,
     MatIconModule

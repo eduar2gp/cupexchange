@@ -1,11 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MerchantOrder } from '../../../model/merchant-order-response.model';
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Added Paginator
+import { DataService } from '../../../core/services/data.service'; // Added DataService
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -15,14 +17,15 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // 
     MatTableModule, 
     MatProgressSpinnerModule, 
     MatChipsModule, 
-    MatPaginatorModule, // Added
-    CurrencyPipe
+    MatPaginatorModule // Added
   ],
   templateUrl: './ecommerce-orders-list.component.html',
   styleUrl: './ecommerce-orders-list.component.scss',
 })
 export class EcommerceOrdersListComponent implements OnInit {
   private merchantOrderService = inject(MerchantOrdersService);
+  private dataService = inject(DataService); // Inject DataService
+  private router = inject(Router);
 
   displayedColumns: string[] = ['total', 'status', 'paid', 'createdAt'];
 
@@ -65,5 +68,10 @@ export class EcommerceOrdersListComponent implements OnInit {
     this.pageSize.set(e.pageSize);
     this.currentPage.set(e.pageIndex);
     this.loadOrders();
+  }
+
+  onOrderSelected(order: MerchantOrder): void {
+    this.dataService.updateMerchantOrder(order);
+    this.router.navigate(['ecommerce-order-details']);
   }
 }

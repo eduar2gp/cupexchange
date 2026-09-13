@@ -1,0 +1,107 @@
+<div class="details-container">
+	@if (order(); as orderData) {
+		<mat-card class="main-card">
+			<mat-card-header class="custom-header">
+				<div class="header-content">
+					<mat-card-title>Order #{{ orderData.merchantOrderId }}</mat-card-title>
+					<mat-card-subtitle>Placed {{ orderData.createdAt | date:'medium' }}</mat-card-subtitle>
+				</div>
+				<span class="status-pill" [attr.data-status]="orderData.status">
+					{{ orderData.status | titlecase }}
+				</span>
+			</mat-card-header>
+
+			<mat-card-content>
+				<div class="responsive-grid">
+					<div class="info-group">
+						<span class="label">Payment Status</span>
+						<span class="value" [class.paid]="orderData.paid" [class.pending]="!orderData.paid">
+							<mat-icon>{{ orderData.paid ? 'check_circle' : 'pending' }}</mat-icon>
+							{{ orderData.paid ? 'Paid' : 'Not paid' }}
+						</span>
+					</div>
+					<div class="info-group">
+						<span class="label">Order Total</span>
+						<span class="value total-amount">
+							{{ orderData.totalPrice | number:'1.2-2' }} {{ orderData.currencyCode }}
+						</span>
+					</div>
+				</div>
+
+				<mat-divider></mat-divider>
+
+				<section class="section">
+					<h3><mat-icon>shopping_bag</mat-icon> Items Ordered</h3>
+
+					<div class="table-container">
+						<table mat-table [dataSource]="orderData.orderProducts">
+							<ng-container matColumnDef="product">
+								<th mat-header-cell *matHeaderCellDef>Product</th>
+								<td mat-cell *matCellDef="let item">
+									<div class="product-cell">
+										<img [src]="item.product?.productImageUrl" [alt]="item.product?.name" />
+										<span>{{ item.product?.name }}</span>
+									</div>
+								</td>
+							</ng-container>
+
+							<ng-container matColumnDef="productId">
+								<th mat-header-cell *matHeaderCellDef>ID</th>
+								<td mat-cell *matCellDef="let item">#{{ item.productId }}</td>
+							</ng-container>
+
+							<ng-container matColumnDef="quantity">
+								<th mat-header-cell *matHeaderCellDef>Quantity</th>
+								<td mat-cell *matCellDef="let item">{{ item.quantity }}</td>
+							</ng-container>
+
+							<ng-container matColumnDef="priceAtPurchase">
+								<th mat-header-cell *matHeaderCellDef>Unit Price</th>
+								<td mat-cell *matCellDef="let item">
+									{{ item.priceAtPurchase | number:'1.2-2' }} {{ item.currencyCode || orderData.currencyCode }}
+								</td>
+							</ng-container>
+
+							<ng-container matColumnDef="subtotal">
+								<th mat-header-cell *matHeaderCellDef>Subtotal</th>
+								<td mat-cell *matCellDef="let item" class="bold-cell">
+									{{ (item.quantity * item.priceAtPurchase) | number:'1.2-2' }}
+									{{ item.currencyCode || orderData.currencyCode }}
+								</td>
+							</ng-container>
+
+							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+							<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+						</table>
+					</div>
+				</section>
+
+				<div class="order-actions">
+					<button mat-stroked-button color="primary" (click)="backToOrders()">
+						<mat-icon>arrow_back</mat-icon>
+						Back to Orders
+					</button>
+
+					@if (!orderData.paid) {
+						<button
+							mat-raised-button
+							color="primary"
+							type="button"
+							[disabled]="isPaying()"
+							(click)="payOrder()"
+						>
+							<mat-icon>{{ isPaying() ? 'hourglass_top' : 'payment' }}</mat-icon>
+							{{ isPaying() ? 'Processing payment...' : 'Pay Order' }}
+						</button>
+					}
+				</div>
+			</mat-card-content>
+		</mat-card>
+	} @else {
+		<div class="empty-state">
+			<mat-icon>receipt_long</mat-icon>
+			<p>No order is selected.</p>
+			<button mat-stroked-button color="primary" (click)="backToOrders()">Back to Orders</button>
+		</div>
+	}
+</div>

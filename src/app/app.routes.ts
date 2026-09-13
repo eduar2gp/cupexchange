@@ -22,6 +22,7 @@ import { EcommerceDashboardComponent } from '../app/views/dashboard/ecommerce-da
 import { ShoppingCartComponent } from '../app/views/cart/shopping-cart/shopping-cart.component'
 import { CheckoutComponent } from './views/checkout/checkout.component';
 import { EcommerceOrdersListComponent } from './views/order/ecommerce-orders-list/ecommerce-orders-list.component';
+import { EcommerceOrderDetail } from './views/order/ecommerce-order-details/ecommerce-order-detail';
 import { ProviderOrdersListComponent } from './views/provider/provider-orders-list/provider-orders-list.component';
 import { ProviderOrderDetailsComponent } from './views/provider/provider-order-details/provider-order-details.component';
 import { AddAccountComponent } from './views/account/add-account/add-account.component';
@@ -173,6 +174,11 @@ export const routes: Routes = [
   {
     path: 'ecommerce-orders',
     component: EcommerceOrdersListComponent,
+    canActivate: [roleGuard],
+  },
+  {
+    path: 'ecommerce-order-details',
+    component: EcommerceOrderDetail,
     canActivate: [roleGuard],
   },
   {
