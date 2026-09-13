@@ -1,0 +1,84 @@
+<div class="prediction-market-dashboard">
+	@if (isLoadingCategories()) {
+		<div class="loading-state"><mat-spinner diameter="48"></mat-spinner></div>
+	} @else if (errorMessage(); as error) {
+		<div class="error-state">{{ error }}</div>
+	} @else if (categories().length === 0) {
+		<div class="empty-state">No prediction market categories are available.</div>
+	} @else {
+		<mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
+			@for (category of categories(); track category.id) {
+				<mat-tab [label]="category.name">
+					<section class="tab-content">
+						@if (isLoadingEvents()) {
+							<div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+						} @else if (events().length === 0) {
+							<div class="empty-state">No events are available for this category.</div>
+						} @else {
+							<div class="events-grid">
+								@for (event of events(); track event.id) {
+									<button type="button" class="event-card" [class.selected]="selectedEvent()?.id === event.id" (click)="selectEvent(event)">
+										<span class="event-title">{{ event.title }}</span>
+										<span class="event-status">{{ event.status }}</span>
+										<span class="event-date">{{ event.startTime ? (event.startTime | date:'medium') : 'Start time unavailable' }}</span>
+									</button>
+								}
+							</div>
+						}
+
+						@if (selectedEvent(); as event) {
+							<section class="orders-section">
+								<h2>Orders for {{ event.title }}</h2>
+
+								@if (isLoadingOrders()) {
+									<div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+								} @else if (orders().length === 0) {
+									<div class="empty-state">No orders are available for this event.</div>
+								} @else {
+									<div class="orders-table">
+										<table mat-table [dataSource]="orders()">
+											<ng-container matColumnDef="orderId">
+												<th mat-header-cell *matHeaderCellDef>Order</th>
+												<td mat-cell *matCellDef="let order">#{{ order.orderId }}</td>
+											</ng-container>
+											<ng-container matColumnDef="side">
+												<th mat-header-cell *matHeaderCellDef>Side</th>
+												<td mat-cell *matCellDef="let order">{{ order.side }}</td>
+											</ng-container>
+											<ng-container matColumnDef="outcomePosition">
+												<th mat-header-cell *matHeaderCellDef>Outcome</th>
+												<td mat-cell *matCellDef="let order">{{ order.outcomePosition }}</td>
+											</ng-container>
+											<ng-container matColumnDef="price">
+												<th mat-header-cell *matHeaderCellDef>Price</th>
+												<td mat-cell *matCellDef="let order">{{ order.price | number:'1.2-2' }} {{ order.currencyCode }}</td>
+											</ng-container>
+											<ng-container matColumnDef="quantity">
+												<th mat-header-cell *matHeaderCellDef>Quantity</th>
+												<td mat-cell *matCellDef="let order">{{ order.quantity }}</td>
+											</ng-container>
+											<ng-container matColumnDef="filledQuantity">
+												<th mat-header-cell *matHeaderCellDef>Filled</th>
+												<td mat-cell *matCellDef="let order">{{ order.filledQuantity }}</td>
+											</ng-container>
+											<ng-container matColumnDef="status">
+												<th mat-header-cell *matHeaderCellDef>Status</th>
+												<td mat-cell *matCellDef="let order">{{ order.status }}</td>
+											</ng-container>
+											<ng-container matColumnDef="createdAt">
+												<th mat-header-cell *matHeaderCellDef>Created</th>
+												<td mat-cell *matCellDef="let order">{{ order.createdAt | date:'medium' }}</td>
+											</ng-container>
+											<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+											<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+										</table>
+									</div>
+								}
+							</section>
+						}
+					</section>
+				</mat-tab>
+			}
+		</mat-tab-group>
+	}
+</div>

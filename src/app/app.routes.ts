@@ -38,6 +38,7 @@ import { TransactionDetailsComponent } from './views/transaction/transaction-det
 import { UserOrdersComponent } from './views/order/user-orders/user-orders.component';
 import { AccountProviderBillingReports } from './views/account/account-provider-billing-reports/account-provider-billing-reports';
 import { IdVerificationComponent } from './components/id-verification/id-verification.component';
+import { PredictionMarketDashboard } from './views/dashboard/prediction-market-dashboard/prediction-market-dashboard';
 
 
 export const routes: Routes = [
@@ -62,6 +63,12 @@ export const routes: Routes = [
      component: ExchangeDashboardComponent,      
      canActivate: [featureFlagGuard],
      data: { requiredFlags: 'exchange' }
+  },
+  {
+    path: 'prediction-market-dashboard',
+    component: PredictionMarketDashboard,
+    canActivate: [featureFlagGuard],
+    data: { requiredFlags: 'prediction_market' }
   },
   {
     path: 'add-wallet',

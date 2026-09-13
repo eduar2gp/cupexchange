@@ -181,7 +181,8 @@
     "ORDERS": "After your deposit is approved proceed to create your first order",
     "DASHBOARD": "Price charts open orders and real time transactions are shown in the dashboard page",
     "STORE": "Browse products and apply filters for search",
-    "SHOPPING_CART": "Add products to your cart and create orders"
+    "SHOPPING_CART": "Add products to your cart and create orders",
+    "PREDICTION_MARKET": "Access the prediction market and participate in prediction events"
   },
   "EXCHANGE": "Exchange",
   "PRODUCTS": "Products",

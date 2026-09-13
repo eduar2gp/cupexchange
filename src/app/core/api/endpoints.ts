@@ -77,6 +77,11 @@ export const ApiEndpoints = {
   },
   config: {
     GET_FLAGS: '/api/v1/config/flags'
+  },
+  predictionMarket:{
+    GET_PREDICTION_CATEGORIES: '/api/v1/prediction-orders/categories',
+    GET_PREDICTION_EVENTS: '/api/v1/prediction-orders/events',
+    GET_PREDICTION_ORDERS: '/api/v1/prediction-orders/event/{eventId}/orders',
   }
 };
 

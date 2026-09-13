@@ -149,6 +149,10 @@
         <mat-icon>shopping_basket</mat-icon>
         <!-- <span matListItemTitle>{{ 'STORE' | translate }}</span> -->
       </a>
+      <a *appFeatureFlag="'prediction_market'" mat-button routerLink="/prediction-market-dashboard" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.PREDICTION_MARKET' | translate" data-step="7">
+        <mat-icon>graphic_eq</mat-icon>
+      </a>
       <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item"
         [attr.data-intro]="'LOGIN_TUTORIAL.ORDERS' | translate" data-step="3">
         <mat-icon>list</mat-icon>
