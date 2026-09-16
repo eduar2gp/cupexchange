@@ -8,6 +8,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { PredictionMarketService } from '../../../core/services/prediction-market.service';
 import { PredictionCategory } from '../../../model/prediction-category.model';
 import { PredictionEventResponse } from '../../../model/prediction-event.model';
+import { PredictionMarketResponse } from '../../../model/prediction-market.model';
 import { PredictionOrderResponse } from '../../../model/prediction-order-response.model';
 
 @Component({
@@ -29,10 +30,12 @@ export class PredictionMarketDashboard implements OnInit {
 
   readonly categories = signal<PredictionCategory[]>([]);
   readonly events = signal<PredictionEventResponse[]>([]);
+  readonly markets = signal<PredictionMarketResponse[]>([]);
   readonly orders = signal<PredictionOrderResponse[]>([]);
   readonly selectedEvent = signal<PredictionEventResponse | null>(null);
   readonly isLoadingCategories = signal(false);
   readonly isLoadingEvents = signal(false);
+  readonly isLoadingMarkets = signal(false);
   readonly isLoadingOrders = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
@@ -77,6 +80,7 @@ export class PredictionMarketDashboard implements OnInit {
     const category = this.categories()[index];
     this.selectedIndex = index;
     this.events.set([]);
+    this.markets.set([]);
     this.orders.set([]);
     this.selectedEvent.set(null);
 
@@ -87,7 +91,9 @@ export class PredictionMarketDashboard implements OnInit {
 
   selectEvent(event: PredictionEventResponse): void {
     this.selectedEvent.set(event);
+    this.markets.set([]);
     this.orders.set([]);
+    this.loadMarkets(event.id);
     this.loadOrders(event.id);
   }
 
@@ -108,19 +114,44 @@ export class PredictionMarketDashboard implements OnInit {
     });
   }
 
+  private loadMarkets(eventId: number): void {
+    this.isLoadingMarkets.set(true);
+    this.errorMessage.set(null);
+
+    this.predictionMarketService.getPredictionMarkets(eventId).subscribe({
+      next: (markets) => {
+        if (this.selectedEvent()?.id === eventId) {
+          this.markets.set(markets);
+          this.isLoadingMarkets.set(false);
+        }
+      },
+      error: (error) => {
+        if (this.selectedEvent()?.id === eventId) {
+          console.error('Failed to load prediction markets', error);
+          this.errorMessage.set('Failed to load prediction markets.');
+          this.isLoadingMarkets.set(false);
+        }
+      },
+    });
+  }
+
   private loadOrders(eventId: number): void {
     this.isLoadingOrders.set(true);
     this.errorMessage.set(null);
 
     this.predictionMarketService.getPredictionOrders(eventId).subscribe({
       next: (orders) => {
-        this.orders.set(orders);
-        this.isLoadingOrders.set(false);
+        if (this.selectedEvent()?.id === eventId) {
+          this.orders.set(orders);
+          this.isLoadingOrders.set(false);
+        }
       },
       error: (error) => {
-        console.error('Failed to load prediction orders', error);
-        this.errorMessage.set('Failed to load prediction orders.');
-        this.isLoadingOrders.set(false);
+        if (this.selectedEvent()?.id === eventId) {
+          console.error('Failed to load prediction orders', error);
+          this.errorMessage.set('Failed to load prediction orders.');
+          this.isLoadingOrders.set(false);
+        }
       },
     });
   }

@@ -3,8 +3,23 @@
 	color: var(--color-text);
 
 	.tab-content,
-	.orders-section {
+	.event-details-section {
 		padding-top: 1.5rem;
+	}
+
+	.market-and-orders {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+		gap: 1.5rem;
+	}
+
+	.markets-section,
+	.orders-section {
+		min-width: 0;
+
+		h3 {
+			margin-top: 0;
+		}
 	}
 
 	.events-grid {
@@ -41,6 +56,39 @@
 		font-size: 0.875rem;
 	}
 
+	.markets-list {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.market-card {
+		padding: 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--border-radius);
+		background: var(--color-surface);
+
+		h4 {
+			margin: 0 0 0.75rem;
+		}
+
+		dl {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.75rem;
+			margin: 0;
+		}
+
+		dt {
+			color: var(--color-text-secondary);
+			font-size: 0.75rem;
+		}
+
+		dd {
+			margin: 0.2rem 0 0;
+			font-weight: 600;
+		}
+	}
+
 	.orders-table {
 		overflow-x: auto;
 		border: 1px solid var(--color-border);
@@ -63,5 +111,11 @@
 
 	.error-state {
 		color: var(--color-danger);
+	}
+
+	@media (max-width: 900px) {
+		.market-and-orders {
+			grid-template-columns: 1fr;
+		}
 	}
 }

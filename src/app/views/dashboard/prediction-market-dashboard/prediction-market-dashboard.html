@@ -27,16 +27,41 @@
 						}
 
 						@if (selectedEvent(); as event) {
-							<section class="orders-section">
-								<h2>Orders for {{ event.title }}</h2>
+							<section class="event-details-section">
+								<h2>{{ event.title }}</h2>
+								<div class="market-and-orders">
+									<section class="markets-section">
+										<h3>Markets</h3>
+										@if (isLoadingMarkets()) {
+											<div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+										} @else if (markets().length === 0) {
+											<div class="empty-state">No markets are available for this event.</div>
+										} @else {
+											<div class="markets-list">
+												@for (market of markets(); track market.id) {
+													<article class="market-card">
+														<h4>{{ market.question }}</h4>
+														<dl>
+															<div><dt>Outcome type</dt><dd>{{ market.outcomeType }}</dd></div>
+															<div><dt>Currency</dt><dd>{{ market.currencyCode }}</dd></div>
+															<div><dt>Status</dt><dd>{{ market.status }}</dd></div>
+															<div><dt>Winning outcome</dt><dd>{{ market.winningOutcome === null ? 'Pending' : (market.winningOutcome ? 'Yes' : 'No') }}</dd></div>
+														</dl>
+													</article>
+												}
+											</div>
+										}
+									</section>
 
-								@if (isLoadingOrders()) {
-									<div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
-								} @else if (orders().length === 0) {
-									<div class="empty-state">No orders are available for this event.</div>
-								} @else {
-									<div class="orders-table">
-										<table mat-table [dataSource]="orders()">
+									<section class="orders-section">
+										<h3>Orders</h3>
+										@if (isLoadingOrders()) {
+											<div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+										} @else if (orders().length === 0) {
+											<div class="empty-state">No orders are available for this event.</div>
+										} @else {
+											<div class="orders-table">
+												<table mat-table [dataSource]="orders()">
 											<ng-container matColumnDef="orderId">
 												<th mat-header-cell *matHeaderCellDef>Order</th>
 												<td mat-cell *matCellDef="let order">#{{ order.orderId }}</td>
@@ -71,9 +96,11 @@
 											</ng-container>
 											<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 											<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-										</table>
-									</div>
-								}
+												</table>
+											</div>
+										}
+									</section>
+								</div>
 							</section>
 						}
 					</section>
