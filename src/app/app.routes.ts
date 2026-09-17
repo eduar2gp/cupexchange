@@ -39,6 +39,7 @@ import { UserOrdersComponent } from './views/order/user-orders/user-orders.compo
 import { AccountProviderBillingReports } from './views/account/account-provider-billing-reports/account-provider-billing-reports';
 import { IdVerificationComponent } from './components/id-verification/id-verification.component';
 import { PredictionMarketDashboard } from './views/dashboard/prediction-market-dashboard/prediction-market-dashboard';
+import { AddPredictionOrder } from './views/order/add-prediction-order/add-prediction-order';
 
 
 export const routes: Routes = [
@@ -69,6 +70,11 @@ export const routes: Routes = [
     component: PredictionMarketDashboard,
     canActivate: [featureFlagGuard],
     data: { requiredFlags: 'prediction_market' }
+  },
+  {
+    path: 'add-prediction-order/:marketId',
+    component: AddPredictionOrder,
+    canActivate: [roleGuard],
   },
   {
     path: 'add-wallet',

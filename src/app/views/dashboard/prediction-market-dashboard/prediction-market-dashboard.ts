@@ -10,6 +10,8 @@ import { PredictionCategory } from '../../../model/prediction-category.model';
 import { PredictionEventResponse } from '../../../model/prediction-event.model';
 import { PredictionMarketResponse } from '../../../model/prediction-market.model';
 import { PredictionOrderResponse } from '../../../model/prediction-order-response.model';
+import { Router, RouterModule } from '@angular/router';
+import { DataService } from '../../../core/services/data.service';
 
 @Component({
   selector: 'app-prediction-market-dashboard',
@@ -21,12 +23,15 @@ import { PredictionOrderResponse } from '../../../model/prediction-order-respons
     MatProgressSpinnerModule,
     MatTableModule,
     MatTabsModule,
+    RouterModule,
   ],
   templateUrl: './prediction-market-dashboard.html',
   styleUrl: './prediction-market-dashboard.scss',
 })
 export class PredictionMarketDashboard implements OnInit {
   private readonly predictionMarketService = inject(PredictionMarketService);
+  private readonly dataService = inject(DataService);
+  private readonly router = inject(Router);
 
   readonly categories = signal<PredictionCategory[]>([]);
   readonly events = signal<PredictionEventResponse[]>([]);
@@ -155,4 +160,11 @@ export class PredictionMarketDashboard implements OnInit {
       },
     });
   }
+
+  createOrder(market: PredictionMarketResponse): void {
+    this.dataService.updatePredictionMarketStatus(market);
+    this.router.navigate(['/add-prediction-order', market.id]);
+  }
+
+
 }

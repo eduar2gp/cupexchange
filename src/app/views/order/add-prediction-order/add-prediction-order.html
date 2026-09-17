@@ -1,1 +1,94 @@
-<p>add-prediction-order works!</p>
+<main class="prediction-order-page">
+	<mat-card class="prediction-order-card">
+		<mat-card-header>
+			<mat-card-title>{{ predictionMarketStatus?.eventTitle}}</mat-card-title>
+			<mat-card-subtitle> {{ predictionMarketStatus?.question }}</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			@if (errorMessage) {
+				<p class="message error-message" role="alert">{{ errorMessage }}</p>
+			}
+			@if (successMessage) {
+				<p class="message success-message" role="status">{{ successMessage }}</p>
+			}
+
+			<form #predictionOrderForm="ngForm" (ngSubmit)="submitOrder(predictionOrderForm)" class="order-form">
+				<div class="form-grid">
+					<section class="wallet-display" aria-label="Selected wallet">
+						<span class="toggle-label">Payment wallet</span>
+						<strong>{{ merchantPriceCurrency }} — {{ selectedWallet?.availableBalance ?? 0 | number:'1.2-2' }}</strong>
+					</section>
+
+					<div class="toggle-column">
+						<section class="toggle-field" aria-labelledby="side-label">
+							<span id="side-label" class="toggle-label">Side</span>
+							<mat-button-toggle-group [(ngModel)]="order.side" name="side" aria-labelledby="side-label">
+								<mat-button-toggle value="BUY" class="buy-toggle">Buy</mat-button-toggle>
+								<mat-button-toggle value="SELL" class="sell-toggle">Sell</mat-button-toggle>
+							</mat-button-toggle-group>
+						</section>
+
+						<section class="toggle-field" aria-labelledby="position-label">
+							<span id="position-label" class="toggle-label">Position</span>
+							<mat-button-toggle-group [(ngModel)]="order.outcomePosition" name="outcomePosition" aria-labelledby="position-label">
+								<mat-button-toggle value="YES" class="yes-toggle">Yes</mat-button-toggle>
+								<mat-button-toggle value="NO" class="no-toggle">No</mat-button-toggle>
+							</mat-button-toggle-group>
+						</section>
+					</div>
+
+					<div class="amount-column">
+						<mat-form-field appearance="outline">
+							<mat-label>Price</mat-label>
+							<input matInput type="number" [(ngModel)]="order.price" name="price" min="1" max="99" step="1" required #priceControl="ngModel" />
+							@if (priceControl.invalid && (priceControl.dirty || priceControl.touched)) {
+								<mat-error>Enter a whole number from 1 to 99.</mat-error>
+							}
+						</mat-form-field>
+
+						<mat-form-field appearance="outline">
+							<mat-label>Quantity</mat-label>
+							<input matInput type="number" [(ngModel)]="order.quantity" name="quantity" min="1" step="1" required />
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="order-summary" aria-live="polite">
+					<div class="summary-row">
+						<span class="total-label">Maximum pay</span>
+						<strong>{{ maximumPay | number:'1.2-2' }}</strong>
+					</div>
+					<div class="summary-row">
+						<span class="total-label">Base cost</span>
+						<strong>{{ baseCost | number:'1.2-2' }}</strong>
+					</div>
+					<div class="summary-row">
+						<span class="total-label">Commission (1%)</span>
+						<strong>{{ commissionCost | number:'1.2-2' }}</strong>
+					</div>
+					<div class="summary-row final-cost">
+						<span class="total-label">Cost</span>
+						<strong>{{ orderCost | number:'1.2-2' }}</strong>
+					</div>
+					<div class="summary-row profit-row">
+						<span class="total-label">Profit</span>
+						<strong>{{ profit | number:'1.2-2' }}</strong>
+					</div>
+				</div>
+
+				<div class="form-actions">
+					<button mat-button type="button" (click)="goBack()">Cancel</button>
+					<button mat-flat-button color="primary" type="submit" [disabled]="predictionOrderForm.invalid || isSubmitting">
+						@if (isSubmitting) {
+							<mat-spinner diameter="20"></mat-spinner>
+							Placing order
+						} @else {
+							Place order
+						}
+					</button>
+				</div>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</main>

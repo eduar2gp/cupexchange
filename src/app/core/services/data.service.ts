@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { CashOrder } from '../../model/cash-order-response.model';
 import { TransactionManagerResponse } from '../../model/transaction-manager.model';
 import { VerificationStatusResponse } from '../../services/identity.service';
+import { PredictionMarketResponse } from '../../model/prediction-market.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,9 @@ export class DataService {
   private updateWalletRequiredSubject = new BehaviorSubject<boolean>(false);
   // The observable for components to subscribe to
   public updateWalletRequired$ = this.updateWalletRequiredSubject.asObservable();
+
+  private readonly predictionMarketStatusSubject = new BehaviorSubject<PredictionMarketResponse | null>(null);
+  predictionMarketStatus$: Observable<PredictionMarketResponse | null> = this.predictionMarketStatusSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -110,6 +114,14 @@ export class DataService {
 
   getCurrentTransactionRequest(): TransactionRequest | null {
     return this.transactionRequestSource.value;
+  }
+
+  updatePredictionMarketStatus(market: PredictionMarketResponse | null): void {
+    this.predictionMarketStatusSubject.next(market);
+  }
+
+  getPredictionMarketStatus(): PredictionMarketResponse | null {
+    return this.predictionMarketStatusSubject.value;
   }
 
   getCurrentTransaction(): TransactionManagerResponse | null{

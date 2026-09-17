@@ -39,7 +39,7 @@
 										} @else {
 											<div class="markets-list">
 												@for (market of markets(); track market.id) {
-													<article class="market-card">
+													<article class="market-card" (click)="createOrder(market)" (keydown.enter)="createOrder(market)" tabindex="0" role="button">
 														<h4>{{ market.question }}</h4>
 														<dl>
 															<div><dt>Outcome type</dt><dd>{{ market.outcomeType }}</dd></div>
