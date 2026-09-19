@@ -118,7 +118,7 @@
 
 .card-content-grid {
   display: grid;
-  grid-template-columns: 72px 1fr 90px 100px auto;
+  grid-template-columns: 72px 1fr 136px 100px auto;
   align-items: center;
   gap: 1.25rem;
   padding: 1.25rem;
@@ -154,6 +154,7 @@
       margin: 0;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -180,8 +181,26 @@
   }
 
   .item-quantity {
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .quantity-button {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      color: var(--color-text-secondary);
+
+      &:disabled {
+        color: var(--color-border);
+      }
+    }
+
     .qty-field {
-      width: 100%;
+      width: 64px;
       margin-bottom: -1.25em; /* Compensates for Angular Material helper text space */
 
       ::ng-deep {
@@ -375,11 +394,13 @@
 
     .item-quantity {
       grid-area: qty;
-      max-width: 80px;
+      max-width: none;
     }
 
     .item-total {
       grid-area: price;
+      align-self: end;
+      white-space: nowrap;
     }
   }
 }

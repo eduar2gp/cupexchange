@@ -49,7 +49,7 @@ export class ShoppingCartComponent {
     this.cartService.removeFromCart(productId);
   }
 
-  updateQuantity(productId: number, quantity: string): void {
+  updateQuantity(productId: number, quantity: number | string): void {
     this.cartService.updateQuantity(productId, Number(quantity));
   }
 

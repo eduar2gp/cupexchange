@@ -44,24 +44,41 @@
 
                 <!-- Quantity Controller -->
                 <div class="item-quantity">
-                  <mat-form-field appearance="outline" density="compact" class="qty-field">
-                    <mat-label>{{ 'QTY' | translate }}</mat-label>
-                    <input matInput
-                           type="number"
-                           min="1"
-                           step="1"
-                           [value]="item.quantity"
-                           (change)="updateQuantity(item.productId, $any($event.target).value)" />
-                  </mat-form-field>
+                  <div class="quantity-controls">
+                    <button mat-icon-button
+                            type="button"
+                            class="quantity-button"
+                            [disabled]="item.quantity <= 1"
+                            aria-label="Decrease quantity"
+                            (click)="updateQuantity(item.productId, item.quantity - 1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <mat-form-field appearance="outline" density="compact" class="qty-field">
+                      <mat-label>{{ 'QTY' | translate }}</mat-label>
+                      <input matInput
+                             type="number"
+                             min="1"
+                             step="1"
+                             [value]="item.quantity"
+                             (input)="updateQuantity(item.productId, $any($event.target).value)" />
+                    </mat-form-field>
+                    <button mat-icon-button
+                            type="button"
+                            class="quantity-button"
+                            aria-label="Increase quantity"
+                            (click)="updateQuantity(item.productId, item.quantity + 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Line Item Total -->
-                 <div class="item-details">
-                <span class="unit-price">
+                <div class="item-total">
+                  <span class="unit-price">
                     <span class="price-amount">{{ item.unitPrice * item.quantity | number: '1.2-2' }}</span>
                     <span class="currency-code">{{ item.currencyCode }}</span>
                   </span>
-                  </div>
+                </div>
 
                 <!-- Actions -->
                 <div class="item-actions">
