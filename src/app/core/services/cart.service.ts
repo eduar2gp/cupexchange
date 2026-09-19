@@ -49,6 +49,17 @@ export class CartService {
     this.updateCart(items);
   }
 
+  updateQuantity(productId: number, quantity: number): void {
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      return;
+    }
+
+    const items = this.cartItemsSubject.value.map(item =>
+      item.productId === productId ? { ...item, quantity } : item
+    );
+    this.updateCart(items);
+  }
+
   clearCart(): void {
     this.updateCart([]);
   }

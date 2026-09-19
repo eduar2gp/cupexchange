@@ -7,6 +7,7 @@ export interface Product {
   id?: number;
   providerId: number;
   name: string;
+  providerName?: string;
   description: string;
   price?: number;
   prices?: ProductPrice[];

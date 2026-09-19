@@ -10,6 +10,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 
 @Component({
@@ -23,7 +25,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     MatButtonModule,
     MatDividerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.scss']
@@ -43,6 +47,10 @@ export class ShoppingCartComponent {
 
   removeItem(productId: number): void {
     this.cartService.removeFromCart(productId);
+  }
+
+  updateQuantity(productId: number, quantity: string): void {
+    this.cartService.updateQuantity(productId, Number(quantity));
   }
 
   clearCart(): void {

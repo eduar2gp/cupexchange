@@ -216,8 +216,10 @@ export class EcommerceDashboardComponent implements OnInit {
 
     this.cartService.addToCart({
       productId: product.id!,
+      description: product.description || '',
       name: product.name,
       providerId: product.providerId,
+      providerName: product.providerName,
       currencyCode,
       unitPrice: resolveProductPrice(product, defaultCurrency),
       quantity: 1,

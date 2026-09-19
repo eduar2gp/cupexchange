@@ -1,73 +1,117 @@
 <div class="cart-container">
-  <h2 class="mat-headline-5">{{ 'MY_CART' | translate }}</h2>
+  <header class="cart-header">
+    <h2 class="page-title">{{ 'MY_CART' | translate }}</h2>
+  </header>
 
   @if (cartItems$ | async; as items) {
-  @if (items.length === 0) {
-  <mat-card class="empty-cart-card">
-    <mat-card-content>
-      <mat-icon color="disabled">shopping_cart</mat-icon>
-      <p class="mat-body-large">{{ 'CART_EMPTY' | translate }}</p>
-      <button mat-button color="primary" routerLink="/ecommerce-dashboard">
-        {{ 'SEARCH_PRODUCTS' | translate }}
-      </button>
-    </mat-card-content>
-  </mat-card>
-  }
-
-  @else {
-  <div class="cart-layout">
-    <div class="cart-list">
-      @for (item of items; track item.productId) {
-      <mat-card class="cart-item-card" appearance="outlined">
-        <div class="card-content-wrapper">
-          <img [src]="item.productImgUrl" [alt]="item.name" class="product-img" />
-
-          <div class="item-details">
-            <span class="mat-subtitle-1">{{ item.name }}</span>
-            <span class="mat-body-medium">{{ item.unitPrice | currency }}</span>
+    @if (items.length === 0) {
+      <!-- Empty Cart State -->
+      <mat-card class="empty-cart-card" appearance="outlined">
+        <mat-card-content class="empty-cart-content">
+          <div class="empty-icon-wrapper">
+            <mat-icon class="empty-icon">shopping_cart</mat-icon>
           </div>
-
-          <div class="item-quantity">
-            <span class="mat-body-small">{{ 'QTY' | translate }}: {{ item.quantity }}</span>
-          </div>
-
-          <div class="item-total mat-subtitle-2">
-            {{ (item.unitPrice * item.quantity) | currency }}
-          </div>
-
-          <button mat-icon-button color="warn"
-                  (click)="removeItem(item.productId)"
-                  [matTooltip]="'REMOVE' | translate">
-            <mat-icon>delete_outline</mat-icon>
+          <h3 class="empty-title">{{ 'CART_EMPTY' | translate }}</h3>
+          <p class="empty-subtitle">Looks like you haven't added anything to your cart yet.</p>
+          <button mat-flat-button color="primary" routerLink="/ecommerce-dashboard" class="action-btn">
+            <mat-icon>search</mat-icon>
+            {{ 'SEARCH_PRODUCTS' | translate }}
           </button>
-        </div>
+        </mat-card-content>
       </mat-card>
-      }
-    </div>
+    } @else {
+      <!-- Active Cart Layout -->
+      <div class="cart-layout">
+        
+        <!-- Cart Items List -->
+        <div class="cart-list">
+          @for (item of items; track item.productId) {
+            <mat-card class="cart-item-card" appearance="outlined">
+              <h4 class="provider-name">{{ item.providerName }}</h4>
+              <div class="card-content-grid">
+                <!-- Product Thumbnail -->
+                <img [src]="item.productImgUrl" [alt]="item.name" class="product-img" />
 
-    <mat-card class="cart-summary-card">
-      <mat-card-header>
-        <mat-card-title>{{ 'SUMMARY' | translate }}</mat-card-title>
-      </mat-card-header>
+                <!-- Product Details -->
+                <div class="item-details">
+                  <span class="product-name">{{ item.name }}</span>
+                  <p class="product-description" *ngIf="item.description">{{ item.description }}</p>
+                  <span class="unit-price">
+                    <span class="price-amount">{{ item.unitPrice | number: '1.2-2' }}</span>
+                    <span class="currency-code">{{ item.currencyCode }}</span>
+                  </span>
+                </div>
 
-      <mat-card-content>
-        <mat-divider></mat-divider>
-        <div class="total-row">
-          <span class="mat-headline-6">{{ 'TOTAL' | translate }}</span>
-          <span class="mat-headline-6">{{ total$ | async | currency }}</span>
+                <!-- Quantity Controller -->
+                <div class="item-quantity">
+                  <mat-form-field appearance="outline" density="compact" class="qty-field">
+                    <mat-label>{{ 'QTY' | translate }}</mat-label>
+                    <input matInput
+                           type="number"
+                           min="1"
+                           step="1"
+                           [value]="item.quantity"
+                           (change)="updateQuantity(item.productId, $any($event.target).value)" />
+                  </mat-form-field>
+                </div>
+
+                <!-- Line Item Total -->
+                 <div class="item-details">
+                <span class="unit-price">
+                    <span class="price-amount">{{ item.unitPrice * item.quantity | number: '1.2-2' }}</span>
+                    <span class="currency-code">{{ item.currencyCode }}</span>
+                  </span>
+                  </div>
+
+                <!-- Actions -->
+                <div class="item-actions">
+                  <button mat-icon-button 
+                          class="delete-btn" 
+                          (click)="removeItem(item.productId)"
+                          [matTooltip]="'REMOVE' | translate">
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+              </div>
+            </mat-card>
+          }
         </div>
-      </mat-card-content>
 
-      <mat-card-actions align="end">
-        <button mat-button color="warn" (click)="clearCart()">
-          {{ 'CLEAR_CART' | translate }}
-        </button>
-        <button mat-raised-button color="primary" routerLink="/checkout">
-          {{ 'CREATE_ORDER' | translate }}
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-  }
+        <!-- Summary Panel -->
+        <mat-card class="cart-summary-card" appearance="outlined">
+          <mat-card-header class="summary-header">
+            <mat-card-title class="summary-title">{{ 'SUMMARY' | translate }}</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content class="summary-content">
+            <div class="summary-row">
+              <span class="row-label">Items Count</span>
+              <span class="row-value">{{ items.length }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="summary-row total-row">
+              <span class="total-label">{{ 'TOTAL' | translate }}</span>
+              <span class="unit-price">
+                <span class="price-amount">{{ (total$ | async) | number: '1.2-2' }}</span>
+                <span class="currency-code">{{ items[0]?.currencyCode }}</span>
+              </span>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions class="summary-actions">
+            <button mat-button class="clear-btn" (click)="clearCart()">
+              {{ 'CLEAR_CART' | translate }}
+            </button>
+            <button mat-flat-button color="primary" routerLink="/checkout" class="checkout-btn">
+              {{ 'CREATE_ORDER' | translate }}
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+      </div>
+    }
   }
 </div>
