@@ -7,7 +7,7 @@
   @if (orders().length > 0) {
     <mat-list class="orders-list">
       @for (order of orders(); track order.merchantOrderId) {
-        <mat-list-item class="order-item">
+        <mat-list-item class="order-item" clickable (click)="onOrderSelected(order)">
           <div matLine class="order-header">
             <span class="order-label">Total</span>
           <span class="order-total">
@@ -19,7 +19,6 @@
               {{ order.status | uppercase }}
               </mat-chip>
             </mat-chip-set>
-            <button mat-button type="button" (click)="onOrderSelected(order)">Ver orden</button>
           </div>
 
           <div matLine class="order-details">

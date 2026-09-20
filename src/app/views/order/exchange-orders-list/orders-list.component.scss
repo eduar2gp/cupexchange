@@ -4,7 +4,7 @@
   flex-direction: column;
   background-color: var(--color-bg);
   color: var(--color-text);
-  min-height: 100vh;
+  height: auto;
 }
 
 .orders-header-row {
@@ -72,7 +72,6 @@
   border-radius: 0.75rem !important;
   height: auto !important;
   transition: background-color 0.15s ease;
-  margin-bottom: 0.5rem !important;
 
   /* 1. Reset Material's internal padding on the host container */
   padding-left: 0 !important;
