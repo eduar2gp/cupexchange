@@ -1,12 +1,23 @@
 .orders-container {
   color: var(--color-text);
+  /* Prevent horizontal layout shifting on touch swipe */
+  overflow-x: hidden; 
 
   .orders-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     padding: 0;
-    overflow: visible;
+
+    /* CRITICAL FIX FOR MOBILE SCROLLING */
+    overflow: visible !important; /* Disables inner scroll container */
+    height: auto !important;     /* Allows full expansion */
+    max-height: none !important;
+
+    /* Material MDC internal reset */
+    ::ng-deep .mdc-list {
+      overflow: visible !important;
+    }
   }
 
   .order-item {
@@ -17,6 +28,8 @@
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     cursor: pointer;
+    
+    /* Allow native vertical scrolling while preventing unintended horizontal gestures */
     touch-action: pan-y;
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s ease, background-color 0.15s ease;
