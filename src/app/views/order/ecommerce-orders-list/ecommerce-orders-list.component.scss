@@ -34,11 +34,6 @@
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s ease, background-color 0.15s ease;
 
-    &:hover {
-      border-color: var(--color-primary);
-      background: var(--color-surface-elevated);
-    }
-
     ::ng-deep .mdc-list-item__content {
       display: flex;
       flex-direction: column;
