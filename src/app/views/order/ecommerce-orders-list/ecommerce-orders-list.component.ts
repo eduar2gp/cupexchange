@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MerchantOrder } from '../../../model/merchant-order-response.model';
 import { MerchantOrdersService } from '../../../core/services/merchant-order.service';
-import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Added Paginator
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   selector: 'app-ecommerce-orders-list',
   imports: [
     CommonModule, 
-    MatTableModule, 
+    MatListModule,
     MatProgressSpinnerModule, 
     MatChipsModule, 
     MatPaginatorModule // Added
@@ -26,8 +26,6 @@ export class EcommerceOrdersListComponent implements OnInit {
   private merchantOrderService = inject(MerchantOrdersService);
   private dataService = inject(DataService); // Inject DataService
   private router = inject(Router);
-
-  displayedColumns: string[] = ['total', 'status', 'paid', 'createdAt'];
 
   // Signals for Data and Loading
   orders = signal<MerchantOrder[]>([]);
