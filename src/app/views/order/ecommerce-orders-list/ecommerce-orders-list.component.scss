@@ -1,36 +1,33 @@
 .orders-container {
   color: var(--color-text);
-  /* Prevent horizontal layout shifting on touch swipe */
-  overflow-x: hidden; 
+  min-height: 100vh; /* Keeps container height stable across page shifts */
+  display: flex;
+  flex-direction: column;
 
   .orders-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    padding: 0;
+    padding: 0 !important;   /* Clear Material default list padding */
+    margin: 0 !important;    /* Clear Material default list margin */
+    overflow: visible !important;
+    height: auto !important;
 
-    /* CRITICAL FIX FOR MOBILE SCROLLING */
-    overflow: visible !important; /* Disables inner scroll container */
-    height: auto !important;     /* Allows full expansion */
-    max-height: none !important;
-
-    /* Material MDC internal reset */
     ::ng-deep .mdc-list {
       overflow: visible !important;
     }
   }
 
   .order-item {
-    height: auto;
+    height: auto !important;
     min-height: 0;
-    padding: 0;
+    padding: 0 !important;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     cursor: pointer;
     
-    /* Allow native vertical scrolling while preventing unintended horizontal gestures */
-    touch-action: pan-y;
+    /* REMOVED: touch-action: pan-y; (was blocking touch scrolling on mobile) */
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s ease, background-color 0.15s ease;
 
@@ -39,7 +36,11 @@
       flex-direction: column;
       gap: 0.5rem;
       width: 100%;
-      padding: 1rem;
+      padding: 1rem !important;
+    }
+
+    ::ng-deep .mat-mdc-list-item-inner-control {
+      padding: 0 !important;
     }
   }
 
