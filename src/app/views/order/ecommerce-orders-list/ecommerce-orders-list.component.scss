@@ -6,6 +6,7 @@
     flex-direction: column;
     gap: 0.75rem;
     padding: 0;
+    overflow: visible;
   }
 
   .order-item {
@@ -16,6 +17,8 @@
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     cursor: pointer;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s ease, background-color 0.15s ease;
 
     &:hover {
