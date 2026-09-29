@@ -8,6 +8,7 @@ import { HttpParams } from '@angular/common/http';
 import { PredictionOrderRequest } from '../../model/prediction-order-request.model';
 import { PredictionMarketList } from '../../model/prediction-market.model';
 import { Observable } from 'rxjs';
+import { PredictionPosition } from '../../model/prediction-position.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,10 @@ export class PredictionMarketService {
 
     postPredictionOrder(orderRequest: PredictionOrderRequest) {
         return this.http.post<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.POST_PREDICTION_ORDER), orderRequest);
+    }
+
+    getPredictionPositions(predictionMarketId: number) {
+        return this.http.get<PredictionPosition[]>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_POSITIONS, { predictionMarketId }));
     }
     
 }

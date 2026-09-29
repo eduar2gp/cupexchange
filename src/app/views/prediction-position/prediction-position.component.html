@@ -1,0 +1,57 @@
+<section class="prediction-positions" aria-labelledby="prediction-positions-title">
+	<header class="prediction-positions__header">
+		<div>
+			<h2 id="prediction-positions-title">Prediction positions</h2>
+			<p>Your current positions for this market.</p>
+		</div>
+		<span class="prediction-positions__count" aria-live="polite">
+			{{ positions().length }} position{{ positions().length === 1 ? '' : 's' }}
+		</span>
+	</header>
+
+	@if (loading()) {
+		<p class="prediction-positions__message" role="status">Loading positions…</p>
+	} @else if (positions().length === 0) {
+		<p class="prediction-positions__message">No positions have been placed for this market.</p>
+	} @else {
+		<div class="prediction-positions__table-wrapper">
+			<table class="prediction-positions__table">
+				<caption class="visually-hidden">Prediction market positions</caption>
+				<thead>
+					<tr>
+						<th scope="col">Position</th>
+						<th scope="col">Quantity</th>
+						<th scope="col">Average price</th>
+						<th scope="col">Total cost</th>
+						<th scope="col">Realized P&amp;L</th>
+						<th scope="col">Currency</th>
+						<th scope="col">Last updated</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (position of positions(); track position.id) {
+						<tr>
+							<td>
+								<span
+									class="prediction-positions__outcome"
+									[class.prediction-positions__outcome--yes]="position.outcomePosition === 'YES'"
+									[class.prediction-positions__outcome--no]="position.outcomePosition === 'NO'"
+								>
+									{{ position.outcomePosition }}
+								</span>
+							</td>
+							<td>{{ position.quantity }}</td>
+							<td>{{ position.avgPrice }}</td>
+							<td>{{ position.totalCost }}</td>
+							<td>{{ position.realizedPnl }}</td>
+							<td>{{ position.currencyCode }}</td>
+							<td>
+								<time [attr.datetime]="position.updatedAt">{{ position.updatedAt }}</time>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</section>

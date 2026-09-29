@@ -27,6 +27,10 @@
     border-radius: 0.75rem;
     margin-top: 0.5rem;
     cursor: pointer;
+
+    &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface)) !important;
+  }
     
     /* REMOVED: touch-action: pan-y; (was blocking touch scrolling on mobile) */
     -webkit-tap-highlight-color: transparent;

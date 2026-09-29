@@ -12,7 +12,7 @@
 			@if (successMessage) {
 				<p class="message success-message" role="status">{{ successMessage }}</p>
 			}
-
+ 			<app-prediction-position [predictionMarketId]="marketId" />
 			<form #predictionOrderForm="ngForm" (ngSubmit)="submitOrder(predictionOrderForm)" class="order-form">
 				<div class="form-grid">
 					<section class="wallet-display" aria-label="Selected wallet">

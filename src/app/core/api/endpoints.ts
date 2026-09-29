@@ -83,7 +83,8 @@ export const ApiEndpoints = {
     GET_PREDICTION_EVENTS: '/api/v1/prediction-orders/events',
     GET_PREDICTION_MARKETS: '/api/v1/prediction-orders/markets?eventId={eventId}',
     GET_PREDICTION_ORDERS: '/api/v1/prediction-orders/event/{eventId}/orders',
-    POST_PREDICTION_ORDER: '/api/v1/prediction-orders/create'
+    POST_PREDICTION_ORDER: '/api/v1/prediction-orders/create',
+    GET_PREDICTION_POSITIONS: '/api/v1/prediction-orders/position/{predictionMarketId}'
   }
 };
 

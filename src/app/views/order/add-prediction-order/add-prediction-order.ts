@@ -14,6 +14,7 @@ import { DataService } from '../../../core/services/data.service';
 import { User } from '../../../model/user.model';
 import { Wallet } from '../../../model/wallet.model';
 import { PredictionMarketResponse } from '../../../model/prediction-market.model';
+import { PredictionPositionComponent } from '../../prediction-position/prediction-position.component';
 
 @Component({
   selector: 'app-add-prediction-order',
@@ -26,6 +27,7 @@ import { PredictionMarketResponse } from '../../../model/prediction-market.model
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    PredictionPositionComponent,
   ],
   templateUrl: './add-prediction-order.html',
   styleUrl: './add-prediction-order.scss',
@@ -44,6 +46,7 @@ export class AddPredictionOrder implements OnInit {
   isSubmitting = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  marketId: number = 0;
 
   order: PredictionOrderRequest = {
     appUserId: 0,
@@ -56,9 +59,9 @@ export class AddPredictionOrder implements OnInit {
   };
 
   ngOnInit(): void {
-    const marketId = Number(this.route.snapshot.paramMap.get('marketId'));
-    if (Number.isInteger(marketId) && marketId > 0) {
-      this.order.marketId = marketId;
+    this.marketId = Number(this.route.snapshot.paramMap.get('marketId'));
+    if (Number.isInteger(this.marketId) && this.marketId > 0) {
+      this.order.marketId = this.marketId;
     } else {
       this.errorMessage = 'A valid market is required to place an order.';
     }
