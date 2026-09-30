@@ -109,7 +109,7 @@ export class AddPredictionOrder implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.successMessage = 'Prediction order placed successfully.';
-        this.router.navigate(['/prediction-market-dashboard']);
+        this.router.navigate(['/orders'], { queryParams: { tab: '3' } });
       },
       error: (error) => {
         this.isSubmitting = false;
