@@ -1,57 +1,96 @@
 <section class="prediction-positions" aria-labelledby="prediction-positions-title">
-	<header class="prediction-positions__header">
-		<div>
-			<h2 id="prediction-positions-title">Prediction positions</h2>
-			<p>Your current positions for this market.</p>
-		</div>
-		<span class="prediction-positions__count" aria-live="polite">
-			{{ positions().length }} position{{ positions().length === 1 ? '' : 's' }}
-		</span>
-	</header>
+  <!-- Header -->
+  <header class="prediction-positions__header">
+    <div class="header-info">
+      <h2 id="prediction-positions-title">Prediction positions</h2>
+      <p>Your current positions for this market.</p>
+    </div>
+    <span class="prediction-positions__count" aria-live="polite">
+      {{ positions().length }} position{{ positions().length === 1 ? '' : 's' }}
+    </span>
+  </header>
 
-	@if (loading()) {
-		<p class="prediction-positions__message" role="status">Loading positions…</p>
-	} @else if (positions().length === 0) {
-		<p class="prediction-positions__message">No positions have been placed for this market.</p>
-	} @else {
-		<div class="prediction-positions__table-wrapper">
-			<table class="prediction-positions__table">
-				<caption class="visually-hidden">Prediction market positions</caption>
-				<thead>
-					<tr>
-						<th scope="col">Position</th>
-						<th scope="col">Quantity</th>
-						<th scope="col">Average price</th>
-						<th scope="col">Total cost</th>
-						<th scope="col">Realized P&amp;L</th>
-						<th scope="col">Currency</th>
-						<th scope="col">Last updated</th>
-					</tr>
-				</thead>
-				<tbody>
-					@for (position of positions(); track position.id) {
-						<tr>
-							<td>
-								<span
-									class="prediction-positions__outcome"
-									[class.prediction-positions__outcome--yes]="position.outcomePosition === 'YES'"
-									[class.prediction-positions__outcome--no]="position.outcomePosition === 'NO'"
-								>
-									{{ position.outcomePosition }}
-								</span>
-							</td>
-							<td>{{ position.quantity }}</td>
-							<td>{{ position.avgPrice }}</td>
-							<td>{{ position.totalCost }}</td>
-							<td>{{ position.realizedPnl }}</td>
-							<td>{{ position.currencyCode }}</td>
-							<td>
-								<time [attr.datetime]="position.updatedAt">{{ position.updatedAt }}</time>
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
-	}
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="prediction-positions__message" role="status">
+      <mat-spinner diameter="32"></mat-spinner>
+      <span>Loading positions…</span>
+    </div>
+  } 
+  
+  <!-- Empty State -->
+  @else if (positions().length === 0) {
+    <div class="prediction-positions__message">
+      <mat-icon>account_balance_wallet</mat-icon>
+      <p>No positions have been placed for this market.</p>
+    </div>
+  } 
+  
+  <!-- Angular Material Table -->
+  @else {
+    <div class="prediction-positions__table-wrapper">
+      <table mat-table [dataSource]="positions()" class="prediction-positions__table">
+        <caption class="visually-hidden">Prediction market positions</caption>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="outcomePosition">
+          <th mat-header-cell *matHeaderCellDef> Position </th>
+          <td mat-cell *matCellDef="let position" data-label="Position">
+            <span
+              class="prediction-positions__outcome"
+              [class.prediction-positions__outcome--yes]="position.outcomePosition === 'YES'"
+              [class.prediction-positions__outcome--no]="position.outcomePosition === 'NO'"
+            >
+              {{ position.outcomePosition }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Quantity Column -->
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Quantity </th>
+          <td mat-cell *matCellDef="let position" data-label="Quantity">
+            {{ position.quantity }}
+          </td>
+        </ng-container>
+
+        <!-- Average Price Column -->
+        <ng-container matColumnDef="avgPrice">
+          <th mat-header-cell *matHeaderCellDef> Average price </th>
+          <td mat-cell *matCellDef="let position" data-label="Average price">
+            {{ position.avgPrice | currency: position.currencyCode }}
+          </td>
+        </ng-container>
+
+        <!-- Total Cost Column -->
+        <ng-container matColumnDef="totalCost">
+          <th mat-header-cell *matHeaderCellDef> Total cost </th>
+          <td mat-cell *matCellDef="let position" data-label="Total cost">
+            {{ position.totalCost | currency: position.currencyCode }}
+          </td>
+        </ng-container>
+
+        <!-- Realized P&L Column -->
+        <ng-container matColumnDef="realizedPnl">
+          <th mat-header-cell *matHeaderCellDef> Realized P&L </th>
+          <td mat-cell *matCellDef="let position" data-label="Realized P&L">
+            <span [class.text-positive]="position.realizedPnl > 0" [class.text-negative]="position.realizedPnl < 0">
+              {{ position.realizedPnl | currency: position.currencyCode }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Last Updated Column -->
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef> Last updated </th>
+          <td mat-cell *matCellDef="let position" data-label="Last updated">
+            <time [attr.datetime]="position.updatedAt">{{ position.updatedAt | date:'medium' }}</time>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  }
 </section>

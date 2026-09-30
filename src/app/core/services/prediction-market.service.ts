@@ -32,8 +32,12 @@ export class PredictionMarketService {
         return this.http.get<PredictionMarketList>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_MARKETS, { eventId }));
     }
 
-    getPredictionOrders(eventId: number) {
-        return this.http.get<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_ORDERS, { eventId }));
+    getPredictionOrdersByEventId(eventId: number) {
+        return this.http.get<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_ORDERS_BY_EVENT_ID, { eventId }));
+    }
+
+    getPredictionOrdersByUserId() {
+        return this.http.get<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_ORDERS_BY_USER_ID));
     }
 
     postPredictionOrder(orderRequest: PredictionOrderRequest) {

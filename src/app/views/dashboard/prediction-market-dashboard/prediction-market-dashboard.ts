@@ -146,7 +146,7 @@ export class PredictionMarketDashboard implements OnInit {
     this.isLoadingOrders.set(true);
     this.errorMessage.set(null);
 
-    this.predictionMarketService.getPredictionOrders(eventId).subscribe({
+    this.predictionMarketService.getPredictionOrdersByEventId(eventId).subscribe({
       next: (orders) => {
         if (this.selectedEvent()?.id === eventId) {
           this.orders.set(orders);

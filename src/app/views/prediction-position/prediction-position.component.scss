@@ -1,105 +1,213 @@
+/* ==========================================================================
+   Variables & Breakpoints
+   ========================================================================== */
+:root {
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f0f3f6;
+  --color-border: #d0d7de;
+  --color-text: #111418;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6e7781;
+  --color-primary: #2563eb;
+  --color-primary-light: #dbeafe;
+  --color-success: #15803d;
+  --color-success-bg: #dcfce7;
+  --color-danger: #be123c;
+  --color-danger-bg: #ffe4e6;
+  --border-radius: 8px;
+}
+
+$breakpoint-mobile: 640px;
+
 .prediction-positions {
   margin-top: 1rem;
-  padding: 1rem;
+  padding: 0.875rem;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   color: var(--color-text);
 
+  @media (min-width: $breakpoint-mobile) {
+    padding: 1.25rem;
+  }
+
   .prediction-positions__header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
     margin-bottom: 1rem;
 
-    h2 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
+    @media (min-width: $breakpoint-mobile) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
-    p {
-      margin: 0.25rem 0 0;
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
+    .header-info {
+      h2 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+
+        @media (min-width: $breakpoint-mobile) {
+          font-size: 1.125rem;
+        }
+      }
+
+      p {
+        margin: 0.25rem 0 0;
+        font-size: 0.8125rem;
+        color: var(--color-text-secondary);
+      }
     }
   }
 
   .prediction-positions__count {
+    align-self: flex-start;
     font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
     background-color: var(--color-primary-light);
     color: var(--color-primary);
     font-weight: 600;
   }
 
-  .prediction-positions__message {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    text-align: center;
-    padding: 1rem 0;
-  }
-
   .prediction-positions__table-wrapper {
-    overflow-x: auto;
-  }
-
-  .prediction-positions__table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-
-    th,
-    td {
-      padding: 0.5rem 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    th {
-      color: var(--color-text-secondary);
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-    }
-
-    td {
-      color: var(--color-text);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
   }
 
-  .prediction-positions__outcome {
-    display: inline-block;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 0.75rem;
+  /* Desktop View */
+  @media (min-width: $breakpoint-mobile) {
+    table.mat-mdc-table {
+      width: 100%;
 
-    &--yes {
-      background-color: var(--color-success-bg);
-      color: var(--color-success);
-    }
+      .mat-mdc-header-cell {
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        background-color: var(--color-surface-elevated);
+        border-bottom: 1px solid var(--color-border);
+        padding: 0.75rem 1rem;
+      }
 
-    &--no {
-      background-color: var(--color-danger-bg);
-      color: var(--color-danger);
+      .mat-mdc-cell {
+        color: var(--color-text);
+        border-bottom: 1px solid var(--color-border);
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+      }
     }
   }
+}
 
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+/* ==========================================================================
+   Mobile Responsive Transformation (Single Column Card Mode)
+   Pierces Angular View Encapsulation using ::ng-deep
+   ========================================================================== */
+@media (max-width: #{$breakpoint-mobile - 1px}) {
+  :host ::ng-deep {
+    .prediction-positions__table-wrapper {
+      width: 100% !important;
+      overflow: visible !important;
+    }
+
+    /* Force all table containers to display as block elements */
+    table.mat-mdc-table,
+    .mat-mdc-table tbody,
+    .mat-mdc-table .mdc-data-table__content {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    /* Hide table header completely */
+    .mat-mdc-header-row {
+      display: none !important;
+    }
+
+    /* Transform each table row into a card occupying 100% width */
+    .mat-mdc-row {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      height: auto !important;
+      padding: 0.75rem 1rem !important;
+      margin-bottom: 0.75rem !important;
+      background-color: var(--color-surface) !important;
+      border: 1px solid var(--color-border) !important;
+      border-radius: var(--border-radius) !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    /* Transform cells into key-value pairs (Label Left, Value Far Right) */
+    .mat-mdc-cell {
+      display: flex !important;
+      justify-content: space-between !important; /* Pushes value to far right */
+      align-items: center !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 0.5rem 0 !important;
+      min-height: auto !important;
+      border-bottom: 1px dashed var(--color-border) !important;
+      text-align: right !important;
+      font-size: 0.875rem !important;
+      color: var(--color-text) !important;
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      /* Inject Label on Left */
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        text-align: left;
+        padding-right: 0.5rem;
+        flex-shrink: 0;
+      }
+
+      /* Force right alignment for child elements (badges, time, etc.) */
+      > * {
+        margin-left: auto !important;
+        text-align: right !important;
+      }
+    }
   }
+}
+
+/* Status Badges & P&L Utilities */
+.prediction-positions__outcome {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.75rem;
+
+  &--yes {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+  }
+
+  &--no {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+  }
+}
+
+.text-positive {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.text-negative {
+  color: var(--color-danger);
+  font-weight: 600;
 }

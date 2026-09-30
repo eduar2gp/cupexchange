@@ -1,0 +1,341 @@
+/* ==========================================================================
+   Theme Variables & Fallbacks
+   ========================================================================== */
+:root {
+  --color-background: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f0f3f6;
+  --color-border: #d0d7de;
+
+  --color-text: #111418;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6e7781;
+
+  --color-primary: #2563eb;
+  --color-primary-light: #dbeafe;
+
+  --color-buy-bg: #dcfce7;
+  --color-buy-text: #15803d;
+  --color-sell-bg: #ffe4e6;
+  --color-sell-text: #be123c;
+
+  --color-yes-bg: #e0f2fe;
+  --color-yes-text: #0369a1;
+  --color-no-bg: #fef3c7;
+  --color-no-text: #b45309;
+
+  --color-status-filled-bg: #dcfce7;
+  --color-status-filled-text: #15803d;
+  --color-status-pending-bg: #fef3c7;
+  --color-status-pending-text: #b45309;
+  --color-status-cancelled-bg: #f3f4f6;
+  --color-status-cancelled-text: #4b5563;
+  --border-radius: 8px;
+}
+
+:root.dark,
+body.dark-theme {
+  --color-background: #0d1117;
+  --color-surface: #161b22;
+  --color-surface-elevated: #21262d;
+  --color-border: #30363d;
+
+  --color-text: #f0f6fc;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #6e7681;
+
+  --color-primary: #3b82f6;
+  --color-primary-light: #1e3a8a;
+
+  --color-buy-bg: #064e3b;
+  --color-buy-text: #6ee7b7;
+  --color-sell-bg: #881337;
+  --color-sell-text: #fda4af;
+
+  --color-yes-bg: #075985;
+  --color-yes-text: #7dd3fc;
+  --color-no-bg: #78350f;
+  --color-no-text: #fde047;
+
+  --color-status-filled-bg: #064e3b;
+  --color-status-filled-text: #6ee7b7;
+  --color-status-pending-bg: #78350f;
+  --color-status-pending-text: #fde047;
+  --color-status-cancelled-bg: #21262d;
+  --color-status-cancelled-text: #8b949e;
+}
+
+$breakpoint-mobile: 640px;
+
+/* ==========================================================================
+   Main Component Layout
+   ========================================================================== */
+.orders-container {
+  padding: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: var(--color-background);
+  min-height: 100vh;
+  color: var(--color-text);
+  box-sizing: border-box;
+
+  @media (min-width: $breakpoint-mobile) {
+    padding: 1.5rem;
+  }
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-titles {
+    h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-text);
+
+      @media (min-width: $breakpoint-mobile) {
+        font-size: 1.5rem;
+      }
+    }
+
+    p {
+      margin: 0.25rem 0 0;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .filter-chips {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+}
+
+.status-card {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 0;
+  color: var(--color-text-secondary);
+}
+
+.error-card {
+  margin-bottom: 1rem;
+  background-color: var(--color-surface);
+  color: #ef4444;
+  border: 1px solid #f87171;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--color-text);
+  }
+}
+
+/* ==========================================================================
+   Desktop Table Styling
+   ========================================================================== */
+.table-container {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+
+  table.mat-mdc-table {
+    width: 100%;
+    background-color: var(--color-surface);
+
+    th.mat-mdc-header-cell {
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.75rem 1rem;
+    }
+
+    td.mat-mdc-cell {
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.75rem 1rem;
+    }
+
+    tr.mat-mdc-row:hover {
+      background-color: var(--color-surface-elevated);
+    }
+  }
+}
+
+/* Helper cell typography */
+.market-question {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.market-subtext {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-muted {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Badges */
+.badge-group {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &.buy { background-color: var(--color-buy-bg); color: var(--color-buy-text); }
+  &.sell { background-color: var(--color-sell-bg); color: var(--color-sell-text); }
+  &.yes { background-color: var(--color-yes-bg); color: var(--color-yes-text); }
+  &.no { background-color: var(--color-no-bg); color: var(--color-no-text); }
+
+  &.status-filled { background-color: var(--color-status-filled-bg); color: var(--color-status-filled-text); }
+  &.status-pending,
+  &.status-partially_filled { background-color: var(--color-status-pending-bg); color: var(--color-status-pending-text); }
+  &.status-cancelled { background-color: var(--color-status-cancelled-bg); color: var(--color-status-cancelled-text); }
+}
+
+.category-chip {
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Mobile Responsive Override (< 640px)
+   Pierces Angular Material MDC Encapsulation
+   ========================================================================== */
+@media (max-width: #{$breakpoint-mobile - 1px}) {
+  :host ::ng-deep {
+    .table-container {
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    table.mat-mdc-table,
+    .mat-mdc-table tbody,
+    .mat-mdc-table .mdc-data-table__content {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    /* Hide table header completely */
+    .mat-mdc-header-row {
+      display: none !important;
+    }
+
+    /* Transform rows into standalone cards occupying 100% space */
+    .mat-mdc-row {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      height: auto !important;
+      padding: 0.875rem !important;
+      margin-bottom: 0.75rem !important;
+      background-color: var(--color-surface) !important;
+      border: 1px solid var(--color-border) !important;
+      border-radius: var(--border-radius) !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    /* Transform cells into key-value pairs (Label Left, Value Right) */
+    .mat-mdc-cell {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 0.5rem 0 !important;
+      min-height: auto !important;
+      border-bottom: 1px dashed var(--color-border) !important;
+      text-align: right !important;
+      font-size: 0.875rem !important;
+      color: var(--color-text) !important;
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      /* Renders data-label on the left */
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        text-align: left;
+        padding-right: 0.5rem;
+        flex-shrink: 0;
+      }
+
+      /* Aligns inner cell contents to the right edge */
+      > * {
+        margin-left: auto !important;
+        text-align: right !important;
+      }
+
+      .market-subtext {
+        justify-content: flex-end;
+      }
+    }
+  }
+}

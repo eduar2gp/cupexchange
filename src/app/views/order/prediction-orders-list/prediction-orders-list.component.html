@@ -1,0 +1,115 @@
+<div class="orders-container">
+  <!-- Header & Filters -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1>My Prediction Orders</h1>
+      <p>View and manage all your active and executed orders</p>
+    </div>
+
+    <mat-chip-listbox class="filter-chips">
+      @for (filter of filterOptions; track filter) {
+        <mat-chip-option 
+          [selected]="selectedStatusFilter() === filter"
+          (click)="setStatusFilter(filter)">
+          {{ filter.replace('_', ' ') }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </header>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <mat-card class="status-card">
+      <div class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading orders...</span>
+      </div>
+    </mat-card>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+    <mat-card class="error-card">
+      <mat-card-content>{{ errorMessage() }}</mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && filteredOrders().length === 0) {
+    <mat-card class="status-card">
+      <div class="empty-state">
+        <mat-icon>receipt_long</mat-icon>
+        <h3>No orders found</h3>
+        <p>You have no orders matching the selected filter criteria.</p>
+      </div>
+    </mat-card>
+  }
+
+  <!-- Angular Material Table -->
+  @if (!isLoading() && filteredOrders().length > 0) {
+    <div class="table-container mat-elevation-z1">
+      <table mat-table [dataSource]="filteredOrders()">
+
+        <!-- Market / Question Column -->
+        <ng-container matColumnDef="market">
+          <th mat-header-cell *matHeaderCellDef> Event & Market </th>
+          <td mat-cell *matCellDef="let order" data-label="Event & Market">
+            <div class="market-question">{{ order.question }}</div>
+            <div class="market-subtext">
+              <span>{{ order.eventTitle }}</span>
+              <span class="category-chip">{{ order.categoryName }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Side & Position Column -->
+        <ng-container matColumnDef="sidePosition">
+          <th mat-header-cell *matHeaderCellDef> Side / Position </th>
+          <td mat-cell *matCellDef="let order" data-label="Side / Position">
+            <div class="badge-group">
+              <span class="badge" [ngClass]="order.side.toLowerCase()">{{ order.side }}</span>
+              <span class="badge" [ngClass]="order.outcomePosition.toLowerCase()">{{ order.outcomePosition }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Price </th>
+          <td mat-cell *matCellDef="let order" data-label="Price" class="font-semibold">
+            {{ order.price | currency: order.currencyCode }}
+          </td>
+        </ng-container>
+
+        <!-- Quantity Column -->
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Filled / Total </th>
+          <td mat-cell *matCellDef="let order" data-label="Filled / Total">
+            <strong>{{ order.filledQuantity }}</strong> / {{ order.quantity }}
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let order" data-label="Status">
+            <span class="badge" [ngClass]="'status-' + order.status.toLowerCase()">
+              {{ order.status.replace('_', ' ') }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef> Date </th>
+          <td mat-cell *matCellDef="let order" data-label="Date" class="text-muted">
+            {{ order.createdAt | date:'short' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  }
+</div>

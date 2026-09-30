@@ -3,13 +3,14 @@ import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
 import { EcommerceOrdersListComponent } from '../ecommerce-orders-list/ecommerce-orders-list.component';
 import { OrdersListComponent } from '../exchange-orders-list/orders-list.component';
 import { UserCashOrdersListComponent } from '../user-cash-orders-list/user-cash-orders-list.component';
+import { PredictionOrdersListComponent } from '../prediction-orders-list/prediction-orders-list.component';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureFlagDirective } from '../../../core/directives/feature-flag.directive';
 
 @Component({
   selector: 'app-user-orders.component',
-  imports: [MatTabsModule, EcommerceOrdersListComponent, UserCashOrdersListComponent, OrdersListComponent, TranslateModule, FeatureFlagDirective],
+  imports: [MatTabsModule, EcommerceOrdersListComponent, UserCashOrdersListComponent, OrdersListComponent, PredictionOrdersListComponent, TranslateModule, FeatureFlagDirective],
   templateUrl: './user-orders.component.html',
   styleUrl: './user-orders.component.scss',
 })

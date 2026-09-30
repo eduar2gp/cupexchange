@@ -19,5 +19,11 @@
       </ng-template>
     </mat-tab>
 
+    <mat-tab *appFeatureFlag="'prediction_market'" label="{{ 'PREDICTIONS' | translate }}">
+      <ng-template matTabContent>
+        <app-prediction-orders-list></app-prediction-orders-list>
+      </ng-template>
+    </mat-tab>
+
   </mat-tab-group>
 </div>
