@@ -149,8 +149,8 @@ export class TransactionsListComponent implements OnInit {
   }
 
   isWithdrawal(type?: string, direction?: string): boolean {
-    if((type || '').toUpperCase() === 'DEPOSIT') return false;
-    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'FEE_PAYMENT' || (direction || '').toUpperCase() === 'DEBIT';
+    if((type || '').toUpperCase() === 'DEPOSIT' || (type || '').toUpperCase() === 'PREDICTION_PAYOUT' || (type || '').toUpperCase() === 'PREDICTION_REFUND' || (type || '').toUpperCase() === 'PREDICTION_SELL') return false;
+    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'FEE_PAYMENT' || (direction || '').toUpperCase() === 'DEBIT' || (direction || '').toUpperCase() === 'PREDICTION_BUY';
   }
 
   refresh(): void {
