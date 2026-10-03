@@ -130,6 +130,7 @@
   "ACCOUNT_PROVIDER_BALANCE": {
     "TITLE": "Provider Liquidity Overview",
     "SYSTEM_WALLETS": "System Wallets",
+    "OWNER_USER_ID": "Owner user ID",
     "TRADE_FEE": "Trade Fee",
     "WITHDRAWAL_FEE": "Withdrawal Fee",
     "BALANCE": "Balance",

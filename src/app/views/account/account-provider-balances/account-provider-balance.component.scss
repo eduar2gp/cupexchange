@@ -240,6 +240,7 @@ mat-progress-bar {
   .card-accent {
     position: absolute;
     left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--color-accent);
     
     &.trade { background: var(--color-accent); } // Purple/Blue
     &.withdrawal { background: var(--color-success); } // Green
@@ -271,6 +272,25 @@ mat-progress-bar {
   .currency-label {
     font-size: 0.85rem;
     color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+
+  .wallet-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-surface-elevated);
+    font-size: 0.8rem;
+  }
+
+  .detail-label {
+    color: var(--color-text-secondary);
+  }
+
+  .detail-value {
+    color: var(--color-text);
     font-weight: 600;
   }
 }

@@ -4,4 +4,6 @@ export interface Wallet {
   availableBalance: number;
   lockedBalance: number;
   balance: number;
+  walletType?: string;
+  ownerUserId?: number;
 }

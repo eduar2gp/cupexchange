@@ -153,15 +153,19 @@
         </div>
 
         <div class="wallet-grid" *ngIf="!isLoadingWallets()">
-          <mat-card class="mini-wallet-card" *ngFor="let wallet of systemWallets(); let i = index">
-            <div class="card-accent" [class.trade]="i < 2" [class.withdrawal]="i >= 2"></div>
+          <mat-card class="mini-wallet-card" *ngFor="let wallet of systemWallets()">
+            <div class="card-accent"></div>
             <mat-card-content>
               <div class="wallet-header">
                 <img [src]="getCurrencyImage(wallet.currencyCode)" class="coin-icon-sm">
-                <span class="tag">{{ i < 2 ? 'TRADE' : 'FEE' }}</span>
+                <span class="tag">{{ wallet.walletType || '—' }}</span>
               </div>
               <div class="balance-val">{{ wallet.availableBalance | number:'1.2-2' }}</div>
               <div class="currency-label">{{ wallet.currencyCode }}</div>
+              <div class="wallet-details">
+                <span class="detail-label">{{ 'ACCOUNT_PROVIDER_BALANCE.OWNER_USER_ID' | translate }}</span>
+                <span class="detail-value">{{ wallet.ownerUserId ?? '—' }}</span>
+              </div>
             </mat-card-content>
           </mat-card>
         </div>

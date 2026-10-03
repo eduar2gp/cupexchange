@@ -130,6 +130,7 @@
   "ACCOUNT_PROVIDER_BALANCE": {
     "TITLE": "Visión General de Liquidez del Proveedor",
     "SYSTEM_WALLETS": "Billeteras del Sistema",
+    "OWNER_USER_ID": "ID del usuario propietario",
     "TRADE_FEE": "Tarifa de Comercio",
     "WITHDRAWAL_FEE": "Tarifa de Retiro",
     "BALANCE": "Saldo",
