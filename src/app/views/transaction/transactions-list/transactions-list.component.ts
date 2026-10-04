@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap, catchError, filter, map } from 'rxjs/operators'; 
+import { switchMap, tap, catchError, filter, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -149,9 +149,24 @@ export class TransactionsListComponent implements OnInit {
   }
 
   isWithdrawal(type?: string, direction?: string): boolean {
-    if((type || '').toUpperCase() === 'DEPOSIT' || (type || '').toUpperCase() === 'PREDICTION_PAYOUT' || (type || '').toUpperCase() === 'PREDICTION_REFUND' || (type || '').toUpperCase() === 'PREDICTION_SELL') return false;
-    return (type || '').toUpperCase() === 'WITHDRAWAL' || (type || '').toUpperCase() === 'FEE_PAYMENT' || (direction || '').toUpperCase() === 'DEBIT' || (direction || '').toUpperCase() === 'PREDICTION_BUY';
+  const normalizedType = (type || '').toUpperCase();
+  const normalizedDirection = (direction || '').toUpperCase();
+
+  // PREDICTION_PAYOUT is a withdrawal (outflow) only when direction is DEBIT
+  if (normalizedType === 'PREDICTION_PAYOUT') {
+    return normalizedDirection === 'DEBIT';
   }
+
+  // Other non-withdrawal types
+  const nonWithdrawalTypes = ['DEPOSIT', 'PREDICTION_REFUND', 'PREDICTION_SELL'];
+  if (nonWithdrawalTypes.includes(normalizedType)) {
+    return false;
+  }
+
+  // Standard withdrawal types and fallback direction check
+  const withdrawalTypes = ['WITHDRAWAL', 'FEE_PAYMENT', 'PREDICTION_BUY'];
+  return withdrawalTypes.includes(normalizedType) || normalizedDirection === 'DEBIT';
+}
 
   refresh(): void {
     // Simply resetting the signal triggers the logic above
