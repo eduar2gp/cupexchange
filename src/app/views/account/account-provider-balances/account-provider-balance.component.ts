@@ -127,4 +127,26 @@ export class AccountProviderBalanceComponent implements OnInit {
     const item = summary.find((entry) => !!entry.lastRefreshedAt);
     return item?.lastRefreshedAt ?? null;
   }
+
+  getWalletTypeIcon(walletType?: string): string {
+    const icons: Record<string, string> = {
+      EXCHANGE_FEE: 'show_chart',
+      WITHDRAWAL_FEE: 'south',
+      MERCHANT_FEE: 'shopping_basket',
+      PREDICTION_MARKET_FEE: 'graphic_eq',
+    };
+
+    return icons[walletType ?? ''] ?? 'account_balance_wallet';
+  }
+
+  getWalletTypeClass(walletType?: string): string {
+    const classes: Record<string, string> = {
+      EXCHANGE_FEE: 'wallet-type--exchange',
+      WITHDRAWAL_FEE: 'wallet-type--withdrawal',
+      MERCHANT_FEE: 'wallet-type--merchant',
+      PREDICTION_MARKET_FEE: 'wallet-type--prediction',
+    };
+
+    return classes[walletType ?? ''] ?? 'wallet-type--default';
+  }
 }
