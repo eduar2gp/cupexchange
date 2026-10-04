@@ -152,19 +152,19 @@ export class TransactionsListComponent implements OnInit {
   const normalizedType = (type || '').toUpperCase();
   const normalizedDirection = (direction || '').toUpperCase();
 
-  // PREDICTION_PAYOUT is a withdrawal (outflow) only when direction is DEBIT
-  if (normalizedType === 'PREDICTION_PAYOUT') {
+  // Explicit type & direction rules
+  if (normalizedType === 'PREDICTION_PAYOUT' || normalizedType === 'PREDICTION_BUY') {
     return normalizedDirection === 'DEBIT';
   }
 
-  // Other non-withdrawal types
-  const nonWithdrawalTypes = ['DEPOSIT', 'PREDICTION_REFUND', 'PREDICTION_SELL'];
+  // Non-withdrawal types
+  const nonWithdrawalTypes = ['DEPOSIT', 'PREDICTION_SELL'];
   if (nonWithdrawalTypes.includes(normalizedType)) {
     return false;
   }
 
   // Standard withdrawal types and fallback direction check
-  const withdrawalTypes = ['WITHDRAWAL', 'FEE_PAYMENT', 'PREDICTION_BUY'];
+  const withdrawalTypes = ['WITHDRAWAL', 'FEE_PAYMENT'];
   return withdrawalTypes.includes(normalizedType) || normalizedDirection === 'DEBIT';
 }
 
