@@ -6,6 +6,7 @@ import { Page } from '../../model/page.model'; // Assuming you create a standard
 import { PaginatedTrades } from '../../model/paginated-trades.model'
 import { TradeVolumeDTO } from '../../model/trade-volume.model'
 import { Candlestick, ChartDataPoint } from '../../model/candle-stick-data.model'
+import { MarketCandle, MarketCandleResponse, OutcomePosition } from '../../model/prediction-candle-stick-data.model'
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class TradeService {
 
   // 🎯 NEW ENDPOINT FOR CHART DATA
   private CANDLESTICK_ENDPOINT = '/api/v1/charts/candles';
+  private PREDICTION_CANDLESTICK_ENDPOINT = '/api/v1/charts/prediction-candles/{predictionMarketId}';
 
   constructor() {
   }
@@ -100,6 +102,42 @@ export class TradeService {
   mapToChartDataPoints(candles: Candlestick[]): ChartDataPoint[] {
     return candles.map(c => ({
       x: c.timestamp, // Unix timestamp in milliseconds
+      o: c.open,
+      h: c.high,
+      l: c.low,
+      c: c.close
+    }));
+  }
+
+  /**
+   * Fetches historical candles for one outcome in a prediction market.
+   */
+  getPredictionMarketCandlesticks(
+    predictionMarketId: number,
+    outcomePosition: OutcomePosition,
+    interval: string,
+    limit: number = 200
+  ): Observable<MarketCandleResponse> {
+    const path = this.PREDICTION_CANDLESTICK_ENDPOINT.replace(
+      '{predictionMarketId}',
+      predictionMarketId.toString()
+    );
+    const url = `${environment.baseApiUrl}${path}`;
+    const params = {
+      outcomePosition,
+      interval,
+      limit: limit.toString()
+    };
+
+    return this.http.get<MarketCandleResponse>(url, { params });
+  }
+
+  /**
+   * Prepares prediction-market candles for the Chart.js financial plugin.
+   */
+  mapMarketCandlesToChartDataPoints(candles: MarketCandle[]): ChartDataPoint[] {
+    return candles.map(c => ({
+      x: c.timestamp,
       o: c.open,
       h: c.high,
       l: c.low,

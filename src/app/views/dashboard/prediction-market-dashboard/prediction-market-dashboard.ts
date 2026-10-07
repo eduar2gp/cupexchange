@@ -13,6 +13,7 @@ import { PredictionOrderResponse } from '../../../model/prediction-order-respons
 import { Router, RouterModule } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { PredictionPositionComponent } from '../../prediction-position/prediction-position.component';
+import { PredictionMarketCandleChartComponent } from '../../charts/prediction-market-candle-chart/prediction-market-candle-chart.component';
 
 @Component({
   selector: 'app-prediction-market-dashboard',
@@ -26,6 +27,7 @@ import { PredictionPositionComponent } from '../../prediction-position/predictio
     MatTabsModule,
     RouterModule,
     PredictionPositionComponent,
+    PredictionMarketCandleChartComponent,
   ],
   templateUrl: './prediction-market-dashboard.html',
   styleUrl: './prediction-market-dashboard.scss',

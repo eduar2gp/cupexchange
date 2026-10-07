@@ -40,7 +40,7 @@
                                     } @else {
                                         <div class="markets-list">
                                             @for (market of markets(); track market.id) {
-                                                <article class="market-card" (click)="createOrder(market)" (keydown.enter)="createOrder(market)" tabindex="0" role="button">
+                                                <article class="market-card">
                                                     <h4>{{ market.question }}</h4>
                                                     <dl>
                                                         <div><dt>Outcome type</dt><dd>{{ market.outcomeType }}</dd></div>
@@ -49,7 +49,11 @@
                                                         <div><dt>Winning outcome</dt><dd>{{ market.winningOutcome === null ? 'Pending' : (market.winningOutcome ? 'Yes' : 'No') }}</dd></div>
                                                     </dl>
                                                     <app-prediction-position [predictionMarketId]="market.id" />
-                                                </article>                  
+                                                    <app-prediction-market-candle-chart [predictionMarketId]="market.id" />
+                                                    <button type="button" class="order-button" (click)="createOrder(market)">
+                                                        Place order
+                                                    </button>
+                                                </article>
                                             }
                                         </div>
                                     }

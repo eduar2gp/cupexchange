@@ -85,7 +85,8 @@ export const ApiEndpoints = {
     GET_PREDICTION_ORDERS_BY_EVENT_ID: '/api/v1/prediction-orders/event/{eventId}/orders',
     GET_PREDICTION_ORDERS_BY_USER_ID: '/api/v1/prediction-orders/orders',
     POST_PREDICTION_ORDER: '/api/v1/prediction-orders/create',
-    GET_PREDICTION_POSITIONS: '/api/v1/prediction-orders/position/{predictionMarketId}'
+    GET_PREDICTION_POSITIONS: '/api/v1/prediction-orders/position/{predictionMarketId}',
+    GET_PREDICTION_CANDLE_STICKS: '/api/v1/charts/prediction-candles/{predictionMarketId}?outcomePosition={outcomePosition}&interval={interval}&limit={limit}',
   }
 };
 

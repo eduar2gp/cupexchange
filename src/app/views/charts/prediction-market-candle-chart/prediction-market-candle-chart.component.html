@@ -1,0 +1,27 @@
+<section class="prediction-market-chart">
+	<div class="chart-controls">
+		<div class="interval-selection-bar" aria-label="Candle interval">
+			@for (interval of availableIntervals; track interval) {
+				<button type="button" [class.active]="interval === currentInterval" (click)="selectInterval(interval)">
+					{{ interval }}
+				</button>
+			}
+		</div>
+	</div>
+
+	@if (isBrowser) {
+		@if (isLoading) {
+			<p class="chart-status">Loading chart…</p>
+		} @else if (errorMessage) {
+			<p class="chart-status error">{{ errorMessage }}</p>
+		} @else if (!predictionMarketId) {
+			<p class="chart-status">Select a prediction market to view its chart.</p>
+		} @else {
+			<div class="chart-wrapper">
+				<canvas baseChart [data]="chartData" [options]="chartOptions" type="line" class="chart-canvas"></canvas>
+			</div>
+		}
+	} @else {
+		<p class="chart-status">Loading chart…</p>
+	}
+</section>
