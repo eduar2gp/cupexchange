@@ -64,7 +64,7 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
   private scale = 1;
 
   readonly availableIntervals = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
-  currentInterval = '5m';
+  currentInterval = '1m';
   isBrowser: boolean;
   isLoading = false;
   errorMessage = '';
