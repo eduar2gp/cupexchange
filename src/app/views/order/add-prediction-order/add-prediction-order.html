@@ -13,6 +13,39 @@
 				<p class="message success-message" role="status">{{ successMessage }}</p>
 			}
  			<app-prediction-position [predictionMarketId]="marketId" />
+			<section class="market-odds" aria-live="polite" aria-label="Market odds">
+				<div class="market-odds-heading">
+					<span class="toggle-label">Current market odds</span>
+					@if (marketOdds(); as odds) {
+						<strong>{{ odds.headerOddsPercent | number:'1.0-2' }}%</strong>
+					}
+				</div>
+
+				@if (isLoadingOdds()) {
+					<mat-spinner diameter="24"></mat-spinner>
+				} @else if (marketOdds(); as odds) {
+					<div class="odds-buttons">
+						<button
+							mat-stroked-button
+							type="button"
+							class="odds-button yes-odds-button"
+							(click)="selectOutcome('YES', odds.buyYesPrice)">
+							<span>Yes</span>
+							<strong>{{ odds.buyYesPrice === null ? 'Set price' : (odds.buyYesPrice | percent:'1.0-2') }}</strong>
+						</button>
+						<button
+							mat-stroked-button
+							type="button"
+							class="odds-button no-odds-button"
+							(click)="selectOutcome('NO', odds.buyNoPrice)">
+							<span>No</span>
+							<strong>{{ odds.buyNoPrice === null ? 'Set price' : (odds.buyNoPrice | percent:'1.0-2') }}</strong>
+						</button>
+					</div>
+				} @else if (oddsErrorMessage(); as message) {
+					<p class="odds-error" role="status">{{ message }}</p>
+				}
+			</section>
 			<form #predictionOrderForm="ngForm" (ngSubmit)="submitOrder(predictionOrderForm)" class="order-form">
 				<div class="form-grid">
 					<section class="wallet-display" aria-label="Selected wallet">

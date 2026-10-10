@@ -12,6 +12,8 @@ export interface PredictionMarketResponse {
   currencyCode: string;
   status: MarketStatus;
   winningOutcome: boolean | null;
+  yesLabel: string;
+  noLabel: string;
 }
 
 // API response for a market collection.

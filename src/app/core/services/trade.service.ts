@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment'
 import { Page } from '../../model/page.model'; // Assuming you create a standard Page model
 import { PaginatedTrades } from '../../model/paginated-trades.model'
@@ -14,6 +14,7 @@ import { MarketCandle, MarketCandleResponse, OutcomePosition } from '../../model
 export class TradeService {
 
   private http = inject(HttpClient);
+  private readonly predictionCandleRequests = new Map<string, Observable<MarketCandleResponse>>();
 
   // LEGACY ENDPOINTS
   private BASE_ENDPOINT = '/api/v1/trade/market/trades';
@@ -118,6 +119,12 @@ export class TradeService {
     interval: string,
     limit: number = 200
   ): Observable<MarketCandleResponse> {
+    const cacheKey = `${predictionMarketId}:${outcomePosition}:${interval}:${limit}`;
+    const cachedRequest = this.predictionCandleRequests.get(cacheKey);
+    if (cachedRequest) {
+      return cachedRequest;
+    }
+
     const path = this.PREDICTION_CANDLESTICK_ENDPOINT.replace(
       '{predictionMarketId}',
       predictionMarketId.toString()
@@ -129,7 +136,12 @@ export class TradeService {
       limit: limit.toString()
     };
 
-    return this.http.get<MarketCandleResponse>(url, { params });
+    const request = this.http
+      .get<MarketCandleResponse>(url, { params })
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    this.predictionCandleRequests.set(cacheKey, request);
+
+    return request;
   }
 
   /**

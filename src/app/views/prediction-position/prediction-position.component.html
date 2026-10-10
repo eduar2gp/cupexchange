@@ -1,3 +1,4 @@
+@if (loading() || positions().length > 0) {
 <section class="prediction-positions" aria-labelledby="prediction-positions-title">
   <!-- Header -->
   <header class="prediction-positions__header">
@@ -15,14 +16,6 @@
     <div class="prediction-positions__message" role="status">
       <mat-spinner diameter="32"></mat-spinner>
       <span>Loading positions…</span>
-    </div>
-  } 
-  
-  <!-- Empty State -->
-  @else if (positions().length === 0) {
-    <div class="prediction-positions__message">
-      <mat-icon>account_balance_wallet</mat-icon>
-      <p>No positions have been placed for this market.</p>
     </div>
   } 
   
@@ -94,3 +87,4 @@
     </div>
   }
 </section>
+}

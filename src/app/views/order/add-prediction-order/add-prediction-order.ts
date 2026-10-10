@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,8 @@ import { DataService } from '../../../core/services/data.service';
 import { User } from '../../../model/user.model';
 import { Wallet } from '../../../model/wallet.model';
 import { PredictionMarketResponse } from '../../../model/prediction-market.model';
+import { PredictionMarketOdds } from '../../../model/prediction-market-odds.model';
+import { PredictionOrderContext } from '../../../model/prediction-order-context.model';
 import { PredictionPositionComponent } from '../../prediction-position/prediction-position.component';
 
 @Component({
@@ -39,13 +41,16 @@ export class AddPredictionOrder implements OnInit {
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly predictionMarketService = inject(PredictionMarketService);
-  readonly predictionMarketStatus: PredictionMarketResponse | null = this.dataService.getPredictionMarketStatus();
+  predictionMarketStatus: PredictionMarketResponse | null = this.dataService.getPredictionMarketStatus();
   wallets: Wallet[] = [];
   selectedWallet: Wallet | null = null;
   merchantPriceCurrency = 'USD';
   isSubmitting = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  readonly oddsErrorMessage = signal<string | null>(null);
+  readonly marketOdds = signal<PredictionMarketOdds | null>(null);
+  readonly isLoadingOdds = signal(false);
   marketId: number = 0;
 
   order: PredictionOrderRequest = {
@@ -62,6 +67,14 @@ export class AddPredictionOrder implements OnInit {
     this.marketId = Number(this.route.snapshot.paramMap.get('marketId'));
     if (Number.isInteger(this.marketId) && this.marketId > 0) {
       this.order.marketId = this.marketId;
+      const orderContext = this.getOrderContext();
+      if (orderContext) {
+        this.predictionMarketStatus = orderContext.market;
+        this.marketOdds.set(orderContext.odds);
+        this.selectOutcome(orderContext.selectedOutcome, this.getOutcomePrice(orderContext));
+      } else {
+        this.loadMarketOdds();
+      }
     } else {
       this.errorMessage = 'A valid market is required to place an order.';
     }
@@ -71,8 +84,18 @@ export class AddPredictionOrder implements OnInit {
       this.currentUser = user;
       this.order.appUserId = user?.id ?? 0;
     });
+  }
 
-    
+  selectOutcome(outcome: 'YES' | 'NO' | null, price: number | null): void {
+    if (outcome === null) {
+      return;
+    }
+
+    this.order.side = 'BUY';
+    this.order.outcomePosition = outcome;
+    if (price !== null) {
+      this.order.price = Math.round(price * 100);
+    }
   }
 
   submitOrder(form: NgForm): void {
@@ -141,6 +164,39 @@ export class AddPredictionOrder implements OnInit {
 
   get profit(): number {
     return this.maximumPay - this.orderCost;
+  }
+
+  private loadMarketOdds(): void {
+    this.isLoadingOdds.set(true);
+    this.oddsErrorMessage.set(null);
+
+    this.predictionMarketService.getPredictionMarketOdds(this.marketId).subscribe({
+      next: (odds) => {
+        this.marketOdds.set(odds);
+        this.selectOutcome(this.order.outcomePosition, this.getPriceForOutcome(odds, this.order.outcomePosition));
+        this.isLoadingOdds.set(false);
+      },
+      error: (error) => {
+        this.isLoadingOdds.set(false);
+        this.oddsErrorMessage.set('Current market odds are unavailable.');
+        console.error('Failed to load prediction market odds', error);
+      },
+    });
+  }
+
+  private getOrderContext(): PredictionOrderContext | null {
+    const context = this.dataService.getPredictionOrderContext();
+    return context?.market.id === this.marketId ? context : null;
+  }
+
+  private getOutcomePrice(context: PredictionOrderContext): number | null {
+    return context.selectedOutcome === null || context.odds === null
+      ? null
+      : this.getPriceForOutcome(context.odds, context.selectedOutcome);
+  }
+
+  private getPriceForOutcome(odds: PredictionMarketOdds, outcome: 'YES' | 'NO'): number | null {
+    return outcome === 'YES' ? odds.buyYesPrice : odds.buyNoPrice;
   }
 
   private loadWallets(): void {

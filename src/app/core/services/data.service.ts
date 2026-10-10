@@ -10,6 +10,7 @@ import { CashOrder } from '../../model/cash-order-response.model';
 import { TransactionManagerResponse } from '../../model/transaction-manager.model';
 import { VerificationStatusResponse } from '../../services/identity.service';
 import { PredictionMarketResponse } from '../../model/prediction-market.model';
+import { PredictionOrderContext } from '../../model/prediction-order-context.model';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,9 @@ export class DataService {
 
   private readonly predictionMarketStatusSubject = new BehaviorSubject<PredictionMarketResponse | null>(null);
   predictionMarketStatus$: Observable<PredictionMarketResponse | null> = this.predictionMarketStatusSubject.asObservable();
+
+  private readonly predictionOrderContextSubject = new BehaviorSubject<PredictionOrderContext | null>(null);
+  predictionOrderContext$: Observable<PredictionOrderContext | null> = this.predictionOrderContextSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -122,6 +126,14 @@ export class DataService {
 
   getPredictionMarketStatus(): PredictionMarketResponse | null {
     return this.predictionMarketStatusSubject.value;
+  }
+
+  updatePredictionOrderContext(context: PredictionOrderContext | null): void {
+    this.predictionOrderContextSubject.next(context);
+  }
+
+  getPredictionOrderContext(): PredictionOrderContext | null {
+    return this.predictionOrderContextSubject.value;
   }
 
   getCurrentTransaction(): TransactionManagerResponse | null{

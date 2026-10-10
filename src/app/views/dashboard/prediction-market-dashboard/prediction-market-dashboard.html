@@ -42,17 +42,28 @@
                                             @for (market of markets(); track market.id) {
                                                 <article class="market-card">
                                                     <h4>{{ market.question }}</h4>
-                                                    <dl>
-                                                        <div><dt>Outcome type</dt><dd>{{ market.outcomeType }}</dd></div>
-                                                        <div><dt>Currency</dt><dd>{{ market.currencyCode }}</dd></div>
-                                                        <div><dt>Status</dt><dd>{{ market.status }}</dd></div>
-                                                        <div><dt>Winning outcome</dt><dd>{{ market.winningOutcome === null ? 'Pending' : (market.winningOutcome ? 'Yes' : 'No') }}</dd></div>
-                                                    </dl>
                                                     <app-prediction-position [predictionMarketId]="market.id" />
-                                                    <app-prediction-market-candle-chart [predictionMarketId]="market.id" />
-                                                    <button type="button" class="order-button" (click)="createOrder(market)">
-                                                        Place order
-                                                    </button>
+                                                    <app-prediction-market-candle-chart
+                                                        [predictionMarketId]="market.id"
+                                                        [yesLabel]="market.yesLabel"
+                                                        [noLabel]="market.noLabel"
+                                                    />
+                                                    @if (marketOdds()[market.id]; as odds) {
+                                                        <div class="market-order-actions">
+                                                            <button type="button" class="order-button yes-order-button" (click)="createOrder(market, odds, 'YES')">
+                                                                Yes {{ odds.buyYesPrice === null ? 'Set price' : (odds.buyYesPrice | percent:'1.0-2') }}
+                                                            </button>
+                                                            <button type="button" class="order-button no-order-button" (click)="createOrder(market, odds, 'NO')">
+                                                                No {{ odds.buyNoPrice === null ? 'Set price' : (odds.buyNoPrice | percent:'1.0-2') }}
+                                                            </button>
+                                                        </div>
+                                                    } @else if (loadingMarketOdds()[market.id]) {
+                                                        <div class="loading-state"><mat-spinner diameter="24"></mat-spinner></div>
+                                                    } @else {
+                                                        <button type="button" class="order-button" (click)="createOrder(market)">
+                                                            Place order
+                                                        </button>
+                                                    }
                                                 </article>
                                             }
                                         </div>

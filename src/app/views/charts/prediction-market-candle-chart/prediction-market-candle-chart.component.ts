@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   PLATFORM_ID,
   SimpleChanges,
   ViewChild,
@@ -49,10 +50,12 @@ Chart.register(
   templateUrl: './prediction-market-candle-chart.component.html',
   styleUrl: './prediction-market-candle-chart.component.scss',
 })
-export class PredictionMarketCandleChartComponent implements OnChanges, OnDestroy {
+export class PredictionMarketCandleChartComponent implements OnChanges, OnDestroy, OnInit {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   @Input() predictionMarketId: number | null = null;
+  @Input() yesLabel = 'Yes';
+  @Input() noLabel = 'No';
 
   private readonly tradeService = inject(TradeService);
   private requestSubscription?: Subscription;
@@ -102,9 +105,20 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['predictionMarketId'] && this.isBrowser) {
+  ngOnInit(): void {
+    // During SSR hydration Angular can retain the initial input value without
+    // delivering an initial `ngOnChanges` notification in the browser.
+    // Start the browser-only request here so the initial chart always loads.
+    if (this.isBrowser) {
       this.loadChartData();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['predictionMarketId'] && !changes['predictionMarketId'].firstChange && this.isBrowser) {
+      this.loadChartData();
+    } else if ((changes['yesLabel'] || changes['noLabel']) && this.chartData.datasets.length) {
+      this.renderChart();
     }
   }
 
@@ -200,7 +214,7 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
 
   private createOutcomeDataset(outcomePosition: OutcomePosition, borderColor: string) {
     return {
-      label: `${outcomePosition} outcome`,
+      label: outcomePosition === 'YES' ? this.yesLabel : this.noLabel,
       data: this.rawChartDataByOutcome[outcomePosition].map(point => ({
         x: point.x,
         y: point.c * this.scale

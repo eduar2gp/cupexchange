@@ -7,13 +7,16 @@ import { PredictionOrderResponseList } from '../../model/prediction-order-respon
 import { HttpParams } from '@angular/common/http';
 import { PredictionOrderRequest } from '../../model/prediction-order-request.model';
 import { PredictionMarketList } from '../../model/prediction-market.model';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 import { PredictionPosition } from '../../model/prediction-position.model';
+import { PredictionMarketOdds } from '../../model/prediction-market-odds.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PredictionMarketService {
+  private readonly positionsRequests = new Map<number, Observable<PredictionPosition[]>>();
+
   constructor(private http: HttpClient) {}
 
     getPredictionCategories() {
@@ -41,11 +44,27 @@ export class PredictionMarketService {
     }
 
     postPredictionOrder(orderRequest: PredictionOrderRequest) {
-        return this.http.post<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.POST_PREDICTION_ORDER), orderRequest);
+      return this.http.post<PredictionOrderResponseList>(build(ApiEndpoints.predictionMarket.POST_PREDICTION_ORDER), orderRequest).pipe(
+        tap(() => this.positionsRequests.delete(orderRequest.marketId)),
+      );
     }
 
-    getPredictionPositions(predictionMarketId: number) {
-        return this.http.get<PredictionPosition[]>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_POSITIONS, { predictionMarketId }));
+    getPredictionPositions(predictionMarketId: number): Observable<PredictionPosition[]> {
+      const cachedRequest = this.positionsRequests.get(predictionMarketId);
+      if (cachedRequest) {
+        return cachedRequest;
+      }
+
+      const request = this.http
+        .get<PredictionPosition[]>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_POSITIONS, { predictionMarketId }))
+        .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+      this.positionsRequests.set(predictionMarketId, request);
+
+      return request;
+    }
+
+    getPredictionMarketOdds(predictionMarketId: number): Observable<PredictionMarketOdds> {
+        return this.http.get<PredictionMarketOdds>(build(ApiEndpoints.predictionMarket.GET_MARKET_ODDS, { predictionMarketId }));
     }
     
 }

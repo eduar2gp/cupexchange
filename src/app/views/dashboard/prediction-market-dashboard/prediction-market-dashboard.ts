@@ -10,6 +10,8 @@ import { PredictionCategory } from '../../../model/prediction-category.model';
 import { PredictionEventResponse } from '../../../model/prediction-event.model';
 import { PredictionMarketResponse } from '../../../model/prediction-market.model';
 import { PredictionOrderResponse } from '../../../model/prediction-order-response.model';
+import { PredictionMarketOdds } from '../../../model/prediction-market-odds.model';
+import { OutcomePosition } from '../../../model/prediction-order-request.model';
 import { Router, RouterModule } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { PredictionPositionComponent } from '../../prediction-position/prediction-position.component';
@@ -46,6 +48,8 @@ export class PredictionMarketDashboard implements OnInit {
   readonly isLoadingEvents = signal(false);
   readonly isLoadingMarkets = signal(false);
   readonly isLoadingOrders = signal(false);
+  readonly marketOdds = signal<Record<number, PredictionMarketOdds>>({});
+  readonly loadingMarketOdds = signal<Record<number, boolean>>({});
   readonly errorMessage = signal<string | null>(null);
 
   selectedIndex = 0;
@@ -91,6 +95,8 @@ export class PredictionMarketDashboard implements OnInit {
     this.events.set([]);
     this.markets.set([]);
     this.orders.set([]);
+    this.marketOdds.set({});
+    this.loadingMarketOdds.set({});
     this.selectedEvent.set(null);
 
     if (category) {
@@ -102,6 +108,8 @@ export class PredictionMarketDashboard implements OnInit {
     this.selectedEvent.set(event);
     this.markets.set([]);
     this.orders.set([]);
+    this.marketOdds.set({});
+    this.loadingMarketOdds.set({});
     this.loadMarkets(event.id);
     this.loadOrders(event.id);
   }
@@ -132,6 +140,7 @@ export class PredictionMarketDashboard implements OnInit {
         if (this.selectedEvent()?.id === eventId) {
           this.markets.set(markets);
           this.isLoadingMarkets.set(false);
+          markets.forEach((market) => this.loadMarketOdds(market.id));
         }
       },
       error: (error) => {
@@ -165,8 +174,28 @@ export class PredictionMarketDashboard implements OnInit {
     });
   }
 
-  createOrder(market: PredictionMarketResponse): void {
+  private loadMarketOdds(marketId: number): void {
+    this.loadingMarketOdds.update((loading) => ({ ...loading, [marketId]: true }));
+
+    this.predictionMarketService.getPredictionMarketOdds(marketId).subscribe({
+      next: (odds) => {
+        this.marketOdds.update((oddsByMarket) => ({ ...oddsByMarket, [marketId]: odds }));
+        this.loadingMarketOdds.update((loading) => ({ ...loading, [marketId]: false }));
+      },
+      error: (error) => {
+        console.error(`Failed to load odds for prediction market ${marketId}`, error);
+        this.loadingMarketOdds.update((loading) => ({ ...loading, [marketId]: false }));
+      },
+    });
+  }
+
+  createOrder(
+    market: PredictionMarketResponse,
+    odds: PredictionMarketOdds | null = null,
+    selectedOutcome: OutcomePosition | null = null,
+  ): void {
     this.dataService.updatePredictionMarketStatus(market);
+    this.dataService.updatePredictionOrderContext({ market, odds, selectedOutcome });
     this.router.navigate(['/add-prediction-order', market.id]);
   }
 
