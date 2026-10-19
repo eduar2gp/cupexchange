@@ -128,6 +128,17 @@ export class WalletComponent implements OnInit, OnDestroy {
     return code ? (this.CURRENCY_NAMES[code] ?? currencyCode) : 'Unknown Currency';
   }
 
+  getCurrencyImage(currencyCode: string | undefined): string {
+    switch (currencyCode?.toUpperCase()) {
+      case 'CUP':
+        return 'assets/currencies/cup_currency.png';
+      case 'MLC':
+        return 'assets/currencies/mlc_currency.jpeg';
+      default:
+        return 'assets/currencies/usd_currency.png';
+    }
+  }
+
   calculateProgress(wallet: any): number {
     if (!wallet.balance || wallet.balance === 0) return 0;
     return (wallet.availableBalance / wallet.balance) * 100;

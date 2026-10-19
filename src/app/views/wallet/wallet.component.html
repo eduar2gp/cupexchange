@@ -35,11 +35,11 @@
       <div class="wallet-header">
         <div class="currency-info">
           <div class="currency-icon">
-            {{ getCurrencySymbol(wallet.currencyCode) }}
-          </div>
-          <div>
-            <h3>{{ wallet.currencyCode }}</h3>
-            <p>{{ getCurrencyName(wallet.currencyCode) }}</p>
+            <img
+              class="currency-image"
+              [src]="getCurrencyImage(wallet.currencyCode)"
+              alt=""
+            >
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@
             <span>💰 {{ 'BALANCE' | translate }}</span>
           </div>
           <div class="balance-value">
-            {{ wallet.balance | number:'1.2-2' }} {{ wallet.currencyCode }}
+            {{ wallet.balance | number:'1.2-2' }}
           </div>
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="calculateProgress(wallet)"></div>
@@ -65,14 +65,14 @@
             <span class="type-icon">✓</span>
             <span>{{ 'AVAILABLE' | translate }}</span>
             <strong class="available">
-              {{ wallet.availableBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
+              {{ wallet.availableBalance | number:'1.2-2' }}
             </strong>
           </div>
           <div class="balance-row">
             <span class="type-icon">🔒</span>
             <span>{{ 'RESERVED' | translate }}</span>
             <strong class="locked">
-              {{ wallet.lockedBalance | number:'1.2-2' }} {{ wallet.currencyCode }}
+              {{ wallet.lockedBalance | number:'1.2-2' }}
             </strong>
           </div>
         </div>
