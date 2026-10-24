@@ -26,6 +26,8 @@ import { filter, switchMap, tap, catchError, of } from 'rxjs';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { untracked } from '@angular/core';
+import { CategoryService } from '../../../core/services/category.service';
+import { Category } from '../../../model/category.model';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -51,12 +53,14 @@ export class EcommerceDashboardComponent implements OnInit {
   private searchService = inject(SearchService);
   private cartService = inject(CartService);
   private dataService = inject(DataService);
+  private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
   public loggedInUser: User | undefined;
 
   private platformId = inject(PLATFORM_ID);
 
   viewMode: 'grid' | 'list' = 'grid';
+  showMoreFilters = false;
 
   // State
   private allProducts = signal<Product[]>([]);
@@ -66,11 +70,13 @@ export class EcommerceDashboardComponent implements OnInit {
   public provinces: Province[] = [];
   public allMunicipalities: Municipality[] = [];
   public filteredMunicipalities: Municipality[] = [];
+  readonly categories = signal<Category[]>([]);
 
   // Form
   searchForm: FormGroup = this.fb.group({
     provinceId: [null],
-    municipalityId: [null]
+    municipalityId: [null],
+    categoryIds: [[]]
   });
 
   pageSize = signal(10);
@@ -93,7 +99,7 @@ export class EcommerceDashboardComponent implements OnInit {
         userProvinceId: this.loggedInUser?.provinceId || null,
         selectedProvinceId: formValues.provinceId,
         selectedMunicipalityId: formValues.municipalityId,
-        categoryIds: [],
+        categoryIds: formValues.categoryIds ?? [],
         // Include the search text from your signal
         searchQuery: currentQuery
       } as ProductSearchRequestDTO,
@@ -151,6 +157,11 @@ export class EcommerceDashboardComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => this.categories.set(categories),
+      error: (error) => console.error('Failed to load categories', error)
+    });
+
     // Wrap logic that touches the DOM or Browser APIs
     if (isPlatformBrowser(this.platformId)) {
       this.loadLocationData();

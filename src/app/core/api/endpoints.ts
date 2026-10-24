@@ -88,6 +88,9 @@ export const ApiEndpoints = {
     GET_PREDICTION_POSITIONS: '/api/v1/prediction-markets/position/{predictionMarketId}',
     GET_PREDICTION_CANDLE_STICKS: '/api/v1/charts/prediction-candles/{predictionMarketId}?outcomePosition={outcomePosition}&interval={interval}&limit={limit}',
     GET_MARKET_ODDS: '/api/v1/prediction-markets/{predictionMarketId}/odds'
+  },
+  category: {
+    GET_CATEGORIES: '/api/v1/categories'
   }
 };
 

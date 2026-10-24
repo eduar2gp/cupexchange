@@ -17,10 +17,10 @@
 
   .header-container {
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
     width: 100%;
-    @media (min-width: 960px) { flex-direction: row; justify-content: space-between; }
+    justify-content: space-between;
   }
 }
 
@@ -32,15 +32,11 @@
   flex-direction: column;
   gap: 12px;
   flex: 1;
+  min-width: 0;
 
   .location-group, .search-group { display: flex; gap: 8px; align-items: center; }
+  .location-group, .search-group { width: 100%; }
   
-  @media (min-width: 960px) { 
-    flex-direction: row; 
-    .search-group { flex: 2; }
-    .location-group { flex: 1; }
-  }
-
   mat-form-field {
     flex: 1;
     min-width: 0;
@@ -52,7 +48,43 @@
   }
 
   .search-btn { height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 500; }
+  .more-filters-btn { height: 44px; white-space: nowrap; }
+
+  @media (max-width: 599px) {
+    .search-group {
+      gap: 4px;
+    }
+
+    .search-input {
+      flex: 1 1 auto;
+    }
+
+    .search-btn,
+    .more-filters-btn {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      padding: 0;
+
+      span {
+        display: none;
+      }
+    }
+
+    .location-group {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+
+      mat-form-field {
+        width: 100%;
+        flex: 0 0 auto;
+      }
+    }
+  }
 }
+
+.view-toggle { display: flex; flex-shrink: 0; }
 
 /* =========================================
    PRODUCT GRID & CARD BASE
