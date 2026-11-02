@@ -1,3 +1,5 @@
+import { Category } from './category.model';
+
 export interface ProductPrice {
   currencyCode: string;
   price: number;
@@ -11,6 +13,8 @@ export interface Product {
   description: string;
   price?: number;
   prices?: ProductPrice[];
+  category_id?: number[];
+  categories?: Category[];
   stockQuantity: number;
   productImageUrl?: string;
   available?: boolean;

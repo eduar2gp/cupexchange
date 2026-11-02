@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { DataService } from '../../../core/services/data.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Product, ProductPrice } from '../../../model/product.model';
 import { Provider } from '../../../model/provider.model';
 import { AsyncPipe } from '@angular/common';
@@ -10,28 +10,43 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http'; // 👈 Import HttpClient
 import { ProductsService } from '../../../core/services/products.service';
-import { environment } from '../../../../environments/environment'
+import { CategoryService } from '../../../core/services/category.service';
+import { Category } from '../../../model/category.model';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
   selector: 'app-product-card',
-  imports: [AsyncPipe, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule, MatCardModule, MatDividerModule],
+  imports: [AsyncPipe, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatIconModule, MatCardModule, MatDividerModule],
   templateUrl: './edit-product.component.html',
   styleUrl: './edit-product.component.scss'
 })
-export class EditProductComponent {
+export class EditProductComponent implements OnInit {
   
   productData$!: Observable<Product | null>; 
   providerData$!: Observable<Provider | null>;
   selectedFile: File | null = null;
+  readonly categories = signal<Category[]>([]);
 
   private productsService = inject(ProductsService);
+  private categoryService = inject(CategoryService);
 
-  constructor(private dataService: DataService, private http: HttpClient) {    
-    this.productData$ = this.dataService.currentProduct;
+  constructor(private dataService: DataService) {
+    this.productData$ = this.dataService.currentProduct.pipe(
+      map(product => product ? {
+        ...product,
+        category_id: product.category_id ?? product.categories?.map(category => category.id).filter((id): id is number => id !== undefined) ?? []
+      } : null)
+    );
     this.providerData$ = this.dataService.currentProvider;
+  }
+
+  ngOnInit(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => this.categories.set(categories),
+      error: (error) => console.error('Failed to load categories', error)
+    });
   }
 
   addPrice(product: Product): void {
@@ -40,6 +55,13 @@ export class EditProductComponent {
 
   removePrice(product: Product, index: number): void {
     product.prices = product.prices?.filter((_, priceIndex) => priceIndex !== index) ?? [];
+  }
+
+  onCategorySelectionChange(product: Product, categoryIds: number[]): void {
+    product.category_id = categoryIds;
+    product.categories = this.categories().filter(category =>
+      category.id !== undefined && categoryIds.includes(category.id)
+    );
   }
 
   // Method to capture the selected file
@@ -53,11 +75,17 @@ export class EditProductComponent {
 
   // Method called when the form is submitted
   saveProduct(product: Product): void {
-    const { price: _legacyPrice, ...payload } = product;
-    payload.prices = (product.prices ?? []).map((item: ProductPrice) => ({
-      currencyCode: item.currencyCode.toUpperCase(),
-      price: Number(item.price)
-    }));
+    const payload: Product = {
+      name: product.name.trim(),
+      providerId: product.providerId,
+      stockQuantity: Number(product.stockQuantity),
+      category_id: product.category_id ?? product.categories?.map(category => category.id).filter((id): id is number => id !== undefined) ?? [],
+      prices: (product.prices ?? []).map((item: ProductPrice) => ({
+        currencyCode: item.currencyCode.trim().toUpperCase(),
+        price: Number(item.price)
+      })),
+      description: product.description
+    };
 
     console.log('Submitting product:', payload);
     // 1. Call the service method with a PriceDTO-compatible prices array.

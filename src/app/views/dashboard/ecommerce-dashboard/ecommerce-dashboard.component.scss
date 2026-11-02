@@ -33,7 +33,6 @@
   gap: 12px;
   flex: 1;
   min-width: 0;
-
   .location-group, .search-group { display: flex; gap: 8px; align-items: center; }
   .location-group, .search-group { width: 100%; }
   
@@ -52,7 +51,7 @@
 
   @media (max-width: 599px) {
     .search-group {
-      gap: 4px;
+      gap: 8px;
     }
 
     .search-input {
@@ -65,6 +64,27 @@
       min-width: 40px;
       height: 40px;
       padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      position: relative;
+
+      ::ng-deep .mdc-button__label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      mat-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0 !important;
+        transform: translate(-50%, -50%);
+      }
 
       span {
         display: none;
@@ -85,6 +105,19 @@
 }
 
 .view-toggle { display: flex; flex-shrink: 0; }
+
+@media (max-width: 599px) {
+  .dashboard-header .header-container {
+    align-items: center;
+  }
+
+  .view-toggle button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+}
 
 /* =========================================
    PRODUCT GRID & CARD BASE

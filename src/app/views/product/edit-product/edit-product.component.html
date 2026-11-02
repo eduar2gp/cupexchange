@@ -40,6 +40,30 @@
               <mat-icon matSuffix>label</mat-icon>
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Stock quantity</mat-label>
+              <input matInput name="stockQuantity" [(ngModel)]="product.stockQuantity" type="number" min="0" required>
+              <mat-icon matSuffix>inventory</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width category-select">
+              <mat-label>Categories</mat-label>
+              <mat-select name="categoryIds" [(ngModel)]="product.category_id" multiple
+                (ngModelChange)="onCategorySelectionChange(product, $event)">
+                @for (category of categories(); track category.id) {
+                <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            @if (product.categories?.length) {
+            <div class="selected-categories" aria-label="Selected product categories">
+              @for (category of product.categories; track category.id) {
+              <span class="category-chip">{{ category.name }}</span>
+              }
+            </div>
+            }
+
             <section class="price-list" aria-label="Product prices">
               <div class="price-list__header">
                 <span>Prices</span>

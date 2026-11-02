@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
 import { PredictionMarketService } from '../../../core/services/prediction-market.service';
 import { PredictionCategory } from '../../../model/prediction-category.model';
 import { PredictionEventResponse } from '../../../model/prediction-event.model';
@@ -26,7 +25,6 @@ import { PredictionMarketCandleChartComponent } from '../../charts/prediction-ma
     MatIconModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatTabsModule,
     RouterModule,
     PredictionPositionComponent,
     PredictionMarketCandleChartComponent,
