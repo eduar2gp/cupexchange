@@ -40,7 +40,7 @@ import { AccountProviderBillingReports } from './views/account/account-provider-
 import { IdVerificationComponent } from './components/id-verification/id-verification.component';
 import { PredictionMarketDashboard } from './views/dashboard/prediction-market-dashboard/prediction-market-dashboard';
 import { AddPredictionOrder } from './views/order/add-prediction-order/add-prediction-order';
-
+import { ViewProductComponent } from './views/product/view-product/view-product.component';
 
 export const routes: Routes = [
    {
@@ -58,6 +58,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
+  },
+  {
+    path: 'product-details',
+    component: ViewProductComponent,
   },
    {
     path: 'exchange-dashboard',

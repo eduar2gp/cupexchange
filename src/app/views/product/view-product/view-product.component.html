@@ -1,0 +1,79 @@
+<section class="product-view" aria-labelledby="product-title">
+	@if (product$ | async; as product) {
+		<mat-card class="product-card" appearance="outlined">
+			<div class="product-image-wrap">
+				@if (product.productImageUrl) {
+					<img [src]="product.productImageUrl" [alt]="product.name" class="product-image">
+				} @else {
+					<mat-icon class="image-placeholder" aria-hidden="true">inventory_2</mat-icon>
+				}
+			</div>
+
+			<mat-card-content class="product-details">
+				<div class="product-heading">
+					<div>
+						<p class="eyebrow">{{ product.providerName || 'Product' }}</p>
+						<h1 id="product-title">{{ product.name }}</h1>
+					</div>
+					<span class="availability" [class.availability--unavailable]="product.available === false">
+						{{ product.available === false ? 'Unavailable' : 'Available' }}
+					</span>
+				</div>
+
+				<p class="description">{{ product.description || 'No description available.' }}</p>
+
+				@if (product.prices?.length) {
+					<section class="prices" aria-label="Product prices">
+						<h2>Prices</h2>
+						<div class="price-list">
+							@for (price of product.prices; track trackPrice($index, price)) {
+								<div class="price">
+									<span class="price__currency">{{ price.currencyCode }}</span>
+									<strong>{{ price.price | number:'1.2-2' }}</strong>
+								</div>
+							}
+						</div>
+					</section>
+				} @else if (product.price !== undefined) {
+					<section class="prices" aria-label="Product price">
+						<h2>Price</h2>
+						<div class="price">
+							<span class="price__currency">USD</span>
+							<strong>{{ product.price | number:'1.2-2' }}</strong>
+						</div>
+					</section>
+				}
+
+				<dl class="product-meta">
+					<div>
+						<dt>In stock</dt>
+						<dd>{{ product.stockQuantity }}</dd>
+					</div>
+					@if (product.id !== undefined) {
+						<div>
+							<dt>Product ID</dt>
+							<dd>{{ product.id }}</dd>
+						</div>
+					}
+				</dl>
+
+				@if (product.categories?.length) {
+					<section class="categories" aria-label="Product categories">
+						<h2>Categories</h2>
+						<div class="category-list">
+							@for (category of product.categories; track category.id ?? category.name) {
+								<span>{{ category.name }}</span>
+							}
+						</div>
+					</section>
+				}
+			</mat-card-content>
+		</mat-card>
+	} @else {
+		<mat-card class="empty-state" appearance="outlined">
+			<mat-icon aria-hidden="true">inventory_2</mat-icon>
+			<h1 id="product-title">No product selected</h1>
+			<p>Select a product to view its details.</p>
+		</mat-card>
+	}
+</section>

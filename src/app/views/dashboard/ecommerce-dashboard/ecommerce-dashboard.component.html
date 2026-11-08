@@ -63,7 +63,8 @@
   @if (filteredProducts().length > 0) {
   <div class="product-grid" [class.list-mode]="viewMode === 'list'" [class.loading-fade]="loading()">
     @for (product of filteredProducts(); track product.id) {
-    <mat-card class="product-card" [class.not-available]="!product.available">
+    <mat-card class="product-card" [class.not-available]="!product.available" role="button" tabindex="0"
+      (click)="viewProduct(product)" (keydown.enter)="viewProduct(product)" (keydown.space)="viewProduct(product)">
 
       <div class="card-top-layout">
         <div class="image-container">
@@ -88,7 +89,7 @@
         </p>
 
         <mat-card-actions>
-          <button mat-flat-button color="primary" (click)="addProduct(product)" [disabled]="!product.available">
+          <button mat-flat-button color="primary" (click)="$event.stopPropagation(); addProduct(product)" [disabled]="!product.available">
             <mat-icon>shopping_cart</mat-icon>
             {{ product.available ? 'ADD TO CART' : 'OUT OF REACH' }}
           </button>

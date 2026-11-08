@@ -28,6 +28,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { untracked } from '@angular/core';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../model/category.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -55,6 +56,7 @@ export class EcommerceDashboardComponent implements OnInit {
   private dataService = inject(DataService);
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
   public loggedInUser: User | undefined;
 
   private platformId = inject(PLATFORM_ID);
@@ -237,6 +239,12 @@ export class EcommerceDashboardComponent implements OnInit {
       productImgUrl: product.productImageUrl!,
     });
   }
+
+  viewProduct(product: Product): void {
+    this.dataService.updateProduct(product);
+    this.router.navigate(['/product-details']);
+  }
+
   onSearchChange(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.searchService.updateSearch(filterValue);
