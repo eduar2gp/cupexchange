@@ -89,15 +89,15 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     { value: 'MARKET', viewValue: 'Mercado' },
   ];
 
-  sliderMin = 0.0010;
-  sliderMax = 0.0040;
-  sliderStep = 0.0001;
+  sliderMin = 500;
+  sliderMax = 1500;
+  sliderStep = 1;
   minVolume = 0.01;
 
   sliderConstraints = signal({
-    min: 0.0010,
-    max: 0.0040,
-    step: 0.0001
+    min: 500,
+    max: 1500,
+    step: 1
   });
 
   loading = signal(false);
@@ -168,18 +168,19 @@ export class AddOrderComponent implements OnInit, OnDestroy {
   }
 
   private updateTradingConstraints(pair: TradingPair): void {
-    // 3. Force Step to be a standard number to resolve 1.0E-4 issues
+    // Force Step to be a standard number to resolve scientific notation (e.g. 1.0E-5)
     const rawStep = Number(pair.step);
 
     if (pair.value === 'CUPUSD') {
-      this.sliderMin = 0.0010;
-      this.sliderMax = 0.0040;
-      this.sliderStep = rawStep || 0.0001;
-      this.minVolume = pair.minVolume ?? 4.0; // Set to 4.0 as per your JSON
+      // Inverse of 500 - 1500 CUP/USD (1/1500 = 0.000666..., 1/500 = 0.0020)
+      this.sliderMin = 0.00066;
+      this.sliderMax = 0.00200;
+      this.sliderStep = rawStep || 0.00001;
+      this.minVolume = pair.minVolume ?? 10.0;
     } else if (pair.value === 'MLCCUP' || pair.value === 'USDCUP') {
-      this.sliderMin = 4;
-      this.sliderMax = 1000;
-      this.sliderStep = rawStep || 4.0;
+      this.sliderMin = 500;
+      this.sliderMax = 1500;
+      this.sliderStep = rawStep || 1.0;
       this.minVolume = pair.minVolume ?? 0.01;
     } else {
       this.sliderMin = 0.01;
@@ -187,6 +188,13 @@ export class AddOrderComponent implements OnInit, OnDestroy {
       this.sliderStep = rawStep || 1.0;
       this.minVolume = pair.minVolume ?? 0.1;
     }
+
+    // Keep the signal synchronized with the updated bounds
+    this.sliderConstraints.set({
+      min: this.sliderMin,
+      max: this.sliderMax,
+      step: this.sliderStep
+    });
 
     // Sync the numeric model and input string
     this.newOrder.volume = this.minVolume;
