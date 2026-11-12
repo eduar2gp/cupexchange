@@ -49,6 +49,25 @@
 						<dt>In stock</dt>
 						<dd>{{ product.stockQuantity }}</dd>
 					</div>
+					@if (product.averageRating !== undefined) {
+						<div>
+							<dt>Customer rating</dt>
+							<dd class="product-rating">
+								<div class="review-card__rating" [attr.aria-label]="product.averageRating + ' out of 5 stars'">
+									@for (star of ratingStars; track star) {
+										<mat-icon [class.review-card__star--filled]="star <= product.averageRating" aria-hidden="true">star</mat-icon>
+									}
+								</div>
+								<span>{{ product.averageRating | number:'1.1-1' }} out of 5</span>
+							</dd>
+						</div>
+					}
+					@if (product.reviewCount !== undefined) {
+						<div>
+							<dt>Reviews</dt>
+							<dd>{{ product.reviewCount }} {{ product.reviewCount === 1 ? 'review' : 'reviews' }}</dd>
+						</div>
+					}
 					@if (product.id !== undefined) {
 						<div>
 							<dt>Product ID</dt>
@@ -69,6 +88,8 @@
 				}
 			</mat-card-content>
 		</mat-card>
+
+		<app-view-product-review></app-view-product-review>
 	} @else {
 		<mat-card class="empty-state" appearance="outlined">
 			<mat-icon aria-hidden="true">inventory_2</mat-icon>

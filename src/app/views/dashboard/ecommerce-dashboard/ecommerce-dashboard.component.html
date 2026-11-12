@@ -80,6 +80,25 @@
             <span class="product-price-value">{{ getProductPrice(product) | number:'1.2-2' }}</span>
             <span class="product-price-currency">{{ getSelectedProductCurrency(product) }}</span>
           </div>
+          @if (product.reviewCount !== undefined && product.reviewCount > 0) {
+          <div class="product-rating-summary">
+            @if (product.averageRating !== undefined) {
+            <div class="review-card__rating" [attr.aria-label]="product.averageRating + ' out of 5 stars'">
+              @for (star of ratingStars; track star) {
+              <mat-icon [class.review-card__star--filled]="star <= product.averageRating" aria-hidden="true">star</mat-icon>
+              }
+            </div>
+            }
+            <div class="product-rating-details">
+              @if (product.averageRating !== undefined) {
+            <span class="product-rating-value">{{ product.averageRating | number:'1.1-1' }}</span>
+              }
+              @if (product.reviewCount !== undefined) {
+            <span class="product-review-count">({{ product.reviewCount }})</span>
+              }
+            </div>
+          </div>
+          }
         </div>
       </div>
 

@@ -16,8 +16,32 @@ export interface Product {
   category_id?: number[];
   categories?: Category[];
   stockQuantity: number;
+  averageRating?: number;
+  reviewCount?: number;
   productImageUrl?: string;
   available?: boolean;
+}
+
+export interface ProductReviewResponse {
+  content: ProductReview[];
+  page: ProductReviewPage;
+}
+
+export interface ProductReview {
+  id: number;
+  rating: number;
+  comment: string;
+  userFirstName: string;
+  userLastName: string;
+  userProfilePicture: string;
+  created_at: string;
+}
+
+export interface ProductReviewPage {
+  size: number;
+  number: number;
+  totalElements: number;
+  totalPages: number;
 }
 
 export function resolveProductPrice(product: Product, currencyCode?: string): number {

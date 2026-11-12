@@ -1,0 +1,70 @@
+<section class="reviews" aria-labelledby="reviews-heading">
+	<header class="reviews__header">
+		<div>
+			<p class="reviews__eyebrow">Customer feedback</p>
+			<h1 id="reviews-heading">Product reviews</h1>
+		</div>
+		@if (reviews; as response) {
+			<span class="reviews__count">{{ response.page.totalElements }} total</span>
+		}
+	</header>
+
+	@if (loading) {
+		<div class="reviews__state" role="status">
+			<mat-spinner diameter="36"></mat-spinner>
+			<p>Loading reviews…</p>
+		</div>
+	} @else if (errorMessage) {
+		<mat-card class="reviews__state reviews__state--error" appearance="outlined" role="alert">
+			<mat-icon aria-hidden="true">error_outline</mat-icon>
+			<p>{{ errorMessage }}</p>
+		</mat-card>
+	} @else if (!productId) {
+		<mat-card class="reviews__state" appearance="outlined">
+			<mat-icon aria-hidden="true">rate_review</mat-icon>
+			<p>Select a product to view its reviews.</p>
+		</mat-card>
+	} @else if (reviews; as response) {
+		@if (response.content.length) {
+			<div class="reviews__list">
+				@for (review of response.content; track trackReviewById($index, review)) {
+					<mat-card class="review-card" appearance="outlined">
+						<mat-card-content>
+							<div class="review-card__header">
+								<img
+									class="review-card__avatar"
+									[src]="review.userProfilePicture"
+									[alt]="review.userFirstName + ' ' + review.userLastName"
+								>
+								<div class="review-card__author">
+									<strong>{{ review.userFirstName }} {{ review.userLastName }}</strong>
+									<time [attr.datetime]="review.created_at">{{ review.created_at | date:'mediumDate' }}</time>
+								</div>
+								<div class="review-card__rating" [attr.aria-label]="review.rating + ' out of 5 stars'">
+									@for (star of ratingStars; track star) {
+										<mat-icon [class.review-card__star--filled]="star <= review.rating" aria-hidden="true">star</mat-icon>
+									}
+								</div>
+							</div>
+							<p class="review-card__comment">{{ review.comment }}</p>
+						</mat-card-content>
+					</mat-card>
+				}
+			</div>
+
+			<mat-paginator
+				[length]="response.page.totalElements"
+				[pageIndex]="pageIndex"
+				[pageSize]="pageSize"
+				[pageSizeOptions]="[5, 10, 25]"
+				(page)="handlePageEvent($event)"
+				showFirstLastButtons
+			/>
+		} @else {
+			<mat-card class="reviews__state" appearance="outlined">
+				<mat-icon aria-hidden="true">reviews</mat-icon>
+				<p>There are no reviews for this product yet.</p>
+			</mat-card>
+		}
+	}
+</section>

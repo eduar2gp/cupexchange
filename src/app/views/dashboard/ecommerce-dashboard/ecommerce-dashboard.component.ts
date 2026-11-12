@@ -63,6 +63,7 @@ export class EcommerceDashboardComponent implements OnInit {
 
   viewMode: 'grid' | 'list' = 'grid';
   showMoreFilters = false;
+  readonly ratingStars = [1, 2, 3, 4, 5];
 
   // State
   private allProducts = signal<Product[]>([]);

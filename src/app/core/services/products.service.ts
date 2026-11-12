@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http'; // 💡 Removed HttpHeaders, as interceptor handles it
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service'; // 💡 Keeping the import, but removing the injection/use
-import { Product } from '../../model/product.model'
-import { environment } from '../../../environments/environment'
+import { Product, ProductReviewResponse } from '../../model/product.model';
 import { Page } from '../../model/page.model';
 import { ProductSearchRequestDTO } from '../../model/product-search-request-dto.model';
+import { ApiEndpoints, build } from '../api/endpoints';
+
 
 /**
  * Defines the structure for a product object.
@@ -16,15 +16,6 @@ import { ProductSearchRequestDTO } from '../../model/product-search-request-dto.
 })
 export class ProductsService {
   private http = inject(HttpClient);
-  // private authService = inject(AuthService); // 💡 Removed injection, token is retrieved by Interceptor
-
-  private BASE_API_URL = environment.baseApiUrl;
-  // 💡 Note: Your previous products endpoint was '/api/v1/products'. 
-  // If BASE_API_URL already ends with '/api/v1', this should just be '/products'.
-  // I will assume BASE_API_URL includes the version path and correct the endpoint:
-  private PRODUCTS_ENDPOINT = '/api/v1/products';
-  private SEARCH_PRODUCTS_ENDPOINT = '/api/v1/products/search';
-  private PRODUCTS_BYPROVIDER_ENDPOINT = '/api/v1/products/by-provider';
   
 
   /**
@@ -33,8 +24,7 @@ export class ProductsService {
    * @returns An Observable array of Product objects.
    */
   getProducts(): Observable<Product[]> {    
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}`;   
-    return this.http.get<Product[]>(fullUrl);
+    return this.http.get<Product[]>(build(ApiEndpoints.products.GET_PRODUCTS));
   }
 
   /**
@@ -46,19 +36,21 @@ export class ProductsService {
     size: number = 20
   ): Observable<Page<Product>> {
 
-    const fullUrl = `${this.BASE_API_URL}${this.SEARCH_PRODUCTS_ENDPOINT}`;
-
     // Add pagination as query parameters
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.post<Page<Product>>(fullUrl, request, { params });
+    return this.http.post<Page<Product>>(
+      build(ApiEndpoints.products.SEARCH_PRODUCTS),
+      request,
+      { params }
+    );
   }
 
   getProductsByProvider(providerId: number): Observable<Product[]> {
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_BYPROVIDER_ENDPOINT}/${providerId}`;
-    return this.http.get<Product[]>(fullUrl);
+    const url = `${build(ApiEndpoints.products.GET_PRODUCTS_BY_PROVIDER)}/${providerId}`;
+    return this.http.get<Product[]>(url);
   }
 
   /**
@@ -68,8 +60,7 @@ export class ProductsService {
    * @returns An Observable of the created Product object (with ID).
    */
   createProduct(product: Product): Observable<Product> {
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}`;
-    return this.http.post<Product>(fullUrl, product);
+    return this.http.post<Product>(build(ApiEndpoints.products.CREATE_PRODUCT), product);
   }
 
 
@@ -83,7 +74,7 @@ export class ProductsService {
    * @returns An Observable of the updated Product object.
    */
   updateProduct(id: number, product: Product): Observable<Product> {
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}/${id}`;
+    const fullUrl = build(ApiEndpoints.products.UPDATE_PRODUCT, { id });
     // Use `put` for replacing the entire resource, or `patch` for partial updates.
     return this.http.put<Product>(fullUrl, product);
   }
@@ -91,7 +82,7 @@ export class ProductsService {
 
   // Service method to send the multipart/form-data request
   saveProductWithImage(productId: number, formData: FormData): Observable<Product> {
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}/${productId}/image`;
+    const fullUrl = build(ApiEndpoints.products.UPLOAD_PRODUCT_IMAGE, { productId });
     // The key is that you pass the FormData object directly.
     // HttpClient automatically sets the Content-Type to multipart/form-data
     // and correctly includes the boundary identifier.
@@ -112,9 +103,20 @@ export class ProductsService {
    * @returns An Observable that completes upon successful deletion (often returns an empty object {} or void).
    */
   deleteProduct(id: number): Observable<void> {
-    const fullUrl = `${this.BASE_API_URL}${this.PRODUCTS_ENDPOINT}/${id}`;
+    const fullUrl = build(ApiEndpoints.products.DELETE_PRODUCT, { id });
     // The <void> or <any> type depends on what your API returns (often an empty body for 204 No Content).
     return this.http.delete<void>(fullUrl);
+  }
+
+  getProductReviews(productId: number, page: number = 0, size: number = 10): Observable<ProductReviewResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<ProductReviewResponse>(
+      build(ApiEndpoints.products.GET_PRODUCT_REVIEWS, { productId }),
+      { params }
+    );
   }
 
 }
