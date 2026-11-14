@@ -356,4 +356,12 @@ export class CandlePriceChartComponent implements OnInit, OnDestroy {
       ctx.restore();
     }
   };
+
+  getBaseCurrencyImage(pair: string | undefined): string {
+    if (!pair || pair.length < 6) {
+      return 'assets/currencies/default.png';
+    }
+    const baseCurrency = pair.substring(0, 3).toLowerCase();
+    return `assets/currencies/${baseCurrency}_currency.png`;
+  }
 }

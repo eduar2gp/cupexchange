@@ -3,6 +3,14 @@
   <div class="top-bar">
     @if (tradeVolumeData(); as data) {
     <div class="trade-volume-info">
+      @if (currentPairCode) {
+      <div class="currency-pair">
+        <img class="currency-pair-icon"
+             [src]="getBaseCurrencyImage(currentPairCode)"
+             [alt]="currentPairCode.slice(0, 3) + ' currency'" />
+        <span>{{ currentPairCode }}</span>
+      </div>
+      }
       <div class="info-group">
         <span class="info-label">Volume:</span>
         <span class="info-value">{{ data.totalOpenVolume | number:'1.2-2' }}</span>

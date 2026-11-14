@@ -14,7 +14,7 @@
   width: 100%;
   min-height: 50vh;
   background: var(--color-background);
-  padding: 0.25rem;
+  padding: .025rem;
   gap: 1px;
   overflow-x: hidden; // Prevents page-level horizontal scroll
 }
@@ -112,7 +112,19 @@
     display: block;
   }
 
+  .price-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .price-input {
+    flex: 0 0 8rem;
+    width: 8rem;
+  }
+
   .slider-wrapper {
+    flex: 1;
     width: 100%;
     /* 🛠️ FIX: Padding on the left/right prevents the thumb marker from being chopped */
     padding: 0 12px;
@@ -227,6 +239,19 @@
 .slider-wrapper {
   width: 100%;
   padding: 0 8px;
+}
+
+@media (max-width: 360px) {
+  .price-slider .price-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .price-slider .price-input {
+    flex-basis: auto;
+    width: 100%;
+  }
 }
 
 .price-hint {

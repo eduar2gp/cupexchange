@@ -224,6 +224,32 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     this.updateMaxVolumes();
   }
 
+  onPriceInput(value: number | string | null): void {
+    const price = Number(value);
+    if (!Number.isFinite(price)) return;
+
+    const boundedPrice = Math.min(this.sliderMax, Math.max(this.sliderMin, price));
+    const steppedPrice = this.sliderMin + Math.round((boundedPrice - this.sliderMin) / this.sliderStep) * this.sliderStep;
+    const precision = Math.max(
+      this.getDecimalPlaces(this.sliderMin),
+      this.getDecimalPlaces(this.sliderStep)
+    );
+
+    this.newOrder.price = Number(steppedPrice.toFixed(precision));
+    this.onOrderModelChange();
+  }
+
+  onPriceKeyDown(event: KeyboardEvent): void {
+    const allowedKeys = ['Backspace', 'Tab', 'End', 'Home', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    if (allowedKeys.includes(event.key) || event.ctrlKey || event.metaKey) return;
+
+    const allowsFractionalPrice = this.sliderStep < 1;
+    const isDigit = /^[0-9]$/.test(event.key);
+    const isDecimalPoint = event.key === '.' && allowsFractionalPrice;
+
+    if (!isDigit && !isDecimalPoint) event.preventDefault();
+  }
+
   onTabChange(event: MatTabChangeEvent): void {
     this.selectedTabIndex = event.index;
     this.newOrder.side = event.index === 0 ? 'BUY' : 'SELL';
@@ -418,18 +444,23 @@ export class AddOrderComponent implements OnInit, OnDestroy {
     }).format(isNaN(value) ? 0 : value);
   }
 
+  private getDecimalPlaces(value: number): number {
+    const decimalPart = value.toString().split('.')[1];
+    return decimalPart?.length ?? 0;
+  }
+
   getThemeClass(): string {
     return `mat-theme-${this.themeService.isDark() ? 'dark' : 'light'}`;
   }
 
   getBaseCurrencyImage(pair: string | undefined): string {
     if (!pair || pair.length < 6) return 'assets/currencies/default.png';
-    return `assets/currencies/${pair.substring(0, 3).toLowerCase()}.png`;
+    return `assets/currencies/${pair.substring(0, 3).toLowerCase()}_currency.png`;
   }
 
   getQuoteCurrencyImage(pair: string | undefined): string {
     if (!pair || pair.length < 6) return 'assets/currencies/default.png';
-    return `assets/currencies/${pair.substring(3).toLowerCase()}.png`;
+    return `assets/currencies/${pair.substring(3).toLowerCase()}_currency.png`;
   }
 
   onKeyDown(event: KeyboardEvent): void {

@@ -43,19 +43,35 @@
                     @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
                     <div class="price-slider">
                       <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
-                      <div class="slider-wrapper">
-                        <mat-slider class="slider"
-                                    [min]="sliderMin"
-                                    [max]="sliderMax"
-                                    [step]="sliderStep"
-                                    discrete
-                                    [ngClass]="getThemeClass()">
-                          <input matSliderThumb
+                      <div class="price-controls">
+                        <mat-form-field appearance="fill" class="price-input" subscriptSizing="dynamic">
+                          <mat-label>{{ 'PRICE' | translate }}</mat-label>
+                          <input matInput
+                                 type="number"
                                  [(ngModel)]="newOrder.price"
-                                 (ngModelChange)="onOrderModelChange()"
-                                 [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
-                                 required />
-                        </mat-slider>
+                                 (ngModelChange)="onPriceInput($event)"
+                                 (keydown)="onPriceKeyDown($event)"
+                                 [min]="sliderMin"
+                                 [max]="sliderMax"
+                                 [step]="sliderStep"
+                                 name="priceBuy"
+                                 required
+                                 inputmode="numeric"
+                                 aria-label="Buy price" />
+                        </mat-form-field>
+                        <div class="slider-wrapper">
+                          <mat-slider class="slider"
+                                      [min]="sliderMin"
+                                      [max]="sliderMax"
+                                      [step]="sliderStep"
+                                      discrete
+                                      [ngClass]="getThemeClass()">
+                            <input matSliderThumb
+                                   [(ngModel)]="newOrder.price"
+                                   (ngModelChange)="onOrderModelChange()"
+                                   [ngModelOptions]="{ standalone: true }" />
+                          </mat-slider>
+                        </div>
                       </div>
                       <div class="price-hint mat-hint">
                         <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>
@@ -139,19 +155,35 @@
                     @if (newOrder.type !== 'MARKET' && currentPair && sliderReady()) {
                     <div class="price-slider">
                       <label class="mat-body-1">{{ 'PRICE' | translate }}</label>
-                      <div class="slider-wrapper">
-                        <mat-slider class="slider"
-                                    [min]="sliderMin"
-                                    [max]="sliderMax"
-                                    [step]="sliderStep"
-                                    discrete
-                                    [ngClass]="getThemeClass()">
-                          <input matSliderThumb
+                      <div class="price-controls">
+                        <mat-form-field appearance="fill" class="price-input" subscriptSizing="dynamic">
+                          <mat-label>{{ 'PRICE' | translate }}</mat-label>
+                          <input matInput
+                                 type="number"
                                  [(ngModel)]="newOrder.price"
-                                 (ngModelChange)="onOrderModelChange()"
-                                 [name]="newOrder.side === 'BUY' ? 'priceBuy' : 'priceSell'"
-                                 required />
-                        </mat-slider>
+                                 (ngModelChange)="onPriceInput($event)"
+                                 (keydown)="onPriceKeyDown($event)"
+                                 [min]="sliderMin"
+                                 [max]="sliderMax"
+                                 [step]="sliderStep"
+                                 name="priceSell"
+                                 required
+                                 inputmode="numeric"
+                                 aria-label="Sell price" />
+                        </mat-form-field>
+                        <div class="slider-wrapper">
+                          <mat-slider class="slider"
+                                      [min]="sliderMin"
+                                      [max]="sliderMax"
+                                      [step]="sliderStep"
+                                      discrete
+                                      [ngClass]="getThemeClass()">
+                            <input matSliderThumb
+                                   [(ngModel)]="newOrder.price"
+                                   (ngModelChange)="onOrderModelChange()"
+                                   [ngModelOptions]="{ standalone: true }" />
+                          </mat-slider>
+                        </div>
                       </div>
                       <div class="price-hint mat-hint">
                         <span class="price-display" [innerHTML]="formatPriceDisplay(newOrder.price)"></span>

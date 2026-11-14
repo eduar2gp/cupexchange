@@ -274,7 +274,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       return 'assets/currencies/default.png';
     }
     const baseCurrency = pair.substring(0, 3).toLowerCase();
-    return `assets/currencies/${baseCurrency}.png`;
+    return `assets/currencies/${baseCurrency}_currency.png`;
   }
 
   getQuoteCurrencyImage(pair: string | undefined): string {
@@ -282,7 +282,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       return 'assets/currencies/default.png';
     }
     const quoteCurrency = pair.substring(3, pair.length).toLowerCase();
-    return `assets/currencies/${quoteCurrency}.png`;
+    return `assets/currencies/${quoteCurrency}_currency.png`;
   }
 
   checkWalletsAndNavigate() {
