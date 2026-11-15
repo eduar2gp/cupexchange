@@ -76,10 +76,6 @@
 
         <div class="product-header">
           <h2 class="product-name">{{ product.name }}</h2>
-          <div class="product-price">
-            <span class="product-price-value">{{ getProductPrice(product) | number:'1.2-2' }}</span>
-            <span class="product-price-currency">{{ getSelectedProductCurrency(product) }}</span>
-          </div>
           @if (product.reviewCount !== undefined && product.reviewCount > 0) {
           <div class="product-rating-summary">
             @if (product.averageRating !== undefined) {
@@ -99,6 +95,10 @@
             </div>
           </div>
           }
+          <div class="product-price">
+            <span class="product-price-value">{{ getProductPrice(product) | number:'1.2-2' }}</span>
+            <span class="product-price-currency">{{ getSelectedProductCurrency(product) }}</span>
+          </div>
         </div>
       </div>
 
@@ -110,7 +110,7 @@
         <mat-card-actions>
           <button mat-flat-button color="primary" (click)="$event.stopPropagation(); addProduct(product)" [disabled]="!product.available">
             <mat-icon>shopping_cart</mat-icon>
-            {{ product.available ? 'ADD TO CART' : 'OUT OF REACH' }}
+            {{ (product.available ? 'ADD_TO_CART' : 'OUT_OF_REACH') | translate }}
           </button>
         </mat-card-actions>
       </mat-card-content>

@@ -29,6 +29,7 @@ import { untracked } from '@angular/core';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../model/category.model';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ecommerce-dashboard',
@@ -44,7 +45,8 @@ import { Router } from '@angular/router';
     MatSelectModule,
     MatInputModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './ecommerce-dashboard.component.html',
   styleUrl: './ecommerce-dashboard.component.scss',

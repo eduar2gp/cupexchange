@@ -90,6 +90,8 @@
   "NOTIFICATIONS": "Notificaciones",
   "MY_CART": "Mi Carro",
   "TOTAL": "Total",
+  "ADD_TO_CART": "Agregar al carro",
+  "OUT_OF_REACH": "Fuera de alcance",
   "CLEAR_CART": "Vaciar Carro",
   "CHECKOUT": "Pagar",
   "CART_EMPTY": "No hay productos",

@@ -90,6 +90,8 @@
   "NOTIFICATIONS": "Notifications",
   "MY_CART": "Cart",
   "TOTAL": "Total",
+  "ADD_TO_CART": "Add to Cart",
+  "OUT_OF_REACH": "Out of Reach",
   "CLEAR_CART": "Empty Cart",
   "CHECKOUT": "Checkout",
   "CART_EMPTY": "Cart is empty",
