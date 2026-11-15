@@ -86,6 +86,13 @@
 						</div>
 					</section>
 				}
+
+				<div class="product-actions">
+					<button mat-flat-button color="primary" (click)="addToCart(product)" [disabled]="!product.available">
+						<mat-icon>shopping_cart</mat-icon>
+						{{ (product.available ? 'ADD_TO_CART' : 'OUT_OF_REACH') | translate }}
+					</button>
+				</div>
 			</mat-card-content>
 		</mat-card>
 
