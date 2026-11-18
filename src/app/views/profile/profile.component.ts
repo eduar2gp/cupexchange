@@ -178,14 +178,22 @@ export class ProfileComponent implements OnInit {
         const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
         if (savedProfileJson) {
           const currentUser = JSON.parse(savedProfileJson) as User;
+          const responseProvinceId = partialUpdate.provinceId;
+          const responseMunicipalityId = partialUpdate.municipalityId;
+          const hasLocationIdsInResponse = responseProvinceId != null && responseMunicipalityId != null;
+
           // 2. Merge the partial update into the full user object
           // This keeps email, username, etc., while updating the profile fields
           const updatedUser: User = {
             ...currentUser,
-            ...partialUpdate
+            ...partialUpdate,
+            provinceId: hasLocationIdsInResponse ? responseProvinceId : currentUser.provinceId,
+            municipalityId: hasLocationIdsInResponse ? responseMunicipalityId : currentUser.municipalityId,
           };
+
           // 3. Save the merged object back to localStorage
           localStorage.setItem('USER_PROFILE_DATA', JSON.stringify(updatedUser));
+
           // 4. Update the component's state to reflect changes in UI
           this.loggedInUser = updatedUser;
           this.dataService.updateUser(this.loggedInUser)

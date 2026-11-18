@@ -39,6 +39,9 @@ import { RouterLinkActive } from '@angular/router';
 import { startWith } from 'rxjs/operators';
 import { NotificationService } from './core/services/notification.service';
 import { FeatureFlagDirective } from '../app/core/directives/feature-flag.directive'
+import { GeocubaService } from '../app/core/services/geocuba.service';
+import { GeoCuba } from './model/geo-cuba.model';
+import { User } from './model/user.model';
 
 @Component({
   selector: 'app-root',
@@ -62,7 +65,6 @@ import { FeatureFlagDirective } from '../app/core/directives/feature-flag.direct
     FeatureFlagDirective,
     MatInputModule,
     RouterLinkActive
-
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -85,6 +87,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public locationService = inject(LocationService);
   public dataService = inject(DataService)
   public notificationService = inject(NotificationService)
+  private geocubaService: GeocubaService = inject(GeocubaService);
 
   //Subscriptions
   private routerSubscription?: Subscription;
@@ -94,6 +97,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   availablePairs: TradingPair[] = [];
 
   private readonly STORAGE_KEY = 'preferredTradingPairCode';
+  private readonly USER_PROFILE_STORAGE_KEY = 'USER_PROFILE_DATA';
 
   // Default fallback pairs (in case API fails or not loaded yet)
   private readonly DEFAULT_PAIRS: TradingPair[] = [
@@ -105,6 +109,10 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   cartCount$ = this.cartService.cartCount$.pipe(startWith(0));
 
   selectedPair: TradingPair | null = this.DEFAULT_PAIRS[0];
+  public readonly latitude = signal<number | null>(null);
+  public readonly longitude = signal<number | null>(null);
+  public readonly errorMessage = signal<string | null>(null);
+  public readonly isLoading = signal<boolean>(false);
 
   // Add this to your class properties
   notificationCount$ = this.notificationService.unreadNotificationsCount$;
@@ -122,6 +130,7 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     this.themeService.initTheme();
     // 2. CRITICAL FIX: Only run browser-specific setup on the client
     if (isPlatformBrowser(this.platformId)) {
+      this.requestLocation();
       //  1. Load pairs from backend (The HTTP request that must complete)
       this.loadTradingPairs();
       this.loadProvinces();
@@ -190,6 +199,128 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
     this.routerSubscription?.unsubscribe();
     if (this.fcmSubscription) {
       this.fcmSubscription.unsubscribe(); // Still critical to unsubscribe from the Subject
+    }
+  }
+
+  requestLocation(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.errorMessage.set('Location access is only available in the browser.');
+      return;
+    }
+
+    if (!('geolocation' in navigator)) {
+      this.errorMessage.set('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        this.latitude.set(position.coords.latitude);
+        this.longitude.set(position.coords.longitude);
+        this.isLoading.set(false);
+        this.errorMessage.set(null);
+        this.geocubaService.getProvinceAndMunicipality(position.coords.latitude, position.coords.longitude).subscribe({
+          next: (response: GeoCuba) => {
+            const geoCuba = this.parseGeoCubaResponse(response);
+            if (!geoCuba) {
+              return;
+            }
+
+            if (geoCuba.provinceId != null && geoCuba.municipalityId != null) {
+              this.persistGeoIntoStoredUser(geoCuba);
+            }
+          },
+          error: (err: unknown) => {
+            console.error('Failed to get GeoCuba data:', err);
+          }
+        });
+      },
+      (error: GeolocationPositionError) => {
+        this.isLoading.set(false);
+        this.handleLocationError(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  }
+
+  private handleLocationError(error: GeolocationPositionError): void {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        this.errorMessage.set('Location permission denied. Please enable it in your browser settings.');
+        break;
+      case error.POSITION_UNAVAILABLE:
+        this.errorMessage.set('Location information is unavailable.');
+        break;
+      case error.TIMEOUT:
+        this.errorMessage.set('The request to get user location timed out.');
+        break;
+      default:
+        this.errorMessage.set('An unknown error occurred while getting your location.');
+        break;
+    }
+    console.error(`Geolocation error (${error.code}): ${error.message}`);
+  }
+
+  private parseGeoCubaResponse(response: Partial<GeoCuba> | null | undefined): GeoCuba | null {
+    if (!response) {
+      return null;
+    }
+
+    const provinceId = this.toValidNumber(response.provinceId);
+    const municipalityId = this.toValidNumber(response.municipalityId);
+
+    if (provinceId === null || municipalityId === null) {
+      return null;
+    }
+
+    return {
+      provinceId,
+      municipalityId,
+      province: response.province ?? '',
+      municipality: response.municipality ?? '',
+    };
+  }
+
+  private toValidNumber(value: unknown): number | null {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === 'string' && value.trim() !== '') {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  }
+
+  private persistGeoIntoStoredUser(geoCuba: GeoCuba): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const savedProfileJson = localStorage.getItem(this.USER_PROFILE_STORAGE_KEY);
+    if (!savedProfileJson) {
+      return;
+    }
+
+    try {
+      const currentUser = JSON.parse(savedProfileJson) as User;
+      const updatedUser: User = {
+        ...currentUser,
+        provinceId: geoCuba.provinceId,
+        municipalityId: geoCuba.municipalityId,
+      };
+
+      localStorage.setItem(this.USER_PROFILE_STORAGE_KEY, JSON.stringify(updatedUser));
+      this.dataService.updateUser(updatedUser);
+    } catch (error) {
+      console.error('Failed to persist geolocation data in localStorage:', error);
     }
   }
 
