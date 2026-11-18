@@ -1,4 +1,4 @@
-import { Component, signal, inject, ViewChild, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, signal, inject, ViewChild, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../app/core/services/auth.service';
 import { PairSelectionService } from '../app/core/services/pair-selection.service';
@@ -23,6 +23,7 @@ import { TradingPair } from './model/trading_pair';
 
 import { PLATFORM_ID } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { WalletService } from '../app/core/services/wallet.service'
 import { LanguageService } from '../app/core/services/language.service'
 import { NavigationDecisionService } from '../app/core/services/navigation-decision.service'
@@ -42,6 +43,8 @@ import { FeatureFlagDirective } from '../app/core/directives/feature-flag.direct
 import { GeocubaService } from '../app/core/services/geocuba.service';
 import { GeoCuba } from './model/geo-cuba.model';
 import { User } from './model/user.model';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogMessageComponent } from './views/shared/dialog-message/dialog-message.component';
 
 @Component({
   selector: 'app-root',
@@ -88,6 +91,9 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
   public dataService = inject(DataService)
   public notificationService = inject(NotificationService)
   private geocubaService: GeocubaService = inject(GeocubaService);
+  private dialog = inject(MatDialog);
+  private translateService = inject(TranslateService);
+  private ngZone = inject(NgZone);
 
   //Subscriptions
   private routerSubscription?: Subscription;
@@ -98,6 +104,8 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
   private readonly STORAGE_KEY = 'preferredTradingPairCode';
   private readonly USER_PROFILE_STORAGE_KEY = 'USER_PROFILE_DATA';
+  private readonly GEO_DIALOG_SESSION_KEY = 'geo_dialog_last_seen_location';
+  private readonly GEO_CUBA_STORAGE_KEY = 'GEO_CUBA_DATA';
 
   // Default fallback pairs (in case API fails or not loaded yet)
   private readonly DEFAULT_PAIRS: TradingPair[] = [
@@ -218,29 +226,33 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
 
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
-        this.latitude.set(position.coords.latitude);
-        this.longitude.set(position.coords.longitude);
-        this.isLoading.set(false);
-        this.errorMessage.set(null);
-        this.geocubaService.getProvinceAndMunicipality(position.coords.latitude, position.coords.longitude).subscribe({
-          next: (response: GeoCuba) => {
-            const geoCuba = this.parseGeoCubaResponse(response);
-            if (!geoCuba) {
-              return;
-            }
+        this.ngZone.run(() => {
+          this.latitude.set(position.coords.latitude);
+          this.longitude.set(position.coords.longitude);
+          this.isLoading.set(false);
+          this.errorMessage.set(null);
+          this.geocubaService.getProvinceAndMunicipality(position.coords.latitude, position.coords.longitude).subscribe({
+            next: (response: GeoCuba) => {
+              const geoCuba = this.parseGeoCubaResponse(response);
+              if (!geoCuba) {
+                return;
+              }
 
-            if (geoCuba.provinceId != null && geoCuba.municipalityId != null) {
-              this.persistGeoIntoStoredUser(geoCuba);
+              if (geoCuba.provinceId != null && geoCuba.municipalityId != null) {
+                this.persistGeoIntoStoredUser(geoCuba);
+              }
+            },
+            error: (err: unknown) => {
+              console.error('Failed to get GeoCuba data:', err);
             }
-          },
-          error: (err: unknown) => {
-            console.error('Failed to get GeoCuba data:', err);
-          }
+          });
         });
       },
       (error: GeolocationPositionError) => {
-        this.isLoading.set(false);
-        this.handleLocationError(error);
+        this.ngZone.run(() => {
+          this.isLoading.set(false);
+          this.handleLocationError(error);
+        });
       },
       {
         enableHighAccuracy: true,
@@ -304,24 +316,78 @@ export class App implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    const savedProfileJson = localStorage.getItem(this.USER_PROFILE_STORAGE_KEY);
-    if (!savedProfileJson) {
-      return;
-    }
+    localStorage.setItem(this.GEO_CUBA_STORAGE_KEY, JSON.stringify(geoCuba));
 
     try {
-      const currentUser = JSON.parse(savedProfileJson) as User;
-      const updatedUser: User = {
-        ...currentUser,
-        provinceId: geoCuba.provinceId,
-        municipalityId: geoCuba.municipalityId,
-      };
+      const savedProfileJson = localStorage.getItem(this.USER_PROFILE_STORAGE_KEY);
+      const currentUserFromState = this.dataService.getCurrentUserValue();
 
-      localStorage.setItem(this.USER_PROFILE_STORAGE_KEY, JSON.stringify(updatedUser));
-      this.dataService.updateUser(updatedUser);
+      if (savedProfileJson) {
+        const currentUser = JSON.parse(savedProfileJson) as User;
+        const updatedUser: User = {
+          ...currentUser,
+          provinceId: geoCuba.provinceId,
+          municipalityId: geoCuba.municipalityId,
+        };
+
+        localStorage.setItem(this.USER_PROFILE_STORAGE_KEY, JSON.stringify(updatedUser));
+        this.dataService.updateUser(updatedUser);
+      } else if (currentUserFromState) {
+        const updatedUserFromState: User = {
+          ...currentUserFromState,
+          provinceId: geoCuba.provinceId,
+          municipalityId: geoCuba.municipalityId,
+        };
+        localStorage.setItem(this.USER_PROFILE_STORAGE_KEY, JSON.stringify(updatedUserFromState));
+        this.dataService.updateUser(updatedUserFromState);
+      }
+
+      if (this.shouldShowLocationDialog(geoCuba)) {
+        this.showDefaultLocationDialog(geoCuba);
+        this.markLocationDialogAsShown(geoCuba);
+      }
     } catch (error) {
       console.error('Failed to persist geolocation data in localStorage:', error);
     }
+  }
+
+  private shouldShowLocationDialog(geoCuba: GeoCuba): boolean {
+    const locationFingerprint = `${geoCuba.provinceId}:${geoCuba.municipalityId}`;
+
+    try {
+      const sessionValue = sessionStorage.getItem(this.GEO_DIALOG_SESSION_KEY);
+      const localValue = localStorage.getItem(this.GEO_DIALOG_SESSION_KEY);
+      return sessionValue !== locationFingerprint && localValue !== locationFingerprint;
+    } catch {
+      return true;
+    }
+  }
+
+  private markLocationDialogAsShown(geoCuba: GeoCuba): void {
+    const locationFingerprint = `${geoCuba.provinceId}:${geoCuba.municipalityId}`;
+
+    try {
+      sessionStorage.setItem(this.GEO_DIALOG_SESSION_KEY, locationFingerprint);
+      localStorage.setItem(this.GEO_DIALOG_SESSION_KEY, locationFingerprint);
+    } catch (error) {
+      console.warn('Could not persist geolocation dialog flag:', error);
+    }
+  }
+
+  private showDefaultLocationDialog(geoCuba: GeoCuba): void {
+    const title = this.translateService.instant('GEOLOCATION_DIALOG_TITLE');
+    const prefix = this.translateService.instant('GEOLOCATION_DEFAULT_LOCATION_SET_TO');
+    const goProfile = this.translateService.instant('GEOLOCATION_CHANGE_IN_PROFILE');
+    const provinceLabel = geoCuba.province?.trim() || `Province ${geoCuba.provinceId}`;
+    const municipalityLabel = geoCuba.municipality?.trim() || `Municipality ${geoCuba.municipalityId}`;
+    const locationLabel = `${provinceLabel}, ${municipalityLabel}`;
+
+    this.dialog.open(DialogMessageComponent, {
+      data: {
+        title,
+        message: `${prefix} ${locationLabel}. ${goProfile}`,
+      },
+    });
   }
 
   private loadTradingPairs(): void {

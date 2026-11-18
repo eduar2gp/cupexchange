@@ -60,6 +60,7 @@ export class EcommerceDashboardComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   public loggedInUser: User | undefined;
+  private readonly GEO_CUBA_STORAGE_KEY = 'GEO_CUBA_DATA';
 
   private platformId = inject(PLATFORM_ID);
 
@@ -204,6 +205,20 @@ export class EcommerceDashboardComponent implements OnInit {
       const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
       if (savedProfileJson) {
         this.loggedInUser = JSON.parse(savedProfileJson) as User;
+      } else {
+        const savedGeoJson = localStorage.getItem(this.GEO_CUBA_STORAGE_KEY);
+        if (savedGeoJson) {
+          try {
+            const geoData = JSON.parse(savedGeoJson) as { provinceId?: number; municipalityId?: number };
+            this.loggedInUser = {
+              ...(this.loggedInUser ?? {} as User),
+              provinceId: geoData.provinceId,
+              municipalityId: geoData.municipalityId,
+            } as User;
+          } catch (error) {
+            console.warn('Could not parse GEO_CUBA_DATA from localStorage:', error);
+          }
+        }
       }
     }
 

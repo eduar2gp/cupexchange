@@ -201,5 +201,9 @@
     "NO_REPORTS_FOUND": "No reports found",
     "VIEW_REPORTS": "View Reports",
     "ACCOUNT_ID": "Account ID"
-  }
+  },
+  "GEOLOCATION_DIALOG_TITLE": "Location updated",
+  "GEOLOCATION_DEFAULT_LOCATION_SET_TO": "Your default province and municipality has been set to",
+  "GEOLOCATION_CHANGE_IN_PROFILE": "To change it, go to your profile page."
+
 }

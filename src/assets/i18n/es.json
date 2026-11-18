@@ -216,5 +216,8 @@
     "GENERATING": "Generating...",
     "ERROR_LOADING": "Failed to load monthly statements.",
     "ERROR_GENERATING": "Failed to generate monthly statement."
-  }
+  },
+  "GEOLOCATION_DIALOG_TITLE": "Ubicación actualizada",
+  "GEOLOCATION_DEFAULT_LOCATION_SET_TO": "Tu provincia y municipio predeterminados se han configurado como",
+  "GEOLOCATION_CHANGE_IN_PROFILE": "Para cambiarlo, ve a tu página de perfil."
 }
