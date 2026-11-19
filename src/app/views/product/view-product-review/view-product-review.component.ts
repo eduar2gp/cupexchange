@@ -5,13 +5,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize, Subject, takeUntil } from 'rxjs';
+import { AddProductReviewComponent } from '../add-product-review/add-product-review.component';
 import { DataService } from '../../../core/services/data.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { ProductReviewResponse } from '../../../model/product.model';
 
 @Component({
   selector: 'app-view-product-review',
-  imports: [DatePipe, MatCardModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule],
+  imports: [DatePipe, MatCardModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule, AddProductReviewComponent],
   templateUrl: './view-product-review.component.html',
   styleUrl: './view-product-review.component.scss',
 })
@@ -29,8 +30,17 @@ export class ViewProductReviewComponent implements OnInit, OnDestroy {
   pageSize = 5;
   loading = false;
   errorMessage = '';
+  isUserLoggedIn = false;
 
   ngOnInit(): void {
+    this.isUserLoggedIn = this.dataService.getCurrentUserValue() !== null;
+
+    this.dataService.currentUser
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.isUserLoggedIn = user !== null;
+      });
+
     this.dataService.currentProduct
       .pipe(takeUntil(this.destroy$))
       .subscribe(product => {
@@ -49,6 +59,11 @@ export class ViewProductReviewComponent implements OnInit, OnDestroy {
   handlePageEvent(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
+    this.loadReviews();
+  }
+
+  handleReviewSubmitted(): void {
+    this.pageIndex = 0;
     this.loadReviews();
   }
 

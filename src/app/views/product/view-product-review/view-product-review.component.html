@@ -1,4 +1,8 @@
 <section class="reviews" aria-labelledby="reviews-heading">
+	@if (isUserLoggedIn) {
+		<app-add-product-review (reviewSubmitted)="handleReviewSubmitted()"></app-add-product-review>
+	}
+
 	<header class="reviews__header">
 		<div>
 			<p class="reviews__eyebrow">Customer feedback</p>

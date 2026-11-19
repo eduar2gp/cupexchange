@@ -13,8 +13,8 @@ describe('ViewProductReviewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ViewProductReviewComponent],
       providers: [
-        { provide: DataService, useValue: { currentProduct: of(null) } },
-        { provide: ProductsService, useValue: { getProductReviews: () => of({ content: [], page: {} }) } }
+        { provide: DataService, useValue: { currentProduct: of(null), currentUser: of(null), getCurrentUserValue: () => null } },
+        { provide: ProductsService, useValue: { getProductReviews: () => of({ content: [], page: {} }), postProductReview: () => of({}) } }
       ]
     })
     .compileComponents();

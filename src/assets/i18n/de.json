@@ -21,5 +21,8 @@
   "MINIMUN": "Minimum",
   "MARKET": "Market",
   "LIMIT": "Limit",
-  "PRICE": "Preis"
+  "PRICE": "Preis",
+  "GEOLOCATION_DIALOG_TITLE": "Standort aktualisiert",
+  "GEOLOCATION_DEFAULT_LOCATION_SET_TO": "Ihre Standardprovinz und Gemeinde wurden festgelegt auf",
+  "GEOLOCATION_CHANGE_IN_PROFILE": "Um dies zu ändern, gehen Sie zu Ihrer Profilseite."
 }

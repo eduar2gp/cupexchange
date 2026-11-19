@@ -1,0 +1,116 @@
+.add-review {
+	--mat-card-outlined-container-color: var(--color-surface);
+	--mat-card-outlined-outline-color: var(--color-border);
+	--mat-form-field-outlined-outline-color: var(--color-border);
+	--mat-form-field-hover-state-layer-opacity: 0;
+	--mat-form-field-focus-select-arrow-color: var(--color-primary);
+	--mat-form-field-focus-outline-color: var(--color-primary);
+	--mat-form-field-container-text-color: var(--color-text);
+	--mat-form-field-container-vertical-padding: 0.75rem;
+	--mat-form-field-subscript-text-color: var(--color-text-muted);
+	--mat-icon-button-icon-color: var(--color-text-muted);
+	--mat-progress-spinner-active-indicator-color: var(--color-text);
+
+	border-color: var(--color-border);
+	color: var(--color-text);
+	margin: 0 auto;
+	max-width: 760px;
+}
+
+.add-review__hint {
+	color: var(--color-text-secondary);
+	margin: 0;
+}
+
+.add-review__form {
+	display: grid;
+	gap: 1rem;
+	margin-top: 0.75rem;
+}
+
+.rating-field {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.rating-field__label {
+	color: var(--color-text-secondary);
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.rating-field__stars {
+	align-items: center;
+	display: flex;
+	gap: 0.125rem;
+	margin-left: -0.5rem;
+}
+
+.rating-field__star {
+	mat-icon {
+		color: var(--color-border);
+		transition: color 0.2s ease;
+	}
+}
+
+.rating-field__star--active mat-icon {
+	color: var(--color-warning);
+}
+
+.comment-field {
+	width: 100%;
+
+	textarea {
+		color: var(--color-text);
+		caret-color: var(--color-primary);
+	}
+
+	textarea::placeholder {
+		color: var(--color-text-muted);
+	}
+}
+
+.field-error {
+	color: var(--color-danger);
+	font-size: 0.8125rem;
+	margin: 0;
+}
+
+.status-message {
+	border-radius: 0.5rem;
+	margin: 0;
+	padding: 0.65rem 0.8rem;
+}
+
+.status-message--error {
+	background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+	color: var(--color-danger);
+}
+
+.status-message--success {
+	background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+	color: var(--color-success);
+}
+
+.add-review__actions {
+	display: flex;
+	justify-content: flex-end;
+
+	button {
+		align-items: center;
+		display: inline-flex;
+		gap: 0.45rem;
+		min-width: 9.5rem;
+		justify-content: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.add-review__actions {
+		justify-content: stretch;
+
+		button {
+			width: 100%;
+		}
+	}
+}

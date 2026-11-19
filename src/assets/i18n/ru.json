@@ -134,5 +134,8 @@
     "ACCOUNTS": "Счёт",
     "ID_INFO": "Идентификаторы счета",
     "ACCOUNT_PROVIDER_BALANCES": "Баланс счетов"
-  }
+    },
+    "GEOLOCATION_DIALOG_TITLE": "Местоположение обновлено",
+    "GEOLOCATION_DEFAULT_LOCATION_SET_TO": "Ваши провинция и муниципалитет по умолчанию установлены как",
+    "GEOLOCATION_CHANGE_IN_PROFILE": "Чтобы изменить это, перейдите на страницу профиля."
 }

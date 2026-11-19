@@ -1,0 +1,75 @@
+<mat-card class="add-review" appearance="outlined">
+	<mat-card-header>
+		<mat-card-title>Write a review</mat-card-title>
+		<mat-card-subtitle>Share your feedback with other customers</mat-card-subtitle>
+	</mat-card-header>
+
+	<mat-card-content>
+		@if (!productId) {
+			<p class="add-review__hint">Select a product to add a review.</p>
+		} @else {
+			<form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="add-review__form">
+				<div class="rating-field" role="group" aria-label="Rate this product">
+					<span class="rating-field__label">Rating</span>
+					<div class="rating-field__stars">
+						@for (star of ratingStars; track star) {
+							<button
+								mat-icon-button
+								type="button"
+								class="rating-field__star"
+								[class.rating-field__star--active]="star <= (hoverRating || reviewForm.controls.rating.value)"
+								[attr.aria-label]="'Rate ' + star + ' star' + (star > 1 ? 's' : '')"
+								(click)="selectRating(star)"
+								(mouseenter)="hoverRating = star"
+								(mouseleave)="hoverRating = 0"
+							>
+								<mat-icon aria-hidden="true">
+									{{ star <= (hoverRating || reviewForm.controls.rating.value) ? 'star' : 'star_outline' }}
+								</mat-icon>
+							</button>
+						}
+					</div>
+					@if (reviewForm.controls.rating.touched && reviewForm.controls.rating.invalid) {
+						<p class="field-error">Please choose a rating from 1 to 5.</p>
+					}
+				</div>
+
+				<mat-form-field appearance="outline" class="comment-field">
+					<mat-label>Your review</mat-label>
+					<textarea
+						matInput
+						rows="4"
+						maxlength="800"
+						formControlName="comment"
+						placeholder="Tell others what stood out about this product"
+					></textarea>
+					<mat-hint align="end">{{ reviewForm.controls.comment.value.length }}/800</mat-hint>
+					@if (reviewForm.controls.comment.touched && reviewForm.controls.comment.hasError('required')) {
+						<mat-error>Comment is required.</mat-error>
+					}
+					@if (reviewForm.controls.comment.touched && reviewForm.controls.comment.hasError('minlength')) {
+						<mat-error>Comment must be at least 5 characters.</mat-error>
+					}
+				</mat-form-field>
+
+				@if (errorMessage) {
+					<p class="status-message status-message--error" role="alert">{{ errorMessage }}</p>
+				}
+				@if (successMessage) {
+					<p class="status-message status-message--success">{{ successMessage }}</p>
+				}
+
+				<div class="add-review__actions">
+					<button mat-flat-button color="primary" type="submit" [disabled]="reviewForm.invalid || loading">
+						@if (loading) {
+							<mat-spinner diameter="18"></mat-spinner>
+						} @else {
+							<mat-icon aria-hidden="true">send</mat-icon>
+						}
+						Submit review
+					</button>
+				</div>
+			</form>
+		}
+	</mat-card-content>
+</mat-card>

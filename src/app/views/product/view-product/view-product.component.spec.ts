@@ -12,7 +12,7 @@ describe('ViewProductComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ViewProductComponent],
       providers: [
-        { provide: DataService, useValue: { currentProduct: of(null) } }
+        { provide: DataService, useValue: { currentProduct: of(null), getCurrentUserValue: () => null } }
       ]
     })
     .compileComponents();

@@ -114,8 +114,15 @@ export class ProductsService {
       .set('size', size.toString());
 
     return this.http.get<ProductReviewResponse>(
-      build(ApiEndpoints.products.GET_PRODUCT_REVIEWS, { productId }),
+      build(ApiEndpoints.products.POST_GET_PRODUCT_REVIEWS, { productId }),
       { params }
+    );
+  }
+
+  postProductReview(productId: number, review: { rating: number; comment: string }): Observable<ProductReviewResponse> {
+    return this.http.post<ProductReviewResponse>(
+      build(ApiEndpoints.products.POST_GET_PRODUCT_REVIEWS, { productId }),
+      review
     );
   }
 

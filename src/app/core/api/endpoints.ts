@@ -100,7 +100,7 @@ export const ApiEndpoints = {
     UPDATE_PRODUCT: '/api/v1/products/{id}',
     DELETE_PRODUCT: '/api/v1/products/{id}',
     UPLOAD_PRODUCT_IMAGE: '/api/v1/products/{productId}/image',
-    GET_PRODUCT_REVIEWS: '/api/v1/products/{productId}/reviews'
+    POST_GET_PRODUCT_REVIEWS: '/api/v1/products/{productId}/reviews'
   },
   geocuba: {
     GET_PROVINCE_AND_MUNICIPALITY: '/api/geo/cuba?lat={latitude}&lng={longitude}',
