@@ -26,7 +26,7 @@ export class AddProductComponent {
 
   providerData$!: Observable<Provider | null>;
 
-  selectedFile: File | null = null;
+  selectedFiles: File[] = [];
   selectedCurrency = (localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD').toUpperCase();
   productPrice = 0.01;
 
@@ -73,6 +73,7 @@ export class AddProductComponent {
       prices: [{ currencyCode: this.selectedCurrency.toUpperCase(), price: 0.01 }]
     };
     this.productPrice = 0.01;
+    this.selectedFiles = [];
     // Clear status message after a short delay
     setTimeout(() => this.statusMessage.set(null), 3000);
   }
@@ -99,9 +100,11 @@ export class AddProductComponent {
             next: (response) => {
               this.statusMessage.set(`Success! Product '${response.name}' created (ID: ${response.id}).`);
 
-              if (this.selectedFile) {
+              if (this.selectedFiles.length > 0) {
                 const formData = new FormData();
-                formData.append('file', this.selectedFile, this.selectedFile.name);
+                this.selectedFiles.forEach((file) => {
+                  formData.append('files', file, file.name);
+                });
                 this.productsService.saveProductWithImage(response.id!, formData).subscribe({
                   next: (updatedProduct: any) => {
                     console.log('Provider image saved successfully!', updatedProduct);
@@ -111,8 +114,15 @@ export class AddProductComponent {
                   },
                   error: (err: any) => {
                     console.error('Error saving product:', err);
+                    this.statusMessage.set('Product saved, but uploading one or more images failed.');
+                    this.isSuccess = false;
+                    this.saving.set(false);
                   }
                 });
+              } else {
+                this.isSuccess = true;
+                this.saving.set(false);
+                this.resetForm();
               }
             },
             error: (err) => {
@@ -136,11 +146,11 @@ export class AddProductComponent {
     this.providerSubscription?.unsubscribe();
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      console.log('file selected');
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedFiles = Array.from(input.files ?? []);
+    if (this.selectedFiles.length > 0) {
+      console.log('files selected:', this.selectedFiles.length);
     }
   }
 }

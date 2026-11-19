@@ -2,8 +2,30 @@
 	@if (product$ | async; as product) {
 		<mat-card class="product-card" appearance="outlined">
 			<div class="product-image-wrap">
-				@if (product.productImageUrl) {
-					<img [src]="product.productImageUrl" [alt]="product.name" class="product-image">
+				@if (getActiveImage(product); as activeImage) {
+					<img [src]="activeImage.imageUrl" [alt]="activeImage.altText || product.name" class="product-image">
+
+					@if (getProductImages(product).length > 1) {
+						<button class="carousel-control carousel-control--prev" type="button" (click)="goToPreviousImage(product)" aria-label="Previous image">
+							<mat-icon>chevron_left</mat-icon>
+						</button>
+						<button class="carousel-control carousel-control--next" type="button" (click)="goToNextImage(product)" aria-label="Next image">
+							<mat-icon>chevron_right</mat-icon>
+						</button>
+
+						<div class="carousel-thumbs" aria-label="Product images">
+							@for (image of getProductImages(product); track image.id ?? image.imageUrl; let index = $index) {
+								<button
+									type="button"
+									class="carousel-thumb"
+									[class.carousel-thumb--active]="index === activeImageIndex"
+									(click)="setActiveImage(product, index)"
+									[attr.aria-label]="'Show image ' + (index + 1)">
+									<img [src]="image.imageUrl" [alt]="image.altText || ('Product image ' + (index + 1))">
+								</button>
+							}
+						</div>
+					}
 				} @else {
 					<mat-icon class="image-placeholder" aria-hidden="true">inventory_2</mat-icon>
 				}

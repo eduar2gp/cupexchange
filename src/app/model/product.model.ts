@@ -5,6 +5,14 @@ export interface ProductPrice {
   price: number;
 }
 
+export interface ProductImage {
+  id: number | null;
+  imageUrl: string;
+  altText: string | null;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+
 export interface Product {
   id?: number;
   providerId: number;
@@ -19,6 +27,7 @@ export interface Product {
   averageRating?: number;
   reviewCount?: number;
   productImageUrl?: string;
+  images?: ProductImage[];
   available?: boolean;
 }
 

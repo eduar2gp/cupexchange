@@ -99,7 +99,7 @@ export const ApiEndpoints = {
     CREATE_PRODUCT: '/api/v1/products',
     UPDATE_PRODUCT: '/api/v1/products/{id}',
     DELETE_PRODUCT: '/api/v1/products/{id}',
-    UPLOAD_PRODUCT_IMAGE: '/api/v1/products/{productId}/image',
+    UPLOAD_PRODUCT_IMAGE: '/api/v1/products/{productId}/images',
     POST_GET_PRODUCT_REVIEWS: '/api/v1/products/{productId}/reviews'
   },
   geocuba: {

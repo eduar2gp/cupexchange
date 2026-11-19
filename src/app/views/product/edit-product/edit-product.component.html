@@ -23,14 +23,41 @@
         <div class="layout-grid">
           <div class="image-section">
             <div class="image-preview-wrapper" (click)="fileInput.click()">
-              <img [src]="product.productImageUrl" class="main-preview" alt="product preview" />
+              <img [src]="getPrimaryImageUrl(product)" class="main-preview" alt="product preview" />
               <div class="overlay">
                 <mat-icon>cloud_upload</mat-icon>
-                <span>Change Image</span>
+                <span>Change Images</span>
               </div>
             </div>
-            <input type="file" hidden (change)="onFileSelected($event)" accept="image/*" #fileInput>
-            <p class="image-hint">Click image to upload new version</p>
+            <input type="file" hidden (change)="onFileSelected($event)" accept="image/*" multiple #fileInput>
+            <p class="image-hint">Click image to upload one or more images</p>
+            @if (selectedFiles.length > 0) {
+            <p class="image-hint">{{ selectedFiles.length }} file(s) selected</p>
+            }
+
+            @if ((product.images?.length ?? 0) > 0) {
+            <div class="image-gallery" aria-label="Product image gallery">
+              @for (image of product.images ?? []; track image.id ?? image.imageUrl ?? $index; let index = $index) {
+              <div class="image-gallery__item" [class.image-gallery__item--primary]="image.isPrimary">
+                <img [src]="image.imageUrl" [alt]="image.altText || product.name" class="image-gallery__thumb" />
+
+                <div class="image-gallery__meta">
+                  <button mat-stroked-button type="button" color="primary" (click)="setPrimaryImage(product, index)" [disabled]="image.isPrimary">
+                    @if (image.isPrimary) {
+                    Primary
+                    } @else {
+                    Set Primary
+                    }
+                  </button>
+
+                  <button mat-icon-button type="button" color="warn" (click)="removeImage(product, index)" aria-label="Remove image">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            }
           </div>
 
           <div class="details-section">

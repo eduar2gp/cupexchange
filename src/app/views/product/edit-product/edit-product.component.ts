@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DataService } from '../../../core/services/data.service';
 import { map, Observable } from 'rxjs';
-import { Product, ProductPrice } from '../../../model/product.model';
+import { Product, ProductImage, ProductPrice } from '../../../model/product.model';
 import { Provider } from '../../../model/provider.model';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +26,7 @@ export class EditProductComponent implements OnInit {
   
   productData$!: Observable<Product | null>; 
   providerData$!: Observable<Provider | null>;
-  selectedFile: File | null = null;
+  selectedFiles: File[] = [];
   readonly categories = signal<Category[]>([]);
 
   private productsService = inject(ProductsService);
@@ -34,12 +34,71 @@ export class EditProductComponent implements OnInit {
 
   constructor(private dataService: DataService) {
     this.productData$ = this.dataService.currentProduct.pipe(
-      map(product => product ? {
-        ...product,
-        category_id: product.category_id ?? product.categories?.map(category => category.id).filter((id): id is number => id !== undefined) ?? []
-      } : null)
+      map(product => product ? this.normalizeProduct(product) : null)
     );
     this.providerData$ = this.dataService.currentProvider;
+  }
+
+  private normalizeProduct(product: Product): Product {
+    const images = this.normalizeImages(product.images, product.productImageUrl);
+
+    return {
+      ...product,
+      category_id: product.category_id ?? product.categories?.map(category => category.id).filter((id): id is number => id !== undefined) ?? [],
+      images,
+      productImageUrl: images.find(image => image.isPrimary)?.imageUrl ?? product.productImageUrl
+    };
+  }
+
+  private normalizeImages(images: ProductImage[] | undefined, fallbackImageUrl?: string): ProductImage[] {
+    const source = images?.length
+      ? images
+      : (fallbackImageUrl
+        ? [{ id: null, imageUrl: fallbackImageUrl, altText: null, displayOrder: 0, isPrimary: true }]
+        : []);
+
+    const hasPrimary = source.some(image => image.isPrimary);
+
+    return source
+      .filter(image => !!image.imageUrl)
+      .map((image, index) => ({
+        ...image,
+        displayOrder: index,
+        isPrimary: hasPrimary ? !!image.isPrimary : index === 0
+      }));
+  }
+
+  getPrimaryImageUrl(product: Product): string {
+    return product.images?.find(image => image.isPrimary)?.imageUrl
+      ?? product.productImageUrl
+      ?? 'assets/placeholder.png';
+  }
+
+  setPrimaryImage(product: Product, index: number): void {
+    const images = product.images ?? [];
+    product.images = images.map((image, imageIndex) => ({
+      ...image,
+      isPrimary: imageIndex === index,
+      displayOrder: imageIndex
+    }));
+    product.productImageUrl = product.images[index]?.imageUrl;
+  }
+
+  removeImage(product: Product, index: number): void {
+    const remainingImages = (product.images ?? []).filter((_, imageIndex) => imageIndex !== index);
+    if (remainingImages.length === 0) {
+      product.images = [];
+      product.productImageUrl = undefined;
+      return;
+    }
+
+    const hasPrimary = remainingImages.some(image => image.isPrimary);
+    product.images = remainingImages.map((image, imageIndex) => ({
+      ...image,
+      displayOrder: imageIndex,
+      isPrimary: hasPrimary ? image.isPrimary : imageIndex === 0
+    }));
+    product.productImageUrl = product.images.find(image => image.isPrimary)?.imageUrl;
   }
 
   ngOnInit(): void {
@@ -64,17 +123,20 @@ export class EditProductComponent implements OnInit {
     );
   }
 
-  // Method to capture the selected file
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      console.log('file selected')
+  // Method to capture the selected files
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedFiles = Array.from(input.files ?? []);
+    if (this.selectedFiles.length > 0) {
+      console.log('files selected:', this.selectedFiles.length);
     }
   }
 
   // Method called when the form is submitted
   saveProduct(product: Product): void {
+    const normalizedImages = this.normalizeImages(product.images, product.productImageUrl);
+    const primaryImageUrl = normalizedImages.find(image => image.isPrimary)?.imageUrl;
+
     const payload: Product = {
       name: product.name.trim(),
       providerId: product.providerId,
@@ -84,7 +146,9 @@ export class EditProductComponent implements OnInit {
         currencyCode: item.currencyCode.trim().toUpperCase(),
         price: Number(item.price)
       })),
-      description: product.description
+      description: product.description,
+      images: normalizedImages,
+      productImageUrl: primaryImageUrl
     };
 
     console.log('Submitting product:', payload);
@@ -98,9 +162,11 @@ export class EditProductComponent implements OnInit {
           //alert(`Product ${updatedProduct.name} updated!`);
           // Optional: Perform additional actions like refreshing the list or navigating.
         
-          if (this.selectedFile) {
+          if (this.selectedFiles.length > 0) {
             const formData = new FormData();
-            formData.append('file', this.selectedFile, this.selectedFile.name);
+            this.selectedFiles.forEach((file) => {
+              formData.append('files', file, file.name);
+            });
             this.productsService.saveProductWithImage(product.id!, formData).subscribe({
               next: (updatedProduct: any) => {
                 console.log('Product image saved successfully!', updatedProduct);

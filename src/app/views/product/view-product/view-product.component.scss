@@ -18,6 +18,7 @@
 }
 
 .product-image-wrap {
+	position: relative;
 	display: grid;
 	min-height: 280px;
 	place-items: center;
@@ -28,6 +29,77 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+.carousel-control {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border: 0;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+	color: var(--color-text);
+	cursor: pointer;
+	transition: background-color .2s ease;
+	z-index: 1;
+}
+
+.carousel-control:hover {
+	background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+
+.carousel-control mat-icon {
+	font-size: 1.375rem;
+	width: 1.375rem;
+	height: 1.375rem;
+}
+
+.carousel-control--prev {
+	left: .75rem;
+}
+
+.carousel-control--next {
+	right: .75rem;
+}
+
+.carousel-thumbs {
+	position: absolute;
+	left: .75rem;
+	right: .75rem;
+	bottom: .75rem;
+	display: flex;
+	gap: .5rem;
+	overflow-x: auto;
+	padding-bottom: .125rem;
+	scrollbar-width: thin;
+}
+
+.carousel-thumb {
+	flex: 0 0 3rem;
+	width: 3rem;
+	height: 3rem;
+	padding: 0;
+	border-radius: .4rem;
+	border: 2px solid transparent;
+	overflow: hidden;
+	background: transparent;
+	cursor: pointer;
+}
+
+.carousel-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.carousel-thumb--active {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 .image-placeholder,
@@ -205,5 +277,11 @@ h2 {
 
 	.product-details {
 		padding: 1.5rem;
+	}
+
+	.carousel-thumbs {
+		left: .5rem;
+		right: .5rem;
+		bottom: .5rem;
 	}
 }
