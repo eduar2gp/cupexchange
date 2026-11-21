@@ -34,7 +34,9 @@
 			<mat-card-content class="product-details">
 				<div class="product-heading">
 					<div>
-						<p class="eyebrow">{{ product.providerName || 'Product' }}</p>
+						<p class="eyebrow">
+							<a [href]="'/provider-details?providerId=' + product.providerId">{{ product.providerName || 'Product' }}</a>
+						</p>
 						<h1 id="product-title">{{ product.name }}</h1>
 					</div>
 					<span class="availability" [class.availability--unavailable]="product.available === false">

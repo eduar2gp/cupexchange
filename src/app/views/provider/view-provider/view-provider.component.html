@@ -1,0 +1,150 @@
+<section class="provider-view" aria-labelledby="provider-page-title">
+	@if (loading) {
+		<div class="state-card loading-state">
+			<mat-spinner diameter="42"></mat-spinner>
+			<p>Loading provider details...</p>
+		</div>
+	} @else if (error) {
+		<mat-card class="state-card error-state" appearance="outlined">
+			<mat-icon aria-hidden="true">error_outline</mat-icon>
+			<h2>Something went wrong</h2>
+			<p>{{ error }}</p>
+			<button mat-flat-button color="primary" (click)="ngOnInit()">Retry</button>
+		</mat-card>
+	} @else if (provider) {
+		<mat-card class="provider-card" appearance="outlined">
+			<div class="provider-header">
+				<div class="avatar" [class.avatar--with-image]="provider.profileImageUrl">
+					@if (provider.profileImageUrl) {
+						<img [src]="provider.profileImageUrl" [alt]="provider.name + ' profile image'">
+					} @else {
+						<mat-icon aria-hidden="true">storefront</mat-icon>
+					}
+				</div>
+				<div class="provider-main">
+					<p class="section-label">Provider</p>
+					<h1 id="provider-page-title">{{ provider.name }}</h1>
+					<p class="provider-address">{{ provider.address || 'No address available' }}</p>
+				</div>
+			</div>
+
+			<div class="provider-meta">
+				<div class="meta-item">
+					<mat-icon aria-hidden="true">mail</mat-icon>
+					<div>
+						<span>Email</span>
+						<strong>{{ provider.email || 'N/A' }}</strong>
+					</div>
+				</div>
+
+				<div class="meta-item">
+					<mat-icon aria-hidden="true">call</mat-icon>
+					<div>
+						<span>Phone</span>
+						<strong>{{ provider.phone || 'N/A' }}</strong>
+					</div>
+				</div>
+
+				@if (provider.cashProvider !== undefined) {
+					<div class="meta-item">
+						<mat-icon aria-hidden="true">verified</mat-icon>
+						<div>
+							<span>Cash Provider</span>
+							<strong>{{ provider.cashProvider ? 'Yes' : 'No' }}</strong>
+						</div>
+					</div>
+				}
+			</div>
+		</mat-card>
+
+		<section class="products-section" aria-labelledby="provider-products-title">
+			<mat-toolbar class="products-toolbar">
+				<div class="products-header-row">
+					<h2 id="provider-products-title">Products</h2>
+					<span>{{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'item' : 'items' }}</span>
+				</div>
+
+				<form [formGroup]="searchForm" class="filter-form" (ngSubmit)="performFilter()">
+					<mat-form-field appearance="outline" class="search-input">
+						<mat-label>Search products</mat-label>
+						<mat-icon matPrefix>search</mat-icon>
+						<input matInput formControlName="searchQuery" placeholder="e.g. Laptop">
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" class="category-select">
+						<mat-label>Categories</mat-label>
+						<mat-select formControlName="categoryIds" multiple>
+							@for (category of categories; track category.id ?? category.name) {
+								<mat-option [value]="category.id">{{ category.name }}</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+
+					<button mat-flat-button color="primary" type="submit">
+						<mat-icon>search</mat-icon>
+						<span>Search</span>
+					</button>
+				</form>
+			</mat-toolbar>
+
+			@if (filtering) {
+				<div class="loading-container">
+					<mat-spinner diameter="42"></mat-spinner>
+				</div>
+			} @else if (filteredProducts.length) {
+				<div class="products-grid">
+					@for (product of filteredProducts; track product.id ?? product.name) {
+						<mat-card class="product-card" appearance="outlined" [class.not-available]="product.available === false" (click)="viewProduct(product)">
+							<div class="card-top-layout">
+								<div class="image-container">
+									<img [src]="product.productImageUrl || 'assets/placeholder.png'" [alt]="product.name">
+									@if (product.available === false) {
+										<div class="availability-overlay">Not available</div>
+									}
+								</div>
+
+								<div class="product-header">
+									<h3 class="product-name">{{ product.name }}</h3>
+									@if (product.reviewCount !== undefined && product.reviewCount > 0) {
+										<div class="product-rating-summary">
+											@if (product.averageRating !== undefined) {
+												<div class="review-card__rating" [attr.aria-label]="product.averageRating + ' out of 5 stars'">
+													@for (star of ratingStars; track star) {
+														<mat-icon [class.review-card__star--filled]="star <= product.averageRating" aria-hidden="true">star</mat-icon>
+													}
+												</div>
+											}
+											<div class="product-rating-details">
+												@if (product.averageRating !== undefined) {
+													<span class="product-rating-value">{{ product.averageRating | number:'1.1-1' }}</span>
+												}
+												<span class="product-review-count">({{ product.reviewCount }})</span>
+											</div>
+										</div>
+									}
+									<div class="product-price">
+										<span class="product-price-value">{{ getProductPrice(product) | number:'1.2-2' }}</span>
+										<span class="product-price-currency">{{ getProductCurrency(product) }}</span>
+									</div>
+								</div>
+							</div>
+
+							<mat-card-content>
+								<p class="product-description">{{ product.description || 'No description available.' }}</p>
+								<div class="product-footer">
+									<span class="stock" [class.stock--empty]="product.stockQuantity === 0">Stock: {{ product.stockQuantity }}</span>
+								</div>
+							</mat-card-content>
+						</mat-card>
+					}
+				</div>
+			} @else {
+				<mat-card class="state-card" appearance="outlined">
+					<mat-icon aria-hidden="true">search_off</mat-icon>
+					<h3>No products found</h3>
+					<p>Try a different category or search term.</p>
+				</mat-card>
+			}
+		</section>
+	}
+</section>

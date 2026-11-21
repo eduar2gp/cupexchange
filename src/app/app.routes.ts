@@ -41,6 +41,7 @@ import { IdVerificationComponent } from './components/id-verification/id-verific
 import { PredictionMarketDashboard } from './views/dashboard/prediction-market-dashboard/prediction-market-dashboard';
 import { AddPredictionOrder } from './views/order/add-prediction-order/add-prediction-order';
 import { ViewProductComponent } from './views/product/view-product/view-product.component';
+import { ViewProviderComponent } from './views/provider/view-provider/view-provider.component';
 
 export const routes: Routes = [
    {
@@ -62,6 +63,10 @@ export const routes: Routes = [
   {
     path: 'product-details',
     component: ViewProductComponent,
+  },
+  {
+    path: 'provider-details',
+    component: ViewProviderComponent,
   },
    {
     path: 'exchange-dashboard',
