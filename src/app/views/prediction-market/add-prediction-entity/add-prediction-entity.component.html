@@ -1,0 +1,40 @@
+<section class="add-prediction-entity-page">
+	<mat-card class="entity-card" appearance="outlined">
+		<mat-card-header>
+			<mat-card-title>Add Prediction Entity</mat-card-title>
+			<mat-card-subtitle>Create a TEAM or PLAYER entity for prediction markets.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			<form [formGroup]="entityForm" class="entity-form" (ngSubmit)="addPredictionEntity()">
+				<mat-form-field appearance="outline">
+					<mat-label>Entity name</mat-label>
+					<input matInput formControlName="name" placeholder="e.g. Team A" maxlength="120" />
+					@if (entityForm.controls.name.hasError('required') && entityForm.controls.name.touched) {
+						<mat-error>Entity name is required.</mat-error>
+					}
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Entity type</mat-label>
+					<mat-select formControlName="entityType">
+						@for (type of entityTypeOptions; track type) {
+							<mat-option [value]="type">{{ type }}</mat-option>
+						}
+					</mat-select>
+					@if (entityForm.controls.entityType.hasError('required') && entityForm.controls.entityType.touched) {
+						<mat-error>Entity type is required.</mat-error>
+					}
+				</mat-form-field>
+
+				<button mat-flat-button color="primary" type="submit" [disabled]="entityForm.invalid || submitting()">
+					@if (submitting()) {
+						<mat-spinner diameter="18"></mat-spinner>
+					} @else {
+						<span>Create entity</span>
+					}
+				</button>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</section>

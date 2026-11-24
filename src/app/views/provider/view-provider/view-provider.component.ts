@@ -1,12 +1,13 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, NgZone, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, take } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Provider } from '../../../model/provider.model';
 import { ProvidersService } from '../../../core/services/providers.service';
-import { Product } from '../../../model/product.model';
+import { Product, ProductReviewResponse } from '../../../model/product.model';
+import { Page } from '../../../model/page.model';
 import { DataService } from '../../../core/services/data.service';
 import { ProductsService } from '../../../../app/core/services/products.service';
 import { Category } from '../../../model/category.model';
@@ -19,7 +20,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { ProviderCoveragePayload } from '../../../model/provider-coverage-response.model';
 
 @Component({
   selector: 'app-view-provider.component',
@@ -35,6 +39,8 @@ import { Router } from '@angular/router';
     MatInputModule,
     MatSelectModule,
     MatToolbarModule,
+    MatChipsModule,
+    MatPaginatorModule,
   ],
   templateUrl: './view-provider.component.html',
   styleUrl: './view-provider.component.scss',
@@ -52,9 +58,20 @@ export class ViewProviderComponent implements OnInit {
 
   provider: Provider | null = null;
   readonly ratingStars = [1, 2, 3, 4, 5];
-  products: Product[] = [];
+  products: ProductReviewResponse<Product> = {
+    content: [],
+    page: {
+      size: 10,
+      number: 0,
+      totalElements: 0,
+      totalPages: 0,
+    },
+  };
   filteredProducts: Product[] = [];
   categories: Category[] = [];
+  providerCoverage = signal<ProviderCoveragePayload | undefined>(undefined);
+  currentPage = 0;
+  pageSize = 10;
   loading = true;
   filtering = false;
   error: string | null = null;
@@ -75,7 +92,17 @@ export class ViewProviderComponent implements OnInit {
       this.loading = true;
       this.error = null;
       this.provider = null;
-      this.products = [];
+      this.products = {
+        content: [],
+        page: {
+          size: this.pageSize,
+          number: this.currentPage,
+          totalElements: 0,
+          totalPages: 0,
+        },
+      };
+      this.filteredProducts = [];
+      this.providerCoverage.set(undefined);
     });
 
     this.resolveProviderId().pipe(
@@ -89,10 +116,16 @@ export class ViewProviderComponent implements OnInit {
 
         return combineLatest([
           this.providersService.getProviderById(providerId.toString()),
-          this.productsService.getProductsByProvider(providerId)
+          this.providersService.getProviderCoverage(providerId).pipe(
+            catchError(() => of({
+              providerId,
+              providerName: '',
+              activeMunicipalities: [],
+            } as ProviderCoveragePayload))
+          )
         ]).pipe(
           take(1),
-          map(([provider, products]) => ({ provider, products }))
+          map(([provider, coverage]) => ({ provider, coverage, providerId }))
         );
       }),
       catchError((err) => {
@@ -114,10 +147,22 @@ export class ViewProviderComponent implements OnInit {
 
       this.updateViewState(() => {
         this.provider = result.provider;
-        this.products = result.products ?? [];
-        this.applyFilters();
+        this.providerCoverage.set(result.coverage);
       });
+
+      this.loadProductsPage(result.providerId, this.currentPage, this.pageSize);
     });
+  }
+
+  onProductsPageChange(event: PageEvent): void {
+    const providerId = this.provider?.id;
+    if (!providerId) {
+      return;
+    }
+
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadProductsPage(providerId, this.currentPage, this.pageSize);
   }
 
   performFilter(): void {
@@ -148,7 +193,9 @@ export class ViewProviderComponent implements OnInit {
     const query = (searchQuery ?? '').toLowerCase().trim();
     const selectedCategoryIds = (categoryIds ?? []) as number[];
 
-    const results = this.products.filter((product) => {
+    const sourceProducts = Array.isArray(this.products?.content) ? this.products.content : [];
+
+    const results = sourceProducts.filter((product) => {
       const matchesText = !query
         || product.name.toLowerCase().includes(query)
         || (product.description ?? '').toLowerCase().includes(query);
@@ -167,6 +214,79 @@ export class ViewProviderComponent implements OnInit {
       this.filteredProducts = results;
       this.filtering = false;
     });
+  }
+
+  private loadProductsPage(providerId: number, page: number, size: number): void {
+    this.updateViewState(() => {
+      this.filtering = true;
+    });
+
+    this.productsService.getProductsByProvider(providerId, page, size).pipe(
+      take(1),
+      catchError((err) => {
+        console.error('Failed to load provider products', err);
+        return of({
+          content: [],
+          page: {
+            size,
+            number: page,
+            totalElements: 0,
+            totalPages: 0,
+          },
+        } as ProductReviewResponse<Product>);
+      })
+    ).subscribe((productsResponse) => {
+      const normalizedResponse = this.normalizeProductsResponse(productsResponse, page, size);
+
+      this.updateViewState(() => {
+        this.products = normalizedResponse;
+        this.currentPage = normalizedResponse.page.number;
+        this.pageSize = normalizedResponse.page.size;
+        this.applyFilters();
+      });
+    });
+  }
+
+  private normalizeProductsResponse(
+    response: ProductReviewResponse<Product> | Page<Product> | Product[],
+    fallbackPage: number,
+    fallbackSize: number,
+  ): ProductReviewResponse<Product> {
+    if (Array.isArray(response)) {
+      return {
+        content: response,
+        page: {
+          size: fallbackSize,
+          number: fallbackPage,
+          totalElements: response.length,
+          totalPages: response.length > 0 ? 1 : 0,
+        },
+      };
+    }
+
+    const maybePaged = response as Page<Product>;
+    if (Array.isArray(maybePaged.content) && typeof maybePaged.totalElements === 'number') {
+      return {
+        content: maybePaged.content,
+        page: {
+          size: maybePaged.size ?? fallbackSize,
+          number: maybePaged.number ?? fallbackPage,
+          totalElements: maybePaged.totalElements ?? maybePaged.content.length,
+          totalPages: maybePaged.totalPages ?? 0,
+        },
+      };
+    }
+
+    const maybeReviewShape = response as ProductReviewResponse<Product>;
+    return {
+      content: Array.isArray(maybeReviewShape.content) ? maybeReviewShape.content : [],
+      page: {
+        size: maybeReviewShape.page?.size ?? fallbackSize,
+        number: maybeReviewShape.page?.number ?? fallbackPage,
+        totalElements: maybeReviewShape.page?.totalElements ?? (maybeReviewShape.content?.length ?? 0),
+        totalPages: maybeReviewShape.page?.totalPages ?? 0,
+      },
+    };
   }
 
   private updateViewState(update: () => void): void {

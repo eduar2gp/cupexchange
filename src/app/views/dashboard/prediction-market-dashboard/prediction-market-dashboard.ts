@@ -197,5 +197,14 @@ export class PredictionMarketDashboard implements OnInit {
     this.router.navigate(['/add-prediction-order', market.id]);
   }
 
+  getCategoryIcon(categoryName: string | undefined | null): string {
+    const normalizedName = (categoryName ?? '').toLowerCase();
+    if (normalizedName.includes('tennis')) {
+      return 'sports_tennis';
+    }
+
+    return 'sports_baseball';
+  }
+
 
 }

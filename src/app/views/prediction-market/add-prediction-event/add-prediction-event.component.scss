@@ -1,0 +1,48 @@
+.add-prediction-event-page {
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.event-card {
+	width: min(760px, 100%);
+	border-color: var(--color-border);
+	background: var(--color-surface);
+}
+
+.event-form {
+	display: grid;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.time-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.loading-state {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.75rem;
+	color: var(--color-text-secondary);
+}
+
+mat-form-field {
+	width: 100%;
+}
+
+button[mat-flat-button] {
+	width: fit-content;
+	min-width: 170px;
+	background: var(--color-primary);
+	color: #fff;
+}
+
+@media (max-width: 640px) {
+	.time-grid {
+		grid-template-columns: 1fr;
+	}
+}

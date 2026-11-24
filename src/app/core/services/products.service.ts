@@ -48,9 +48,13 @@ export class ProductsService {
     );
   }
 
-  getProductsByProvider(providerId: number): Observable<Product[]> {
+  getProductsByProvider(providerId: number, page: number = 0, size: number = 12): Observable<ProductReviewResponse<Product>> {
     const url = `${build(ApiEndpoints.products.GET_PRODUCTS_BY_PROVIDER)}/${providerId}`;
-    return this.http.get<Product[]>(url);
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<ProductReviewResponse<Product>>(url, { params });
   }
 
   /**

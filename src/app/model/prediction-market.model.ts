@@ -16,5 +16,16 @@ export interface PredictionMarketResponse {
   noLabel: string;
 }
 
+export interface PredictionMarketRequest {
+  eventId: number;
+  question: string;
+  outcomeType: OutcomeType;
+  currencyCode: string;
+  status: MarketStatus;
+  winningOutcome: boolean | null;
+  yesLabel: string;
+  noLabel: string;
+}
+
 // API response for a market collection.
 export type PredictionMarketList = PredictionMarketResponse[];

@@ -87,7 +87,14 @@ export const ApiEndpoints = {
     POST_PREDICTION_ORDER: '/api/v1/prediction-markets/create-order',
     GET_PREDICTION_POSITIONS: '/api/v1/prediction-markets/position/{predictionMarketId}',
     GET_PREDICTION_CANDLE_STICKS: '/api/v1/charts/prediction-candles/{predictionMarketId}?outcomePosition={outcomePosition}&interval={interval}&limit={limit}',
-    GET_MARKET_ODDS: '/api/v1/prediction-markets/{predictionMarketId}/odds'
+    GET_MARKET_ODDS: '/api/v1/prediction-markets/{predictionMarketId}/odds',
+    POST_PREDICTION_ENTITY: '/api/v1/prediction-markets/entities',
+    POST_PREDICTION_EVENT: '/api/v1/prediction-markets/events',
+    GET_SEARCH_PREDICTION_EVENTS: '/api/v1/prediction-markets/events',
+    POST_PREDICTION_MARKET: '/api/v1/prediction-markets/markets',
+    POST_PREDICTION_EVENT_ENTITY: '/api/v1/prediction-markets/event-entities',
+    GET_PREDICTION_ENTITIES: '/api/v1/prediction-markets/entities',
+    GET_PREDICTION_EVENT_ENTITIES: '/api/v1/prediction-markets/event-entities'
   },
   category: {
     GET_CATEGORIES: '/api/v1/categories'

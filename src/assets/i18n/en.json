@@ -190,6 +190,7 @@
   "EXCHANGE": "Exchange",
   "PRODUCTS": "Products",
   "PREDICTIONS": "Predictions",
+  "PREDICTION_MARKET_CREATOR": "Predictions Dashboard",
   "REPORTS": {
     "REPORTS": "Reports",
     "PERIOD": "Period",

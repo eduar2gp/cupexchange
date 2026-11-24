@@ -64,6 +64,10 @@ export class ProvidersService {
     );
   }
 
+  getProviderCoverage(providerId: number): Observable<ProviderCoveragePayload> {
+    return this.getProvidersCoverage(providerId);
+  }
+
   linkProviderMunicipality(providerId: number, municipalityId: number): Observable<any> {
     const fullUrl = build(ApiEndpoints.provider.LINK_PROVIDER_MUNICIPALITY);
     // Construct the body to match the ProviderMunicipalityId class in Java

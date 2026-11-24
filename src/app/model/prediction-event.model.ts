@@ -10,5 +10,13 @@ export interface PredictionEventResponse {
   status: EventStatus;
 }
 
+export interface PredictionEventCreateRequestDto {
+  categoryId: number;
+  title: string;
+  startTime: string; // ISO-8601 datetime, e.g. "2026-11-23T16:00:00Z"
+  endTime: string;   // ISO-8601 datetime
+  status?: EventStatus;
+}
+
 // Type alias for array responses
 export type PredictionEventList = PredictionEventResponse[];

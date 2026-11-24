@@ -1,0 +1,30 @@
+.market-card {
+	border-color: var(--color-border);
+	background: var(--color-surface);
+}
+
+.market-form {
+	display: grid;
+	gap: 0.9rem;
+	margin-top: 0.8rem;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.grid-two {
+	display: grid;
+	gap: 0.9rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+mat-form-field {
+	width: 100%;
+}
+
+@media (max-width: 760px) {
+	.grid-two {
+		grid-template-columns: 1fr;
+	}
+}

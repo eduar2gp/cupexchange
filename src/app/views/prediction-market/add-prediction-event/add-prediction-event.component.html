@@ -1,0 +1,74 @@
+<section class="add-prediction-event-page">
+	<mat-card class="event-card" appearance="outlined">
+		<mat-card-header>
+			<mat-card-title>Add Prediction Event</mat-card-title>
+			<mat-card-subtitle>Create an event and attach it to a prediction category.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			@if (loadingCategories()) {
+				<div class="loading-state">
+					<mat-spinner diameter="28"></mat-spinner>
+					<span>Loading categories...</span>
+				</div>
+			}
+
+			<form [formGroup]="eventForm" class="event-form" (ngSubmit)="submitEvent()">
+				<mat-form-field appearance="outline">
+					<mat-label>Category</mat-label>
+					<mat-select formControlName="categoryId" placeholder="Select category">
+						@for (category of categories(); track category.id) {
+							<mat-option [value]="category.id">{{ category.name }}</mat-option>
+						}
+					</mat-select>
+					@if (eventForm.controls.categoryId.hasError('required') && eventForm.controls.categoryId.touched) {
+						<mat-error>Category is required.</mat-error>
+					}
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Event title</mat-label>
+					<input matInput formControlName="title" placeholder="e.g. Team A vs Team B" maxlength="180" />
+					@if (eventForm.controls.title.hasError('required') && eventForm.controls.title.touched) {
+						<mat-error>Title is required.</mat-error>
+					}
+				</mat-form-field>
+
+				<div class="time-grid">
+					<mat-form-field appearance="outline">
+						<mat-label>Start time</mat-label>
+						<input matInput type="datetime-local" formControlName="startTime" />
+						@if (eventForm.controls.startTime.hasError('required') && eventForm.controls.startTime.touched) {
+							<mat-error>Start time is required.</mat-error>
+						}
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>End time</mat-label>
+						<input matInput type="datetime-local" formControlName="endTime" />
+						@if (eventForm.controls.endTime.hasError('required') && eventForm.controls.endTime.touched) {
+							<mat-error>End time is required.</mat-error>
+						}
+					</mat-form-field>
+				</div>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Status</mat-label>
+					<mat-select formControlName="status">
+						@for (status of statusOptions; track status) {
+							<mat-option [value]="status">{{ status }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+
+				<button mat-flat-button color="primary" type="submit" [disabled]="eventForm.invalid || submitting() || loadingCategories()">
+					@if (submitting()) {
+						<mat-spinner diameter="18"></mat-spinner>
+					} @else {
+						<span>Create event</span>
+					}
+				</button>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</section>

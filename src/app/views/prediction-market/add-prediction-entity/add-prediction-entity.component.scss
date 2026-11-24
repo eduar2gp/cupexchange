@@ -1,0 +1,25 @@
+.add-prediction-entity-page {
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.entity-card {
+	width: min(560px, 100%);
+    background: var(--color-surface);
+}
+
+.entity-form {
+	display: grid;
+	gap: 1rem;
+	margin-top: 1rem;
+
+	mat-form-field {
+		width: 100%;
+	}
+
+	button {
+		justify-self: start;
+		min-width: 160px;
+	}
+}

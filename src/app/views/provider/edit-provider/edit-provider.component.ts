@@ -148,13 +148,13 @@ export class EditProviderComponent implements OnInit {
       switchMap(([provider]) => {
         // Use forkJoin to fetch Products AND Coverage at the same time
         return forkJoin({
-          products: this.productsService.getProductsByProvider(provider.id!).pipe(catchError(() => of([]))),
+          products: this.productsService.getProductsByProvider(provider.id!).pipe(catchError(() => of({ content: [], page: { size: 10, number: 0, totalElements: 0, totalPages: 0 } }))),
           coverage: this.providersService.getProvidersCoverage(provider.id!).pipe(catchError(() => of({ activeMunicipalities: [] })))
         });
       })
     ).subscribe({
       next: (result) => {
-        this.productsList.set(result.products);
+        this.productsList.set(result.products.content ?? []);
         // You'll need a signal or property to store this (see step 2)
         this.providerCoverage.set(result.coverage);
       },

@@ -20,7 +20,7 @@
                 <button type="button" class="category-navigation__item" [class.active]="selectedIndex === index"
                     [attr.aria-selected]="selectedIndex === index" role="tab" (click)="onTabChange(index)">
                     <span class="category-navigation__icon">
-                        <mat-icon>query_stats</mat-icon>
+                        <mat-icon>{{ getCategoryIcon(category.name) }}</mat-icon>
                     </span>
                     <span class="category-navigation__label">{{ category.name }}</span>
                     @if (selectedIndex === index) {

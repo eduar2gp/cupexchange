@@ -31,8 +31,8 @@ export interface Product {
   available?: boolean;
 }
 
-export interface ProductReviewResponse {
-  content: ProductReview[];
+export interface ProductReviewResponse<T = ProductReview> {
+  content: T[];
   page: ProductReviewPage;
 }
 

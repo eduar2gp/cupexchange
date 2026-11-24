@@ -42,6 +42,7 @@ import { PredictionMarketDashboard } from './views/dashboard/prediction-market-d
 import { AddPredictionOrder } from './views/order/add-prediction-order/add-prediction-order';
 import { ViewProductComponent } from './views/product/view-product/view-product.component';
 import { ViewProviderComponent } from './views/provider/view-provider/view-provider.component';
+import { PredictionMarketCreatorComponent } from './views/prediction-market/prediction-market-creator/prediction-market-creator.component';
 
 export const routes: Routes = [
    {
@@ -67,6 +68,12 @@ export const routes: Routes = [
   {
     path: 'provider-details',
     component: ViewProviderComponent,
+  },
+  {
+    path: 'prediction-market-creator',
+    component: PredictionMarketCreatorComponent,
+    canActivate: [roleGuard],
+    data: { roles: [Role.Admin, Role.PredictionMarketCreator] }
   },
    {
     path: 'exchange-dashboard',

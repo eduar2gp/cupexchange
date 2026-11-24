@@ -1,0 +1,200 @@
+<section class="prediction-market-creator">
+	<div class="creator-grid">
+		<add-prediction-entity></add-prediction-entity>
+		<add-prediction-event [categoriesInput]="categories()"></add-prediction-event>
+	</div>
+    <mat-card class="search-card" appearance="outlined">
+		<mat-card-header>
+			<mat-card-title>Search Prediction Entities</mat-card-title>
+			<mat-card-subtitle>Find TEAM/PLAYER entities and select one for event linkage.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			<form [formGroup]="entitySearchForm" class="search-form" (ngSubmit)="searchPredictionEntities()">
+				<mat-form-field appearance="outline">
+					<mat-label>Entity name</mat-label>
+					<input matInput formControlName="name" placeholder="e.g. Team A" />
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Entity type</mat-label>
+					<mat-select formControlName="entityType">
+						@for (type of entityTypeOptions; track type) {
+							<mat-option [value]="type">{{ type }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+
+				<div class="search-actions">
+					<button mat-flat-button color="primary" type="submit" [disabled]="searchingEntities()">
+						@if (searchingEntities()) {
+							<mat-spinner diameter="18"></mat-spinner>
+						} @else {
+							<span>Search entities</span>
+						}
+					</button>
+				</div>
+			</form>
+
+			<div class="results">
+				@if (selectedEntity(); as selectedEntity) {
+					<p class="selected-event-banner selected-entity-banner">Selected entity: <strong>{{ selectedEntity.name }}</strong> (ID {{ selectedEntity.id }})</p>
+				}
+
+				@if (entityResults().length > 0) {
+					@for (entity of entityResults(); track entity.id ?? entity.name) {
+						<article class="result-item entity-result-item">
+							<h3>{{ entity.name }}</h3>
+							<p>Type: {{ entity.entityType }}</p>
+							<p>ID: {{ entity.id ?? 'N/A' }}</p>
+							<button mat-stroked-button type="button" (click)="selectEntity(entity)">Select Entity</button>
+						</article>
+					}
+				} @else if (!searchingEntities()) {
+					<p class="empty-state">No entities loaded yet. Search by name.</p>
+				}
+			</div>
+		</mat-card-content>
+	</mat-card>
+	<mat-card class="search-card" appearance="outlined">
+		<mat-card-header>
+			<mat-card-title>Search Prediction Events</mat-card-title>
+			<mat-card-subtitle>Filter events by category, title, and status.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			@if (loadingCategories()) {
+				<div class="loading-state">
+					<mat-spinner diameter="26"></mat-spinner>
+					<span>Loading categories...</span>
+				</div>
+			}
+
+			<form [formGroup]="searchForm" class="search-form" (ngSubmit)="searchPredictionEvents()">
+				<mat-form-field appearance="outline">
+					<mat-label>Category</mat-label>
+					<mat-select formControlName="categoryId" placeholder="Select category">
+						@for (category of categories(); track category.id) {
+							<mat-option [value]="category.id">{{ category.name }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Title contains</mat-label>
+					<input matInput formControlName="title" placeholder="e.g. Team A" />
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Status</mat-label>
+					<mat-select formControlName="status">
+						@for (status of eventStatusOptions; track status) {
+							<mat-option [value]="status">{{ status }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+
+				<div class="search-actions">
+					<button mat-flat-button color="primary" type="submit" [disabled]="searchingEvents() || loadingCategories()">
+						@if (searchingEvents()) {
+							<mat-spinner diameter="18"></mat-spinner>
+						} @else {
+							<span>Search</span>
+						}
+					</button>
+					<button mat-stroked-button type="button" (click)="clearSearch()">Clear</button>
+				</div>
+			</form>
+
+			<div class="results">
+				@if (selectedEventForMarket(); as selectedEvent) {
+					<p class="selected-event-banner selected-event-market-banner">Selected event for market: <strong>{{ selectedEvent.title }}</strong> (ID {{ selectedEvent.id }})</p>
+
+					@if (loadingEventEntities()) {
+						<div class="loading-state">
+							<mat-spinner diameter="20"></mat-spinner>
+							<span>Loading event entities...</span>
+						</div>
+					} @else if (eventEntities().length > 0) {
+						<div class="results">
+							@for (eventEntity of eventEntities(); track eventEntity.entityId) {
+								<article class="result-item event-entity-item">
+									<h3>{{ eventEntity.entityName }}</h3>
+									<p>Event: {{ eventEntity.eventTitle }} (ID {{ eventEntity.eventId }})</p>
+									<p>Entity ID: {{ eventEntity.entityId }}</p>
+									<p>Role: {{ eventEntity.role }}</p>
+								</article>
+							}
+						</div>
+					} @else {
+						<p class="empty-state">No entities linked to this event yet.</p>
+					}
+				}
+
+				@if (searchResults().length > 0) {
+					@for (event of searchResults(); track event.id) {
+						<article class="result-item event-result-item">
+							<h3>{{ event.title }}</h3>
+							<p>Category: {{ event.categoryName }}</p>
+							<p>Status: {{ event.status }}</p>
+							<p>
+								Start: {{ event.startTime ? (event.startTime | date:'medium') : 'N/A' }}
+								| End: {{ event.endTime ? (event.endTime | date:'medium') : 'N/A' }}
+							</p>
+							<button mat-stroked-button type="button" (click)="selectEventForMarket(event)">Use Event For Market</button>
+						</article>
+					}
+				} @else if (!searchingEvents()) {
+					<p class="empty-state">No search results yet. Run a search to see events.</p>
+				}
+			</div>
+		</mat-card-content>
+	</mat-card>
+	<mat-card class="search-card" appearance="outlined">
+		<mat-card-header>
+			<mat-card-title>Link Event To Entity</mat-card-title>
+			<mat-card-subtitle>Create event-entity mapping using selected event and entity.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content>
+			<form [formGroup]="eventEntityForm" class="search-form" (ngSubmit)="linkEventToEntity()">
+				<mat-form-field appearance="outline">
+					<mat-label>Event ID</mat-label>
+					<input matInput formControlName="eventId" readonly />
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Entity ID</mat-label>
+					<input matInput formControlName="entityId" readonly />
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Role (optional)</mat-label>
+					<input matInput formControlName="role" placeholder="e.g. HOME" />
+				</mat-form-field>
+
+				<div class="search-actions">
+					<button mat-flat-button color="primary" type="submit" [disabled]="linkingEventEntity()">
+						@if (linkingEventEntity()) {
+							<mat-spinner diameter="18"></mat-spinner>
+						} @else {
+							<span>Link Event Entity</span>
+						}
+					</button>
+				</div>
+			</form>
+
+			@if (linkedEventEntity(); as linked) {
+				<div class="results">
+					<article class="result-item">
+						<h3>Link created</h3>
+						<p>Event: {{ linked.eventTitle }} (ID {{ linked.eventId }})</p>
+						<p>Entity: {{ linked.entityName }} (ID {{ linked.entityId }})</p>
+						<p>Role: {{ linked.role }}</p>
+					</article>
+				</div>
+			}
+		</mat-card-content>
+	</mat-card>
+    <app-add-prediction-market [eventId]="selectedEventForMarket()?.id ?? null"></app-add-prediction-market>
+</section>
