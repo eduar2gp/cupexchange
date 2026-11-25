@@ -31,6 +31,8 @@ import 'chartjs-adapter-luxon';
 import { TradeService } from '../../../core/services/trade.service';
 import { ChartDataPoint } from '../../../model/candle-stick-data.model';
 import { OutcomePosition } from '../../../model/prediction-candle-stick-data.model';
+import { ChartMarketInput, ChartSeries } from '../../../model/chart-market-input.model';
+
 
 Chart.register(
   TimeScale,
@@ -53,18 +55,26 @@ Chart.register(
 export class PredictionMarketCandleChartComponent implements OnChanges, OnDestroy, OnInit {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
-  @Input() predictionMarketId: number | null = null;
+  @Input() markets: ChartMarketInput[] = [];
   @Input() yesLabel = 'Yes';
   @Input() noLabel = 'No';
 
   private readonly tradeService = inject(TradeService);
   private requestSubscription?: Subscription;
   private readonly maxPoints = 300;
-  private readonly rawChartDataByOutcome: Record<OutcomePosition, ChartDataPoint[]> = {
-    YES: [],
-    NO: []
-  };
+  private readonly maxMultiMarkets = 6; // Prevent chart clutter on large events
+  private seriesList: ChartSeries[] = [];
   private scale = 1;
+
+  // Distinct palette for multi-market lines
+  private readonly palette = [
+    '#2563eb', // Blue
+    '#16a34a', // Green
+    '#d97706', // Amber
+    '#9333ea', // Purple
+    '#0891b2', // Cyan
+    '#e11d48'  // Rose
+  ];
 
   readonly availableIntervals = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
   currentInterval = '1m';
@@ -73,6 +83,13 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
   errorMessage = '';
   chartData: ChartData<'line'> = { datasets: [] };
   chartOptions: ChartOptions<'line'> = this.createChartOptions();
+
+  
+  private readonly rawChartDataByOutcome: Record<OutcomePosition, ChartDataPoint[]> = {
+    YES: [],
+    NO: []
+  };
+  
 
   private createChartOptions(): ChartOptions<'line'> {
     return {
@@ -135,7 +152,8 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
   }
 
   private loadChartData(): void {
-    if (!this.predictionMarketId || this.predictionMarketId <= 0) {
+    const validMarkets = (this.markets ?? []).filter(m => m?.id > 0);
+    if (!validMarkets.length) {
       this.clearChartData();
       return;
     }
@@ -144,48 +162,74 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
     this.isLoading = true;
     this.errorMessage = '';
 
+    if (validMarkets.length === 1) {
+      this.loadSingleMarketData(validMarkets[0]);
+    } else {
+      this.loadMultiMarketData(validMarkets.slice(0, this.maxMultiMarkets));
+    }
+  }
+
+  private loadSingleMarketData(market: ChartMarketInput): void {
     this.requestSubscription = forkJoin({
-      yes: this.tradeService.getPredictionMarketCandlesticks(
-        this.predictionMarketId,
-        'YES',
-        this.currentInterval,
-        500
-      ),
-      no: this.tradeService.getPredictionMarketCandlesticks(
-        this.predictionMarketId,
-        'NO',
-        this.currentInterval,
-        500
-      )
-    })
-      .subscribe({
-        next: ({ yes, no }) => {
-          this.rawChartDataByOutcome.YES = this.tradeService
-            .mapMarketCandlesToChartDataPoints(yes)
-            .slice(-this.maxPoints);
-          this.rawChartDataByOutcome.NO = this.tradeService
-            .mapMarketCandlesToChartDataPoints(no)
-            .slice(-this.maxPoints);
-          this.isLoading = false;
-          this.renderChart();
-        },
-        error: () => {
-          this.clearChartData();
-          this.isLoading = false;
-          this.errorMessage = 'Unable to load prediction market chart data.';
-          this.cdr.markForCheck();
-        }
-      });
+      yes: this.tradeService.getPredictionMarketCandlesticks(market.id, 'YES', this.currentInterval, 500),
+      no: this.tradeService.getPredictionMarketCandlesticks(market.id, 'NO', this.currentInterval, 500)
+    }).subscribe({
+      next: ({ yes, no }) => {
+        this.seriesList = [
+          {
+            label: this.yesLabel,
+            color: '#16a34a',
+            points: this.tradeService.mapMarketCandlesToChartDataPoints(yes).slice(-this.maxPoints)
+          },
+          {
+            label: this.noLabel,
+            color: '#dc2626',
+            points: this.tradeService.mapMarketCandlesToChartDataPoints(no).slice(-this.maxPoints)
+          }
+        ];
+        this.isLoading = false;
+        this.renderChart();
+      },
+      error: () => this.handleLoadError()
+    });
+  }
+
+  private loadMultiMarketData(markets: ChartMarketInput[]): void {
+    const requests = markets.map(market =>
+      this.tradeService.getPredictionMarketCandlesticks(market.id, 'YES', this.currentInterval, 500)
+    );
+
+    this.requestSubscription = forkJoin(requests).subscribe({
+      next: (responses) => {
+        this.seriesList = responses.map((candles, index) => ({
+          label: markets[index].label,
+          color: this.palette[index % this.palette.length],
+          points: this.tradeService.mapMarketCandlesToChartDataPoints(candles).slice(-this.maxPoints)
+        }));
+        this.isLoading = false;
+        this.renderChart();
+      },
+      error: () => this.handleLoadError()
+    });
+  }
+
+  private handleLoadError(): void {
+    this.clearChartData();
+    this.isLoading = false;
+    this.errorMessage = 'Unable to load prediction market chart data.';
+    this.cdr.markForCheck();
   }
 
   private clearChartData(): void {
     this.rawChartDataByOutcome.YES = [];
     this.rawChartDataByOutcome.NO = [];
     this.chartData = { datasets: [] };
+    this.seriesList = [];
+    this.chartData = { datasets: [] };
   }
 
   private renderChart(): void {
-    const allData = [...this.rawChartDataByOutcome.YES, ...this.rawChartDataByOutcome.NO];
+    const allData = this.seriesList.flatMap(series => series.points);
     if (!allData.length) {
       this.chartData = { datasets: [] };
       return;
@@ -200,14 +244,20 @@ export class PredictionMarketCandleChartComponent implements OnChanges, OnDestro
     }
 
     this.chartData = {
-      datasets: [
-        this.createOutcomeDataset('YES', '#16a34a'),
-        this.createOutcomeDataset('NO', '#dc2626')
-      ]
+      datasets: this.seriesList.map(series => ({
+        label: series.label,
+        data: series.points.map(point => ({
+          x: point.x,
+          y: point.c * this.scale
+        })),
+        borderColor: series.color,
+        backgroundColor: series.color,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.1
+      }))
     };
 
-    // The canvas is removed while loading and recreated once the response arrives.
-    // Run change detection first, then update the newly created chart instance.
     this.cdr.detectChanges();
     setTimeout(() => this.chart?.update('none'));
   }

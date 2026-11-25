@@ -14,9 +14,7 @@
 			<p class="chart-status">Loading chart…</p>
 		} @else if (errorMessage) {
 			<p class="chart-status error">{{ errorMessage }}</p>
-		} @else if (!predictionMarketId) {
-			<p class="chart-status">Select a prediction market to view its chart.</p>
-		} @else {
+		}  @else {
 			<div class="chart-wrapper">
 				<canvas baseChart [data]="chartData" [options]="chartOptions" type="line" class="chart-canvas"></canvas>
 			</div>

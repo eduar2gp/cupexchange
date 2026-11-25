@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
 import { PredictionPositionComponent } from '../../prediction-position/prediction-position.component';
 import { PredictionMarketCandleChartComponent } from '../../charts/prediction-market-candle-chart/prediction-market-candle-chart.component';
+import { ChartMarketInput } from '../../../model/chart-market-input.model';
 
 @Component({
   selector: 'app-prediction-market-dashboard',
@@ -40,6 +41,19 @@ export class PredictionMarketDashboard implements OnInit {
   readonly categories = signal<PredictionCategory[]>([]);
   readonly events = signal<PredictionEventResponse[]>([]);
   readonly markets = signal<PredictionMarketResponse[]>([]);
+  readonly chartMarkets = computed<ChartMarketInput[]>(() =>
+    this.markets().map((market) => ({
+      id: market.id,
+      label: market.yesLabel ?? market.question ?? `Market #${market.id}`,
+    }))
+  );
+  readonly singleMarketYesLabel = computed(() =>
+    this.markets().length === 1 ? (this.markets()[0].yesLabel ?? 'Yes') : 'Yes'
+  );
+
+  readonly singleMarketNoLabel = computed(() =>
+    this.markets().length === 1 ? (this.markets()[0].noLabel ?? 'No') : 'No'
+  );
   readonly orders = signal<PredictionOrderResponse[]>([]);
   readonly selectedEvent = signal<PredictionEventResponse | null>(null);
   readonly isLoadingCategories = signal(false);
@@ -132,8 +146,8 @@ export class PredictionMarketDashboard implements OnInit {
   private loadMarkets(eventId: number): void {
     this.isLoadingMarkets.set(true);
     this.errorMessage.set(null);
-
-    this.predictionMarketService.getPredictionMarkets(eventId).subscribe({
+    const preferredCurrency = (localStorage.getItem('MERCHANT_PRICE_CURRENCY') || 'USD').toUpperCase();
+    this.predictionMarketService.getPredictionMarkets(eventId, preferredCurrency).subscribe({
       next: (markets) => {
         if (this.selectedEvent()?.id === eventId) {
           this.markets.set(markets);

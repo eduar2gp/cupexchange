@@ -94,7 +94,7 @@
         <button mat-icon-button routerLink="/notifications" routerLinkActive="active"
           [matBadge]="notificationCount$ | async" [matBadgeHidden]="(notificationCount$ | async) === 0"
           matBadgeColor="warn" aria-label="View notifications"
-          [attr.data-intro]="'LOGIN_TUTORIAL.NOTIFICATIONS' | translate" data-step="6">
+          [attr.data-intro]="'LOGIN_TUTORIAL.NOTIFICATIONS' | translate" data-step="7">
           <mat-icon>notifications</mat-icon>
         </button>
       </div>
@@ -111,7 +111,7 @@
         <span>{{ 'WALLETS' | translate }}</span>
       </a>
       <a mat-button routerLink="/transactions" routerLinkActive="active-link" class="quick-link"
-        [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="5">
+        [attr.data-intro]="'LOGIN_TUTORIAL.TRANSACTIONS' | translate" data-step="6">
         <mat-icon>compare_arrows</mat-icon>
         <span>{{ 'TRANSACTIONS' | translate }}</span>
       </a>
@@ -142,29 +142,28 @@
       <router-outlet></router-outlet>
     </main>
     <mat-toolbar class="bottom-nav">
-      <a *appFeatureFlag="'exchange'" mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item"
-        [attr.data-intro]="'LOGIN_TUTORIAL.DASHBOARD' | translate" data-step="1">
+      <a *appFeatureFlag="'ecommerce'" mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.STORE' | translate" data-step="1">
+        <mat-icon>shopping_basket</mat-icon>
+        <!-- <span matListItemTitle>{{ 'STORE' | translate }}</span> -->
+      </a> <a *appFeatureFlag="'exchange'" mat-button routerLink="/exchange-dashboard" routerLinkActive="active" class="nav-item"
+        [attr.data-intro]="'LOGIN_TUTORIAL.DASHBOARD' | translate" data-step="2">
         <mat-icon>show_chart</mat-icon>
         <!-- <span matListItemTitle>{{ 'CHARTS' | translate }}</span> -->
       </a>
-      <a *appFeatureFlag="'ecommerce'" mat-button routerLink="/ecommerce-dashboard" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}" class="nav-item"
-        [attr.data-intro]="'LOGIN_TUTORIAL.STORE' | translate" data-step="2">
-        <mat-icon>shopping_basket</mat-icon>
-        <!-- <span matListItemTitle>{{ 'STORE' | translate }}</span> -->
-      </a>
       <a *appFeatureFlag="'prediction_market'" mat-button routerLink="/prediction-market-dashboard" routerLinkActive="active" class="nav-item"
-        [attr.data-intro]="'LOGIN_TUTORIAL.PREDICTION_MARKET' | translate" data-step="7">
+        [attr.data-intro]="'LOGIN_TUTORIAL.PREDICTION_MARKET' | translate" data-step="3">
         <mat-icon>graphic_eq</mat-icon>
       </a>
       <a mat-button routerLink="/orders" routerLinkActive="active" class="nav-item"
-        [attr.data-intro]="'LOGIN_TUTORIAL.ORDERS' | translate" data-step="3">
+        [attr.data-intro]="'LOGIN_TUTORIAL.ORDERS' | translate" data-step="4">
         <mat-icon>list</mat-icon>
         <!-- <span matListItemTitle>{{ 'ORDERS' | translate }}</span> -->
       </a>
       <a *appFeatureFlag="'ecommerce'" mat-button routerLink="/cart" routerLinkActive="active" class="nav-item" matBadge="{{ cartCount$ | async }}"
         matBadgeHidden="{{ (cartCount$ | async) === 0 }}" matBadgeColor="warn"
-        [attr.data-intro]="'LOGIN_TUTORIAL.SHOPPING_CART' | translate" data-step="4">
+        [attr.data-intro]="'LOGIN_TUTORIAL.SHOPPING_CART' | translate" data-step="5">
         <mat-icon>add_shopping_cart</mat-icon>
         <!-- <span matListItemTitle>{{ 'MY_CART' | translate }}</span> -->
       </a>
