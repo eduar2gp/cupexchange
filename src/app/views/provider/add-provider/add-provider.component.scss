@@ -38,12 +38,19 @@
 
   mat-form-field {
     width: 100%;
-    
+
     /* Ensure internal Material text inherits theme colors */
     input {
       color: var(--color-text);
     }
+
     mat-label {
+      color: var(--color-text-secondary);
+    }
+
+    /* Style the right-aligned suffix icon */
+    mat-icon[matSuffix],
+    mat-icon[matIconSuffix] {
       color: var(--color-text-secondary);
     }
   }

@@ -160,8 +160,7 @@
     display: grid;
     gap: 1rem;
   }
-
-  .market-card {
+.market-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
@@ -186,12 +185,28 @@
     }
 
     app-prediction-position,
-    dl {
+    dl,
+    .market-order-actions {
       grid-column: 1 / -1;
     }
 
-    .market-order-actions,
-    .order-button,
+    .market-order-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0;
+
+      h4 {
+        margin: 0 auto 0 0;
+      }
+
+      .order-button {
+        margin-top: 0;
+        flex-shrink: 0;
+      }
+    }
+
+    > .order-button,
     .loading-state {
       grid-column: 2;
       justify-self: end;
@@ -246,8 +261,13 @@
     gap: 0.75rem;
     margin-top: 0;
 
+    h4 {
+      margin: 0 auto 0 0; // Resets default heading margins and pushes buttons right
+    }
+
     .order-button {
       margin-top: 0;
+      flex-shrink: 0; // Prevents buttons from squishing if the question text is long
     }
   }
 

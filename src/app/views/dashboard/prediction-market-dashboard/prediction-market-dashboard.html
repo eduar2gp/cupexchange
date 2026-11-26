@@ -71,10 +71,10 @@
                 <div class="markets-list">
                     @for (market of markets(); track market.id) {
                     <article class="market-card">
-                        <h4>{{ market.question }}</h4>
                         <app-prediction-position [predictionMarketId]="market.id" />
                         @if (marketOdds()[market.id]; as odds) {
                         <div class="market-order-actions">
+                            <h4>{{ market.question }}</h4>
                             <button type="button" class="order-button yes-order-button"
                                 (click)="createOrder(market, odds, 'YES')">
                                 Yes {{ odds.buyYesPrice === null ? 'Set price' : (odds.buyYesPrice | percent:'1.0-2') }}

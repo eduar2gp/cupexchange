@@ -1,56 +1,72 @@
 <div class="form-container">
   <div class="provider-card">
-    <h3>Add New Provider</h3>
+    <h3>{{ 'PROVIDER.ADD_NEW_PROVIDER' | translate }}</h3>
 
     <form [formGroup]="phoneForm" (ngSubmit)="saveProvider()" class="provider-form">
 
       <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" placeholder="Full name">
+        <mat-label>{{ 'PROVIDER.PROVIDER_NAME' | translate }}</mat-label>
+        <input matInput formControlName="name" placeholder="{{ 'PROVIDER.PROVIDER_NAME' | translate }}">
         @if (nameControl.touched && nameControl.invalid) {
-        <mat-error>Name is required.</mat-error>
+        <mat-error>{{ 'PROVIDER.PROVIDER_NAME_REQUIRED' | translate }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" placeholder="email@example.com">
+        <mat-label>{{ 'PROVIDER.PROVIDER_EMAIL' | translate }}</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="{{ 'PROVIDER.PROVIDER_EMAIL' | translate }}">
+        <mat-icon matSuffix>email</mat-icon>
         @if (emailControl.touched) {
-        @if (emailControl.hasError('required')) { <mat-error>Email is required.</mat-error> }
-        @if (emailControl.hasError('pattern')) { <mat-error>Enter a valid email address.</mat-error> }
+        @if (emailControl.hasError('required')) { <mat-error>{{ 'PROVIDER.PROVIDER_EMAIL_REQUIRED' | translate
+          }}</mat-error> }
+        @if (emailControl.hasError('pattern')) { <mat-error>{{ 'PROVIDER.PROVIDER_EMAIL_INVALID' | translate
+          }}</mat-error> }
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Phone Number</mat-label>
-        <input matInput type="tel" formControlName="phoneNumber" placeholder="1234567890">
-        <mat-icon matSuffix style="color: var(--color-text-muted)">phone</mat-icon>
+        <mat-label>{{ 'PROVIDER.PHONE_NUMBER' | translate }}</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber"
+          placeholder="{{ 'PROVIDER.PHONE_NUMBER' | translate }}">
+        <mat-icon matSuffix>phone</mat-icon>
         @if (phoneControl.touched) {
-        @if (phoneControl.hasError('required')) { <mat-error>Phone is required.</mat-error> }
-        @if (phoneControl.hasError('pattern')) { <mat-error>10-digit number required.</mat-error> }
+        @if (phoneControl.hasError('required')) { <mat-error>{{ 'PROVIDER.PHONE_NUMBER_REQUIRED' | translate
+          }}</mat-error> }
+        @if (phoneControl.hasError('pattern')) { <mat-error>{{ 'PROVIDER.PHONE_NUMBER_INVALID' | translate
+          }}</mat-error> }
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Address</mat-label>
-        <input matInput formControlName="address" placeholder="Address">
-        @if (nameControl.touched && nameControl.invalid) {
-        <mat-error>Address is required.</mat-error>
+        <mat-label>{{ 'PROVIDER.ADDRESS' | translate }}</mat-label>
+        <input matInput formControlName="address" placeholder="{{ 'PROVIDER.ADDRESS' | translate }}">
+        <mat-icon matSuffix>map</mat-icon>
+        @if (addressControl.touched && addressControl.invalid) {
+        <mat-error>{{ 'PROVIDER.ADDRESS_REQUIRED' | translate }}</mat-error>
         }
       </mat-form-field>
 
       <div class="checkbox-section" style="margin-bottom: 20px;">
         <mat-checkbox formControlName="cashProvider" color="primary">
-          Is this a Cash Provider?
+          {{ 'PROVIDER.IS_CASH_PROVIDER' | translate }}
         </mat-checkbox>
       </div>
 
       <div class="file-upload-section">
-        <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput>
+        <input type="file" hidden (change)="onFileSelected($event)" accept="image/*" #fileInput />
+
+        <button type="button" mat-stroked-button (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          {{ 'PROVIDER.CHOOSE_FILE' | translate }}
+        </button>
+
+        <span class="file-name">
+          {{ selectedFileName || ('PROVIDER.NO_FILE_CHOSEN' | translate) }}
+        </span>
       </div>
 
       <button mat-flat-button class="save-btn" type="submit" [disabled]="phoneForm.invalid">
-        SAVE PROVIDER
+        {{ 'PROVIDER.SAVE_PROVIDER' | translate }}
       </button>
 
     </form>

@@ -2,16 +2,17 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { ProvidersService } from '../../../core/services/providers.service'
 import { Provider } from '../../../model/provider.model'
-
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-add-provider.component',
-  imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, MatCheckboxModule],
+  imports: [MatInputModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, MatCheckboxModule, TranslateModule, MatIconModule],
   templateUrl: './add-provider.component.html',
   styleUrl: './add-provider.component.scss'
 })
@@ -24,6 +25,8 @@ export class AddProviderComponent implements OnInit {
   selectedFile: File | null = null;
 
   phoneForm!: FormGroup;
+
+  selectedFileName = '';
 
   private readonly emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   private readonly phonePattern = /^\d{10}$/; // Assuming 10 digits for simplicity
@@ -103,6 +106,7 @@ export class AddProviderComponent implements OnInit {
     const file: File = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.selectedFileName = file.name;
       console.log('file selected')
     }
   }
