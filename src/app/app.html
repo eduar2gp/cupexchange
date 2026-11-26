@@ -17,6 +17,10 @@
         <mat-icon matListItemIcon>store</mat-icon>
         <span matListItemTitle>{{ 'PROVIDERS' | translate }}</span>
       </a>
+      <a *appHasRole="[Role.Admin, Role.PredictionMarketResolver]" mat-list-item routerLink="/prediction-market-resolver" routerLinkActive="active">
+        <mat-icon matListItemIcon>gavel</mat-icon>
+        <span matListItemTitle>{{ 'PREDICTION_MARKET_RESOLVER' | translate }}</span>
+      </a>
       <a *appHasRole="[Role.Admin, Role.PredictionMarketCreator]" mat-list-item routerLink="/prediction-market-creator" routerLinkActive="active">
         <mat-icon matListItemIcon>query_stats</mat-icon>
         <span matListItemTitle>{{ 'PREDICTION_MARKET_CREATOR' | translate }}</span>

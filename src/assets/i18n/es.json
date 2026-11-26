@@ -210,6 +210,7 @@
   "PRODUCTS": "Productos",
   "PREDICTIONS": "Predicciones",
   "PREDICTION_MARKET_CREATOR": "Panel de Predicciones",
+  "PREDICTION_MARKET_RESOLVER": "Liquidación de Mercados",
   "REPORTS": {
     "REPORTS": "Reportes",
     "PERIOD": "Período",

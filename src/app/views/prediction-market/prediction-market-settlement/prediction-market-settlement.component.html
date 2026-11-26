@@ -1,0 +1,91 @@
+<div class="prediction-market-settlement">
+  @if (isLoadingCategories()) {
+    <div class="loading-state"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else if (errorMessage(); as error) {
+    <div class="error-state">{{ error }}</div>
+  } @else if (categories().length === 0) {
+    <div class="empty-state">No prediction market categories are available.</div>
+  } @else {
+    <section class="category-navigation" aria-label="Prediction market categories">
+      <div class="category-navigation__heading">
+        <div>
+          <span class="category-navigation__eyebrow">Prediction market resolver</span>
+          <h1>Resolve a market</h1>
+        </div>
+        <span class="category-navigation__count">{{ categories().length }} categories</span>
+      </div>
+
+      <div class="category-navigation__list" role="tablist">
+        @for (category of categories(); track category.id) {
+          <button type="button" class="category-navigation__item"
+            [class.active]="selectedCategory()?.id === category.id"
+            [attr.aria-selected]="selectedCategory()?.id === category.id"
+            role="tab" (click)="selectCategory(category)">
+            <span class="category-navigation__icon">
+              <mat-icon>{{ getCategoryIcon(category.name) }}</mat-icon>
+            </span>
+            <span class="category-navigation__label">{{ category.name }}</span>
+            @if (selectedCategory()?.id === category.id) {
+              <mat-icon class="category-navigation__selected-icon">check_circle</mat-icon>
+            }
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="tab-content" role="tabpanel">
+      @if (isLoadingEvents()) {
+        <div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+      } @else if (events().length === 0) {
+        <div class="empty-state">No events are available for this category.</div>
+      } @else {
+        <div class="events-grid">
+          @for (event of events(); track event.id) {
+            <button type="button" class="event-card"
+              [class.selected]="selectedEvent()?.id === event.id"
+              (click)="selectEvent(event)">
+              <span class="event-title">{{ event.title }}</span>
+              <span class="event-status">{{ event.status }}</span>
+              <span class="event-date">{{ event.startTime ? (event.startTime | date:'medium') : 'Start time unavailable' }}</span>
+            </button>
+          }
+        </div>
+
+        @if (selectedEvent(); as event) {
+          <section class="event-details-section">
+            <h2>{{ event.title }}</h2>
+
+            @if (isLoadingMarkets()) {
+              <div class="loading-state"><mat-spinner diameter="36"></mat-spinner></div>
+            } @else if (markets().length === 0) {
+              <div class="empty-state">No markets are available for this event.</div>
+            } @else {
+              <div class="markets-list">
+                @for (market of markets(); track market.id) {
+                  <article class="market-card"
+                    [class.selected]="selectedMarket()?.id === market.id"
+                    (click)="selectMarket(market)">
+                    <span class="market-question">{{ market.question }}</span>
+                    <span class="market-status">{{ market.status }}</span>
+                    <span class="market-outcomes">{{ market.yesLabel }} / {{ market.noLabel }}</span>
+                    <button type="button" class="settle-button"
+                      [disabled]="settlingMarketId() !== null || market.status === 'RESOLVED' || market.status === 'CLOSED'"
+                      (click)="settleMarket(market); $event.stopPropagation()">
+                      @if (settlingMarketId() === market.id) {
+                        <mat-spinner diameter="18"></mat-spinner>
+                        Settling...
+                      } @else {
+                        <mat-icon>gavel</mat-icon>
+                        {{ market.status === 'RESOLVED' ? 'Settled' : 'Settlement result' }}
+                      }
+                    </button>
+                  </article>
+                }
+              </div>
+            }
+          </section>
+        }
+      }
+    </section>
+  }
+</div>

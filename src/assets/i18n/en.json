@@ -210,6 +210,7 @@
   "PRODUCTS": "Products",
   "PREDICTIONS": "Predictions",
   "PREDICTION_MARKET_CREATOR": "Predictions Dashboard",
+  "PREDICTION_MARKET_RESOLVER": "Markets Settlement",
   "REPORTS": {
     "REPORTS": "Reports",
     "PERIOD": "Period",

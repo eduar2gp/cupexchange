@@ -3,5 +3,6 @@ export enum Role {
   Provider = 'ROLE_PROVIDER',
   AccountManager = 'ROLE_ACCOUNT_MANAGER',
   StoreManager = 'ROLE_STORE_MANAGER',
-  PredictionMarketCreator = 'ROLE_PREDICTION_CREATOR'
+  PredictionMarketCreator = 'ROLE_PREDICTION_CREATOR',
+  PredictionMarketResolver = 'ROLE_PREDICTION_RESOLVER',
 }

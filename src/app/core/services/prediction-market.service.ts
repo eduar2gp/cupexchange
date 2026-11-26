@@ -140,4 +140,12 @@ export class PredictionMarketService {
     const params = new HttpParams().set('eventId', eventId.toString());
     return this.http.get<PredictionEventEntityResponseDto[]>(build(ApiEndpoints.predictionMarket.GET_PREDICTION_EVENT_ENTITIES), { params });
   }
+
+  postPredictionMarketSettlement(marketId: number): Observable<void> {
+    return this.http.post<void>(
+      build(ApiEndpoints.predictionMarket.POST_PREDICTION_MARKET_SETTLEMENT, { marketId }),
+      {}
+    );
+  }
+
 }
