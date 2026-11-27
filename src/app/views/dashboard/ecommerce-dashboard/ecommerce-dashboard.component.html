@@ -76,6 +76,7 @@
 
         <div class="product-header">
           <h2 class="product-name">{{ product.name }}</h2>
+          <p class="product-provider">{{ product.providerName || 'Unknown provider' }}</p>
           @if (product.reviewCount !== undefined && product.reviewCount > 0) {
           <div class="product-rating-summary">
             @if (product.averageRating !== undefined) {

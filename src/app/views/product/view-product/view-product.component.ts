@@ -8,10 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { ViewProductReviewComponent } from '../view-product-review/view-product-review.component';
 import { CartService } from '../../../core/services/cart.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-view-product.component',
-  imports: [AsyncPipe, DecimalPipe, MatButtonModule, MatCardModule, MatIconModule, TranslateModule, ViewProductReviewComponent],
+  imports: [AsyncPipe, DecimalPipe, MatButtonModule, MatCardModule, MatIconModule, TranslateModule, ViewProductReviewComponent, RouterLink],
   templateUrl: './view-product.component.html',
   styleUrl: './view-product.component.scss',
 })

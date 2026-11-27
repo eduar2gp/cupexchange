@@ -329,7 +329,7 @@ mat-card-content {
 .product-footer {
 	margin-top: auto;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: flex-start;
 	gap: 8px;
 	align-items: center;
 
@@ -340,6 +340,17 @@ mat-card-content {
 
 	.stock--empty {
 		color: var(--color-danger);
+	}
+}
+
+.product-actions {
+	margin-top: 8px;
+	padding: 0;
+	display: flex;
+	justify-content: flex-end;
+
+	button {
+		margin-left: auto;
 	}
 }
 

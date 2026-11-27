@@ -95,7 +95,7 @@ export const ApiEndpoints = {
     POST_PREDICTION_EVENT_ENTITY: '/api/v1/prediction-markets/event-entities',
     GET_PREDICTION_ENTITIES: '/api/v1/prediction-markets/entities',
     GET_PREDICTION_EVENT_ENTITIES: '/api/v1/prediction-markets/event-entities',
-    POST_PREDICTION_MARKET_SETTLEMENT: '/api/v1/prediction-markets/{marketId}/close?winningOutcome=Yes',
+    POST_PREDICTION_MARKET_SETTLEMENT: '/api/v1/prediction-markets/{marketId}/close?winningOutcome={winningOutcome}',
   },
   category: {
     GET_CATEGORIES: '/api/v1/categories'

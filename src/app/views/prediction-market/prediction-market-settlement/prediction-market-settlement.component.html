@@ -19,8 +19,8 @@
         @for (category of categories(); track category.id) {
           <button type="button" class="category-navigation__item"
             [class.active]="selectedCategory()?.id === category.id"
-            [attr.aria-selected]="selectedCategory()?.id === category.id"
-            role="tab" (click)="selectCategory(category)">
+            [attr.aria-selected]="selectedCategory()?.id === category.id" role="tab"
+            (click)="selectCategory(category)">
             <span class="category-navigation__icon">
               <mat-icon>{{ getCategoryIcon(category.name) }}</mat-icon>
             </span>
@@ -68,20 +68,37 @@
                     <span class="market-question">{{ market.question }}</span>
                     <span class="market-status">{{ market.status }}</span>
                     <span class="market-outcomes">{{ market.yesLabel }} / {{ market.noLabel }}</span>
-                    <button type="button" class="settle-button"
-                      [disabled]="settlingMarketId() !== null || market.status === 'RESOLVED' || market.status === 'CLOSED'"
-                      (click)="settleMarket(market); $event.stopPropagation()">
-                      @if (settlingMarketId() === market.id) {
-                        <mat-spinner diameter="18"></mat-spinner>
-                        Settling...
-                      } @else {
-                        <mat-icon>gavel</mat-icon>
-                        {{ market.status === 'RESOLVED' ? 'Settled' : 'Settlement result' }}
-                      }
-                    </button>
+
+                    <div class="settle-trigger-wrapper" (click)="$event.stopPropagation()">
+                      <button type="button" class="settle-button"
+                        [matMenuTriggerFor]="settleMenu"
+                        [matMenuTriggerData]="{ market: market }"
+                        [disabled]="settlingMarketId() !== null || market.status === 'RESOLVED' || market.status === 'CLOSED'">
+                        @if (settlingMarketId() === market.id) {
+                          <mat-spinner diameter="18"></mat-spinner>
+                          Settling...
+                        } @else {
+                          <mat-icon>gavel</mat-icon>
+                          {{ market.status === 'RESOLVED' ? 'Settled' : 'Settlement result' }}
+                        }
+                      </button>
+                    </div>
                   </article>
                 }
               </div>
+
+              <mat-menu #settleMenu="matMenu">
+                <ng-template matMenuContent let-market="market">
+                  <button mat-menu-item (click)="settleMarket(market, 'Yes')">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>{{ market.yesLabel || 'Yes' }}</span>
+                  </button>
+                  <button mat-menu-item (click)="settleMarket(market, 'No')">
+                    <mat-icon>cancel</mat-icon>
+                    <span>{{ market.noLabel || 'No' }}</span>
+                  </button>
+                </ng-template>
+              </mat-menu>
             }
           </section>
         }

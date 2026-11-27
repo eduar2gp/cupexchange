@@ -150,6 +150,12 @@
 								<div class="product-footer">
 									<span class="stock" [class.stock--empty]="product.stockQuantity === 0">Stock: {{ product.stockQuantity }}</span>
 								</div>
+								<mat-card-actions class="product-actions">
+									<button mat-flat-button color="primary" (click)="$event.stopPropagation(); addProduct(product)" [disabled]="!product.available">
+										<mat-icon>shopping_cart</mat-icon>
+										{{ (product.available ? 'ADD_TO_CART' : 'OUT_OF_REACH') | translate }}
+									</button>
+								</mat-card-actions>
 							</mat-card-content>
 						</mat-card>
 					}

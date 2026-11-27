@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, NgZone, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, of } from 'rxjs';
+import { combineLatest, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, take } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Provider } from '../../../model/provider.model';
@@ -10,6 +10,7 @@ import { Product, ProductReviewResponse } from '../../../model/product.model';
 import { Page } from '../../../model/page.model';
 import { DataService } from '../../../core/services/data.service';
 import { ProductsService } from '../../../../app/core/services/products.service';
+import { CartService } from '../../../core/services/cart.service';
 import { Category } from '../../../model/category.model';
 import { CategoryService } from '../../../core/services/category.service';
 import { MatCardModule } from '@angular/material/card';
@@ -24,6 +25,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ProviderCoveragePayload } from '../../../model/provider-coverage-response.model';
+import { User } from '../../../model/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-view-provider.component',
@@ -41,6 +44,7 @@ import { ProviderCoveragePayload } from '../../../model/provider-coverage-respon
     MatToolbarModule,
     MatChipsModule,
     MatPaginatorModule,
+    TranslateModule,
   ],
   templateUrl: './view-provider.component.html',
   styleUrl: './view-provider.component.scss',
@@ -51,6 +55,7 @@ export class ViewProviderComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
   private readonly categoryService = inject(CategoryService);
   private readonly dataService = inject(DataService);
+  private readonly cartService = inject(CartService);
   private readonly ngZone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
@@ -70,6 +75,8 @@ export class ViewProviderComponent implements OnInit {
   filteredProducts: Product[] = [];
   categories: Category[] = [];
   providerCoverage = signal<ProviderCoveragePayload | undefined>(undefined);
+  loggedInUser: User | null = null;
+  userMunicipalityId: number | null = null;
   currentPage = 0;
   pageSize = 10;
   loading = true;
@@ -82,9 +89,30 @@ export class ViewProviderComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.loadLoggedInUser();
     this.loadCategories();
     this.bindFilters();
     this.loadProviderData();
+  }
+
+  private loadLoggedInUser(): void {
+    const savedProfileJson = localStorage.getItem('USER_PROFILE_DATA');
+    if (!savedProfileJson) {
+      this.loggedInUser = null;
+      this.userMunicipalityId = null;
+      return;
+    }
+
+    try {
+      this.loggedInUser = JSON.parse(savedProfileJson) as User;
+      this.userMunicipalityId = typeof this.loggedInUser.municipalityId === 'number'
+        ? this.loggedInUser.municipalityId
+        : null;
+    } catch (err) {
+      console.error('Failed to parse USER_PROFILE_DATA', err);
+      this.loggedInUser = null;
+      this.userMunicipalityId = null;
+    }
   }
 
   private loadProviderData(): void {
@@ -114,18 +142,18 @@ export class ViewProviderComponent implements OnInit {
           return of(null);
         }
 
-        return combineLatest([
-          this.providersService.getProviderById(providerId.toString()),
-          this.providersService.getProviderCoverage(providerId).pipe(
+        return forkJoin({
+          provider: this.providersService.getProviderById(providerId.toString()),
+          coverage: this.providersService.getProviderCoverage(providerId).pipe(
             catchError(() => of({
               providerId,
               providerName: '',
               activeMunicipalities: [],
             } as ProviderCoveragePayload))
           )
-        ]).pipe(
+        }).pipe(
           take(1),
-          map(([provider, coverage]) => ({ provider, coverage, providerId }))
+          map(({ provider, coverage }) => ({ provider, coverage, providerId }))
         );
       }),
       catchError((err) => {
@@ -237,14 +265,34 @@ export class ViewProviderComponent implements OnInit {
       })
     ).subscribe((productsResponse) => {
       const normalizedResponse = this.normalizeProductsResponse(productsResponse, page, size);
+      const responseWithAvailability = this.applyCoverageAvailability(normalizedResponse);
 
       this.updateViewState(() => {
-        this.products = normalizedResponse;
-        this.currentPage = normalizedResponse.page.number;
-        this.pageSize = normalizedResponse.page.size;
+        this.products = responseWithAvailability;
+        this.currentPage = responseWithAvailability.page.number;
+        this.pageSize = responseWithAvailability.page.size;
         this.applyFilters();
       });
     });
+  }
+
+  private applyCoverageAvailability(response: ProductReviewResponse<Product>): ProductReviewResponse<Product> {
+    if (this.userMunicipalityId === null || this.userMunicipalityId === undefined) {
+      return response;
+    }
+
+    const coverage = this.providerCoverage();
+    const isMunicipalityActive = !!coverage?.activeMunicipalities?.some(
+      municipality => municipality.id === this.userMunicipalityId
+    );
+
+    return {
+      ...response,
+      content: (response.content ?? []).map((product) => ({
+        ...product,
+        available: isMunicipalityActive ? true : false,
+      })),
+    };
   }
 
   private normalizeProductsResponse(
@@ -296,34 +344,34 @@ export class ViewProviderComponent implements OnInit {
     });
   }
 
-  private resolveProviderId() {
-    return this.route.queryParamMap.pipe(
-      take(1),
-      map((queryParams) => {
-        const fromQuery = Number(queryParams.get('providerId'));
-        if (!Number.isNaN(fromQuery) && fromQuery > 0) {
-          return fromQuery;
-        }
+ private resolveProviderId() {
+  return combineLatest([this.route.paramMap, this.route.queryParamMap]).pipe(
+    take(1),
+    map(([params, queryParams]) => {
+      const fromRoute = Number(params.get('id'));
+      if (!Number.isNaN(fromRoute) && fromRoute > 0) {
+        return fromRoute;
+      }
 
-        const fromRoute = Number(this.route.snapshot.paramMap.get('providerId'));
-        if (!Number.isNaN(fromRoute) && fromRoute > 0) {
-          return fromRoute;
-        }
+      const fromQuery = Number(queryParams.get('providerId'));
+      if (!Number.isNaN(fromQuery) && fromQuery > 0) {
+        return fromQuery;
+      }
 
-        return null;
-      }),
-      switchMap((providerId) => {
-        if (providerId) {
-          return of(providerId);
-        }
+      return null;
+    }),
+    switchMap((providerId) => {
+      if (providerId) {
+        return of(providerId);
+      }
 
-        return this.dataService.currentProvider.pipe(
-          take(1),
-          map((provider) => provider?.id ?? null)
-        );
-      })
-    );
-  }
+      return this.dataService.currentProvider.pipe(
+        take(1),
+        map((provider) => provider?.id ?? null)
+      );
+    })
+  );
+}
 
   getProductPrice(product: Product): number {
     if (product.price !== undefined && product.price !== null) {
@@ -339,6 +387,24 @@ export class ViewProviderComponent implements OnInit {
   viewProduct(product: Product): void {
     this.dataService.updateProduct(product);
     this.router.navigate(['/product-details']);
+  }
+
+  addProduct(product: Product): void {
+    if (!product.id || product.available === false) {
+      return;
+    }
+
+    this.cartService.addToCart({
+      productId: product.id,
+      description: product.description || '',
+      name: product.name,
+      providerId: product.providerId,
+      providerName: product.providerName,
+      currencyCode: this.getProductCurrency(product),
+      unitPrice: this.getProductPrice(product),
+      quantity: 1,
+      productImgUrl: product.productImageUrl || '',
+    });
   }
 
 }

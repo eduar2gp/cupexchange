@@ -67,10 +67,6 @@ export const routes: Routes = [
     component: ViewProductComponent,
   },
   {
-    path: 'provider-details',
-    component: ViewProviderComponent,
-  },
-  {
     path: 'prediction-market-creator',
     component: PredictionMarketCreatorComponent,
     canActivate: [roleGuard],
@@ -273,5 +269,9 @@ export const routes: Routes = [
     component: AccountProviderBillingReports,
     canActivate: [roleGuard],
     data: { roles: [Role.Admin, Role.AccountManager]}
+  },
+  {
+    path: ':id',
+    component: ViewProviderComponent,
   }
 ];

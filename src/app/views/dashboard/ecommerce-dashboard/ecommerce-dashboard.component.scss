@@ -212,6 +212,16 @@
       overflow: hidden; 
     }
 
+    .product-provider {
+      margin: 0;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
     .product-price {
       display: flex;
       align-items: baseline;

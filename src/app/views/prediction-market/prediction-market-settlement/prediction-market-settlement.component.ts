@@ -8,11 +8,12 @@ import { PredictionMarketService } from '../../../core/services/prediction-marke
 import { PredictionCategory } from '../../../model/prediction-category.model';
 import { PredictionEventResponse } from '../../../model/prediction-event.model';
 import { PredictionMarketResponse } from '../../../model/prediction-market.model';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-prediction-market-settlement',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule],
+  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule, MatMenuModule],
   templateUrl: './prediction-market-settlement.component.html',
   styleUrl: './prediction-market-settlement.component.scss',
 })
@@ -78,13 +79,13 @@ export class PredictionMarketSettlementComponent implements OnInit {
     this.selectedMarket.set(market);
   }
 
-  settleMarket(market: PredictionMarketResponse): void {
+  settleMarket(market: PredictionMarketResponse, winningOutcome: 'Yes' | 'No'): void {
     if (this.settlingMarketId() !== null) {
       return;
     }
 
     this.settlingMarketId.set(market.id);
-    this.predictionMarketService.postPredictionMarketSettlement(market.id).pipe(
+    this.predictionMarketService.postPredictionMarketSettlement(market.id, winningOutcome).pipe(
       take(1),
       finalize(() => this.settlingMarketId.set(null)),
     ).subscribe({
