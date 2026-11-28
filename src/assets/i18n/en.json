@@ -29,6 +29,8 @@
   "LOGOUT": "Logout",
   "BUY": "Buy",
   "SELL": "Sell",
+  "BUY_PRICE": "Buy",
+  "SELL_PRICE": "Sell",
   "AMOUNT": "Amount",
   "ORDER_TYPE": "Order type",
   "MINIMUM": "Minimum",

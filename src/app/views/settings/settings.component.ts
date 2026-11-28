@@ -33,8 +33,7 @@ export class SettingsComponent implements OnInit { // Implemented OnInit
   merchantPriceCurrency = 'USD';
   readonly availableMerchantCurrencies = [
     { code: 'USD', label: 'USD' },
-    { code: 'CUP', label: 'CUP' },
-    { code: 'EUR', label: 'EUR' }
+    { code: 'CUP', label: 'CUP' }
   ];
 
   constructor(

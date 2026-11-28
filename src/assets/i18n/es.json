@@ -29,6 +29,8 @@
   "LOGOUT": "Cerrar sesión",
   "BUY": "Comprar",
   "SELL": "Vender",
+  "BUY_PRICE": "Compra",
+  "SELL_PRICE": "Venta",
   "AMOUNT": "Cantidad",
   "ORDER_TYPE": "Tipo de orden",
   "MINIMUM": "Mínimo",

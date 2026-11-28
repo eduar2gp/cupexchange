@@ -8,7 +8,7 @@
         <img class="currency-pair-icon"
              [src]="getBaseCurrencyImage(currentPairCode)"
              [alt]="currentPairCode.slice(0, 3) + ' currency'" />
-        <span>{{ currentPairCode }}</span>
+        <span>{{ currentPairCode.slice(0, 3) }}</span>
       </div>
       }
       <div class="info-group">
